@@ -26,7 +26,7 @@ import { pollWhileVisible } from '../../../../utils/helpers/poll';
 import ApplicationsMainEmpty from './Empty';
 import ApplicationsSuccess from './Success';
 import { filterApplications, useApplications } from '../../hooks';
-import type { Application } from '../../models';
+import type { Application, ApplicationHealthQuickFilter } from '../../models';
 import { EditApplicationPanel } from '../../components/panels';
 import { FilterPanel } from '../../../../components/display/panels/filter';
 import type { FilterField } from '../../../../components/display/panels/filter/FilterPanel';
@@ -146,11 +146,23 @@ const ApplicationsGlobalView: React.FC = memo(() => {
 
   // The input echoes each keystroke at once; the cards follow in an interruptible render.
   const deferredSearch = useDeferredValue(searchValue);
-  const filteredApplications = useMemo(() => {
-    const base = filterApplications(visibleApplications, deferredSearch);
-    const withPanelFilters = applyApplicationFilters(base, appliedFilters);
-    return applyHealthQuickFilter(withPanelFilters, healthQuickFilter);
-  }, [visibleApplications, appliedFilters, healthQuickFilter, deferredSearch]);
+  const panelFilteredApplications = useMemo(
+    () =>
+      applyApplicationFilters(
+        filterApplications(visibleApplications, deferredSearch),
+        appliedFilters,
+      ),
+    [visibleApplications, appliedFilters, deferredSearch],
+  );
+  const filteredApplications = useMemo(
+    () => applyHealthQuickFilter(panelFilteredApplications, healthQuickFilter),
+    [panelFilteredApplications, healthQuickFilter],
+  );
+  // What each health pill would show: counted after search and panel filters, before the pill.
+  const healthCounts = useMemo(
+    () => countByHealthQuickFilter(panelFilteredApplications),
+    [panelFilteredApplications],
+  );
   const hasActiveFilters = useMemo(() => hasAnyAppliedFilter(appliedFilters), [appliedFilters]);
 
   const totalFiltered = filteredApplications.length;
@@ -237,7 +249,6 @@ const ApplicationsGlobalView: React.FC = memo(() => {
         filterChips={visibleFilterChips}
         overflowChipsCount={overflowChipsCount}
         onRemoveFilterChip={(key, value) => dispatch(removeFilterValue({ key, value }))}
-        totalFiltered={totalFiltered}
         hasActiveFilters={hasActiveFilters}
         pagination={{
           currentPage: effectivePage,
@@ -270,6 +281,7 @@ const ApplicationsGlobalView: React.FC = memo(() => {
         anySelectedSyncing={anySelectedSyncing}
         onClearSelection={() => dispatch(setSelectedNames([]))}
         healthQuickFilter={healthQuickFilter}
+        healthCounts={healthCounts}
         onHealthQuickFilterChange={(next) => dispatch(setHealthQuickFilter(next))}
         loading={!loaded}
         error={error}
@@ -374,12 +386,37 @@ function applyApplicationFilters(
   });
 }
 
+const KNOWN_HEALTH: readonly string[] = ['healthy', 'degraded', 'down'];
+
+function countByHealthQuickFilter(
+  apps: Application[],
+): Record<ApplicationHealthQuickFilter, number> {
+  const counts: Record<ApplicationHealthQuickFilter, number> = {
+    all: apps.length,
+    healthy: 0,
+    degraded: 0,
+    unhealthy: 0,
+    unknown: 0,
+  };
+  apps.forEach((a) => {
+    const status = String(a.health?.status || '').toLowerCase();
+    if (status === 'healthy' || status === 'degraded') counts[status] += 1;
+    else if (status === 'down') counts.unhealthy += 1;
+    else counts.unknown += 1;
+  });
+  return counts;
+}
+
 function applyHealthQuickFilter(
   apps: Application[],
-  quickFilter: 'all' | 'healthy' | 'degraded' | 'unhealthy',
+  quickFilter: 'all' | 'healthy' | 'degraded' | 'unhealthy' | 'unknown',
 ): Application[] {
   const q = String(quickFilter || 'all').toLowerCase();
   if (q === 'all') return apps;
+  // Unknown takes every status the other pills don't, as the card shows it, so the counts add up to All.
+  if (q === 'unknown') {
+    return apps.filter((a) => !KNOWN_HEALTH.includes(String(a.health?.status || '').toLowerCase()));
+  }
   const wanted = q === 'unhealthy' ? 'down' : q;
   return apps.filter((a) => String(a.health?.status || '').toLowerCase() === wanted);
 }

@@ -5,9 +5,15 @@ import {
   DEFAULT_COLORS,
   EMPTY_CLASS,
   EMPTY_VALUE,
+  HAIRLINE,
   STATUS_COLORS,
   TAG_CLASS,
+  getPillColor,
   getPillSurface,
+  RADIUS,
+  FONT_SIZE,
+  FONT_WEIGHT,
+  SPACING,
 } from '../../../../constants';
 import TimeAgo from '../../../../components/display/time/TimeAgo';
 import { pluralize } from '../../../../utils/helpers/format';
@@ -200,13 +206,14 @@ const dotStyle = (color: string): React.CSSProperties => ({
 
 const ValueChip: React.FC<{ tone: DiffType; children: React.ReactNode }> = ({ tone, children }) => (
   <span
+    // 3 and 1.4: the chip's vertical padding and leading sit below XS and between SNUG and BASE.
     style={{
       display: 'inline-block',
-      padding: '3px 8px',
-      borderRadius: 6,
+      padding: `3px ${SPACING.SM}px`,
+      borderRadius: RADIUS.SM,
       ...getPillSurface(STATUS_COLORS.SNAPSHOT_DIFF[tone]),
-      fontSize: 12,
-      fontWeight: 700,
+      fontSize: FONT_SIZE.SM,
+      fontWeight: FONT_WEIGHT.BOLD,
       lineHeight: 1.4,
       wordBreak: 'break-word',
       maxWidth: '100%',
@@ -222,13 +229,14 @@ const SnapshotSide: React.FC<{ label: string; snap: ApplicationSnapshotSummary }
 }) => {
   const ui = APPLICATIONS_UI.SECTIONS.SNAPSHOTS;
   return (
-    <div style={{ ...cardStyle, padding: 16, minWidth: 0 }}>
+    <div style={{ ...cardStyle, padding: SPACING.LG, minWidth: 0 }}>
       <div style={labelStyle}>{label}</div>
       <div
+        // 17: the generation title sits between LG and XL.
         style={{
-          marginTop: 4,
+          marginTop: SPACING.XS,
           fontSize: 17,
-          fontWeight: 700,
+          fontWeight: FONT_WEIGHT.BOLD,
           color: DEFAULT_COLORS.TEXT_ON_SURFACE,
           whiteSpace: 'nowrap',
         }}
@@ -237,17 +245,19 @@ const SnapshotSide: React.FC<{ label: string; snap: ApplicationSnapshotSummary }
       </div>
       <div
         style={{
-          marginTop: 8,
+          marginTop: SPACING.SM,
           display: 'flex',
           flexWrap: 'wrap',
           alignItems: 'center',
-          gap: 6,
+          gap: SPACING.S6,
           minWidth: 0,
         }}
       >
         <Tag className={TAG_CLASS.META}>{snap.id}</Tag>
         {snap.severity ? (
-          <Tag>{`${APPLICATIONS_UI.SECTIONS.CHANGE_LOG.SEVERITY}: ${snap.severity}`}</Tag>
+          <Tag color={getPillColor(STATUS_COLORS.APPLICATION_CHANGE_SEVERITY[snap.severity])}>
+            {`${APPLICATIONS_UI.SECTIONS.CHANGE_LOG.SEVERITY}: ${snap.severity}`}
+          </Tag>
         ) : null}
         <span style={mutedStyle}>
           {snap.takenAt ? <TimeAgo date={snap.takenAt} /> : EMPTY_VALUE}
@@ -263,7 +273,14 @@ const StatTile: React.FC<{ value: number; label: string; accent?: string }> = ({
   accent,
 }) => (
   <Fact label={label}>
-    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontWeight: 700 }}>
+    <span
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: SPACING.S6,
+        fontWeight: FONT_WEIGHT.BOLD,
+      }}
+    >
       {accent ? <span style={dotStyle(accent)} /> : null}
       {value}
     </span>
@@ -281,8 +298,8 @@ const DiffRowView: React.FC<{ row: DiffRow; kind: string }> = ({ row, kind }) =>
     return (
       <div
         style={{
-          padding: '8px 16px',
-          borderTop: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
+          padding: `${SPACING.SM}px ${SPACING.LG}px`,
+          borderTop: HAIRLINE.SURFACE_BORDER_LIGHT,
         }}
       >
         <ValueChip tone={row.type}>
@@ -296,17 +313,32 @@ const DiffRowView: React.FC<{ row: DiffRow; kind: string }> = ({ row, kind }) =>
       style={{
         display: 'grid',
         gridTemplateColumns: 'minmax(96px, 160px) minmax(0, 1fr)',
-        columnGap: 12,
-        rowGap: 6,
+        columnGap: SPACING.MD,
+        rowGap: SPACING.S6,
         alignItems: 'start',
-        padding: '8px 16px',
-        borderTop: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
+        padding: `${SPACING.SM}px ${SPACING.LG}px`,
+        borderTop: HAIRLINE.SURFACE_BORDER_LIGHT,
       }}
     >
-      <span style={{ ...textStyle, fontWeight: 700, wordBreak: 'break-word', paddingTop: 2 }}>
+      <span
+        style={{
+          ...textStyle,
+          fontWeight: FONT_WEIGHT.BOLD,
+          wordBreak: 'break-word',
+          paddingTop: SPACING.XXS,
+        }}
+      >
         {formatPath(row.path)}
       </span>
-      <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8, minWidth: 0 }}>
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          alignItems: 'center',
+          gap: SPACING.SM,
+          minWidth: 0,
+        }}
+      >
         {row.type === 'add' ? (
           <span style={labelStyle}>{ui.COMPARE_ADDED_CHIP}</span>
         ) : (
@@ -314,7 +346,7 @@ const DiffRowView: React.FC<{ row: DiffRow; kind: string }> = ({ row, kind }) =>
         )}
         {row.type === 'change' ? (
           <span
-            style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE_DISABLED, fontSize: 13 }}
+            style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE_DISABLED, fontSize: FONT_SIZE.MD }}
             aria-hidden
           >
             {APPLICATIONS_UI.SECTIONS.CHANGE_LOG.DIFF_ARROW}
@@ -367,6 +399,7 @@ const SnapshotCompareView: React.FC<SnapshotCompareViewProps> = memo(
 
     const header = (
       <div
+        // 10: the gap around the arrow sits between SM and MD.
         style={{
           display: 'grid',
           gridTemplateColumns: 'minmax(0, 1fr) auto minmax(0, 1fr)',
@@ -383,10 +416,10 @@ const SnapshotCompareView: React.FC<SnapshotCompareViewProps> = memo(
             display: 'inline-flex',
             alignItems: 'center',
             justifyContent: 'center',
-            border: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER}`,
+            border: HAIRLINE.SURFACE_BORDER,
             color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
-            fontSize: 14,
-            fontWeight: 700,
+            fontSize: FONT_SIZE.BASE,
+            fontWeight: FONT_WEIGHT.BOLD,
           }}
           aria-hidden
         >
@@ -399,7 +432,7 @@ const SnapshotCompareView: React.FC<SnapshotCompareViewProps> = memo(
     let body: React.ReactNode;
     if (loading) {
       body = (
-        <div style={{ ...cardStyle, padding: 16 }}>
+        <div style={{ ...cardStyle, padding: SPACING.LG }}>
           <Skeleton active paragraph={{ rows: 3 }} title={false} />
         </div>
       );
@@ -415,7 +448,7 @@ const SnapshotCompareView: React.FC<SnapshotCompareViewProps> = memo(
             </>
           }
         >
-          <div style={{ display: 'grid', justifyItems: 'center', rowGap: 12 }}>
+          <div style={{ display: 'grid', justifyItems: 'center', rowGap: SPACING.MD }}>
             <Button onClick={onRetry}>{ui.COMPARE_RETRY}</Button>
             <TechnicalDetails detail={error} />
           </div>
@@ -464,15 +497,23 @@ const SnapshotCompareView: React.FC<SnapshotCompareViewProps> = memo(
             <div key={`${g.meta.kind}/${g.meta.name}`} style={cardStyle}>
               <div
                 style={{
-                  padding: '12px 16px',
+                  padding: `${SPACING.MD}px ${SPACING.LG}px`,
                   display: 'flex',
                   alignItems: 'center',
-                  gap: 8,
+                  gap: SPACING.SM,
                   minWidth: 0,
                 }}
               >
                 <Tag className={TAG_CLASS.META}>{g.meta.kind}</Tag>
-                <span style={{ ...textStyle, ...oneLine, fontWeight: 700, minWidth: 0, flex: 1 }}>
+                <span
+                  style={{
+                    ...textStyle,
+                    ...oneLine,
+                    fontWeight: FONT_WEIGHT.BOLD,
+                    minWidth: 0,
+                    flex: 1,
+                  }}
+                >
                   {g.meta.name}
                 </span>
                 <span style={{ ...labelStyle, whiteSpace: 'nowrap' }}>
@@ -483,8 +524,8 @@ const SnapshotCompareView: React.FC<SnapshotCompareViewProps> = memo(
                 style={{
                   display: 'grid',
                   gridTemplateColumns: 'minmax(96px, 160px) minmax(0, 1fr)',
-                  columnGap: 12,
-                  padding: '0 16px 6px',
+                  columnGap: SPACING.MD,
+                  padding: `0 ${SPACING.LG}px ${SPACING.S6}px`,
                 }}
               >
                 <span style={labelStyle}>{ui.COMPARE_BEFORE}</span>
@@ -504,16 +545,20 @@ const SnapshotCompareView: React.FC<SnapshotCompareViewProps> = memo(
     }
 
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 14, minHeight: 0 }}>
+      <div
+        // 14: the compare view's section gap sits between MD and LG.
+        style={{ display: 'flex', flexDirection: 'column', gap: 14, minHeight: 0 }}
+      >
         {header}
         <div
+          // 14: the same section gap as the outer column.
           style={{
             display: 'flex',
             flexDirection: 'column',
             gap: 14,
             overflow: 'auto',
             minHeight: 0,
-            paddingRight: 2,
+            paddingRight: SPACING.XXS,
           }}
         >
           {body}

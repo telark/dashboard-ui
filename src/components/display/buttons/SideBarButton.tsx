@@ -1,7 +1,14 @@
 import React, { useState, useCallback, memo } from 'react';
 import { Badge, Tooltip } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { DEFAULT_COLORS, BUTTON_CONFIGS, BUTTON_COLORS, SIDEBAR_LAYOUT } from '../../../constants';
+import {
+  DEFAULT_COLORS,
+  BUTTON_CONFIGS,
+  BUTTON_COLORS,
+  SIDEBAR_LAYOUT,
+  FONT_SIZE,
+  MOTION,
+} from '../../../constants';
 import { ButtonInterface } from '../../../interfaces/shared';
 import { useMediaQuery } from '../../../hooks/layout';
 
@@ -14,6 +21,9 @@ const NavButton: React.FC<React.ComponentProps<'button'> & { route: string }> = 
   const navigate = useNavigate();
   return <button type="button" {...props} onClick={() => navigate(route)} />;
 };
+
+// antd rings the count in the page color: the sidebar's count has no ring (user, 2026-10-20).
+const BADGE_STYLES = { indicator: { boxShadow: 'none' } };
 
 interface SidebarButtonProps extends ButtonInterface {
   isCollapsed?: boolean;
@@ -43,11 +53,11 @@ const SidebarButton: React.FC<SidebarButtonProps> = memo(
       ? React.cloneElement(icon, {
           style: {
             color: iconColor,
-            fontSize: 16,
+            fontSize: FONT_SIZE.LG,
             width: 16,
             height: 16,
             flexShrink: 0,
-            transition: 'color 150ms ease',
+            transition: `color ${MOTION.FAST_MS}ms ${MOTION.EASE}`,
           },
         } as React.Attributes)
       : icon;
@@ -88,7 +98,7 @@ const SidebarButton: React.FC<SidebarButtonProps> = memo(
         }}
       >
         {badged && isCollapsed ? (
-          <Badge count={badge} size="small" overflowCount={9}>
+          <Badge count={badge} size="small" overflowCount={9} styles={BADGE_STYLES}>
             {coloredIcon}
           </Badge>
         ) : (
@@ -105,13 +115,15 @@ const SidebarButton: React.FC<SidebarButtonProps> = memo(
               fontWeight: SB.FONT_WEIGHT,
               fontSize: SB.FONT_SIZE,
               color: textColor,
-              transition: 'color 150ms ease',
+              transition: `color ${MOTION.FAST_MS}ms ${MOTION.EASE}`,
             }}
           >
             {text}
           </span>
         )}
-        {badged && !isCollapsed ? <Badge count={badge} overflowCount={99} /> : null}
+        {badged && !isCollapsed ? (
+          <Badge count={badge} overflowCount={99} styles={BADGE_STYLES} />
+        ) : null}
         {labeled ? (
           <span
             style={{
@@ -122,7 +134,7 @@ const SidebarButton: React.FC<SidebarButtonProps> = memo(
               fontSize: SB.RAIL.LABEL_FONT_SIZE,
               lineHeight: SB.RAIL.LABEL_LINE_HEIGHT,
               color: textColor,
-              transition: 'color 150ms ease',
+              transition: `color ${MOTION.FAST_MS}ms ${MOTION.EASE}`,
             }}
           >
             {railLabel}
@@ -133,7 +145,11 @@ const SidebarButton: React.FC<SidebarButtonProps> = memo(
 
     // Always wrapped: a collapse swaps the title instead of remounting every button.
     return (
-      <Tooltip title={isCollapsed ? text : undefined} placement="right" mouseEnterDelay={0.3}>
+      <Tooltip
+        title={isCollapsed ? text : undefined}
+        placement="right"
+        mouseEnterDelay={SIDEBAR_LAYOUT.TOOLTIP_DELAY_S}
+      >
         {button}
       </Tooltip>
     );

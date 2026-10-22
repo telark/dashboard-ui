@@ -24,7 +24,7 @@ const MEMORY_MULTIPLIERS: Record<string, number> = {
 
 const CPU_MILLICORES_PER_CORE = 1000;
 const MEMORY_UNIT_STEP = 1024;
-const MEMORY_UNITS = ['B', 'Ki', 'Mi', 'Gi', 'Ti'] as const;
+const MEMORY_UNITS = ['B', 'KiB', 'MiB', 'GiB', 'TiB'] as const;
 const DECIMAL_PLACES = 1;
 
 const matchQuantity = (raw: string | undefined | null): RegExpMatchArray | null => {
@@ -57,17 +57,37 @@ export const parseMemoryToBytes = (raw: string | undefined | null): number | nul
   return multiplier == null ? null : amount * multiplier;
 };
 
-export const formatMillicores = (millicores: number): string =>
-  millicores >= CPU_MILLICORES_PER_CORE
-    ? `${Number((millicores / CPU_MILLICORES_PER_CORE).toFixed(DECIMAL_PLACES))}`
-    : `${Math.round(millicores)}m`;
+const roundQuantity = (value: number): string => `${Number(value.toFixed(DECIMAL_PLACES))}`;
 
-export const formatBytes = (bytes: number): string => {
+const memoryUnitIndex = (bytes: number): number => {
   let value = bytes;
   let unitIndex = 0;
   while (value >= MEMORY_UNIT_STEP && unitIndex < MEMORY_UNITS.length - 1) {
     value /= MEMORY_UNIT_STEP;
     unitIndex += 1;
   }
-  return `${Number(value.toFixed(DECIMAL_PLACES))}${MEMORY_UNITS[unitIndex]}`;
+  return unitIndex;
+};
+
+export const formatMillicores = (millicores: number): string =>
+  millicores >= CPU_MILLICORES_PER_CORE
+    ? roundQuantity(millicores / CPU_MILLICORES_PER_CORE)
+    : `${Math.round(millicores)}m`;
+
+export const formatBytes = (bytes: number): string => {
+  const unitIndex = memoryUnitIndex(bytes);
+  return `${roundQuantity(bytes / MEMORY_UNIT_STEP ** unitIndex)} ${MEMORY_UNITS[unitIndex]}`;
+};
+
+/** Usage and its scale in the scale's unit, each with it, so one line never mixes units: "6m / 50m". */
+export const formatMillicoresPair = (used: number, scale: number): string =>
+  scale >= CPU_MILLICORES_PER_CORE
+    ? `${roundQuantity(used / CPU_MILLICORES_PER_CORE)} / ${roundQuantity(scale / CPU_MILLICORES_PER_CORE)}`
+    : `${Math.round(used)}m / ${Math.round(scale)}m`;
+
+export const formatBytesPair = (used: number, scale: number): string => {
+  const unitIndex = memoryUnitIndex(scale);
+  const divisor = MEMORY_UNIT_STEP ** unitIndex;
+  const unit = MEMORY_UNITS[unitIndex];
+  return `${roundQuantity(used / divisor)} ${unit} / ${roundQuantity(scale / divisor)} ${unit}`;
 };

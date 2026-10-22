@@ -80,19 +80,6 @@ export const SETTINGS_CONSTANTS = {
     DETAILS_COLUMN_GAP: 12,
     DETAILS_ROW_GAP: 2,
     GAP_BETWEEN_CARDS: 20,
-    /** Opt-in collapse control, rendered in the card's top-right corner. */
-    CARD_COLLAPSE: {
-      ICON_SIZE: 12,
-      BUTTON_SIZE: 22,
-      BORDER_RADIUS: 6,
-      TRANSITION: 'color 150ms ease',
-      EXPAND_LABEL: 'Expand section',
-      COLLAPSE_LABEL: 'Collapse section',
-      ANIMATION_DURATION_S: 0.22,
-      ANIMATION_EASE: [0.4, 0, 0.2, 1],
-      /** Chevron rotates rather than swapping glyphs, so the state change reads as one motion. */
-      ICON_ROTATION_DEG: 180,
-    },
   },
   TOOLBAR: {
     SAVE_KEY: 'save',

@@ -8,6 +8,7 @@ import {
   HEADER_LAYOUT,
   LIST_TOOLBAR,
   getCardGridColumns,
+  SPACING,
 } from '../../../../constants';
 import FullPageLoader from '../../../../components/display/views/FullPageLoader';
 import { LIST_PAGE } from '../../../../constants/shared/pages';
@@ -50,9 +51,11 @@ interface ApplicationsSuccessProps {
   allPageSelected: boolean;
   anySelectedSyncing: boolean;
   onClearSelection: () => void;
-  healthQuickFilter: 'all' | 'healthy' | 'degraded' | 'unhealthy';
+  healthQuickFilter: 'all' | 'healthy' | 'degraded' | 'unhealthy' | 'unknown';
   healthCounts: Record<ApplicationHealthQuickFilter, number>;
-  onHealthQuickFilterChange: (next: 'all' | 'healthy' | 'degraded' | 'unhealthy') => void;
+  onHealthQuickFilterChange: (
+    next: 'all' | 'healthy' | 'degraded' | 'unhealthy' | 'unknown',
+  ) => void;
   loading: boolean;
   error: string | null;
   onRetry: () => void;
@@ -244,10 +247,13 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
           loading={bulkResetLoading}
           title={APPLICATIONS_UI.TOOLBAR_BULK_RESET_CONFIRM_TITLE}
           message={
-            <div style={{ display: 'grid', rowGap: 8 }}>
+            <div style={{ display: 'grid', rowGap: SPACING.SM }}>
               <div>{APPLICATIONS_UI.TOOLBAR_BULK_RESET_CONFIRM_MESSAGE}</div>
               <div style={{ maxHeight: 180, overflowY: 'auto', textAlign: 'left' }}>
-                <ul style={{ margin: 0, paddingLeft: 18 }}>
+                <ul
+                  // 18: the list indent sits between LG and XL.
+                  style={{ margin: SPACING.NONE, paddingLeft: 18 }}
+                >
                   {selectedNames.map((name) => (
                     <li key={name}>{name}</li>
                   ))}

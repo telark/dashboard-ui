@@ -6,7 +6,7 @@ import {
   SafetyCertificateOutlined,
   WarningOutlined,
 } from '@ant-design/icons';
-import { STATUS_COLORS, TAG_CLASS, getPillColor } from '../../../../constants';
+import { DEFAULT_COLORS, STATUS_COLORS, TAG_CLASS, withAlpha } from '../../../../constants';
 import type { ApplicationProtection } from '../../models';
 import { APPLICATION_CARD } from '../../constants';
 
@@ -18,11 +18,23 @@ export const PROTECTION_ICONS: Record<ApplicationProtection, React.ReactNode> = 
   none: <WarningOutlined />,
 };
 
+// Every state is an outline in its own tone, since solid fills belong to the health pills.
+// The risk is the app's one tinted warning (user, 2026-10-20).
+const STATE_STYLE: Partial<Record<ApplicationProtection, React.CSSProperties>> = {
+  none: {
+    background: DEFAULT_COLORS.WARNING_TINT,
+    borderColor: withAlpha(DEFAULT_COLORS.WARNING, 0.5),
+  },
+};
+
 const ProtectionBadge: React.FC<{ protection: ApplicationProtection }> = ({ protection }) => (
   <Tag
-    color={getPillColor(STATUS_COLORS.APPLICATION_COVERAGE[protection])}
-    className={TAG_CLASS.ICON}
-    style={{ flexShrink: 0 }}
+    className={`${TAG_CLASS.ICON} ${TAG_CLASS.OUTLINE}`}
+    style={{
+      flexShrink: 0,
+      color: STATUS_COLORS.APPLICATION_COVERAGE[protection],
+      ...STATE_STYLE[protection],
+    }}
   >
     {PROTECTION_ICONS[protection]}
     <span>{APPLICATION_CARD.COVERAGE.BADGE[protection]}</span>

@@ -1,13 +1,14 @@
 import React, { memo, useMemo, useState } from 'react';
 import { ApartmentOutlined, ShareAltOutlined } from '@ant-design/icons';
 import { Segmented, Tooltip } from 'antd';
-import { DEFAULT_COLORS, EMPTY_VALUE } from '../../../../constants';
+import { DEFAULT_COLORS, EMPTY_VALUE, FONT_SIZE } from '../../../../constants';
 import SettingsCard from '../../../settings/components/SettingsCard';
 import MutedText from './MutedText';
 import ApplicationResourceGraph from './ApplicationResourceGraph';
 import ApplicationResourceTree from './ApplicationResourceTree';
 import { APPLICATIONS_UI } from '../../constants';
 import {
+  APPLICATION_RESOURCE_LIST_DEFAULT_BELOW,
   APPLICATION_RESOURCE_VIEW,
   type ApplicationResourceView,
 } from '../../constants/sectionLayout';
@@ -17,8 +18,10 @@ const MAX_SHOWN = 50;
 
 const ApplicationResourcesSection: React.FC<{ application: Application }> = memo(
   ({ application }) => {
-    const [resourceView, setResourceView] = useState<ApplicationResourceView>(
-      APPLICATION_RESOURCE_VIEW.GRAPH,
+    const [resourceView, setResourceView] = useState<ApplicationResourceView>(() =>
+      (application.resources?.length ?? 0) < APPLICATION_RESOURCE_LIST_DEFAULT_BELOW
+        ? APPLICATION_RESOURCE_VIEW.TREE
+        : APPLICATION_RESOURCE_VIEW.GRAPH,
     );
     const resources = useMemo(() => application.resources || [], [application.resources]);
 
@@ -35,7 +38,6 @@ const ApplicationResourcesSection: React.FC<{ application: Application }> = memo
 
     return (
       <SettingsCard
-        collapsible
         title={APPLICATIONS_UI.SECTIONS.RESOURCES.TITLE}
         description={APPLICATIONS_UI.SECTIONS.RESOURCES.DESCRIPTION}
         headerAction={
@@ -69,7 +71,10 @@ const ApplicationResourcesSection: React.FC<{ application: Application }> = memo
         {resources.length === 0 ? (
           <MutedText value={EMPTY_VALUE} />
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <div
+            // 10: the gap above the resource view sits between SM and MD.
+            style={{ display: 'flex', flexDirection: 'column', gap: 10 }}
+          >
             {resourceView === APPLICATION_RESOURCE_VIEW.GRAPH ? (
               <ApplicationResourceGraph
                 applicationName={application.name}
@@ -82,7 +87,7 @@ const ApplicationResourcesSection: React.FC<{ application: Application }> = memo
               />
             )}
             {resources.length > MAX_SHOWN ? (
-              <div style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
+              <div style={{ fontSize: FONT_SIZE.SM, color: DEFAULT_COLORS.TEXT_MUTED }}>
                 {APPLICATIONS_UI.SECTIONS.RESOURCES.SHOWING_FIRST} {MAX_SHOWN} of {resources.length}
                 .
               </div>

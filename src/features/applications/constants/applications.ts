@@ -23,12 +23,6 @@ export const APPLICATION_TRACKING_ANNOTATION_PREFIX =
 // evicts the least-recently-opened entry once it's full.
 export const SNAPSHOT_MANIFEST_CACHE_LIMIT = 20;
 
-export const APPLICATION_CONDITION_TYPES = {
-  PUBLISHED: 'Published',
-} as const;
-
-export const APPLICATION_CONDITION_STATUS_TRUE = 'True';
-
 // The API server's wording for a webhook refusal, the same marker discovery classifies by.
 export const ADMISSION_DENIED_MARKER = 'admission webhook';
 
@@ -67,7 +61,7 @@ export const APPLICATIONS_CONSTANTS = {
     NO_APPLICATIONS_DESCRIPTION:
       'Telark groups workloads into applications by their labels. Discovery runs on its own, and new applications appear here within a minute.',
     HELP_TITLE: 'Nothing showing up?',
-    HELP_LABELS: `Check that your workloads carry ${DISCOVERY_LABELS}.`,
+    HELP_LABELS_LEAD: 'Check that your workloads carry',
     HELP_EXCLUDED: 'Check that their namespace is not excluded in Settings, Discovery & Storage.',
     CHECK_AGAIN: 'Check again',
     OPEN_DISCOVERY_SETTINGS: 'Open discovery settings',
@@ -97,7 +91,7 @@ export const APPLICATION_DETAILS_CONSTANTS = {
   STATES: SHARED_DETAILS_CONSTANTS.STATES,
   MESSAGES: {
     ...SHARED_DETAILS_CONSTANTS.MESSAGES,
-    ERROR: 'Error fetching application details:',
+    ERROR: "Couldn't load this application",
     EMPTY: 'No details available for this application.',
   },
 } as const;

@@ -269,7 +269,7 @@ export type SyncStatusValue = 'syncing' | 'success' | 'failed';
 export interface ApplicationsLastErrorMap {
   [name: string]: string;
 }
-export type ApplicationHealthQuickFilter = 'all' | 'healthy' | 'degraded' | 'unhealthy';
+export type ApplicationHealthQuickFilter = 'all' | 'healthy' | 'degraded' | 'unhealthy' | 'unknown';
 export type ApplicationCoverageState = 'enforcing' | 'auditing' | 'upcoming';
 // The app's protection: the state of its strongest covering plan, or none.
 export type ApplicationProtection = ApplicationCoverageState | 'none';

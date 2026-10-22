@@ -4,7 +4,16 @@ import { DatabaseOutlined, DiffOutlined } from '@ant-design/icons';
 import { App as AntdApp, Empty, Typography } from 'antd';
 import type { AppDispatch, RootState } from '../../../../store';
 import { SlideOutPanel, ExpandPanelButton } from '../../../../components/display/panels/slide-out';
-import { DEFAULT_COLORS, EMPTY_CLASS, LIST_TOOLBAR } from '../../../../constants';
+import {
+  DEFAULT_COLORS,
+  EMPTY_CLASS,
+  HAIRLINE,
+  LIST_TOOLBAR,
+  SPACING,
+  FONT_SIZE,
+  LINE_HEIGHT,
+  RADIUS,
+} from '../../../../constants';
 import Toolbar from '../../../../components/display/toolbar/Toolbar';
 import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 import { APPLICATIONS_UI } from '../../constants/texts';
@@ -33,6 +42,8 @@ export interface ManageSnapshotsPanelProps {
   detailSnapshots: Application['snapshots'];
   rollbackDisabled?: boolean;
   rollbackDisabledReason?: RollbackDisabledReason;
+  /** Set by a History entry's "Roll back to this": opens that generation's confirm. */
+  rollbackRequest?: { generation: number } | null;
   onAfterRollback?: () => void;
 }
 
@@ -43,6 +54,7 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
   detailSnapshots,
   rollbackDisabled = false,
   rollbackDisabledReason = null,
+  rollbackRequest = null,
   onAfterRollback,
 }) => {
   const dispatch: AppDispatch = useDispatch();
@@ -87,6 +99,15 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
     () => mergeApplicationSnapshotSources(detailSnapshots, snapshots),
     [detailSnapshots, snapshots],
   );
+
+  const [seenRollbackRequest, setSeenRollbackRequest] = useState(rollbackRequest);
+  if (rollbackRequest !== seenRollbackRequest) {
+    setSeenRollbackRequest(rollbackRequest);
+    const requested = mergedSnapshots.find(
+      (s) => s.generation === rollbackRequest?.generation && !s.unavailable,
+    );
+    if (requested) setRollbackTarget(requested);
+  }
 
   const manifestState = activeManifestKey ? snapshotManifests[activeManifestKey] : undefined;
 
@@ -313,7 +334,7 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
       width={expanded ? PANEL_WIDTH_EXPANDED : PANEL_WIDTH}
       contentOnly
       headerExtra={
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: SPACING.SM }}>
           <Toolbar config={headerToolbarConfig} />
           <ExpandPanelButton expanded={expanded} onToggle={() => setExpanded((p) => !p)} />
         </div>
@@ -324,9 +345,9 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
           {manifestViewOpen || compareViewOpen ? null : (
             <p
               style={{
-                margin: '0 0 12px',
-                fontSize: 13,
-                lineHeight: 1.5,
+                margin: `0 0 ${SPACING.MD}px`,
+                fontSize: FONT_SIZE.MD,
+                lineHeight: LINE_HEIGHT.BASE,
                 color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
               }}
             >
@@ -345,14 +366,17 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
               onRetry={fetchComparePair}
             />
           ) : snapshotsLoading ? (
-            <div style={{ display: 'grid', rowGap: 10 }}>
+            <div
+              // 10: matches the snapshot list's row gap, between SM and MD.
+              style={{ display: 'grid', rowGap: 10 }}
+            >
               {[0, 1, 2].map((i) => (
                 <div
                   key={i}
                   style={{
                     height: 44,
-                    borderRadius: 8,
-                    border: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER}`,
+                    borderRadius: RADIUS.MD,
+                    border: HAIRLINE.SURFACE_BORDER,
                     background: DEFAULT_COLORS.SURFACE_HOVER,
                   }}
                 />
@@ -360,7 +384,9 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
             </div>
           ) : mergedSnapshots.length === 0 ? (
             snapshotsError ? (
-              <div style={{ fontSize: 13, color: DEFAULT_COLORS.DANGER }}>{snapshotsError}</div>
+              <div style={{ fontSize: FONT_SIZE.MD, color: DEFAULT_COLORS.DANGER }}>
+                {snapshotsError}
+              </div>
             ) : (
               <Empty
                 className={EMPTY_CLASS.PANEL}

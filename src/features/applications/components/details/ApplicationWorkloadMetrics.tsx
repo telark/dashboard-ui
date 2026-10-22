@@ -1,14 +1,25 @@
 import React, { memo, useState } from 'react';
 import { DownOutlined, RightOutlined } from '@ant-design/icons';
-import { Pagination, Tag, Tooltip } from 'antd';
-import { DEFAULT_COLORS, SECTION_LAYOUT, TAG_CLASS } from '../../../../constants';
+import { Pagination, Tooltip } from 'antd';
+import {
+  DEFAULT_COLORS,
+  ROW_ACTION_CLASS,
+  SECTION_LAYOUT,
+  TIME_FORMATS,
+  FONT_WEIGHT,
+  SPACING,
+  MOTION,
+} from '../../../../constants';
+import { CardTagList } from '../../../../components/display/card';
 import { PAGINATION_DEFAULTS } from '../../../../components/display/table/constants';
 import TimeAgo from '../../../../components/display/time/TimeAgo';
 import { APPLICATIONS_UI } from '../../constants';
 import { APPLICATION_WORKLOAD_METRICS } from '../../constants/sectionLayout';
 import {
   formatBytes,
+  formatBytesPair,
   formatMillicores,
+  formatMillicoresPair,
   parseCpuToMillicores,
   parseMemoryToBytes,
 } from '../../utils/k8sQuantity';
@@ -29,7 +40,7 @@ const UsageValue: React.FC<{ cpu: string; memory: string; strong?: boolean }> = 
     style={{
       flexShrink: 0,
       fontSize: M.LABEL_FONT_SIZE_PX,
-      fontWeight: strong ? 700 : 500,
+      fontWeight: strong ? FONT_WEIGHT.BOLD : FONT_WEIGHT.MEDIUM,
       color: strong ? DEFAULT_COLORS.TEXT_PRIMARY : DEFAULT_COLORS.TEXT_MUTED,
       whiteSpace: 'nowrap',
     }}
@@ -46,11 +57,13 @@ const PodBlock: React.FC<{ instance: ApplicationWorkloadUsagePerInstance }> = ({
     <div style={{ display: 'grid', rowGap: M.DETAIL_ROW_GAP_PX }}>
       {/* Pod line: labeled, with its total called out as a sum of the containers below. */}
       <div style={{ display: 'flex', alignItems: 'center', gap: M.HEADER_GAP_PX, minWidth: 0 }}>
-        <Tag>{WM.POD_LABEL}</Tag>
+        <span style={{ fontSize: M.LABEL_FONT_SIZE_PX, color: DEFAULT_COLORS.TEXT_MUTED }}>
+          {WM.POD_LABEL}
+        </span>
         <span
           style={{
             fontSize: M.LABEL_FONT_SIZE_PX,
-            fontWeight: 700,
+            fontWeight: FONT_WEIGHT.BOLD,
             color: DEFAULT_COLORS.TEXT_PRIMARY,
             overflow: 'hidden',
             textOverflow: 'ellipsis',
@@ -62,10 +75,11 @@ const PodBlock: React.FC<{ instance: ApplicationWorkloadUsagePerInstance }> = ({
         <span style={{ flex: 1 }} />
         <Tooltip title={WM.POD_TOTAL_TOOLTIP}>
           <span
+            tabIndex={0}
             style={{
               display: 'inline-flex',
               alignItems: 'center',
-              gap: 6,
+              gap: SPACING.S6,
               cursor: 'help',
               flexShrink: 0,
             }}
@@ -79,9 +93,10 @@ const PodBlock: React.FC<{ instance: ApplicationWorkloadUsagePerInstance }> = ({
       </div>
 
       {hasContainers ? (
-        <div style={{ paddingLeft: M.CONTAINER_INDENT_PX, display: 'grid', rowGap: 2 }}>
+        <div style={{ paddingLeft: M.CONTAINER_INDENT_PX, display: 'grid', rowGap: SPACING.XXS }}>
           <button
             type="button"
+            className={ROW_ACTION_CLASS}
             onClick={() => setContainersOpen((prev) => !prev)}
             aria-expanded={containersOpen}
             style={{
@@ -89,8 +104,8 @@ const PodBlock: React.FC<{ instance: ApplicationWorkloadUsagePerInstance }> = ({
               cursor: 'pointer',
               display: 'inline-flex',
               alignItems: 'center',
-              gap: 6,
-              marginBottom: 2,
+              gap: SPACING.S6,
+              marginBottom: SPACING.XXS,
               fontSize: M.LABEL_FONT_SIZE_PX,
               color: DEFAULT_COLORS.TEXT_MUTED,
             }}
@@ -171,6 +186,22 @@ const InstanceDetail: React.FC<{ workload: ApplicationWorkloadUsage }> = ({ work
   );
 };
 
+// The QoS class is Kubernetes' eviction order: the tooltip says what it means here.
+const QosClass: React.FC<{ qos: string }> = ({ qos }) => {
+  const tooltip = WM.QOS_TOOLTIPS[qos];
+  if (!tooltip) return <>{qos}</>;
+  return (
+    <Tooltip title={tooltip}>
+      <span
+        tabIndex={0}
+        style={{ cursor: 'help', textDecoration: 'underline dotted', textUnderlineOffset: 3 }}
+      >
+        {qos}
+      </span>
+    </Tooltip>
+  );
+};
+
 const WorkloadRow: React.FC<{ workload: ApplicationWorkloadUsage }> = ({ workload }) => {
   const [expanded, setExpanded] = useState(false);
   const [hovered, setHovered] = useState(false);
@@ -189,7 +220,7 @@ const WorkloadRow: React.FC<{ workload: ApplicationWorkloadUsage }> = ({ workloa
         borderRadius: M.ROW_RADIUS_PX,
         border: SECTION_LAYOUT.SUBTLE_DIVIDER,
         background: hovered ? DEFAULT_COLORS.SURFACE_ELEVATED_HOVER : 'transparent',
-        transition: 'background 150ms ease',
+        transition: `background ${MOTION.FAST_MS}ms ${MOTION.EASE}`,
       }}
     >
       <div
@@ -204,30 +235,37 @@ const WorkloadRow: React.FC<{ workload: ApplicationWorkloadUsage }> = ({ workloa
         <span
           style={{
             fontSize: M.NAME_FONT_SIZE_PX,
-            fontWeight: 700,
+            fontWeight: FONT_WEIGHT.BOLD,
             color: DEFAULT_COLORS.TEXT_PRIMARY,
             minWidth: 0,
           }}
         >
           {workload.resourceName}
         </span>
-        <Tag>{workload.resourceKind}</Tag>
-        <Tag className={TAG_CLASS.AS_IS}>{workload.namespace}</Tag>
+        <CardTagList tags={[workload.namespace]} />
         <span style={{ fontSize: M.LABEL_FONT_SIZE_PX, color: DEFAULT_COLORS.TEXT_MUTED }}>
-          {replicas} {replicas === 1 ? WM.REPLICAS_SUFFIX.one : WM.REPLICAS_SUFFIX.other}
+          {workload.resourceKind} {WM.MID_DOT} {replicas}{' '}
+          {replicas === 1 ? WM.REPLICAS_SUFFIX.one : WM.REPLICAS_SUFFIX.other}
+          {usageAvailable && usage?.qos ? (
+            <>
+              {' '}
+              {WM.MID_DOT} <QosClass qos={usage.qos} />
+            </>
+          ) : null}
         </span>
-        {usageAvailable && usage?.qos ? <Tag>{usage.qos}</Tag> : null}
 
         <span style={{ flex: 1 }} />
 
         {usageAvailable && usage?.timestamp ? (
           <span style={{ fontSize: M.LABEL_FONT_SIZE_PX, color: DEFAULT_COLORS.TEXT_MUTED }}>
-            <TimeAgo date={usage.timestamp} />
+            {WM.SAMPLED}{' '}
+            <TimeAgo date={usage.timestamp} short formatString={TIME_FORMATS.DATE_TIME} />
           </span>
         ) : null}
         {hasInstances ? (
           <button
             type="button"
+            className={ROW_ACTION_CLASS}
             onClick={() => setExpanded((prev) => !prev)}
             aria-expanded={expanded}
             aria-label={WM.INSTANCES_TITLE}
@@ -253,6 +291,7 @@ const WorkloadRow: React.FC<{ workload: ApplicationWorkloadUsage }> = ({ workloa
             request={parseCpuToMillicores(baseline?.requests?.cpu)}
             limit={parseCpuToMillicores(baseline?.limits?.cpu)}
             format={formatMillicores}
+            formatPair={formatMillicoresPair}
             rawUsed={usage?.resources?.totalCpu ?? ''}
           />
           <WorkloadUsageMeter
@@ -261,6 +300,7 @@ const WorkloadRow: React.FC<{ workload: ApplicationWorkloadUsage }> = ({ workloa
             request={parseMemoryToBytes(baseline?.requests?.memory)}
             limit={parseMemoryToBytes(baseline?.limits?.memory)}
             format={formatBytes}
+            formatPair={formatBytesPair}
             rawUsed={usage?.resources?.totalMemory ?? ''}
           />
         </div>

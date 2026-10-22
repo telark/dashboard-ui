@@ -1,7 +1,16 @@
 import React, { memo, useState } from 'react';
 import { EyeOutlined, HistoryOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Tag, Tooltip } from 'antd';
-import { DEFAULT_COLORS, EMPTY_VALUE, LIST_TOOLBAR, TAG_CLASS } from '../../../../constants';
+import {
+  DEFAULT_COLORS,
+  EMPTY_VALUE,
+  LIST_TOOLBAR,
+  STATUS_COLORS,
+  TAG_CLASS,
+  getPillColor,
+  SPACING,
+  FONT_WEIGHT,
+} from '../../../../constants';
 import TimeAgo from '../../../../components/display/time/TimeAgo';
 import { formatTimeAgo } from '../../../../utils/shared/time';
 import { APPLICATIONS_UI } from '../../constants';
@@ -99,7 +108,7 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
           border: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
           borderRadius: R.RADIUS_PX,
           padding: R.PADDING,
-          marginBottom: showMarginBottom ? R.ROW_SPACING_PX : 0,
+          marginBottom: showMarginBottom ? R.ROW_SPACING_PX : SPACING.NONE,
           background: hovered ? DEFAULT_COLORS.SURFACE_HOVER : DEFAULT_COLORS.SURFACE_WHITE,
           transition: R.TRANSITION,
         }}
@@ -109,10 +118,11 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            gap: 12,
+            gap: SPACING.MD,
           }}
         >
           <div
+            // 10: the identity gap sits between SM and MD.
             style={{
               display: 'flex',
               alignItems: 'center',
@@ -134,13 +144,13 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
                 />
               </span>
             ) : null}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 0 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.XS, minWidth: 0 }}>
               {/* Generation is the identity of a snapshot, so it leads instead of
                   being one chip among three. */}
               <span
                 style={{
                   fontSize: R.TITLE_FONT_SIZE_PX,
-                  fontWeight: 700,
+                  fontWeight: FONT_WEIGHT.BOLD,
                   color: DEFAULT_COLORS.TEXT_ON_SURFACE,
                   whiteSpace: 'nowrap',
                 }}
@@ -157,7 +167,9 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
                   color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
                 }}
               >
-                <Tag>{`${APPLICATIONS_UI.SECTIONS.CHANGE_LOG.SEVERITY}: ${severityLabel}`}</Tag>
+                <Tag color={getPillColor(STATUS_COLORS.APPLICATION_CHANGE_SEVERITY[severityLabel])}>
+                  {`${APPLICATIONS_UI.SECTIONS.CHANGE_LOG.SEVERITY}: ${severityLabel}`}
+                </Tag>
                 {s.id ? (
                   <Tag className={TAG_CLASS.META}>
                     <span title={s.id} style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
@@ -186,13 +198,12 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: 6,
+              gap: SPACING.S6,
               flexShrink: 0,
             }}
           >
             <Tooltip title={manifestTooltip(canViewManifest, fileMissing)}>
               <Button
-                size="small"
                 type="text"
                 icon={<EyeOutlined />}
                 onClick={() => onViewManifest(s)}
@@ -210,7 +221,6 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
               )}
             >
               <Button
-                size="small"
                 type="text"
                 icon={<HistoryOutlined />}
                 onClick={() => onRollback?.(s)}

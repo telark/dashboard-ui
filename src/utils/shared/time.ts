@@ -1,5 +1,10 @@
 import { format, formatDistanceToNow, parse } from 'date-fns';
-import { TIME_FORMATS, TIME_TEXTS, TIME_ZONE } from '../../constants/shared/time';
+import {
+  TIME_AGO_SHORT_UNITS,
+  TIME_FORMATS,
+  TIME_TEXTS,
+  TIME_ZONE,
+} from '../../constants/shared/time';
 import { STORAGE_KEYS } from '../../constants/store/store';
 import { getCurrentUser } from '../../features/auth/utils/session/user';
 
@@ -142,6 +147,15 @@ export const formatDateTime = (
 export const formatTimeAgo = (value: DateInput | null | undefined): string => {
   const date = parseDate(value);
   return date ? formatDistanceToNow(date, { addSuffix: true }) : TIME_TEXTS.INVALID_DATE;
+};
+
+export const formatTimeAgoShort = (value: DateInput | null | undefined): string => {
+  const date = parseDate(value);
+  if (!date) return TIME_TEXTS.INVALID_DATE;
+  // A clock a little ahead of the server reads as now, never as a negative age.
+  const seconds = Math.max(0, (Date.now() - date.getTime()) / 1000);
+  const unit = TIME_AGO_SHORT_UNITS.find(([, size]) => seconds >= size);
+  return unit ? TIME_TEXTS.AGO_SHORT(Math.floor(seconds / unit[1]), unit[0]) : TIME_TEXTS.JUST_NOW;
 };
 
 export const toDateKey = (value: DateInput | null | undefined): string =>

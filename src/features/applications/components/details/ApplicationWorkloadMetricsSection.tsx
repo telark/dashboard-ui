@@ -1,5 +1,4 @@
 import React, { memo } from 'react';
-import { EMPTY_VALUE } from '../../../../constants';
 import SettingsCard from '../../../settings/components/SettingsCard';
 import MutedText from './MutedText';
 import ApplicationWorkloadMetrics from './ApplicationWorkloadMetrics';
@@ -11,12 +10,11 @@ const ApplicationWorkloadMetricsSection: React.FC<{ application: Application }> 
     const workloads = application.metrics?.workloads;
     return (
       <SettingsCard
-        collapsible
         title={APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS.TITLE}
         description={APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS.DESCRIPTION}
       >
         {!workloads?.length ? (
-          <MutedText value={EMPTY_VALUE} />
+          <MutedText value={APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS.NO_WORKLOADS} />
         ) : (
           <ApplicationWorkloadMetrics workloads={workloads} />
         )}

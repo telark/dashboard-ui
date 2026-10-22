@@ -1,10 +1,9 @@
 import React, { memo } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { DEFAULT_COLORS } from '../../../../constants';
+import { DEFAULT_COLORS, FONT_WEIGHT } from '../../../../constants';
 import TimeAgo from '../../../../components/display/time/TimeAgo';
 import { APPLICATIONS_UI } from '../../constants';
 import { APPLICATION_DETAILS_TOOLBAR } from '../../constants/sectionLayout';
-import { getApplicationHealthAccentColor } from '../../utils/healthVisual';
+import ApplicationHealthIndicator from '../display/ApplicationHealthIndicator';
 import type { Application } from '../../models';
 
 const T = APPLICATION_DETAILS_TOOLBAR;
@@ -16,89 +15,61 @@ const LABELS = APPLICATIONS_UI.SECTIONS.DETAILS_TOOLBAR;
 // reacts correctly to any width (a docked half-screen browser included).
 const META_SHRINK_PRIORITY = 100000;
 
-interface ApplicationDetailsIdentityProps {
-  application: Application;
-  /** True once the page header has scrolled away; the strip is redundant before that. */
-  visible: boolean;
-}
+const isStale = (date: string): boolean => Date.now() - new Date(date).getTime() > T.SYNC_STALE_MS;
 
 /**
  * Keeps the application's name, health and sync age visible in the sticky
- * toolbar once the page header has scrolled out of view. The meta text (health
- * status, sync age) is the first thing to give up space when it gets tight —
- * the dot already carries health — and disappears entirely before the name
- * loses any of its own width.
+ * strip once the page header has scrolled out of view. The meta (health, sync
+ * age) is the first thing to give up space when it gets tight, and disappears
+ * entirely before the name loses any of its own width.
  */
-const ApplicationDetailsIdentity: React.FC<ApplicationDetailsIdentityProps> = memo(
-  ({ application, visible }) => {
-    const healthStatus = application.health?.status || APPLICATIONS_UI.FALLBACKS.UNKNOWN;
+const ApplicationDetailsIdentity: React.FC<{ application: Application }> = memo(
+  ({ application }) => {
     const lastSyncedAt = application.lastForceSync?.completedAt;
 
     return (
-      <AnimatePresence initial={false}>
-        {visible ? (
-          <motion.div
-            key="identity"
-            initial={{ opacity: 0, y: -4 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -4 }}
-            transition={{ duration: T.REVEAL_DURATION_S, ease: 'easeOut' }}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: T.IDENTITY_GAP_PX,
-              minWidth: 0,
-            }}
-          >
-            <span
-              style={{
-                width: T.HEALTH_DOT_SIZE_PX,
-                height: T.HEALTH_DOT_SIZE_PX,
-                borderRadius: '50%',
-                background: getApplicationHealthAccentColor(application.health?.status),
-                flexShrink: 0,
-              }}
-            />
-            <span
-              style={{
-                fontSize: T.NAME_FONT_SIZE_PX,
-                fontWeight: 700,
-                color: DEFAULT_COLORS.TEXT_PRIMARY,
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-                // A flex item's default min-width is its content's, which for
-                // nowrap text is the full unwrapped width — so without this the
-                // name never actually shrinks and the ellipsis never engages.
-                minWidth: 0,
-                flexShrink: 1,
-              }}
-            >
-              {application.name}
+      <div style={{ display: 'flex', alignItems: 'center', gap: T.IDENTITY_GAP_PX, minWidth: 0 }}>
+        <span
+          style={{
+            fontSize: T.NAME_FONT_SIZE_PX,
+            fontWeight: FONT_WEIGHT.BOLD,
+            color: DEFAULT_COLORS.TEXT_PRIMARY,
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+            // A flex item's default min-width is its content's, which for
+            // nowrap text is the full unwrapped width — so without this the
+            // name never actually shrinks and the ellipsis never engages.
+            minWidth: 0,
+            flexShrink: 1,
+          }}
+        >
+          {application.displayName || application.name}
+        </span>
+        <span
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: T.IDENTITY_GAP_PX,
+            fontSize: T.META_FONT_SIZE_PX,
+            color: DEFAULT_COLORS.TEXT_MUTED,
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            minWidth: 0,
+            flexShrink: META_SHRINK_PRIORITY,
+          }}
+        >
+          <ApplicationHealthIndicator status={application.health?.status} />
+          <span>{LABELS.SEPARATOR}</span>
+          {lastSyncedAt ? (
+            <span style={isStale(lastSyncedAt) ? { color: DEFAULT_COLORS.WARNING } : undefined}>
+              {LABELS.SYNCED_PREFIX} <TimeAgo date={lastSyncedAt} short />
             </span>
-            <span
-              style={{
-                fontSize: T.META_FONT_SIZE_PX,
-                color: DEFAULT_COLORS.TEXT_MUTED,
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                minWidth: 0,
-                flexShrink: META_SHRINK_PRIORITY,
-              }}
-            >
-              {LABELS.SEPARATOR} {healthStatus} {LABELS.SEPARATOR}{' '}
-              {lastSyncedAt ? (
-                <>
-                  {LABELS.SYNCED_PREFIX} <TimeAgo date={lastSyncedAt} />
-                </>
-              ) : (
-                LABELS.NEVER_SYNCED
-              )}
-            </span>
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
+          ) : (
+            <span>{LABELS.NEVER_SYNCED}</span>
+          )}
+        </span>
+      </div>
     );
   },
 );
