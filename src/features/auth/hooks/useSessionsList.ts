@@ -5,7 +5,7 @@ import {
   deleteCurrentSession,
   deleteSessionByName,
 } from '../clients/session';
-import { getSessionToken, getCurrentSessionName } from '../utils/session/token';
+import { getCurrentSessionName, isSignedIn } from '../utils/session/token';
 import { getCurrentUser } from '../utils/session/user';
 import type { SessionDetails } from '../models/session';
 
@@ -20,16 +20,12 @@ export interface UseSessionsListResult {
   ) => Promise<void>;
 }
 
-const resolveSessionsFromToken = async (): Promise<SessionDetails[]> => {
-  const currentToken = getSessionToken();
-  if (!currentToken) return [];
+// When the list can't be read, at least this device's session, which the exporter answers with its name.
+const resolveCurrentSession = async (): Promise<SessionDetails[]> => {
+  if (!isSignedIn()) return [];
   try {
     const single = await getCurrentSession();
-    if (!single?.data) return [];
-    // The single-session response carries no metadata, so name it here — the
-    // rest of the UI addresses a session by its resource name.
-    const name = await getCurrentSessionName();
-    return [name ? { ...single.data, metadata: { name } } : single.data];
+    return single?.data ? [single.data] : [];
   } catch {
     return [];
   }
@@ -56,10 +52,10 @@ export const useSessionsList = (): UseSessionsListResult => {
       if (Array.isArray(items)) {
         setSessions(items);
       } else {
-        setSessions(await resolveSessionsFromToken());
+        setSessions(await resolveCurrentSession());
       }
     } catch {
-      const fallback = await resolveSessionsFromToken();
+      const fallback = await resolveCurrentSession();
       setSessions(fallback);
       if (fallback.length === 0) setError('Failed to load sessions.');
     } finally {
@@ -75,11 +71,11 @@ export const useSessionsList = (): UseSessionsListResult => {
       ? getSessionsList(userId)
           .then(async (response) => {
             const items = response?.data?.items;
-            const s = Array.isArray(items) ? items : await resolveSessionsFromToken();
+            const s = Array.isArray(items) ? items : await resolveCurrentSession();
             return { s, e: null };
           })
           .catch(async () => {
-            const s = await resolveSessionsFromToken();
+            const s = await resolveCurrentSession();
             return { s, e: s.length === 0 ? 'Failed to load sessions.' : null };
           })
       : Promise.resolve({ s: [] as SessionDetails[], e: 'Failed to load sessions.' });

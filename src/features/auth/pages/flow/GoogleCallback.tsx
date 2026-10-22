@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { App as AntdApp } from 'antd';
-import { oidcGoogleCallback } from '../../clients';
-import { hasSessionToken, setSessionToken } from '../../utils/session/token';
+import { logout, oidcGoogleCallback } from '../../clients';
+import { isSignedIn } from '../../utils/session/token';
 import { consumeOAuthState } from '../../utils/flow/google';
 import { getLoginRefusalMessage } from '../../utils/shared/errors';
 import { setCurrentUser } from '../../utils/session/user';
@@ -31,7 +31,7 @@ const GoogleCallback: React.FC = () => {
     const expectedState = consumeOAuthState();
 
     // Never swap an existing session for one delivered by a link.
-    if (hasSessionToken()) {
+    if (isSignedIn()) {
       navigate(APP_ROUTES.HOME, { replace: true });
       return;
     }
@@ -45,16 +45,13 @@ const GoogleCallback: React.FC = () => {
     const completeLogin = async (): Promise<void> => {
       const { browser, device, os, userAgent } = getClientMetadata();
       const res = await oidcGoogleCallback({ idToken, browser, device, os, userAgent });
-      const wrapped = res as unknown as {
-        data: { sessionToken: string; email: string; user?: User };
-      };
-      const token = wrapped?.data?.sessionToken;
-      if (!token) {
+      // The session is in auth's cookie; the stored user is what "signed in" means here.
+      const wrapped = res as unknown as { data: { email: string; user?: User } };
+      const user = wrapped?.data?.user;
+      if (!user || !setCurrentUser(user)) {
+        // Auth set the cookie already: end that session rather than leave it behind.
+        logout().catch(() => undefined);
         throw new Error(LOGIN_CONSTANTS.OIDC.CALLBACK_ERROR);
-      }
-      setSessionToken(token);
-      if (wrapped.data.user) {
-        setCurrentUser(wrapped.data.user);
       }
     };
 

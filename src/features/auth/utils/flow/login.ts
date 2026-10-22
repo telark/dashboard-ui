@@ -1,11 +1,11 @@
 import { loginStart, loginFinish } from '../../clients/login';
+import { logout } from '../../clients/logout';
 import { authenticateWithPasskey } from '../webauthn/core';
 import {
   extractLoginOptions,
   extractCredentialIds,
   hasBackendPasskeys,
 } from '../webauthn/extraction';
-import { setSessionToken } from '../session/token';
 import { setCurrentUser } from '../session/user';
 import { fetchMyPermissionsThunk } from '../../store/thunks/fetchThunks';
 import store from '../../../../store';
@@ -100,16 +100,11 @@ export const performLogin = async (
       }),
     );
 
-    try {
-      setSessionToken(loginFinishResponse.sessionToken);
-      if (loginFinishResponse.user) {
-        setCurrentUser(loginFinishResponse.user);
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        throw new Error(error.message, { cause: error });
-      }
-      throw error;
+    // The session is in auth's cookie; the stored user is what "signed in" means here.
+    if (!loginFinishResponse.user || !setCurrentUser(loginFinishResponse.user)) {
+      // Auth set the cookie already: end that session rather than leave it behind.
+      logout().catch(() => undefined);
+      throw new Error(LOGIN_CONSTANTS.SESSION.SET_FAILED);
     }
 
     // Permissions before entering the app: the sidebar then renders its gated entries at once

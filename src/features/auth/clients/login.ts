@@ -10,7 +10,6 @@ import type {
 import type { User } from '../../access-and-permissions/users/models';
 
 export interface OIDCCallbackResponse {
-  sessionToken: string;
   email: string;
   user?: User;
 }

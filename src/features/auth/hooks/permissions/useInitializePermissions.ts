@@ -19,7 +19,7 @@ export const stopPermissionsPolling = (): void => {
 };
 
 // Runs between rehydration and the first render, so data left by another user (a session that
-// ended without logout) is never shown. A missing stored user is restored by the avatar menu instead.
+// ended without logout) is never shown. No stored user means signed out: only sign-in renders.
 export const dropForeignPermissions = async (): Promise<void> => {
   const { userID } = store.getState().permissions;
   const storedUserID = getCurrentUser()?.id;

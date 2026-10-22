@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
+import { App as AntdApp } from 'antd';
 import { useNavigate, type NavigateFunction } from 'react-router-dom';
-import { getSessionToken, removeSessionToken, removeCurrentUser } from '../../utils';
-import { deleteCurrentSession } from '../../clients';
+import { isSignedIn, removeCurrentUser } from '../../utils';
+import { logout } from '../../clients/logout';
 import { purgeLocalUserData } from '../../utils/session/cleanup';
-import { AUTH_CONSTANTS } from '../../constants/messages';
+import { AUTH_CONSTANTS, AUTH_ERROR_MESSAGES } from '../../constants/messages';
 import { APP_ROUTES } from '../../../../constants';
 import { BaseModal } from '../../../../components/display/modal';
 import { ActionButtons } from '../../../../components/display/buttons';
@@ -12,33 +13,21 @@ import logger from '../../../../logging';
 
 interface SessionExpiredModalProps {
   open: boolean;
+  /** The session routes refused two session cookies: the text says how to clear them. */
+  duplicateCookie: boolean;
   onClose?: () => void;
 }
 
-const deleteServerSession = async (): Promise<void> => {
+// Auth logout, not the exporter's session delete: only auth can clear the cookie. False when it failed.
+const endServerSession = async (): Promise<boolean> => {
   try {
-    const deleteResponse = await deleteCurrentSession();
-    if (deleteResponse.status !== 200 && isDevelopment()) {
-      logger.warn(
-        AUTH_CONSTANTS.SESSION.EXPIRATION.LOGS.DELETE_NON_200_STATUS,
-        deleteResponse.status,
-      );
-    }
+    await logout();
+    return true;
   } catch (error) {
     if (isDevelopment()) {
       logger.error(AUTH_CONSTANTS.SESSION.EXPIRATION.LOGS.DELETE_FAILED, error);
     }
-  }
-};
-
-const cleanupLocalStorage = (): void => {
-  try {
-    removeSessionToken();
-    removeCurrentUser();
-  } catch (error) {
-    if (isDevelopment()) {
-      logger.error(AUTH_CONSTANTS.SESSION.EXPIRATION.LOGS.LOCAL_CLEANUP_ERROR, error);
-    }
+    return false;
   }
 };
 
@@ -49,18 +38,25 @@ const navigateToLogin = (navigate: NavigateFunction, onClose?: () => void): void
   navigate(APP_ROUTES.LOGIN);
 };
 
-const SessionExpiredModal: React.FC<SessionExpiredModalProps> = ({ open, onClose }) => {
+const SessionExpiredModal: React.FC<SessionExpiredModalProps> = ({
+  open,
+  duplicateCookie,
+  onClose,
+}) => {
   const navigate = useNavigate();
+  const { message } = AntdApp.useApp();
   const [loading, setLoading] = useState(false);
 
   const handleGoToLogin = async () => {
     setLoading(true);
     try {
-      if (getSessionToken()) {
-        await deleteServerSession();
+      // The session stays until auth answers, so the modal stays too, for another try.
+      if (isSignedIn() && !(await endServerSession())) {
+        message.error(AUTH_ERROR_MESSAGES.LOGOUT_FAILED);
+        return;
       }
 
-      cleanupLocalStorage();
+      removeCurrentUser();
       await purgeLocalUserData();
       navigateToLogin(navigate, onClose);
     } catch (error) {
@@ -79,7 +75,11 @@ const SessionExpiredModal: React.FC<SessionExpiredModalProps> = ({ open, onClose
       onCancel={handleGoToLogin}
       closable={false}
       title={AUTH_CONSTANTS.SESSION.EXPIRATION.MODAL.TITLE}
-      description={AUTH_CONSTANTS.SESSION.EXPIRATION.MODAL.MESSAGE}
+      description={
+        duplicateCookie
+          ? AUTH_CONSTANTS.SESSION.EXPIRATION.MODAL.DUPLICATE_COOKIE_MESSAGE
+          : AUTH_CONSTANTS.SESSION.EXPIRATION.MODAL.MESSAGE
+      }
       footer={
         <ActionButtons
           confirmText={AUTH_CONSTANTS.SESSION.EXPIRATION.MODAL.BUTTON_TEXT}

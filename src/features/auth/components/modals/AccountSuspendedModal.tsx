@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { App as AntdApp } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { handleUserLogout } from '../../utils/logout/logout';
 import { AUTH_CONSTANTS } from '../../constants/messages';
@@ -15,13 +16,14 @@ const { TITLE, MESSAGE, BUTTON_TEXT } = AUTH_CONSTANTS.SESSION.SUSPENDED.MODAL;
 // Signs out through auth's logout: the exporter refuses a suspended account's own session delete.
 const AccountSuspendedModal: React.FC<AccountSuspendedModalProps> = ({ open, onClose }) => {
   const navigate = useNavigate();
+  const { message } = AntdApp.useApp();
   const [loading, setLoading] = useState(false);
 
   const handleSignOut = async () => {
     setLoading(true);
-    await handleUserLogout(navigate);
+    const signedOut = await handleUserLogout(navigate, message);
     setLoading(false);
-    onClose();
+    if (signedOut) onClose();
   };
 
   return (

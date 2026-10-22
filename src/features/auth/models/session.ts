@@ -17,7 +17,7 @@ export interface SessionDetails {
   userId: string;
   ipAddress?: string;
   deviceMetadata?: DeviceMetadata;
-  // Absent on the single-session response, which returns the spec alone.
+  // GET self carries it too since 0.2.0, so only an older exporter leaves it off that answer.
   metadata?: SessionResourceMetadata;
 }
 
@@ -39,6 +39,7 @@ export interface SessionValidationResult {
   isExpired: boolean;
   sessionDetails?: SessionDetails;
   error?: string;
+  duplicateCookie?: boolean;
 }
 
 export interface ListSessionsResponse {

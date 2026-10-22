@@ -5,8 +5,8 @@ import { PersistGate } from 'redux-persist/integration/react';
 import store, { persistor } from './store';
 import App from './App';
 import FullPageLoader from './components/display/views/FullPageLoader';
-import { AppearanceProvider } from './features/settings/sections/appearance';
 import { dropForeignPermissions } from './features/auth/hooks';
+import { dropLegacySessionToken } from './features/auth/utils';
 import { registerHealthInterceptors, selectServiceHealth } from './api';
 import { applyColorVariables, applyLayoutVariables } from './constants';
 import './styles/index.css';
@@ -14,6 +14,7 @@ import './styles/antd.css';
 
 applyColorVariables();
 applyLayoutVariables();
+dropLegacySessionToken();
 
 registerHealthInterceptors({
   getServiceHealth: (name) => selectServiceHealth(store.getState(), name),
@@ -34,9 +35,7 @@ startTransition(() => {
           persistor={persistor}
           onBeforeLift={dropForeignPermissions}
         >
-          <AppearanceProvider>
-            <App />
-          </AppearanceProvider>
+          <App />
         </PersistGate>
       </Provider>
     </StrictMode>,

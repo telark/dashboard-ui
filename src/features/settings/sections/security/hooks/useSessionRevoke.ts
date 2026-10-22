@@ -9,8 +9,8 @@ import type { SessionDetails } from '../../../../../features/auth/models/session
 
 const { LABELS } = SECURITY_SECTION_CONSTANTS;
 
-// A listed session is addressed by its resource name; the current-token
-// fallback carries none and can only ever be this device.
+// A listed session is addressed by its resource name. Only the GET self fallback
+// of an exporter older than 0.2.0 carries none, and it can only ever be this device.
 const revokesThisDevice = (
   sessionName: string | null,
   currentSessionName: string | null,
@@ -73,10 +73,10 @@ export const useSessionRevoke = ({
     setSessionToRevoke(null);
   }, []);
 
-  // crypto.subtle only exists in a secure context, so the current session name
-  // can be unknown. The revoked device may then have been this one, and only
-  // the server can say whether this session survived. isExpired, not isValid:
-  // a transient network failure must not sign the user out.
+  // The current session's name can be unknown (its lookup failed). The revoked
+  // device may then have been this one, and only the server can say whether
+  // this session survived. isExpired, not isValid: a transient network failure
+  // must not sign the user out.
   const reportRevokeOutcome = useCallback(async () => {
     if (currentSessionName === null && (await validateSession()).isExpired) {
       await handleUserLogout(navigate, message);
