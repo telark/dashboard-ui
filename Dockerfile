@@ -10,7 +10,7 @@ COPY . .
 RUN npm run build:cluster
 
 # Stage 2: Serve via NGINX
-FROM nginx:1.31.6-alpine3.24-slim
+FROM nginx:1.31.7-alpine3.24-slim
 
 LABEL org.opencontainers.image.title="telark-ui" \
       org.opencontainers.image.licenses="Elastic-2.0" \
