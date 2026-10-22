@@ -6,11 +6,12 @@ import RowList from '../display/RowList';
 interface ListBoxProps extends Omit<DashboardBoxProps, 'children'> {
   rows: DashboardRowItem[];
   emptyText: string;
+  emptyIcon?: React.ComponentType;
 }
 
-const ListBox: React.FC<ListBoxProps> = memo(({ rows, emptyText, ...boxProps }) => (
-  <DashboardBox count={rows.length} {...boxProps}>
-    <RowList rows={rows} emptyText={emptyText} />
+const ListBox: React.FC<ListBoxProps> = memo(({ rows, emptyText, emptyIcon, ...boxProps }) => (
+  <DashboardBox value={rows.length > 0 ? rows.length : undefined} {...boxProps}>
+    <RowList rows={rows} emptyText={emptyText} emptyIcon={emptyIcon} />
   </DashboardBox>
 ));
 

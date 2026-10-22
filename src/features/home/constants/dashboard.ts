@@ -7,7 +7,7 @@ import {
   AiOutlineWarning,
 } from 'react-icons/ai';
 import { SiKubernetes } from 'react-icons/si';
-import { DEFAULT_COLORS, Icons } from '../../../constants';
+import { CARD_LAYOUT, DEFAULT_COLORS, Icons } from '../../../constants';
 import { ALL_EXCLUDED, DISCOVERY_LABELS } from '../../applications';
 import type { PlanEventKey, SeverityKey } from '../models';
 
@@ -19,9 +19,7 @@ export const HOME_DASHBOARD_TEXTS = {
   META_SEPARATOR: ' · ',
   CLUSTER: {
     TITLE: 'Cluster',
-    VERSION_LABEL: 'Version',
-    DISTRIBUTION_LABEL: 'Distribution',
-    FULL_LABEL: 'Full Version',
+    FULL_LABEL: 'Full version',
     VANILLA: 'Vanilla',
   },
   APPLICATIONS: {
@@ -41,7 +39,7 @@ export const HOME_DASHBOARD_TEXTS = {
     FAILED: 'Failed',
   },
   STORAGE: {
-    TITLE: 'Snapshot Storage',
+    TITLE: 'Snapshot storage',
     USED: 'used',
     SNAPSHOTS: 'snapshots',
     OF: 'of',
@@ -83,7 +81,7 @@ export const HOME_DASHBOARD_TEXTS = {
     },
   },
   RECENT_CHANGES: {
-    TITLE: 'Recently Changed',
+    TITLE: 'Recently changed',
     EMPTY: 'No changes detected yet.',
     CHANGE: 'change',
     CHANGES: 'changes',
@@ -94,8 +92,9 @@ export const HOME_DASHBOARD_TEXTS = {
 
 export const HOME_CHART_TEXTS = {
   AXIS_DATE_FORMAT: 'MMM d',
+  RANGE: 'Last 30 days',
   PLAN_ACTIVITY: {
-    TITLE: 'Plan Activity · Last 30 Days',
+    TITLE: 'Plan activity',
     EMPTY: 'No plans created, started, or terminated in the last 30 days.',
     EVENTS: {
       created: 'Created',
@@ -104,7 +103,7 @@ export const HOME_CHART_TEXTS = {
     } as Record<PlanEventKey, string>,
   },
   CHANGE_ACTIVITY: {
-    TITLE: 'Change Activity · Last 30 Days',
+    TITLE: 'Change activity',
     EMPTY: 'No changes in the last 30 days.',
     SEVERITIES: {
       critical: 'Critical',
@@ -130,20 +129,23 @@ export const HOME_BOX_ICONS = {
 } as const;
 
 export const HOME_DASHBOARD_LAYOUT = {
-  GRID_GAP_PX: 16,
-  // Every box shares one track width and one row height so the grid reads as even rows.
+  GRID_GAP_PX: CARD_LAYOUT.GRID_GAP_PX,
+  // Every box in a row shares one track width and the row's height, set by its tallest box.
   BOX_MIN_WIDTH_PX: 250,
-  BOX_HEIGHT_PX: 156,
-  BOX_PADDING_PX: 12,
-  BOX_RADIUS_PX: 8,
-  BOX_HEADER_GAP_PX: 8,
-  BOX_TITLE_FONT_SIZE_PX: 15,
+  // About a loaded body (a breakdown, a short list, an empty state), so a box barely moves when it loads.
+  BOX_BODY_MIN_HEIGHT_PX: 64,
+  // Smaller than the SECTION empty state's 32px: a box is a small surface.
+  EMPTY_ICON_SIZE_PX: 24,
+  // The View all link's line (14px at antd's 1.5714), so titles sit level with or without it.
+  BOX_HEADER_MIN_HEIGHT_PX: 22,
   BOX_ICON_SIZE_PX: 16,
   BOX_ICON_GAP_PX: 6,
   BIG_VALUE_FONT_SIZE_PX: 28,
   BIG_VALUE_CAPTION_GAP_PX: 6,
   BREAKDOWN_GAP_PX: 12,
   ROW_PADDING: '4px 6px',
+  // The hover runs into the box padding while the dot sits under the header icon.
+  ROW_BLEED_PX: -6,
   ROW_RADIUS_PX: 8,
   ROW_GAP_PX: 10,
   ROW_TITLE_FONT_SIZE_PX: 13,

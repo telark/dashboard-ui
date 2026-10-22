@@ -13,8 +13,15 @@ const CountBreakdown: React.FC<{ items: BreakdownItem[] }> = ({ items }) => (
         key={item.label}
         style={{ ...S.MUTED_TEXT, display: 'inline-flex', alignItems: 'center', gap: SPACING.S6 }}
       >
-        <StatusDot color={item.color} />
-        <span style={{ color: DEFAULT_COLORS.TEXT_PRIMARY, fontWeight: FONT_WEIGHT.SEMIBOLD }}>
+        {/* A zero keeps its place but not its color, so only what is there draws the eye. */}
+        <StatusDot color={item.count > 0 ? item.color : DEFAULT_COLORS.ICON_SECONDARY} />
+        <span
+          style={
+            item.count > 0
+              ? { color: DEFAULT_COLORS.TEXT_PRIMARY, fontWeight: FONT_WEIGHT.SEMIBOLD }
+              : undefined
+          }
+        >
           {item.count}
         </span>
         {item.label}

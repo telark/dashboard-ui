@@ -51,16 +51,17 @@ import {
   SummaryBox,
 } from '../components';
 import ActivityChart from '../components/charts/ActivityChart';
+import { SuccessCheck } from '../components/display/BoxEmpty';
 import type { NoAccess } from '../models';
 
-// Equal-width columns and fixed-height rows: every box is the same size wherever it lands.
-// min() keeps a single column from overflowing on screens narrower than one track.
-const gridStyle = (rowHeightPx: number): React.CSSProperties => ({
+// Equal-width columns; each row is as tall as its tallest box, so that box ends one padding below
+// its content at any width. auto-fit lets a row's boxes fill the width, so both rows end flush.
+// min() keeps one column inside screens narrower than a track.
+const ROW_STYLE: React.CSSProperties = {
   display: 'grid',
-  gridTemplateColumns: `repeat(auto-fill, minmax(min(${L.BOX_MIN_WIDTH_PX}px, 100%), 1fr))`,
-  gridAutoRows: rowHeightPx,
+  gridTemplateColumns: `repeat(auto-fit, minmax(min(${L.BOX_MIN_WIDTH_PX}px, 100%), 1fr))`,
   gap: L.GRID_GAP_PX,
-});
+};
 
 const { view: viewApplications, viewSnapshots } = ACTION_PERMISSIONS.applications;
 const { view: viewPlans } = ACTION_PERMISSIONS.protectionPlans;
@@ -153,7 +154,7 @@ const Dashboard: React.FC = () => {
             onDiscoveryCycleComplete={reloadApplications}
           />
         )}
-        <div style={gridStyle(L.BOX_HEIGHT_PX)}>
+        <div style={ROW_STYLE}>
           <ClusterBox
             cluster={parseClusterVersion(clusterVersion)}
             loading={globalConfigState.loading && !clusterVersion}
@@ -180,21 +181,25 @@ const Dashboard: React.FC = () => {
             storage={storage}
             noAccess={canViewSnapshots ? undefined : SNAPSHOTS_NO_ACCESS}
           />
+        </div>
+        <div style={ROW_STYLE}>
+          <AttentionBox page={attention.page} {...attentionState} />
           <ListBox
             title={T.PLANS_ATTENTION.TITLE}
             icon={HOME_BOX_ICONS.PLANS_ATTENTION}
             viewAllTo={APP_ROUTES.PROTECTION_PLANS}
             rows={plansView.attentionRows}
             emptyText={plans.length === 0 ? T.PLANS_ATTENTION.NO_PLANS : T.PLANS_ATTENTION.EMPTY}
+            emptyIcon={plans.length === 0 ? HOME_BOX_ICONS.PLANS : SuccessCheck}
             {...plansView.state}
           />
-          <AttentionBox page={attention.page} {...attentionState} />
           <ListBox
             title={T.RECENT_CHANGES.TITLE}
             icon={HOME_BOX_ICONS.RECENT_CHANGES}
             viewAllTo={APP_ROUTES.APPLICATIONS}
             rows={appsView.recentRows}
             emptyText={T.RECENT_CHANGES.EMPTY}
+            emptyIcon={HOME_BOX_ICONS.RECENT_CHANGES}
             {...appsView.state}
           />
         </div>
@@ -203,6 +208,7 @@ const Dashboard: React.FC = () => {
             <ChartBox
               title={CT.CHANGE_ACTIVITY.TITLE}
               icon={HOME_BOX_ICONS.ACTIVITY}
+              meta={CT.RANGE}
               isEmpty={appsView.activity.data.length === 0}
               emptyText={CT.CHANGE_ACTIVITY.EMPTY}
               {...appsView.state}
@@ -212,6 +218,7 @@ const Dashboard: React.FC = () => {
             <ChartBox
               title={CT.PLAN_ACTIVITY.TITLE}
               icon={HOME_BOX_ICONS.ACTIVITY}
+              meta={CT.RANGE}
               isEmpty={plansView.activity.data.length === 0}
               emptyText={CT.PLAN_ACTIVITY.EMPTY}
               {...plansView.state}

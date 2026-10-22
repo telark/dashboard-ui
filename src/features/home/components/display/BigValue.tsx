@@ -16,6 +16,7 @@ const BigValue: React.FC<BigValueProps> = ({ value, caption }) => (
         fontWeight: FONT_WEIGHT.BOLD,
         color: DEFAULT_COLORS.TEXT_PRIMARY,
         lineHeight: 1.1,
+        fontVariantNumeric: 'tabular-nums',
       }}
     >
       {value}

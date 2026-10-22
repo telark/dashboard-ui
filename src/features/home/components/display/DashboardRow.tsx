@@ -49,8 +49,9 @@ const DashboardRow: React.FC<DashboardRowProps> = memo(
         style={{
           display: 'flex',
           alignItems: 'center',
-          gap: L.ROW_GAP_PX,
+          gap: L.BOX_ICON_GAP_PX,
           padding: L.ROW_PADDING,
+          marginInline: L.ROW_BLEED_PX,
           borderRadius: L.ROW_RADIUS_PX,
           cursor: interactive ? 'pointer' : 'default',
           background:
@@ -58,7 +59,12 @@ const DashboardRow: React.FC<DashboardRowProps> = memo(
           transition: `background 120ms ${MOTION.EASE}`,
         }}
       >
-        <StatusDot color={dotColor} />
+        {/* As wide as the header icon, so the dot sits under it and the text under the title. */}
+        <span
+          style={{ display: 'inline-flex', justifyContent: 'center', width: L.BOX_ICON_SIZE_PX }}
+        >
+          <StatusDot color={dotColor} />
+        </span>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div
             title={inline ? title : undefined}
