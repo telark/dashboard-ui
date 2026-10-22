@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { Tooltip } from 'antd';
-import { DEFAULT_COLORS, EMPTY_VALUE, MOTION } from '../../../../constants';
+import { DEFAULT_COLORS, EMPTY_VALUE, MOTION, SPACING } from '../../../../constants';
 import { APPLICATIONS_UI } from '../../constants';
 import { APPLICATION_WORKLOAD_METRICS } from '../../constants/sectionLayout';
 
@@ -67,70 +67,92 @@ const WorkloadUsageMeter: React.FC<WorkloadUsageMeterProps> = memo(
         ? WM.OF_LIMIT_TOOLTIP(format(limit))
         : WM.OF_REQUEST_TOOLTIP(format(scale ?? 0));
 
-    return (
-      <div style={{ display: 'flex', alignItems: 'center', gap: M.METER_GAP_PX, minWidth: 0 }}>
-        <span
+    const labelEl = (
+      <span
+        style={{
+          width: M.METER_LABEL_WIDTH_PX,
+          flexShrink: 0,
+          fontSize: M.LABEL_FONT_SIZE_PX,
+          color: DEFAULT_COLORS.TEXT_MUTED,
+        }}
+      >
+        {label}
+      </span>
+    );
+
+    // Too narrow for the value beside the bar, it wraps under the bar's end instead of overflowing.
+    return hasMeter ? (
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          alignItems: 'center',
+          columnGap: M.METER_GAP_PX,
+          rowGap: SPACING.XXS,
+          width: 'fit-content',
+          maxWidth: '100%',
+        }}
+      >
+        <div
+          // A grid, not flex: the row's fit-content reads its tracks, where it ignores a flex-basis.
           style={{
-            width: M.METER_LABEL_WIDTH_PX,
-            flexShrink: 0,
-            fontSize: M.LABEL_FONT_SIZE_PX,
-            color: DEFAULT_COLORS.TEXT_MUTED,
+            display: 'grid',
+            gridTemplateColumns: `${M.METER_LABEL_WIDTH_PX}px minmax(${M.METER_MIN_WIDTH_PX}px, ${M.METER_MAX_WIDTH_PX}px)`,
+            alignItems: 'center',
+            columnGap: M.METER_GAP_PX,
           }}
         >
-          {label}
-        </span>
-
-        {hasMeter ? (
-          <>
-            <div
-              style={{
-                position: 'relative',
-                flex: `0 1 ${M.METER_MAX_WIDTH_PX}px`,
-                minWidth: M.METER_MIN_WIDTH_PX,
-                height: M.METER_HEIGHT_PX,
-                borderRadius: M.METER_RADIUS_PX,
-                background: DEFAULT_COLORS.SURFACE_ELEVATED_HOVER,
-              }}
-            >
-              <div
-                style={{
-                  width: `${Math.min(ratio * FULL_PERCENT, FULL_PERCENT)}%`,
-                  height: '100%',
-                  borderRadius: M.METER_RADIUS_PX,
-                  background: color ?? DEFAULT_COLORS.NEUTRAL,
-                  transition: `width ${MOTION.BASE_MS}ms ${MOTION.EASE}`,
-                }}
-              />
-              {requestPercent != null && request != null ? (
-                <RequestMarker percent={requestPercent} request={format(request)} />
-              ) : null}
-            </div>
-            <Tooltip title={shareTooltip}>
-              <span
-                tabIndex={0}
-                style={{
-                  flexShrink: 0,
-                  fontSize: M.METER_VALUE_FONT_SIZE_PX,
-                  color: DEFAULT_COLORS.TEXT_SECONDARY,
-                  whiteSpace: 'nowrap',
-                  fontVariantNumeric: 'tabular-nums',
-                }}
-              >
-                {formatPair(used, scale)} {WM.MID_DOT} {Math.round(ratio * FULL_PERCENT)}%
-              </span>
-            </Tooltip>
-          </>
-        ) : (
-          <span
+          {labelEl}
+          <div
             style={{
-              fontSize: M.METER_VALUE_FONT_SIZE_PX,
-              color: DEFAULT_COLORS.TEXT_MUTED,
-              whiteSpace: 'nowrap',
+              position: 'relative',
+              height: M.METER_HEIGHT_PX,
+              borderRadius: M.METER_RADIUS_PX,
+              background: DEFAULT_COLORS.SURFACE_ELEVATED_HOVER,
             }}
           >
-            {rawUsed || EMPTY_VALUE} {WM.MID_DOT} {WM.NO_BASELINE}
+            <div
+              style={{
+                width: `${Math.min(ratio * FULL_PERCENT, FULL_PERCENT)}%`,
+                height: '100%',
+                borderRadius: M.METER_RADIUS_PX,
+                background: color ?? DEFAULT_COLORS.NEUTRAL,
+                transition: `width ${MOTION.BASE_MS}ms ${MOTION.EASE}`,
+              }}
+            />
+            {requestPercent != null && request != null ? (
+              <RequestMarker percent={requestPercent} request={format(request)} />
+            ) : null}
+          </div>
+        </div>
+        <Tooltip title={shareTooltip}>
+          <span
+            tabIndex={0}
+            style={{
+              flexShrink: 0,
+              marginLeft: 'auto',
+              fontSize: M.METER_VALUE_FONT_SIZE_PX,
+              color: DEFAULT_COLORS.TEXT_SECONDARY,
+              whiteSpace: 'nowrap',
+              fontVariantNumeric: 'tabular-nums',
+            }}
+          >
+            {formatPair(used, scale)} {WM.MID_DOT} {Math.round(ratio * FULL_PERCENT)}%
           </span>
-        )}
+        </Tooltip>
+      </div>
+    ) : (
+      <div style={{ display: 'flex', alignItems: 'center', gap: M.METER_GAP_PX, minWidth: 0 }}>
+        {labelEl}
+        <span
+          style={{
+            fontSize: M.METER_VALUE_FONT_SIZE_PX,
+            color: DEFAULT_COLORS.TEXT_MUTED,
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {rawUsed || EMPTY_VALUE} {WM.MID_DOT} {WM.NO_BASELINE}
+        </span>
       </div>
     );
   },

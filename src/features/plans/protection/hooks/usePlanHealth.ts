@@ -5,6 +5,8 @@ import type { PlanStatusResponse } from '../models';
 
 export interface UsePlanHealthResult {
   status: PlanStatusResponse | null;
+  // The status route checks live, so its answer is the newest check.
+  checkedAt: string | null;
   loading: boolean;
   error: string | null;
   refresh: () => void;
@@ -14,6 +16,7 @@ export function usePlanHealth(planId: string, revision?: string): UsePlanHealthR
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<PlanStatusResponse | null>(null);
+  const [checkedAt, setCheckedAt] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
@@ -22,6 +25,7 @@ export function usePlanHealth(planId: string, revision?: string): UsePlanHealthR
       .then((data) => {
         if (canceled) return;
         setStatus(data);
+        setCheckedAt(new Date().toISOString());
         setError(null);
       })
       .catch((err: unknown) => {
@@ -39,6 +43,7 @@ export function usePlanHealth(planId: string, revision?: string): UsePlanHealthR
 
   return {
     status,
+    checkedAt,
     loading,
     error,
     refresh: () => setReloadKey((k) => k + 1),

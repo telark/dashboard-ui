@@ -4,6 +4,7 @@ import {
   HAIRLINE,
   FONT_SIZE,
   FONT_WEIGHT,
+  MOTION,
   RADIUS,
   SPACING,
 } from '../../../constants';
@@ -27,7 +28,7 @@ const LockBanner: React.FC<LockBannerProps> = ({ title, message, icon }) => {
           display: 'flex',
           alignItems: 'center',
           gap: SPACING.MD,
-          animation: 'lockBannerFadeIn 0.3s ease-out',
+          animation: `lockBannerFadeIn ${MOTION.SLOW_MS}ms ${MOTION.EASE_OUT}`,
         }}
       >
         {icon && <div style={{ display: 'flex', alignItems: 'center' }}>{icon}</div>}

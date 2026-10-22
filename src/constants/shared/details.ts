@@ -13,9 +13,6 @@ export const SHARED_DETAILS_CONSTANTS = {
     },
   },
   STATES: {
-    LOADING_CONTAINER: {
-      padding: 24,
-    },
     ERROR_CONTAINER: {
       minHeight: '50vh',
       display: 'flex',

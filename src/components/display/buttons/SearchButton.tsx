@@ -3,6 +3,7 @@ import { Tooltip } from 'antd';
 import { SearchOutlined, CloseOutlined } from '@ant-design/icons';
 import {
   DEFAULT_COLORS,
+  DISABLED_OPACITY,
   TOOLBAR_CONTROL,
   FONT_SIZE,
   FONT_WEIGHT,
@@ -55,7 +56,7 @@ const SearchButton: React.FC<SearchButtonProps> = ({
         ? DEFAULT_COLORS.TEXT_ON_SURFACE
         : DEFAULT_COLORS.TEXT_MUTED,
     transition: `all ${MOTION.BASE_MS}ms`,
-    opacity: disabled ? 0.6 : 1,
+    opacity: disabled ? DISABLED_OPACITY : 1,
   };
 
   const handleMouseEnter = (e: React.MouseEvent<HTMLButtonElement>) => {

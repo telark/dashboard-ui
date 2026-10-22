@@ -4,7 +4,7 @@ import { registerPasskey } from '../webauthn/core';
 import { AUTH_SUCCESS_MESSAGES } from '../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/login';
 import { REGISTER_CONSTANTS } from '../../constants/register';
-import { APP_ROUTES } from '../../../../constants';
+import { APP_CONFIGS, APP_ROUTES } from '../../../../constants';
 import { isDevelopment } from '../../../../utils/helpers/env';
 import logger from '../../../../logging';
 import type {
@@ -150,7 +150,7 @@ export const performRegister = async (
   messageApi.open({
     type: 'success',
     content: AUTH_SUCCESS_MESSAGES.REGISTER_SUCCESS,
-    duration: 2,
+    duration: APP_CONFIGS.MESSAGE.AUTH_SUCCESS_DURATION_S,
   });
 
   if (onSuccess) {

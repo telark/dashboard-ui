@@ -1,14 +1,7 @@
 import React from 'react';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Tooltip } from 'antd';
-import {
-  DEFAULT_COLORS,
-  ROW_ACTION_CLASS,
-  FONT_SIZE,
-  MOTION,
-  RADIUS,
-  SPACING,
-} from '../../../../../../constants';
+import { SPACING } from '../../../../../../constants';
+import { RowIconButton } from '../../../../../../components/display/buttons';
 import { ROLES_CONSTANTS as RC } from '../../../../roles/constants';
 import { CATEGORIES_CONSTANTS as CC, labelsFor } from '../../../constants';
 import type { CategoryScope } from '../../../constants';
@@ -53,33 +46,6 @@ const PERMISSIONS_BY_SCOPE: Record<
     edit: ACTION_PERMISSIONS.protectionPlans.editCategory,
     delete: ACTION_PERMISSIONS.protectionPlans.deleteCategory,
   },
-};
-
-const ACTION_SIZE = 28;
-
-const actionButtonStyle = (disabled: boolean): React.CSSProperties => ({
-  all: 'unset',
-  cursor: disabled ? 'not-allowed' : 'pointer',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  color: disabled ? DEFAULT_COLORS.ICON_MUTED : DEFAULT_COLORS.TEXT_MUTED,
-  fontSize: FONT_SIZE.LG,
-  width: ACTION_SIZE,
-  height: ACTION_SIZE,
-  borderRadius: RADIUS.XS,
-  transition: `color ${MOTION.BASE_MS}ms, opacity ${MOTION.BASE_MS}ms`,
-  opacity: disabled ? 0.6 : 1,
-  pointerEvents: disabled ? 'none' : 'auto',
-});
-
-const actionWrapperStyle: React.CSSProperties = {
-  display: 'inline-flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  width: ACTION_SIZE,
-  height: ACTION_SIZE,
-  flexShrink: 0,
 };
 
 export const CategoryActionsColumn: React.FC<CategoryActionsColumnProps> = ({
@@ -127,60 +93,28 @@ export const CategoryActionsColumn: React.FC<CategoryActionsColumnProps> = ({
       }}
     >
       {showEdit && (
-        <Tooltip
-          title={
+        <RowIconButton
+          icon={<EditOutlined />}
+          label={RC.LABELS.ACTIONS.EDIT}
+          tooltip={
             hasEditPermission ? RC.LABELS.ACTIONS.EDIT : L.ACTIONS.EDIT_PERMISSION_DENIED_TOOLTIP
           }
-          placement="left"
-        >
-          <span style={actionWrapperStyle}>
-            <button
-              type="button"
-              onClick={handleEditClick}
-              className={ROW_ACTION_CLASS}
-              style={actionButtonStyle(!hasEditPermission)}
-              disabled={!hasEditPermission}
-              onMouseEnter={(e) => {
-                if (hasEditPermission) e.currentTarget.style.background = DEFAULT_COLORS.HOVER_BG;
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'transparent';
-              }}
-              aria-label={RC.LABELS.ACTIONS.EDIT}
-            >
-              <EditOutlined />
-            </button>
-          </span>
-        </Tooltip>
+          disabled={!hasEditPermission}
+          onClick={handleEditClick}
+        />
       )}
       {showDelete && (
-        <Tooltip
-          title={
+        <RowIconButton
+          icon={<DeleteOutlined />}
+          label={RC.LABELS.ACTIONS.DELETE}
+          tooltip={
             hasDeletePermission
               ? RC.LABELS.ACTIONS.DELETE
               : L.ACTIONS.DELETE_PERMISSION_DENIED_TOOLTIP
           }
-          placement="left"
-        >
-          <span style={actionWrapperStyle}>
-            <button
-              type="button"
-              onClick={handleDeleteClick}
-              className={ROW_ACTION_CLASS}
-              style={actionButtonStyle(!hasDeletePermission)}
-              disabled={!hasDeletePermission}
-              onMouseEnter={(e) => {
-                if (hasDeletePermission) e.currentTarget.style.background = DEFAULT_COLORS.HOVER_BG;
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'transparent';
-              }}
-              aria-label={RC.LABELS.ACTIONS.DELETE}
-            >
-              <DeleteOutlined />
-            </button>
-          </span>
-        </Tooltip>
+          disabled={!hasDeletePermission}
+          onClick={handleDeleteClick}
+        />
       )}
       {!onDelete && (
         <CategoryDeleteModal

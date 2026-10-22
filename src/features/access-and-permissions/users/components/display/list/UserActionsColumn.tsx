@@ -1,18 +1,10 @@
-import React, { useState } from 'react';
-import { Dropdown, Tooltip } from 'antd';
+import React from 'react';
+import { Tooltip } from 'antd';
 import type { MenuProps } from 'antd';
 import { UserSwitchOutlined, DeleteOutlined, LinkOutlined } from '@ant-design/icons';
-import {
-  DEFAULT_COLORS,
-  MODAL_CHROME,
-  ROW_ACTION_CLASS,
-  TIME_FORMATS,
-  FONT_SIZE,
-  MOTION,
-  RADIUS,
-  SPACING,
-} from '../../../../../../constants';
+import { MODAL_CHROME, TIME_FORMATS, SPACING } from '../../../../../../constants';
 import { ActionConfirmModal } from '../../../../../../components/display/modal';
+import { RowIconButton } from '../../../../../../components/display/buttons';
 import { formatDateTime } from '../../../../../../utils/shared/time';
 import { usePermission, ACTION_PERMISSIONS } from '../../../../../auth/hooks';
 import { EnrollLinkModal } from '../../../../../auth/components';
@@ -26,33 +18,6 @@ interface UserActionsColumnProps {
   record: User;
   onEdit?: (record: User) => void;
 }
-
-const ACTION_SIZE = 28;
-
-const actionButtonStyle = (disabled: boolean): React.CSSProperties => ({
-  all: 'unset',
-  cursor: disabled ? 'not-allowed' : 'pointer',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  color: disabled ? DEFAULT_COLORS.ICON_MUTED : DEFAULT_COLORS.TEXT_MUTED,
-  fontSize: FONT_SIZE.LG,
-  width: ACTION_SIZE,
-  height: ACTION_SIZE,
-  borderRadius: RADIUS.XS,
-  transition: `color ${MOTION.BASE_MS}ms, opacity ${MOTION.BASE_MS}ms`,
-  opacity: disabled ? 0.6 : 1,
-  pointerEvents: disabled ? 'none' : 'auto',
-});
-
-const actionWrapperStyle: React.CSSProperties = {
-  display: 'inline-flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  width: ACTION_SIZE,
-  height: ACTION_SIZE,
-  flexShrink: 0,
-};
 
 const ENROLL = UC.LABELS.ENROLL_LINK;
 
@@ -75,7 +40,6 @@ interface EnrollLinkActionProps {
 
 const EnrollLinkAction: React.FC<EnrollLinkActionProps> = ({ record }) => {
   const link = useUserEnrollLink(record);
-  const [menuOpen, setMenuOpen] = useState(false);
   const blocked = Boolean(link.blocked);
 
   const items: MenuProps['items'] = [
@@ -97,40 +61,15 @@ const EnrollLinkAction: React.FC<EnrollLinkActionProps> = ({ record }) => {
   };
 
   return (
-    <span style={actionWrapperStyle} onClick={stopRowClick}>
-      {/* Hovering the open menu counts as hovering its trigger, so the label waits for it to close. */}
-      <Tooltip
-        title={link.blocked ?? ENROLL.MENU}
-        placement="left"
-        open={menuOpen ? false : undefined}
-      >
-        <span style={actionWrapperStyle}>
-          <Dropdown
-            trigger={['click']}
-            placement="bottomRight"
-            disabled={blocked}
-            open={menuOpen}
-            onOpenChange={setMenuOpen}
-            menu={{ items, onClick: onMenuClick }}
-          >
-            <button
-              type="button"
-              className={ROW_ACTION_CLASS}
-              style={actionButtonStyle(blocked)}
-              disabled={blocked}
-              onMouseEnter={(e) => {
-                if (!blocked) e.currentTarget.style.background = DEFAULT_COLORS.HOVER_BG;
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'transparent';
-              }}
-              aria-label={ENROLL.MENU}
-            >
-              <LinkOutlined />
-            </button>
-          </Dropdown>
-        </span>
-      </Tooltip>
+    // Adds no box: it only catches the clicks that bubble up from the portals.
+    <span style={{ display: 'contents' }} onClick={stopRowClick}>
+      <RowIconButton
+        icon={<LinkOutlined />}
+        label={ENROLL.MENU}
+        tooltip={link.blocked ?? ENROLL.MENU}
+        disabled={blocked}
+        menu={{ items, onClick: onMenuClick }}
+      />
       <EnrollLinkModal
         url={link.url}
         onClose={link.closeLink}
@@ -202,60 +141,28 @@ export const UserActionsColumn: React.FC<UserActionsColumnProps> = ({ record, on
       }}
     >
       <EnrollLinkAction record={record} />
-      <Tooltip
-        title={
+      <RowIconButton
+        icon={<UserSwitchOutlined />}
+        label={UC.LABELS.ACTIONS.MANAGE_STATE}
+        tooltip={
           canEdit
             ? UC.LABELS.ACTIONS.MANAGE_STATE
             : (lockReason ?? UC.LABELS.ACTIONS.EDIT_DISABLED_TOOLTIP)
         }
-        placement="left"
-      >
-        <span style={actionWrapperStyle}>
-          <button
-            type="button"
-            onClick={handleEditClick}
-            className={ROW_ACTION_CLASS}
-            style={actionButtonStyle(!canEdit)}
-            disabled={!canEdit}
-            onMouseEnter={(e) => {
-              if (canEdit) e.currentTarget.style.background = DEFAULT_COLORS.HOVER_BG;
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'transparent';
-            }}
-            aria-label={UC.LABELS.ACTIONS.MANAGE_STATE}
-          >
-            <UserSwitchOutlined />
-          </button>
-        </span>
-      </Tooltip>
-      <Tooltip
-        title={
+        disabled={!canEdit}
+        onClick={handleEditClick}
+      />
+      <RowIconButton
+        icon={<DeleteOutlined />}
+        label={UC.LABELS.ACTIONS.DELETE}
+        tooltip={
           canDelete
             ? UC.LABELS.ACTIONS.DELETE
             : (lockReason ?? UC.LABELS.ACTIONS.DELETE_DISABLED_TOOLTIP)
         }
-        placement="left"
-      >
-        <span style={actionWrapperStyle}>
-          <button
-            type="button"
-            onClick={handleDeleteClick}
-            className={ROW_ACTION_CLASS}
-            style={actionButtonStyle(!canDelete)}
-            disabled={!canDelete}
-            onMouseEnter={(e) => {
-              if (canDelete) e.currentTarget.style.background = DEFAULT_COLORS.HOVER_BG;
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'transparent';
-            }}
-            aria-label={UC.LABELS.ACTIONS.DELETE}
-          >
-            <DeleteOutlined />
-          </button>
-        </span>
-      </Tooltip>
+        disabled={!canDelete}
+        onClick={handleDeleteClick}
+      />
       <UserDeleteModal
         open={deleteModalOpen}
         onClose={closeDeleteModal}

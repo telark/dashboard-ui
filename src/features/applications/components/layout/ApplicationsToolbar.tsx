@@ -7,16 +7,12 @@ import {
   SearchOutlined,
   SyncOutlined,
 } from '@ant-design/icons';
+import { DEFAULT_COLORS } from '../../../../constants';
 import {
-  DEFAULT_COLORS,
-  LIST_TOOLBAR,
-  TOOLBAR_CONTROL,
-  getQuickFilterPillColors,
-  SPACING,
-  FONT_SIZE,
-  FONT_WEIGHT,
-} from '../../../../constants';
-import { CompactQuickFilter, ListToolbar } from '../../../../components/display/toolbar';
+  CompactQuickFilter,
+  ListToolbar,
+  QuickFilterPills,
+} from '../../../../components/display/toolbar';
 import type { FilterChip, ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 import { APPLICATIONS_UI } from '../../constants';
 import { ACTION_PERMISSIONS, usePermission } from '../../../auth/hooks';
@@ -90,40 +86,16 @@ const HealthPills: React.FC<HealthPillsProps> = ({ active, counts, compact, onCh
     );
   }
   return (
-    <div style={{ display: 'inline-flex', alignItems: 'center', gap: SPACING.S6, height: '100%' }}>
-      {HEALTH_PILLS.map((pill) => {
-        const isActive = active === pill.key;
-        const accent = getPillAccent(pill.key);
-        return (
-          <button
-            key={pill.key}
-            type="button"
-            aria-pressed={isActive}
-            className={LIST_TOOLBAR.QUICK_FILTER_CLASS}
-            onClick={() => onChange(pill.key)}
-            style={{
-              all: 'unset',
-              cursor: 'pointer',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: SPACING.S6,
-              height: TOOLBAR_CONTROL.HEIGHT,
-              boxSizing: 'border-box',
-              padding: TOOLBAR_CONTROL.PADDING,
-              borderRadius: LIST_TOOLBAR.PILL_RADIUS_PX,
-              ...getQuickFilterPillColors(accent, isActive),
-              fontSize: FONT_SIZE.SM,
-              fontWeight: FONT_WEIGHT.BOLD,
-              lineHeight: TOOLBAR_CONTROL.LINE_HEIGHT,
-              userSelect: 'none',
-            }}
-          >
-            <span>{pill.label}</span>
-            <span style={{ opacity: 0.85 }}>· {counts[pill.key]}</span>
-          </button>
-        );
-      })}
-    </div>
+    <QuickFilterPills
+      options={HEALTH_PILLS.map((pill) => ({
+        key: pill.key,
+        label: pill.label,
+        accent: getPillAccent(pill.key),
+        count: counts[pill.key],
+      }))}
+      active={active}
+      onChange={onChange}
+    />
   );
 };
 

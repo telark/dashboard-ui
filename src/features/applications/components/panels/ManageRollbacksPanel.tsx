@@ -6,6 +6,7 @@ import { SlideOutPanel, ExpandPanelButton } from '../../../../components/display
 import {
   DEFAULT_COLORS,
   EMPTY_CLASS,
+  HAIRLINE,
   STATUS_COLORS,
   TAG_CLASS,
   getPillColor,
@@ -198,7 +199,7 @@ function RollbackRow(props: {
       style={{
         // As a grid item the row would otherwise grow to fit long text and widen the panel.
         minWidth: 0,
-        border: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
+        border: HAIRLINE.SURFACE_BORDER_LIGHT,
         borderRadius: R.RADIUS_PX,
         padding: R.PADDING,
         background: hovered ? DEFAULT_COLORS.SURFACE_HOVER : DEFAULT_COLORS.SURFACE_WHITE,

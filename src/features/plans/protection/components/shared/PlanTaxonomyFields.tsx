@@ -6,7 +6,7 @@ import {
   PROTECTION_PLANS_CONSTANTS as PPC,
 } from '../../constants/protectionPlans';
 import type { PlanApprovalMode } from '../../models';
-import { FORM_ITEM_CLASS } from '../create/types';
+import { FORM_FIELD_PAIR_STYLE, FORM_ITEM_CLASS } from '../create/types';
 import { SPACING } from '../../../../../constants';
 
 const { FORM } = PPC.CREATE_PAGE;
@@ -36,9 +36,7 @@ const PlanTaxonomyFields: React.FC<PlanTaxonomyFieldsProps> = ({
   };
 
   return (
-    <div
-      style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: SPACING.MD }}
-    >
+    <div style={FORM_FIELD_PAIR_STYLE}>
       <Form.Item
         name="kindRef"
         label={FORM.KIND_LABEL}

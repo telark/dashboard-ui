@@ -22,3 +22,15 @@ export const LIGHT_TOKENS = {
   colorBorderDisabled: DEFAULT_COLORS.AUTH_LIGHT_BORDER,
   colorTextPlaceholder: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
 } as const;
+
+// The root theme's labels are white and its focused fields take a darker edge: the auth card keeps
+// its own text color and an unchanged border, without a focus glow.
+export const LIGHT_COMPONENTS = {
+  Form: { labelColor: DEFAULT_COLORS.AUTH_LIGHT_TEXT },
+  Input: {
+    hoverBorderColor: DEFAULT_COLORS.AUTH_LIGHT_BORDER,
+    activeBorderColor: DEFAULT_COLORS.AUTH_LIGHT_BORDER,
+    activeShadow: 'none',
+    errorActiveShadow: 'none',
+  },
+} as const;

@@ -24,6 +24,9 @@ export const ROW_ICON_BUTTON_SIZE = 28;
 // Keyboard focus ring for the list row action buttons, which reset every style inline (index.css).
 export const ROW_ACTION_CLASS = 'tk-row-action';
 
+// How far the app's own buttons (toolbar, filter, search, row actions) dim when disabled.
+export const DISABLED_OPACITY = 0.6;
+
 // Deliberate exception: the login and register pages run their own ConfigProvider
 // and want taller controls. Overriding controlHeight there is the whole opt-out.
 export const AUTH_CONTROL_HEIGHT = 40;

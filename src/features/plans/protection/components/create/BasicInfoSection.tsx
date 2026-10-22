@@ -5,7 +5,7 @@ import {
   PROTECTION_PLANS_CONSTANTS as PPC,
 } from '../../constants/protectionPlans';
 import Section from '../../../../../components/display/sections/Section';
-import { FORM_ITEM_CLASS } from './types';
+import { FORM_FIELD_PAIR_STYLE, FORM_ITEM_CLASS } from './types';
 import { SPACING } from '../../../../../constants';
 
 const { SECTIONS, FORM } = PPC.CREATE_PAGE;
@@ -41,13 +41,7 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ nameValidator }) =>
         >
           <Input placeholder={FORM.DESCRIPTION_PLACEHOLDER} />
         </Form.Item>
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
-            gap: SPACING.MD,
-          }}
-        >
+        <div style={FORM_FIELD_PAIR_STYLE}>
           <Form.Item
             name="severity"
             label={FORM.SEVERITY_LABEL}

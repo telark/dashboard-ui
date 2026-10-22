@@ -9,6 +9,7 @@ import {
 import { setCurrentUser } from '../session/user';
 import { fetchMyPermissionsThunk } from '../../store/thunks/fetchThunks';
 import store from '../../../../store';
+import { APP_CONFIGS } from '../../../../constants';
 import { AUTH_SUCCESS_MESSAGES } from '../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/login';
 import { getLoginRefusalMessage } from '../shared/errors';
@@ -113,7 +114,7 @@ export const performLogin = async (
     messageApi.open({
       type: 'success',
       content: AUTH_SUCCESS_MESSAGES.LOGIN_SUCCESS,
-      duration: 2,
+      duration: APP_CONFIGS.MESSAGE.AUTH_SUCCESS_DURATION_S,
     });
     if (onSuccess) {
       onSuccess();

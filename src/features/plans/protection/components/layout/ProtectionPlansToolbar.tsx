@@ -1,17 +1,11 @@
 import React, { useMemo } from 'react';
 import { FlagOutlined, SearchOutlined, TagOutlined } from '@ant-design/icons';
+import { DEFAULT_COLORS, Icons, STATUS_COLORS } from '../../../../../constants';
 import {
-  DEFAULT_COLORS,
-  Icons,
-  LIST_TOOLBAR,
-  STATUS_COLORS,
-  TOOLBAR_CONTROL,
-  getQuickFilterPillColors,
-  SPACING,
-  FONT_SIZE,
-  FONT_WEIGHT,
-} from '../../../../../constants';
-import { CompactQuickFilter, ListToolbar } from '../../../../../components/display/toolbar';
+  CompactQuickFilter,
+  ListToolbar,
+  QuickFilterPills,
+} from '../../../../../components/display/toolbar';
 import { usePermission, ACTION_PERMISSIONS } from '../../../../auth/hooks';
 import type { ToolbarButtonConfig, ToolbarConfig } from '../../../../../interfaces/layout/toolbar';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
@@ -53,39 +47,16 @@ interface PhasePillsProps {
 }
 
 const PhasePills: React.FC<PhasePillsProps> = ({ active, counts, onChange }) => (
-  <div style={{ display: 'inline-flex', alignItems: 'center', gap: SPACING.S6, height: '100%' }}>
-    {PHASE_PILLS.map((pill) => {
-      const isActive = active === pill.key;
-      const accent = getPillAccent(pill.key);
-      const count = counts[pill.key] ?? 0;
-      return (
-        <button
-          key={pill.key}
-          type="button"
-          onClick={() => onChange(pill.key)}
-          style={{
-            all: 'unset',
-            cursor: 'pointer',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: SPACING.S6,
-            height: TOOLBAR_CONTROL.HEIGHT,
-            boxSizing: 'border-box',
-            padding: TOOLBAR_CONTROL.PADDING,
-            borderRadius: LIST_TOOLBAR.PILL_RADIUS_PX,
-            ...getQuickFilterPillColors(accent, isActive),
-            fontSize: FONT_SIZE.SM,
-            fontWeight: FONT_WEIGHT.BOLD,
-            lineHeight: TOOLBAR_CONTROL.LINE_HEIGHT,
-            userSelect: 'none',
-          }}
-        >
-          <span>{pill.label}</span>
-          <span style={{ opacity: 0.85 }}>· {count}</span>
-        </button>
-      );
-    })}
-  </div>
+  <QuickFilterPills
+    options={PHASE_PILLS.map((pill) => ({
+      key: pill.key,
+      label: pill.label,
+      accent: getPillAccent(pill.key),
+      count: counts[pill.key] ?? 0,
+    }))}
+    active={active}
+    onChange={onChange}
+  />
 );
 
 const ProtectionPlansToolbar: React.FC<ProtectionPlansToolbarProps> = ({

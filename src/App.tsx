@@ -22,7 +22,9 @@ import {
   CONTROL_RADIUS,
   CONTROL_FONT_SIZE,
   FONT_FAMILY,
+  FONT_SIZE,
   FORM_ITEM_GAP,
+  FORM_LABEL_GAP,
   SELECT_LOADING_ICON_SIZE,
   SIDEBAR_LAYOUT,
 } from './constants';
@@ -107,7 +109,7 @@ const AppContent: React.FC = () => {
               marginTop: APP_CONFIGS.LAYOUT.CONTENT_TOP,
               height: APP_CONFIGS.LAYOUT.CONTENT_HEIGHT,
               overflowY: APP_CONFIGS.LAYOUT.CONTENT_OVERFLOW,
-              scrollbarGutter: 'stable',
+              scrollbarGutter: APP_CONFIGS.LAYOUT.SCROLLBAR_GUTTER,
               transition: reduceMotion ? 'none' : APP_CONFIGS.LAYOUT.TRANSITION,
             }}
           >
@@ -194,7 +196,12 @@ const App: React.FC = () => {
             },
             Select: SELECT_THEME,
             Tag: TAG_THEME,
-            Form: { itemMarginBottom: FORM_ITEM_GAP },
+            Form: {
+              itemMarginBottom: FORM_ITEM_GAP,
+              labelFontSize: FONT_SIZE.MD,
+              labelColor: DEFAULT_COLORS.TEXT_PRIMARY,
+              verticalLabelPadding: `0 0 ${FORM_LABEL_GAP}px`,
+            },
             // Focus ring matches Select: colorPrimary is the app green, which antd
             // would otherwise use for the active border and shadow.
             Input: {
@@ -257,6 +264,13 @@ const App: React.FC = () => {
               colorSplit: DEFAULT_COLORS.BORDER_SUBTLE,
               stickyScrollBarBg: DEFAULT_COLORS.BORDER_HOVER,
               selectionColumnWidth: LIST_PAGE.TABLE_SELECTION_COLUMN_WIDTH_PX,
+              headerSplitColor: 'transparent',
+            },
+            // The current page is a selection, not a status: the selected quick filter's neutral fill.
+            Pagination: {
+              itemActiveBg: DEFAULT_COLORS.TEXT_MUTED,
+              itemActiveColor: DEFAULT_COLORS.TEXT_ON_SURFACE,
+              itemActiveColorHover: DEFAULT_COLORS.TEXT_ON_SURFACE,
             },
             Progress: { defaultColor: DEFAULT_COLORS.SUCCESS },
             Button: {

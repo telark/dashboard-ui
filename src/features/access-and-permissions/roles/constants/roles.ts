@@ -226,6 +226,12 @@ export const ROLES_CONSTANTS = {
     READ_ONLY_TOOLTIP:
       "Only a custom role's creator or an Admin on all scopes can change its protection.",
   },
+  // Prevent Scope Changes shows its new value at once, writes the form after FORM_WRITE_DELAY_MS
+  // and drops the local value LOCAL_VALUE_CLEAR_MS later.
+  PROTECTION_TIMERS: {
+    FORM_WRITE_DELAY_MS: 300,
+    LOCAL_VALUE_CLEAR_MS: 100,
+  },
   ERROR_MESSAGES: {
     CLIENT: {
       FETCH_ROLES_FAILED: '[APIClient] Failed to fetch roles:',

@@ -1,4 +1,7 @@
 import { useState } from 'react';
+import { ROLES_CONSTANTS } from '../../constants';
+
+const { FORM_WRITE_DELAY_MS, LOCAL_VALUE_CLEAR_MS } = ROLES_CONSTANTS.PROTECTION_TIMERS;
 
 export const useProtectionFields = () => {
   const [localPreventScopeChanges, setLocalPreventScopeChanges] = useState<boolean | null>(null);
@@ -15,8 +18,8 @@ export const useProtectionFields = () => {
         setFieldValue(['protection', 'preventScopeChanges'], newValue);
         setTimeout(() => {
           setLocalPreventScopeChanges(null);
-        }, 100);
-      }, 300);
+        }, LOCAL_VALUE_CLEAR_MS);
+      }, FORM_WRITE_DELAY_MS);
     } else {
       Object.entries(updates).forEach(([field, value]) => {
         setFieldValue(['protection', field], value);

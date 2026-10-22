@@ -4,6 +4,7 @@ import { Button, Checkbox, Tag, Tooltip } from 'antd';
 import {
   DEFAULT_COLORS,
   EMPTY_VALUE,
+  HAIRLINE,
   LIST_TOOLBAR,
   STATUS_COLORS,
   TAG_CLASS,
@@ -105,7 +106,7 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
         style={{
-          border: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
+          border: HAIRLINE.SURFACE_BORDER_LIGHT,
           borderRadius: R.RADIUS_PX,
           padding: R.PADDING,
           marginBottom: showMarginBottom ? R.ROW_SPACING_PX : SPACING.NONE,

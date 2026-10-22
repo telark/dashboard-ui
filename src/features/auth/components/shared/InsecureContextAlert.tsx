@@ -8,6 +8,7 @@ import {
   FONT_SIZE,
   FONT_WEIGHT,
   LINE_HEIGHT,
+  withAlpha,
 } from '../../../../constants';
 import { AUTH_ERROR_MESSAGES } from '../../constants';
 
@@ -19,7 +20,6 @@ export const InsecureContextAlert: React.FC = () => (
     role="alert"
     // 14: the right padding sits between MD and LG.
     style={{
-      position: 'relative',
       display: 'flex',
       alignItems: 'flex-start',
       gap: SPACING.MD,
@@ -27,22 +27,10 @@ export const InsecureContextAlert: React.FC = () => (
       marginBottom: SPACING.LG,
       borderRadius: RADIUS.LG,
       background: DEFAULT_COLORS.WARNING_TINT,
-      border: `1px solid ${DEFAULT_COLORS.WARNING_TINT}`,
+      // An antd warning Alert's hairline: the accent, stronger than the fill, on either surface.
+      border: `1px solid ${withAlpha(DEFAULT_COLORS.WARNING, 0.35)}`,
     }}
   >
-    <span
-      aria-hidden
-      // 3: the accent bar's corner matches its 3px width.
-      style={{
-        position: 'absolute',
-        left: 0,
-        top: 12,
-        bottom: 12,
-        width: 3,
-        borderRadius: 3,
-        background: DEFAULT_COLORS.WARNING,
-      }}
-    />
     <span
       aria-hidden
       // 15: the lock icon's size sits between BASE and LG.

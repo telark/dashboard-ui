@@ -68,7 +68,7 @@ export const INSIGHTS_GOVERNANCE_CONSTANTS = {
     EDIT_SNAPSHOT_STORAGE_PERMISSION_DENIED:
       'You do not have permission to edit snapshot storage settings',
     CONTROL_AI_INSIGHTS_PERMISSION_DENIED: 'You do not have permission to manage Insights settings',
-    SNAPSHOT_STORAGE_TITLE: 'Snapshot Storage',
+    SNAPSHOT_STORAGE_TITLE: 'Snapshot storage',
     SNAPSHOT_STORAGE_DESCRIPTION: 'Storage usage and retention controls for snapshots.',
     SNAPSHOT_STORAGE_LOADING: 'Loading snapshot storage...',
     SNAPSHOT_STORAGE_NO_ACCESS: 'You do not have permission to view snapshot storage usage',

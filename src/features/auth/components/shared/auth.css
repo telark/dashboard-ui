@@ -28,24 +28,9 @@ html:has(.auth-root[data-theme='light']) body {
   --color-border: var(--color-auth-light-border);
 }
 
-/* The global label rule paints labels white for the dark page surfaces; the auth
-   card is its own surface and needs its own text color. */
-.auth-root .ant-form-item-label > label {
-  color: var(--auth-text-primary, var(--color-auth-light-text)) !important;
-}
-
-/* Same white-on-light-surface leak as the label rule above, but for the error alert's text. */
+/* The dark page's white text leaks onto the auth card's error alert title. */
 .auth-root .ant-alert-title {
   color: var(--auth-text-primary, var(--color-auth-light-text)) !important;
-}
-
-.auth-root .ant-input:hover,
-.auth-root .ant-input:focus,
-.auth-root .ant-input-outlined:hover,
-.auth-root .ant-input-outlined:focus,
-.auth-root .ant-input-outlined:focus-within {
-  border-color: var(--auth-card-border, var(--color-auth-light-border)) !important;
-  box-shadow: none !important;
 }
 
 /* The panel outlives navigation between login and register, so this reveal runs

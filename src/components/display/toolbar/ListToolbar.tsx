@@ -141,6 +141,7 @@ const ListToolbar: React.FC<ListToolbarProps> = ({
         background: DEFAULT_COLORS.PAGE_BG,
         padding: LIST_PAGE.TOOLBAR_PADDING,
         marginTop: LIST_PAGE.SUBHEADER_TOOLBAR_OFFSET_PX,
+        anchorName: LIST_TOOLBAR.ANCHOR_NAME,
       }}
     >
       <div

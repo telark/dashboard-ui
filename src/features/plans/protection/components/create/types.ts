@@ -1,4 +1,6 @@
+import type { CSSProperties } from 'react';
 import type dayjs from 'dayjs';
+import { SPACING } from '../../../../../constants';
 import type { PlanApprovalMode, PlanRepeatDay, ScopeType } from '../../models';
 
 export interface PolicyEntry {
@@ -36,3 +38,10 @@ export interface FormValues extends RepeatFormValues {
 }
 
 export const FORM_ITEM_CLASS = 'form-item-compact no-asterisk';
+
+// Two fields side by side in equal columns that never grow past half the row.
+export const FORM_FIELD_PAIR_STYLE: CSSProperties = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+  gap: SPACING.MD,
+};

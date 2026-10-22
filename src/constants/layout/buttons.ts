@@ -53,6 +53,8 @@ export const LIST_TOOLBAR = {
   BULK_SELECT_CLASS: 'app-bulk-select',
   // Quick-filter pills are unstyled buttons: this class gives them back a keyboard focus ring.
   QUICK_FILTER_CLASS: 'tk-quick-filter',
+  // A page empty state keeps its distance below the toolbar through this anchor (antd.css).
+  ANCHOR_NAME: '--tk-list-toolbar',
   CLEAR_ALL_LABEL: 'Clear All',
   SELECTED_SUFFIX: 'selected',
   OVERFLOW_SUFFIX: 'more',

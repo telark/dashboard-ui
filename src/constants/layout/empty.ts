@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import { DEFAULT_COLORS } from '../shared/colors';
+import { DISABLED_OPACITY } from './controls';
 
 /** antd Empty classes in src/styles/antd.css, one per surface an empty state sits on. */
 export const EMPTY_CLASS = {
@@ -30,5 +31,5 @@ export const EMPTY_ACTION_STYLE: CSSProperties = {
 export const EMPTY_ACTION_DISABLED_STYLE: CSSProperties = {
   ...EMPTY_ACTION_STYLE,
   color: DEFAULT_COLORS.TEXT_DISABLED,
-  opacity: 0.6,
+  opacity: DISABLED_OPACITY,
 };
