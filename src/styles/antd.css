@@ -7,10 +7,6 @@
   border-inline-end: 0 !important;
   border-right: 0 !important;
 }
-.app-table .ant-table-thead > tr > th::before,
-.app-table .ant-table-cell::before {
-  display: none !important;
-}
 /* The pinned row-actions cell lays the selection tint over the page color: a see-through
    tint would show the columns scrolling under it. */
 .app-table
@@ -56,41 +52,10 @@
   outline-offset: 2px !important;
 }
 
-/* Reduce spacing between selection column and first data column - Fixed width to prevent shifting */
-.app-table table colgroup col.ant-table-selection-col,
-.app-table colgroup col.ant-table-selection-col,
-.app-table .ant-table-selection-col {
-  min-width: 23px !important;
-  max-width: 23px !important;
-}
-
-.app-table .ant-table-selection-column {
-  width: 23px !important;
-  min-width: 23px !important;
-  max-width: 23px !important;
-  padding-right: 0 !important;
-  padding-left: 0 !important;
-  padding-top: 4px !important;
-  padding-bottom: 4px !important;
-  box-sizing: border-box !important;
-}
-
-.app-table .ant-table-cell.ant-table-selection-column {
-  width: 23px !important;
-  min-width: 23px !important;
-  max-width: 23px !important;
-  padding-right: 0 !important;
-  padding-left: 0 !important;
-  padding-top: 4px !important;
-  padding-bottom: 4px !important;
-  box-sizing: border-box !important;
-}
-
+/* Reduce spacing between selection column and first data column (its width is
+   components.Table.selectionColumnWidth in App.tsx) */
 .app-table .ant-table-tbody > tr > td.ant-table-selection-column,
 .app-table .ant-table-thead > tr > th.ant-table-selection-column {
-  width: 23px !important;
-  min-width: 23px !important;
-  max-width: 23px !important;
   padding-right: 0 !important;
   padding-left: 0 !important;
   padding-top: 4px !important;
@@ -155,23 +120,15 @@
   line-height: 1.3 !important;
 }
 
-/* Form label typography to match pages */
+/* Form labels take their size, color and gap from components.Form in App.tsx; antd has no
+   token for their line height. */
+.ant-form-item-label,
 .ant-form-item-label > label {
-  font-weight: 400 !important;
-  color: var(--color-text-primary) !important;
-  font-size: 13px !important;
-  line-height: 1.5 !important;
-}
-
-/* More space between label and input */
-.ant-form-item-label {
-  margin-bottom: 4px !important;
-  padding-bottom: 0 !important;
   line-height: 1.5 !important;
 }
 
 .app-section .ant-form-vertical .ant-form-item .ant-form-item-label {
-  margin-bottom: 4px !important;
+  margin-bottom: var(--form-label-gap) !important;
   padding-bottom: 0 !important;
 }
 .app-section .ant-form-vertical .ant-form-item .ant-form-item-control {
@@ -271,15 +228,11 @@
   min-height: 0;
 }
 
-/* The current page is a selection, not a status: the selected quick filter's neutral fill. */
+/* The current page's fill and text are components.Pagination in App.tsx. antd draws its border in
+   colorPrimary, which also colors the jump arrows and the page input, so it is set here alone. */
 .app-pagination .ant-pagination-item-active,
 .app-pagination .ant-pagination-item-active:hover {
-  background: var(--color-text-muted);
   border-color: var(--color-text-muted);
-}
-.app-pagination .ant-pagination-item-active a,
-.app-pagination .ant-pagination-item-active:hover a {
-  color: var(--color-text-on-surface);
 }
 
 /* Side panels keep the light surface they had before the dark theme, so the
@@ -500,6 +453,28 @@
   padding-inline: var(--ant-margin-lg);
 }
 
+/* In a page (PageContainer, which spans the pane) it sits at the page's exact center, whatever
+   title, toolbar or status row is above it. Not when content follows it (Applications' help card),
+   and a no-access card keeps its own place. */
+.tk-page .ant-empty.tk-empty-page:last-child:not(.tk-empty-no-access) {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  height: auto;
+  transform: translateY(-50%);
+}
+
+/* Where anchors work, it also stays a margin below the list toolbar (LIST_TOOLBAR.ANCHOR_NAME):
+   centered in a band that keeps that margin on both sides, or right under it on a short page. */
+@supports (top: anchor(--tk-any bottom)) {
+  .tk-page .ant-empty.tk-empty-page:last-child:not(.tk-empty-no-access) {
+    top: calc(anchor(--tk-list-toolbar bottom, 0px) + var(--ant-margin-lg));
+    bottom: calc(100% - anchor(--tk-list-toolbar bottom, 100%) + var(--ant-margin-lg));
+    align-self: safe center;
+    transform: none;
+  }
+}
+
 .tk-empty-page .ant-empty-image {
   margin-bottom: var(--ant-margin-lg);
   color: var(--ant-color-text-secondary);
@@ -562,13 +537,13 @@
 }
 
 .tk-empty-panel .ant-empty-description {
-  gap: 6px;
+  gap: 2px;
 }
 
 .tk-empty-panel .ant-empty-description h5.ant-typography {
   font-size: 14px;
   font-weight: 800;
-  line-height: inherit;
+  line-height: 1.35;
   color: var(--color-text-on-surface);
 }
 

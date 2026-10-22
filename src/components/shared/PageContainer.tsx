@@ -87,8 +87,11 @@ const Breadcrumbs: React.FC<{ items: PageBreadcrumbItem[] }> = ({ items }) => {
 
 const PageContainer: React.FC<PageContainerProps> = memo(
   ({ title, breadcrumbs, subtitle, gap = 0, children }) => (
+    // The page's box: it spans the pane, and its page empty state centers in it (antd.css).
     <div
+      className={PAGE_CONTENT_LAYOUT.CLASS_NAME}
       style={{
+        position: 'relative',
         minHeight: HEADER_LAYOUT.MIN_HEIGHT,
         background: DEFAULT_COLORS.PAGE_BG,
         padding: PAGE_CONTENT_LAYOUT.PADDING,
