@@ -6,9 +6,15 @@ import TimeAgo from '../../../components/display/time/TimeAgo';
 import {
   CONTROL_FONT_SIZE,
   DEFAULT_COLORS,
+  getPillTextColor,
+  HAIRLINE,
   ROW_ICON_BUTTON_SIZE,
   STATUS_COLORS,
-  withAlpha,
+  STATUS_DOT,
+  FONT_SIZE,
+  FONT_WEIGHT,
+  MOTION,
+  SPACING,
 } from '../../../constants';
 import { NOTIFICATIONS_TEXTS } from '../constants';
 import { getTypeConfig } from '../utils';
@@ -46,7 +52,10 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
     const parts = notification.message.split(/\*\*(.+?)\*\*/g);
     return parts.map((part, i) =>
       i % 2 === 1 ? (
-        <strong key={i} style={{ fontWeight: 600, color: DEFAULT_COLORS.TEXT_ON_SURFACE }}>
+        <strong
+          key={i}
+          style={{ fontWeight: FONT_WEIGHT.SEMIBOLD, color: DEFAULT_COLORS.TEXT_ON_SURFACE }}
+        >
           {part}
         </strong>
       ) : (
@@ -89,12 +98,12 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
       style={{
         display: 'flex',
         alignItems: 'flex-start',
-        gap: 12,
-        padding: '12px 24px',
-        borderBottom: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
+        gap: SPACING.MD,
+        padding: `${SPACING.MD}px ${SPACING.XXL}px`,
+        borderBottom: HAIRLINE.SURFACE_BORDER_LIGHT,
         cursor: 'pointer',
         background: hovered ? DEFAULT_COLORS.SURFACE_HOVER : restBackground,
-        transition: 'background 0.15s ease',
+        transition: `background ${MOTION.FAST_MS}ms ${MOTION.EASE}`,
       }}
     >
       <div
@@ -107,23 +116,22 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
           width: ROW_ICON_BUTTON_SIZE,
           height: ROW_ICON_BUTTON_SIZE,
           borderRadius: '50%',
-          background: withAlpha(accentColor, 0.12),
-          color: accentColor,
+          // A glyph on its own tint fades on white (1.7:1); a solid chip follows the pill text rule.
+          background: accentColor,
+          color: getPillTextColor(accentColor),
         }}
       >
-        <Icon style={{ fontSize: 14 }} />
+        <Icon style={{ fontSize: FONT_SIZE.BASE }} />
         {isUnread ? (
           <span
             role="img"
             aria-label={NOTIFICATIONS_TEXTS.UNREAD}
             style={{
+              ...STATUS_DOT,
               position: 'absolute',
               top: '50%',
               right: '100%',
-              marginRight: 8,
-              width: 8,
-              height: 8,
-              borderRadius: '50%',
+              marginRight: SPACING.SM,
               background: DEFAULT_COLORS.INFO_STRONG,
               transform: 'translateY(-50%)',
             }}
@@ -131,12 +139,13 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
         ) : null}
       </div>
 
-      <div style={{ flex: 1, minWidth: 0, paddingTop: 4 }}>
+      <div style={{ flex: 1, minWidth: 0, paddingTop: SPACING.XS }}>
         <div
           title={notification.title}
           style={{
-            fontWeight: isUnread ? 600 : 500,
-            fontSize: 13,
+            // Off scale, kept exact: lineHeight 20px (px, LINE_HEIGHT is unitless).
+            fontWeight: isUnread ? FONT_WEIGHT.SEMIBOLD : FONT_WEIGHT.MEDIUM,
+            fontSize: FONT_SIZE.MD,
             lineHeight: '20px',
             color: DEFAULT_COLORS.TEXT_ON_SURFACE,
             whiteSpace: 'nowrap',
@@ -149,8 +158,9 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
         <div
           title={notification.message.replaceAll('**', '')}
           style={{
-            marginTop: 2,
-            fontSize: 12,
+            // Off scale, kept exact: lineHeight 18px (px, LINE_HEIGHT is unitless).
+            marginTop: SPACING.XXS,
+            fontSize: FONT_SIZE.SM,
             lineHeight: '18px',
             color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
             overflow: 'hidden',
@@ -176,7 +186,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
       >
         {/* Keeps the row's own click and Enter (open the target) from firing with an action. */}
         <div
-          style={{ display: 'flex', gap: 2, flexShrink: 0 }}
+          style={{ display: 'flex', gap: SPACING.XXS, flexShrink: 0 }}
           onClick={(e) => e.stopPropagation()}
           onKeyDown={(e) => e.stopPropagation()}
         >
@@ -204,8 +214,9 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
         {/* Right edge lines up with the delete glyph, not its button box. */}
         <div
           style={{
+            // Off scale, kept exact: lineHeight 16px (px, LINE_HEIGHT is unitless).
             paddingRight: (ROW_ICON_BUTTON_SIZE - CONTROL_FONT_SIZE) / 2,
-            fontSize: 11,
+            fontSize: FONT_SIZE.XS,
             lineHeight: '16px',
             color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
             whiteSpace: 'nowrap',

@@ -1,5 +1,6 @@
 import React from 'react';
-import { DEFAULT_COLORS, EMPTY_VALUE } from '../../../constants';
+import { CloseCircleFilled } from '@ant-design/icons';
+import { DEFAULT_COLORS, EMPTY_VALUE, FONT_SIZE, SPACING } from '../../../constants';
 import { FancySpinner } from '../../../components/animation';
 import TimeAgo from '../../../components/display/time/TimeAgo';
 import { INSIGHTS_UI as T } from '../constants/texts';
@@ -12,9 +13,11 @@ const counted = (label: CountLabel, count: number): string =>
 
 const DARK = {
   muted: DEFAULT_COLORS.TEXT_MUTED,
+  text: DEFAULT_COLORS.TEXT_PRIMARY,
 };
 const LIGHT = {
   muted: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+  text: DEFAULT_COLORS.TEXT_ON_SURFACE,
 };
 
 // What follows "Last analysis {time ago}" for a done or failed run.
@@ -30,19 +33,27 @@ const finishedRunText = (run: LastRun): string => {
 // A document written only by setup reviews has no run yet. `light` is for the panel surface.
 const RunLine: React.FC<{ run: LastRun | null; light?: boolean }> = ({ run, light = false }) => {
   const palette = light ? LIGHT : DARK;
-  const mutedStyle: React.CSSProperties = { fontSize: 12, color: palette.muted };
+  const mutedStyle: React.CSSProperties = { fontSize: FONT_SIZE.SM, color: palette.muted };
   if (!run) return <div style={mutedStyle}>{T.NOT_ANALYZED_YET}</div>;
   if (run.status === 'queued') return <div style={mutedStyle}>{T.QUEUED}</div>;
   if (run.status === 'running') {
     return (
-      <div style={{ ...mutedStyle, display: 'flex', alignItems: 'center', gap: 8 }}>
+      <div style={{ ...mutedStyle, display: 'flex', alignItems: 'center', gap: SPACING.SM }}>
         <FancySpinner size={12} />
         {T.ANALYZING.replace('{trigger}', RUN_TRIGGER_LABELS[run.trigger])}
       </div>
     );
   }
   return (
-    <div style={{ ...mutedStyle, display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8 }}>
+    <div
+      style={{
+        ...mutedStyle,
+        display: 'flex',
+        flexWrap: 'wrap',
+        alignItems: 'center',
+        gap: SPACING.SM,
+      }}
+    >
       <span>
         {T.RUN_LAST_ANALYSIS}
         {run.finishedAt ? (
@@ -54,7 +65,18 @@ const RunLine: React.FC<{ run: LastRun | null; light?: boolean }> = ({ run, ligh
         {finishedRunText(run)}
       </span>
       {run.status === 'failed' ? (
-        <span style={{ color: DEFAULT_COLORS.DANGER }}>{insightErrorMessage(run.error)}</span>
+        // Red can't be text on the dark page: the icon carries it.
+        <span
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: SPACING.S6,
+            color: palette.text,
+          }}
+        >
+          <CloseCircleFilled aria-hidden style={{ color: DEFAULT_COLORS.DANGER }} />
+          {insightErrorMessage(run.error)}
+        </span>
       ) : null}
     </div>
   );
@@ -65,7 +87,7 @@ export const SetupReviewLine: React.FC<{ at?: string; style?: React.CSSPropertie
   at,
   style,
 }) => (
-  <span style={{ ...style, display: 'inline-flex', gap: 4 }}>
+  <span style={{ ...style, display: 'inline-flex', gap: SPACING.XS }}>
     {at ? (
       <>
         {T.SETUP_REVIEWED}

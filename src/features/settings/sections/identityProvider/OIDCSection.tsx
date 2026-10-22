@@ -1,5 +1,6 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { Alert, Input, Tooltip, Typography, App as AntdApp } from 'antd';
+import { CloseCircleFilled } from '@ant-design/icons';
 import SettingsCard from '../../components/SettingsCard';
 import {
   SettingsDivider,
@@ -10,7 +11,7 @@ import {
 import Toolbar from '../../../../components/display/toolbar/Toolbar';
 import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 import { Client, authApiClient } from '../../../../api';
-import { Endpoints } from '../../../../constants';
+import { DEFAULT_COLORS, Endpoints, FONT_WEIGHT, SPACING } from '../../../../constants';
 import { Switch } from '../../../../components/display/inputs';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchGlobalConfigThunk, selectGlobalConfigState } from '../../../globalconfig/store';
@@ -67,10 +68,19 @@ function validate(form: OIDCForm, hasPinnedKeys: boolean): OIDCErrors {
   return errors;
 }
 
-// Like the plan form's parameter errors: red text right under the field.
+// Right under the field. Red can't be text on the dark card (3.6:1): the icon carries it.
 const FieldError: React.FC<{ message?: string }> = ({ message }) =>
   message ? (
-    <Typography.Text type="danger" style={{ fontSize: SETTINGS_CONSTANTS.CONTENT.HINT_FONT_SIZE }}>
+    <Typography.Text
+      style={{
+        fontSize: SETTINGS_CONSTANTS.CONTENT.HINT_FONT_SIZE,
+        color: DEFAULT_COLORS.TEXT_PRIMARY,
+      }}
+    >
+      <CloseCircleFilled
+        aria-hidden
+        style={{ color: DEFAULT_COLORS.DANGER, marginRight: SPACING.S6 }}
+      />
       {message}
     </Typography.Text>
   ) : null;
@@ -176,7 +186,7 @@ const OIDCSection: React.FC = memo(() => {
             gap: C.LAYOUT.ROW_GAP,
           }}
         >
-          <div style={{ fontWeight: 700 }}>{C.LABELS.ENABLE_LABEL}</div>
+          <div style={{ fontWeight: FONT_WEIGHT.BOLD }}>{C.LABELS.ENABLE_LABEL}</div>
           <Tooltip title={deniedTooltip}>
             <span style={canEdit ? {} : { display: 'inline-block', cursor: 'not-allowed' }}>
               <Switch

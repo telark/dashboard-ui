@@ -1,7 +1,17 @@
 import React from 'react';
 import { Empty, Tag } from 'antd';
+import { CloseCircleFilled } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
-import { DEFAULT_COLORS, SECTION_LAYOUT, TAG_CLASS } from '../../../../../constants';
+import {
+  DEFAULT_COLORS,
+  SECTION_LAYOUT,
+  STATUS_DOT,
+  TAG_CLASS,
+  SPACING,
+  FONT_SIZE,
+  LINE_HEIGHT,
+  FONT_WEIGHT,
+} from '../../../../../constants';
 import { FancySpinner } from '../../../../../components/animation';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
 import { selectProtectionPlanTemplates } from '../../store';
@@ -51,17 +61,32 @@ const HealthSection: React.FC<HealthSectionProps> = ({ plan, status, loading, er
 
   return (
     <div>
-      {error && <div style={{ color: DEFAULT_COLORS.DANGER, marginBottom: 8 }}>{error}</div>}
+      {error && (
+        // Red can't be text on the dark page: the icon carries it.
+        <div style={{ color: DEFAULT_COLORS.TEXT_PRIMARY, marginBottom: SPACING.SM }}>
+          <CloseCircleFilled
+            aria-hidden
+            style={{ color: DEFAULT_COLORS.DANGER, marginRight: SPACING.S6 }}
+          />
+          {error}
+        </div>
+      )}
 
       {loading && rows.length === 0 ? (
-        <div style={{ display: 'flex', justifyContent: 'center', padding: 24 }}>
+        <div style={{ display: 'flex', justifyContent: 'center', padding: SPACING.XXL }}>
           <FancySpinner showLabel={false} size={24} />
         </div>
       ) : rows.length === 0 ? (
         <Empty description={HD.EMPTY} />
       ) : (
         <div>
-          <div style={{ fontSize: 13, lineHeight: 1.5, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
+          <div
+            style={{
+              fontSize: FONT_SIZE.MD,
+              lineHeight: LINE_HEIGHT.BASE,
+              color: DEFAULT_COLORS.TEXT_PRIMARY,
+            }}
+          >
             {healthSummary(rows, plan.mode, labelOf)}
           </div>
           {rows.map((row) => {
@@ -70,6 +95,7 @@ const HealthSection: React.FC<HealthSectionProps> = ({ plan, status, loading, er
             return (
               <div
                 key={`${row.namespace}/${row.name}`}
+                // 10: the row padding sits between SM and MD.
                 style={{
                   padding: '10px 0',
                   borderBottom: SECTION_LAYOUT.SUBTLE_DIVIDER,
@@ -78,20 +104,14 @@ const HealthSection: React.FC<HealthSectionProps> = ({ plan, status, loading, er
                 <div
                   style={{
                     display: 'flex',
-                    gap: 12,
+                    gap: SPACING.MD,
                     alignItems: 'flex-start',
                     justifyContent: 'space-between',
                   }}
                 >
                   <div
-                    style={{
-                      width: 8,
-                      height: 8,
-                      borderRadius: '50%',
-                      marginTop: 5,
-                      flexShrink: 0,
-                      background: dot,
-                    }}
+                    // 5: drops the dot to the middle of the first text line.
+                    style={{ ...STATUS_DOT, marginTop: 5, background: dot }}
                   />
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div
@@ -99,15 +119,15 @@ const HealthSection: React.FC<HealthSectionProps> = ({ plan, status, loading, er
                         display: 'flex',
                         flexWrap: 'wrap',
                         alignItems: 'center',
-                        gap: 6,
+                        gap: SPACING.S6,
                       }}
                     >
                       {/* The operation it refuses, over the engine's policy name. */}
                       <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
                         <span
                           style={{
-                            fontSize: 13,
-                            fontWeight: 700,
+                            fontSize: FONT_SIZE.MD,
+                            fontWeight: FONT_WEIGHT.BOLD,
                             color: DEFAULT_COLORS.TEXT_PRIMARY,
                             overflowWrap: 'anywhere',
                           }}
@@ -117,7 +137,7 @@ const HealthSection: React.FC<HealthSectionProps> = ({ plan, status, loading, er
                         {label && (
                           <span
                             style={{
-                              fontSize: 12,
+                              fontSize: FONT_SIZE.SM,
                               color: DEFAULT_COLORS.TEXT_MUTED,
                               overflowWrap: 'anywhere',
                             }}
@@ -136,7 +156,13 @@ const HealthSection: React.FC<HealthSectionProps> = ({ plan, status, loading, er
                       )}
                     </div>
                     {auditsOnly(row, plan.mode) && (
-                      <div style={{ marginTop: 6, fontSize: 12, color: DEFAULT_COLORS.WARNING }}>
+                      <div
+                        style={{
+                          marginTop: SPACING.S6,
+                          fontSize: FONT_SIZE.SM,
+                          color: DEFAULT_COLORS.WARNING,
+                        }}
+                      >
                         {HD.AUDIT_ONLY(label ?? row.name)}
                       </div>
                     )}
@@ -149,7 +175,13 @@ const HealthSection: React.FC<HealthSectionProps> = ({ plan, status, loading, er
       )}
 
       {driftUnexpected.length > 0 && (
-        <div style={{ marginTop: 12, fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
+        <div
+          style={{
+            marginTop: SPACING.MD,
+            fontSize: FONT_SIZE.SM,
+            color: DEFAULT_COLORS.TEXT_MUTED,
+          }}
+        >
           <strong>{HD.UNEXPECTED}:</strong>{' '}
           {driftUnexpected
             .map((name) => {

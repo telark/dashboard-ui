@@ -1,6 +1,15 @@
 import React, { memo } from 'react';
 import { Tooltip } from 'antd';
-import { DEFAULT_COLORS, EMPTY_VALUE } from '../../../../../constants';
+import { CloseCircleOutlined } from '@ant-design/icons';
+import {
+  DEFAULT_COLORS,
+  EMPTY_VALUE,
+  HAIRLINE,
+  UNSTYLED_BUTTON,
+  FONT_SIZE,
+  FONT_WEIGHT,
+  SPACING,
+} from '../../../../../constants';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import { isSessionExpired } from '../../../../../features/auth/utils/session/validation';
 import { SECURITY_SECTION_CONSTANTS } from '../constants';
@@ -36,11 +45,11 @@ const SESSION_TABLE_MIN_WIDTH = 640;
 const tableHeaderStyle: React.CSSProperties = {
   display: 'grid',
   gridTemplateColumns: SESSION_GRID_COLUMNS,
-  gap: 16,
-  padding: '12px 0',
-  borderBottom: `1px solid ${DEFAULT_COLORS.BORDER_SUBTLE}`,
-  fontSize: 12,
-  fontWeight: 600,
+  gap: SPACING.LG,
+  padding: `${SPACING.MD}px 0`,
+  borderBottom: HAIRLINE.BORDER_SUBTLE,
+  fontSize: FONT_SIZE.SM,
+  fontWeight: FONT_WEIGHT.SEMIBOLD,
   color: DEFAULT_COLORS.TEXT_MUTED,
   textTransform: 'uppercase',
   letterSpacing: '0.02em',
@@ -49,17 +58,17 @@ const tableHeaderStyle: React.CSSProperties = {
 const rowStyle: React.CSSProperties = {
   display: 'grid',
   gridTemplateColumns: SESSION_GRID_COLUMNS,
-  gap: 16,
-  padding: '12px 0',
-  borderBottom: `1px solid ${DEFAULT_COLORS.BORDER_SUBTLE}`,
-  fontSize: 14,
+  gap: SPACING.LG,
+  padding: `${SPACING.MD}px 0`,
+  borderBottom: HAIRLINE.BORDER_SUBTLE,
+  fontSize: FONT_SIZE.BASE,
   color: DEFAULT_COLORS.TEXT_PRIMARY,
   alignItems: 'center',
 };
 
 const emptyRowStyle: React.CSSProperties = {
-  padding: '24px 0',
-  fontSize: 14,
+  padding: `${SPACING.XXL}px 0`,
+  fontSize: FONT_SIZE.BASE,
   color: DEFAULT_COLORS.TEXT_MUTED,
   textAlign: 'center',
 };
@@ -73,14 +82,15 @@ const truncateCellStyle: React.CSSProperties = {
   whiteSpace: 'nowrap',
 };
 
+// Red can't be text on the dark card (3.6:1): the icon carries it, the label stays white.
 const revokeButtonStyle: React.CSSProperties = {
-  fontSize: 14,
-  fontWeight: 500,
-  color: DEFAULT_COLORS.DANGER,
-  background: 'none',
-  border: 'none',
-  padding: 0,
-  cursor: 'pointer',
+  ...UNSTYLED_BUTTON,
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: SPACING.S6,
+  fontSize: FONT_SIZE.BASE,
+  fontWeight: FONT_WEIGHT.MEDIUM,
+  color: DEFAULT_COLORS.TEXT_PRIMARY,
   fontFamily: 'inherit',
 };
 
@@ -119,7 +129,12 @@ const SessionsTable: React.FC<SessionsTableProps> = memo(
             return (
               <div key={sessionName ?? session.createdTimestamp} style={rowStyle}>
                 <span style={{ minWidth: 0 }}>
-                  <div style={{ fontWeight: isCurrent ? 600 : undefined, ...truncateCellStyle }}>
+                  <div
+                    style={{
+                      fontWeight: isCurrent ? FONT_WEIGHT.SEMIBOLD : undefined,
+                      ...truncateCellStyle,
+                    }}
+                  >
                     {session.deviceMetadata?.device
                       ? formatDevice(session.deviceMetadata.device)
                       : isCurrent
@@ -129,9 +144,9 @@ const SessionsTable: React.FC<SessionsTableProps> = memo(
                   {session.deviceMetadata?.os && (
                     <div
                       style={{
-                        fontSize: 12,
+                        fontSize: FONT_SIZE.SM,
                         color: DEFAULT_COLORS.TEXT_MUTED,
-                        marginTop: 2,
+                        marginTop: SPACING.XXS,
                         ...truncateCellStyle,
                       }}
                     >
@@ -139,7 +154,7 @@ const SessionsTable: React.FC<SessionsTableProps> = memo(
                     </div>
                   )}
                 </span>
-                <span style={{ fontSize: 13, minWidth: 0 }}>
+                <span style={{ fontSize: FONT_SIZE.MD, minWidth: 0 }}>
                   {session.deviceMetadata?.browser ? (
                     <Tooltip
                       title={session.deviceMetadata.userAgent || undefined}
@@ -177,6 +192,7 @@ const SessionsTable: React.FC<SessionsTableProps> = memo(
                       onClick={() => onRevokeClick(session)}
                       disabled={revokingSessionName === sessionName}
                     >
+                      <CloseCircleOutlined aria-hidden style={{ color: DEFAULT_COLORS.DANGER }} />
                       {LABELS.SESSIONS_REVOKE}
                     </button>
                   )}
