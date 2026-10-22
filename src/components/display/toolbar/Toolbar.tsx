@@ -5,6 +5,7 @@ import {
   BUTTON_COLORS,
   BUTTON_CONFIGS,
   DEFAULT_COLORS,
+  DISABLED_OPACITY,
   TOOLBAR_CONTROL,
   TOOLBAR_ITEM_GAP,
   FONT_SIZE,
@@ -19,8 +20,6 @@ import { SearchButton } from '../buttons';
 import { FancySpinner } from '../../animation';
 import { SearchInput } from '../inputs';
 import { useMediaQuery } from '../../../hooks/layout';
-
-const DISABLED_OPACITY = 0.6;
 
 interface ToolbarProps {
   config: ToolbarConfig | undefined;
@@ -253,7 +252,9 @@ const Toolbar: React.FC<ToolbarProps> = ({ config, compact }) => {
 
           const buttonNode = (
             <button
-              key={button.key}
+              // A fresh node when it disables itself on click: the hover paint would stay (Chrome sends a
+              // disabled button no mouseleave) under the disabled label, white on white.
+              key={`${button.key}:${isDisabled}`}
               onClick={handleButtonClick}
               disabled={isDisabled}
               aria-label={iconOnly ? buttonLabel : undefined}
