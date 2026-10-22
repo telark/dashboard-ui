@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FancySpinner } from '../../../components/animation';
 import { Button, Empty, Tooltip, Typography } from 'antd';
-import { BellOutlined, CheckOutlined, DeleteOutlined } from '@ant-design/icons';
+import { CheckCircleFilled, CheckOutlined, DeleteOutlined } from '@ant-design/icons';
 import { SlideOutPanel } from '../../../components/display/panels/slide-out';
 import { DEFAULT_COLORS, EMPTY_CLASS, ROW_ICON_BUTTON_SIZE, SPACING } from '../../../constants';
 import type { UseNotificationsResult } from '../hooks';
@@ -25,6 +25,16 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ open, onClose, fe
     feed;
 
   const hasNotifications = notifications.length > 0;
+
+  // The shared frame has no Escape key; a read-only panel loses nothing to it.
+  useEffect(() => {
+    if (!open) return undefined;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [open, onClose]);
 
   const content = (
     <div
@@ -71,7 +81,7 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ open, onClose, fe
       {!isLoading && !hasNotifications ? (
         <Empty
           className={EMPTY_CLASS.PANEL}
-          image={<BellOutlined />}
+          image={<CheckCircleFilled style={{ color: DEFAULT_COLORS.SUCCESS }} />}
           description={
             <>
               <Typography.Title level={5}>{NOTIFICATIONS_TEXTS.EMPTY_TITLE}</Typography.Title>
