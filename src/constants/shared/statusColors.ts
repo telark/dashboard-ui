@@ -4,9 +4,8 @@ const {
   SUCCESS,
   DANGER,
   WARNING,
-  INFO,
-  INFO_STRONG,
   NEUTRAL,
+  TEXT_SECONDARY,
   TEXT_MUTED,
   ICON_MUTED,
   ICON_SECONDARY,
@@ -18,18 +17,18 @@ const {
 export const STATUS_COLORS = {
   PLAN_PHASE: {
     active: SUCCESS,
-    scheduled: WARNING,
+    scheduled: NEUTRAL,
     failed: DANGER,
     terminated: NEUTRAL,
     canceled: NEUTRAL,
     draft: NEUTRAL,
-    pending_approval: INFO,
+    pending_approval: WARNING,
   },
   PLAN_HEALTH: {
     unknown: NEUTRAL,
     healthy: SUCCESS,
     drifted: WARNING,
-    degraded: DANGER,
+    degraded: WARNING,
   },
   // An audit plan only records what it would refuse, so it never reads as a red refusal.
   PLAN_MODE: {
@@ -61,17 +60,24 @@ export const STATUS_COLORS = {
     recovery: SUCCESS,
     other: NEUTRAL,
   },
-  // Protection is not health: only Protected carries an accent, never the health green or amber.
+  // The one colored chip on a History entry, never blue. Low has no key: the neutral pill.
+  APPLICATION_CHANGE_SEVERITY: {
+    critical: DANGER,
+    high: DANGER,
+    medium: WARNING,
+  } as Readonly<Record<string, string>>,
+  // Unprotected is the risk, the one filled pill. The rest are outlines in these colors: the
+  // nominal Protected in green, auditing and pending in two neutral tones.
   APPLICATION_COVERAGE: {
-    enforcing: INFO,
-    auditing: undefined,
-    upcoming: undefined,
-    none: undefined,
+    enforcing: SUCCESS,
+    auditing: TEXT_SECONDARY,
+    upcoming: TEXT_MUTED,
+    none: WARNING,
   },
   ROLLBACK: {
     success: SUCCESS,
     failed: DANGER,
-    inProgress: WARNING,
+    inProgress: NEUTRAL,
     pending: WARNING,
     aborted: undefined,
     unknown: undefined,
@@ -88,7 +94,7 @@ export const STATUS_COLORS = {
   // A pending break-glass request waits on the bootstrap account, so it is the one that asks for attention.
   BOOTSTRAP_REQUEST: {
     pending: WARNING,
-    approved: INFO,
+    approved: SUCCESS,
     canceled: undefined,
     completed: SUCCESS,
   } as Readonly<Record<string, string | undefined>>,
@@ -105,20 +111,21 @@ export const STATUS_COLORS = {
     resolved: SUCCESS,
   },
   NOTIFICATION_SEVERITY: {
-    info: INFO_STRONG,
+    info: NEUTRAL,
     success: SUCCESS,
     warning: WARNING,
     error: DANGER,
   } as Readonly<Record<string, string>>,
+  // History's map (APPLICATION_CHANGE_SEVERITY); the chart dashes the high line apart from critical.
   HOME_SEVERITY: {
     critical: DANGER,
-    high: WARNING,
-    medium: SUCCESS,
+    high: DANGER,
+    medium: WARNING,
     low: ICON_SECONDARY,
     other: ICON_MUTED,
   },
   HOME_PLAN_EVENT: {
-    created: INFO,
+    created: NEUTRAL,
     started: SUCCESS,
     terminated: ICON_SECONDARY,
   },

@@ -1,3 +1,7 @@
+import { DEFAULT_COLORS } from '../shared/colors';
+import { SPACING } from './controls';
+import { FONT_SIZE, FONT_WEIGHT } from './fonts';
+
 const TRANSITION_MS = 150;
 // Fast start, soft landing: most of the move shows in the first frames.
 const TRANSITION_EASING = 'cubic-bezier(0.2, 0, 0, 1)';
@@ -14,6 +18,7 @@ export const SIDEBAR_LAYOUT = {
   // content, so it stays collapsed and the toggle is unavailable.
   FORCE_COLLAPSE_BELOW,
   FORCE_COLLAPSE_QUERY: `(max-width: ${FORCE_COLLAPSE_BELOW - 1}px)`,
+  TOOLTIP_DELAY_S: 0.3,
   CONTENT_TOP_PADDING: 10,
   CSS_VAR: '--sidebar-width',
   CLASS: 'tk-sidebar',
@@ -25,7 +30,17 @@ export const SIDEBAR_LAYOUT = {
   TRANSITION_EASING,
   WIDTH_TRANSITION: `width ${TRANSITION_MS}ms ${TRANSITION_EASING}`,
   REDUCED_MOTION_QUERY: '(prefers-reduced-motion: reduce)',
-  SECTION_LABEL_FONT_SIZE: 11,
+  // The uppercase eyebrow over each group of nav items.
+  SECTION_LABEL: {
+    fontSize: FONT_SIZE.XS,
+    fontWeight: FONT_WEIGHT.MEDIUM,
+    letterSpacing: '0.06em',
+    textTransform: 'uppercase',
+    color: DEFAULT_COLORS.TEXT_SECONDARY,
+    padding: '4px 12px 2px 22px',
+    marginTop: SPACING.XL,
+    userSelect: 'none',
+  },
   RESIZE_HANDLE: {
     WIDTH: 5,
     CURSOR: 'col-resize',

@@ -1,5 +1,18 @@
-import { CONTROL_RADIUS } from './controls';
+import { theme } from 'antd';
+import type { ThemeConfig } from 'antd';
+import { CONTROL_HEIGHT, CONTROL_RADIUS } from './controls';
+import { PANEL_THEME_TOKENS, SELECT_THEME } from './panels';
+import { HAIRLINE } from './sections';
+import { Z_INDEX } from './zIndex';
 import { DEFAULT_COLORS, withAlpha } from '../shared/colors';
+
+// The light surface for overlays outside a panel: BaseModal and the feature error overlay.
+// Not on PANEL_THEME's css-var key: a different theme there would overwrite the panels' variables.
+export const OVERLAY_THEME: ThemeConfig = {
+  algorithm: theme.defaultAlgorithm,
+  token: { ...PANEL_THEME_TOKENS, controlHeight: CONTROL_HEIGHT },
+  components: { Select: SELECT_THEME },
+};
 
 // The one dialog chrome: BaseModal renders it, and every modal builds on BaseModal.
 export const MODAL_CHROME = {
@@ -9,8 +22,8 @@ export const MODAL_CHROME = {
     BORDER_RADIUS: 12,
     PADDING: '16px 20px',
     CLASS_NAME: 'app-modal',
-    /** Above SLIDE_OUT.PANEL (1001) so a modal raised from a panel is not buried. */
-    Z_INDEX: 1100,
+    /** Above SLIDE_OUT.PANEL so a modal raised from a panel is not buried. */
+    Z_INDEX: Z_INDEX.MODAL,
   },
   CLOSE: {
     top: 8,
@@ -67,7 +80,7 @@ export const MODAL_CHROME = {
     width: '100%',
     padding: '6px 10px',
     borderRadius: CONTROL_RADIUS,
-    border: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER}`,
+    border: HAIRLINE.SURFACE_BORDER,
     background: DEFAULT_COLORS.SURFACE_SUBTLE,
     fontSize: 13,
     color: DEFAULT_COLORS.TEXT_ON_SURFACE,

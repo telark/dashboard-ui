@@ -2,20 +2,19 @@
 export const DEFAULT_COLORS = {
   // Status accents; SUCCESS is also the brand primary.
   SUCCESS: '#20C997',
-  DANGER: '#E05252',
-  WARNING: '#C99A3E',
+  DANGER: '#DA3633',
+  WARNING: '#FAAD14',
   INFO: '#bfdbfe',
   INFO_STRONG: '#2563eb', // info blue that reads on white (5.17:1)
-  NEUTRAL: '#999',
+  NEUTRAL: '#98a2b3',
   // Brand primary interaction states.
   SUCCESS_HOVER: '#1db584',
   SUCCESS_ACTIVE: '#1aa572',
-  // Status tints (accent at low alpha) and the primary focus ring.
+  // Status tints (accent at low alpha).
   SUCCESS_TINT: 'rgba(32, 201, 151, 0.12)',
-  DANGER_TINT: 'rgba(224, 82, 82, 0.12)',
-  WARNING_TINT: 'rgba(201, 154, 62, 0.12)',
+  DANGER_TINT: 'rgba(218, 54, 51, 0.12)',
+  WARNING_TINT: 'rgba(250, 173, 20, 0.12)',
   NEUTRAL_TINT: 'rgba(153, 153, 153, 0.12)',
-  SUCCESS_RING: 'rgba(32, 201, 151, 0.2)',
   // Dark surfaces: the page, then elevated cards one step above it so they read as raised
   // without shadows and still sit below CHIP_CUSTOM_BG used inside them.
   PAGE_BG: '#111827',
@@ -36,14 +35,13 @@ export const DEFAULT_COLORS = {
   ICON_MUTED: '#4b5563',
   ICON_SECONDARY: '#6b7280',
   // Chips on dark surfaces; CHIP_ON_SURFACE_* is the light counterpart.
-  INFO_BG: '#1e3a8a',
   CHIP_CUSTOM_BG: '#1f2937',
   // Light surfaces: panels, modals, dropdowns, popovers.
   SURFACE_WHITE: '#ffffff',
   SURFACE_SUBTLE: '#f8fafc',
   SURFACE_HOVER: '#f1f5f9',
-  SURFACE_BORDER: '#d9d9d9',
-  SURFACE_BORDER_LIGHT: '#f0f0f0',
+  SURFACE_BORDER: '#cbd5e1',
+  SURFACE_BORDER_LIGHT: '#e2e8f0',
   TEXT_ON_SURFACE: '#111827',
   TEXT_ON_SURFACE_MUTED: '#64748b',
   TEXT_ON_SURFACE_DISABLED: '#94a3b8',
@@ -62,9 +60,6 @@ export const DEFAULT_COLORS = {
   AUTH_LIGHT_TEXT: '#0b1f33',
   AUTH_LIGHT_TEXT_MUTED: '#64748b',
   AUTH_LIGHT_DIVIDER: '#f1f5f9',
-  AUTH_DARK_BG: '#020617',
-  AUTH_DARK_CARD_BG: '#0f172a',
-  AUTH_DARK_BORDER: '#1e293b',
   AUTH_DARK_TEXT: '#f8fafc',
   AUTH_DARK_TEXT_MUTED: '#94a3b8',
   // YAML syntax highlighting in the manifest viewer (VS Code Dark+).

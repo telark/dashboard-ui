@@ -65,6 +65,7 @@ export const AUTH_PATHS = {
     CONFIG: 'auth/oidc/config',
   },
   SELF_REGISTRATION: 'auth/self-registration',
+  BREAK_GLASS_ALERTS: 'auth/break-glass-alerts',
   USER_ENROLL_LINK: (id: string) => `${byId('auth/users', id)}/enroll-link`,
   BOOTSTRAP_ASSERT: (id: string, step: 'start' | 'finish') =>
     `${byId('auth/bootstrap/requests', id)}/assert/${step}`,

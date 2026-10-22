@@ -39,3 +39,5 @@ export const Icons = {
   Container: AiOutlineContainer,
   /** Restore / rollback to saved snapshot (backup-restore metaphor). */
 } as const;
+
+export const STATUS_DOT = { width: 8, height: 8, borderRadius: '50%', flexShrink: 0 } as const;

@@ -1,4 +1,5 @@
-import { CONTROL_HEIGHT } from './controls';
+import { CONTROL_HEIGHT, SPACING } from './controls';
+import { SIDEBAR_LAYOUT } from './sidebar';
 import { DEFAULT_COLORS } from '../shared/colors';
 
 export const BUTTON_TEXTS = {
@@ -9,6 +10,14 @@ export const BUTTON_TEXTS = {
   APPLY: 'Apply',
   CLOSE: 'Close',
   SELECT: 'Select',
+} as const;
+
+// Strips a button's chrome but, unlike `all: 'unset'`, keeps its focus ring.
+export const UNSTYLED_BUTTON = {
+  background: 'none',
+  border: 'none',
+  padding: SPACING.NONE,
+  cursor: 'pointer',
 } as const;
 
 // Spacing between toolbar items, and between a toolbar and its neighbors, so
@@ -22,7 +31,7 @@ export const TOOLBAR_CONTROL = {
   PADDING: '0 10px',
   // Below this the labels no longer fit beside the sidebar, so every toolbar
   // control falls back to its icon and moves its label into a tooltip.
-  COMPACT_QUERY: '(max-width: 767px)',
+  COMPACT_QUERY: SIDEBAR_LAYOUT.FORCE_COLLAPSE_QUERY,
   // Without this the label box keeps its half-leading, so centering the box
   // leaves the glyphs off-center against icons, which set their own.
   LINE_HEIGHT: 1,

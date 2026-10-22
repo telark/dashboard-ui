@@ -1,4 +1,5 @@
 import { CONTROL_HEIGHT } from '../layout/controls';
+import { Z_INDEX } from '../layout/zIndex';
 
 /** Used by PageLayout and Settings so content (title + body) aligns across features. */
 export const PAGE_CONTENT_LAYOUT = {
@@ -18,18 +19,25 @@ export const PAGE_HEADER = {
   BREADCRUMB_SEPARATOR: '/',
 } as const;
 
+const LIST_CONTENT_GAP_PX = 32;
+
 /** List pages: the toolbar sticks under the app header while the list scrolls. */
 export const LIST_PAGE = {
-  TOOLBAR_Z_INDEX: 5,
+  TOOLBAR_Z_INDEX: Z_INDEX.STICKY,
   TOOLBAR_PADDING: '8px 0',
   // The sticky wrapper's padding plus the page gap leaves too much air above the
   // list, so the content pulls back up by this much.
   CONTENT_OFFSET_PX: -20,
   LOADING_MIN_HEIGHT_PX: 240,
-  CONTENT_GAP_PX: 32,
+  CONTENT_GAP_PX: LIST_CONTENT_GAP_PX,
   // The row between the page header and the toolbar: the Plans and Insights tabs (antd Segmented
   // at CONTROL_HEIGHT), the Applications discovery status, or an empty slot.
   SUBHEADER_ROW_HEIGHT_PX: CONTROL_HEIGHT,
+  // The toolbar's padding and row height already leave air under the subheader row, so it takes
+  // back the page gap above it. Any closer and its sticky background would cover the row.
+  SUBHEADER_TOOLBAR_OFFSET_PX: -LIST_CONTENT_GAP_PX,
+  // The list table's selection column (App.tsx Table token); antd.css pins its cells to match.
+  TABLE_SELECTION_COLUMN_WIDTH_PX: 23,
 } as const;
 
 export const SHARED_PAGE_CONSTANTS = {

@@ -30,7 +30,18 @@ export const TIME_CONFIGS = {
 
 export const TIME_TEXTS = {
   INVALID_DATE: COMMON_VALUES.DATES.INVALID,
+  JUST_NOW: 'just now',
+  AGO_SHORT: (count: number, unit: string) => `${count}${unit} ago`,
 } as const;
+
+// Compact relative time ("5h ago"), largest unit first, as [suffix, seconds].
+export const TIME_AGO_SHORT_UNITS: readonly (readonly [string, number])[] = [
+  ['y', 31536000],
+  ['mo', 2592000],
+  ['d', 86400],
+  ['h', 3600],
+  ['m', 60],
+];
 
 export const TIME_REMAINING = {
   ENDED: 'Ended',

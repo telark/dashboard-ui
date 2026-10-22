@@ -22,13 +22,3 @@ export const LIGHT_TOKENS = {
   colorBorderDisabled: DEFAULT_COLORS.AUTH_LIGHT_BORDER,
   colorTextPlaceholder: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
 } as const;
-
-export const DARK_TOKENS = {
-  ...CONTROL_GEOMETRY,
-  colorPrimary: DEFAULT_COLORS.SUCCESS,
-  colorTextBase: DEFAULT_COLORS.AUTH_DARK_TEXT,
-  colorBgContainer: DEFAULT_COLORS.AUTH_DARK_CARD_BG,
-  colorBorder: DEFAULT_COLORS.AUTH_DARK_BORDER,
-  colorBorderDisabled: DEFAULT_COLORS.AUTH_DARK_BORDER,
-  colorTextPlaceholder: DEFAULT_COLORS.AUTH_DARK_TEXT_MUTED,
-} as const;

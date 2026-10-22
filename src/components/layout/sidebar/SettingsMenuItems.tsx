@@ -14,7 +14,17 @@ import {
   GlobalOutlined,
 } from '@ant-design/icons';
 import SidebarButton from '../../display/buttons/SideBarButton';
-import { BUTTON_CONFIGS, DEFAULT_COLORS, APP_ROUTES, SIDEBAR_LAYOUT } from '../../../constants';
+import {
+  BUTTON_CONFIGS,
+  DEFAULT_COLORS,
+  APP_ROUTES,
+  SIDEBAR_LAYOUT,
+  UNSTYLED_BUTTON,
+  FONT_SIZE,
+  FONT_WEIGHT,
+  MOTION,
+  SPACING,
+} from '../../../constants';
 
 interface SettingsMenuItemsProps {
   isCollapsed: boolean;
@@ -46,20 +56,9 @@ const SETTINGS_ICONS = {
   about: <InfoCircleOutlined />,
 } as const;
 
-const sectionLabelStyle: CSSProperties = {
-  fontSize: SIDEBAR_LAYOUT.SECTION_LABEL_FONT_SIZE,
-  fontWeight: 500,
-  letterSpacing: '0.06em',
-  textTransform: 'uppercase',
-  color: DEFAULT_COLORS.TEXT_SECONDARY,
-  padding: '4px 12px 2px 22px',
-  marginTop: 20,
-  userSelect: 'none',
-};
-
 const firstSectionLabelStyle: CSSProperties = {
-  ...sectionLabelStyle,
-  marginTop: 0,
+  ...SIDEBAR_LAYOUT.SECTION_LABEL,
+  marginTop: SPACING.NONE,
 };
 
 const BackButton = memo(
@@ -74,27 +73,34 @@ const BackButton = memo(
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
         style={{
+          // Off scale, kept exact: padding 10 (SM to MD).
+          ...UNSTYLED_BUTTON,
           display: 'flex',
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: isCollapsed ? 'center' : 'flex-start',
-          gap: 6,
+          gap: SPACING.S6,
           width: '100%',
           height: 36,
-          padding: isCollapsed ? 0 : '0 10px 0 20px',
-          marginBottom: 12,
-          border: 'none',
-          background: 'transparent',
+          padding: isCollapsed ? SPACING.NONE : `0 10px 0 ${SPACING.XL}px`,
+          marginBottom: SPACING.MD,
           color: hovered ? DEFAULT_COLORS.TEXT_PRIMARY : DEFAULT_COLORS.TEXT_MUTED,
-          fontSize: 13,
-          fontWeight: 500,
-          cursor: 'pointer',
-          transition: 'color 150ms ease',
+          fontSize: FONT_SIZE.MD,
+          fontWeight: FONT_WEIGHT.MEDIUM,
+          transition: `color ${MOTION.FAST_MS}ms ${MOTION.EASE}`,
           boxSizing: 'border-box',
         }}
       >
-        <HiChevronLeft style={{ fontSize: 16, flexShrink: 0, transition: 'color 150ms ease' }} />
-        {!isCollapsed && <span style={{ transition: 'color 150ms ease' }}>Back</span>}
+        <HiChevronLeft
+          style={{
+            fontSize: FONT_SIZE.LG,
+            flexShrink: 0,
+            transition: `color ${MOTION.FAST_MS}ms ${MOTION.EASE}`,
+          }}
+        />
+        {!isCollapsed && (
+          <span style={{ transition: `color ${MOTION.FAST_MS}ms ${MOTION.EASE}` }}>Back</span>
+        )}
       </button>
     );
   },
@@ -159,7 +165,7 @@ const SettingsMenuItems = memo(({ isCollapsed, backPath }: SettingsMenuItemsProp
         isCollapsed={isCollapsed}
       />
 
-      {!isCollapsed && <div style={sectionLabelStyle}>Platform</div>}
+      {!isCollapsed && <div style={SIDEBAR_LAYOUT.SECTION_LABEL}>Platform</div>}
       <SidebarButton
         text="Authentication"
         icon={SETTINGS_ICONS.identityProvider}

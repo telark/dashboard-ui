@@ -1,5 +1,7 @@
 import type { CSSProperties } from 'react';
 import { DEFAULT_COLORS } from '../shared/colors';
+import { CONTROL_HEIGHT } from './controls';
+import { SECTION_LAYOUT } from './sections';
 
 /** Entity cards (protection plans, applications): the elevated panel geometry every block inside it measures from. */
 export const CARD_LAYOUT = {
@@ -73,7 +75,7 @@ export const TRUNCATE_STYLE: CSSProperties = {
 export const DIVIDED_BLOCK_STYLE: CSSProperties = {
   marginTop: CARD_LAYOUT.BLOCK_GAP_PX,
   paddingTop: CARD_LAYOUT.DIVIDER_GAP_PX,
-  borderTop: `1px solid ${DEFAULT_COLORS.BORDER_ELEVATED}`,
+  borderTop: SECTION_LAYOUT.SUBTLE_DIVIDER,
 };
 
 export const CARD_HEADER_STYLE: CSSProperties = {
@@ -163,8 +165,8 @@ export const getCardShellStyle = (hovered: boolean): CSSProperties => ({
 export const getCardMenuButtonStyle = (open: boolean): CSSProperties => ({
   color: open ? DEFAULT_COLORS.TEXT_PRIMARY : DEFAULT_COLORS.ICON_SECONDARY,
   flexShrink: 0,
-  width: 30,
-  height: 30,
+  width: CONTROL_HEIGHT,
+  height: CONTROL_HEIGHT,
   display: 'inline-flex',
   alignItems: 'center',
   justifyContent: 'center',

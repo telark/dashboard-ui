@@ -1,7 +1,10 @@
 import { DEFAULT_COLORS } from '../shared/colors';
+import { UNSTYLED_BUTTON } from './buttons';
 import { CONTROL_HEIGHT } from './controls';
 import { HEADER_LAYOUT } from './header';
+import { HAIRLINE } from './sections';
 import { SIDEBAR_LAYOUT } from './sidebar';
+import { Z_INDEX } from './zIndex';
 
 // Panels keep the light surface they had before the dark theme; these tokens
 // re-light the antd controls rendered inside them.
@@ -19,6 +22,9 @@ export const PANEL_THEME_TOKENS = {
   // antd draws every keyboard focus ring in this color, and its light mint fades on white
   // (1.3:1). The muted ink (4.8:1) is also what inputs and selects show on focus here.
   colorPrimaryBorder: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+  // Warning Alerts: dark text on white with the amber icon and frame, not antd's gold tint.
+  colorWarningBg: DEFAULT_COLORS.SURFACE_WHITE,
+  colorWarningBorder: DEFAULT_COLORS.WARNING,
 } as const;
 
 // PanelThemePrewarm (idle timing and its offscreen box) and the panel theme's fixed css-var key.
@@ -86,7 +92,7 @@ export const SLIDE_OUT = {
     right: 0,
     bottom: 0,
     background: DEFAULT_COLORS.OVERLAY_BACKDROP,
-    zIndex: 1000,
+    zIndex: Z_INDEX.PANEL_BACKDROP,
     animation: `fadeIn ${PANEL_ENTER_MS}ms ease-out`,
   },
   PANEL: {
@@ -95,7 +101,7 @@ export const SLIDE_OUT = {
     right: 0,
     bottom: 0,
     background: DEFAULT_COLORS.SURFACE_WHITE,
-    zIndex: 1001,
+    zIndex: Z_INDEX.PANEL,
     display: 'flex' as const,
     flexDirection: 'column' as const,
     borderRight: `0.5px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
@@ -112,13 +118,15 @@ export const SLIDE_OUT = {
     BACKDROP: { opacity: 0 },
     TIMING: { duration: PANEL_EXIT_MS, easing: PANEL_EXIT_EASING, fill: 'forwards' as const },
   },
+  // View → edit: the edit panel starts sliding in just before the view panel's exit ends.
+  HANDOFF_DELAY_MS: 150,
   // Exactly as tall as the app header (and follows it): the panel's top bar lines up with it.
   HEADER: {
     height: HEADER_LAYOUT.HEIGHT_PX,
     flexShrink: 0,
     boxSizing: 'border-box' as const,
     padding: '0 24px',
-    borderBottom: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
+    borderBottom: HAIRLINE.SURFACE_BORDER_LIGHT,
     display: 'flex' as const,
     flexDirection: 'column' as const,
     justifyContent: 'center' as const,
@@ -134,9 +142,7 @@ export const SLIDE_OUT = {
     gap: 8,
   },
   TOOLBAR_BUTTON: {
-    background: 'none',
-    border: 'none',
-    cursor: 'pointer' as const,
+    ...UNSTYLED_BUTTON,
     padding: 4,
     display: 'flex' as const,
     alignItems: 'center' as const,
@@ -173,9 +179,7 @@ export const SLIDE_OUT = {
   },
   ENTITY_TITLE: (title: string, name: string) => `${title} · ${name}`,
   CLOSE_BUTTON: {
-    background: 'none',
-    border: 'none',
-    cursor: 'pointer' as const,
+    ...UNSTYLED_BUTTON,
     padding: 4,
     display: 'flex' as const,
     alignItems: 'center' as const,
@@ -237,7 +241,7 @@ export const PANEL_FOOTER = {
     flexShrink: 0,
     boxSizing: 'border-box' as const,
     padding: '0 24px',
-    borderTop: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
+    borderTop: HAIRLINE.SURFACE_BORDER_LIGHT,
     display: 'flex' as const,
     alignItems: 'center' as const,
     justifyContent: 'flex-end' as const,
@@ -301,7 +305,7 @@ export const FILTER_PANEL = {
     color: DEFAULT_COLORS.TEXT_ON_SURFACE,
   },
   BUTTON_INACTIVE: {
-    border: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER}`,
+    border: HAIRLINE.SURFACE_BORDER,
     backgroundColor: DEFAULT_COLORS.SURFACE_WHITE,
     color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
   },
