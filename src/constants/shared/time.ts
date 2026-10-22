@@ -6,7 +6,10 @@ export const TIME_FORMATS = {
   SHORT: 'MMM d, yyyy',
   TIME_ONLY: 'HH:mm:ss',
   DATE_TIME: 'MMM d, yyyy HH:mm',
-  DATE_TIME_12H: 'MMM d, yyyy h:mm a',
+  // A moment this year, to compare at a glance: "Oct 20, 19:45".
+  SHORT_DATE_TIME: 'MMM d, HH:mm',
+  // The end of a range on its start's day: "Oct 22, 08:00 → 20:00".
+  HOUR_MINUTE: 'HH:mm',
   LONG_DATE_TIME_12H: 'MMMM d, yyyy h:mm a',
   DAY_HEADER: 'MMMM d, yyyy',
   DATE_KEY: 'yyyy-MM-dd',
@@ -32,6 +35,8 @@ export const TIME_TEXTS = {
   INVALID_DATE: COMMON_VALUES.DATES.INVALID,
   JUST_NOW: 'just now',
   AGO_SHORT: (count: number, unit: string) => `${count}${unit} ago`,
+  // Between a date and its age: "Oct 20, 19:45 · 1d ago".
+  DATE_AGE_SEPARATOR: '·',
 } as const;
 
 // Compact relative time ("5h ago"), largest unit first, as [suffix, seconds].

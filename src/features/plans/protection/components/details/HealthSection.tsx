@@ -4,13 +4,15 @@ import { CloseCircleFilled } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
 import {
   DEFAULT_COLORS,
+  MONOSPACE_CLASS,
   SECTION_LAYOUT,
   STATUS_DOT,
   TAG_CLASS,
+  getPillColor,
   SPACING,
   FONT_SIZE,
-  LINE_HEIGHT,
   FONT_WEIGHT,
+  LINE_HEIGHT,
 } from '../../../../../constants';
 import { FancySpinner } from '../../../../../components/animation';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
@@ -26,6 +28,7 @@ interface HealthSectionProps {
 }
 
 const HD = PPC.LABELS.HEALTH_DETAIL;
+const MODE_LABEL_OF: Record<string, string | undefined> = PPC.LABELS.MODE_LABELS;
 
 const policyDotColor = (row: PlanPolicyStatus, mode: PlanMode): string => {
   if (!row.present) return DEFAULT_COLORS.DANGER;
@@ -51,7 +54,90 @@ const healthSummary = (
   return [HD.NOT_IN_FORCE(out.length, rows.length), ...reasons].join(' ');
 };
 
-const yesNo = (value: boolean): string => (value ? HD.YES : HD.NO);
+// Pills only for what keeps a policy out of force, or for a mode other than the plan's.
+const problemPills = (row: PlanPolicyStatus, mode: PlanMode): string[] => {
+  if (!row.present) return [HD.PILL_NOT_IN_CLUSTER];
+  const pills: string[] = row.ready ? [] : [HD.PILL_NOT_ACTIVE];
+  if (auditsOnly(row, mode)) pills.push(HD.PILL_AUDIT_ONLY);
+  else if (row.failureAction && !actsAs(row, mode)) {
+    const inCluster = MODE_LABEL_OF[row.failureAction.toLowerCase()] ?? row.failureAction;
+    pills.push(`${HD.MODE_IN_CLUSTER}: ${inCluster}`);
+  }
+  return pills;
+};
+
+const ENGINE_NAME_STYLE: React.CSSProperties = { overflowWrap: 'anywhere' };
+
+// The operation it refuses, over the engine's policy name and namespace, then any problem.
+const PolicyHealthRow: React.FC<{ row: PlanPolicyStatus; mode: PlanMode; label?: string }> = ({
+  row,
+  mode,
+  label,
+}) => {
+  const pills = problemPills(row, mode);
+  const dot = policyDotColor(row, mode);
+  const engineName = (
+    <span className={MONOSPACE_CLASS} style={ENGINE_NAME_STYLE}>
+      {row.name}
+    </span>
+  );
+  return (
+    <div
+      // 10: the row padding sits between SM and MD.
+      style={{
+        padding: '10px 0',
+        borderBottom: SECTION_LAYOUT.SUBTLE_DIVIDER,
+        display: 'flex',
+        gap: SPACING.MD,
+        alignItems: 'flex-start',
+      }}
+    >
+      <div
+        // 5: drops the dot to the middle of the first text line.
+        style={{ ...STATUS_DOT, marginTop: 5, background: dot }}
+      />
+      <div
+        style={{
+          flex: 1,
+          minWidth: 0,
+          display: 'flex',
+          flexWrap: 'wrap',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          columnGap: SPACING.MD,
+          rowGap: SPACING.S6,
+        }}
+      >
+        <div style={{ display: 'grid', minWidth: 0 }}>
+          <span
+            style={{
+              fontSize: FONT_SIZE.MD,
+              fontWeight: FONT_WEIGHT.BOLD,
+              color: DEFAULT_COLORS.TEXT_PRIMARY,
+              overflowWrap: 'anywhere',
+            }}
+          >
+            {label ?? engineName}
+          </span>
+          <span style={{ fontSize: FONT_SIZE.SM, color: DEFAULT_COLORS.TEXT_MUTED }}>
+            {label && engineName}
+            {label && row.namespace && PPC.LABELS.CARD.META_SEPARATOR}
+            {row.namespace}
+          </span>
+        </div>
+        {pills.length > 0 && (
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: SPACING.S6 }}>
+            {pills.map((pill) => (
+              <Tag key={pill} color={getPillColor(dot)} className={TAG_CLASS.AS_IS}>
+                {pill}
+              </Tag>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
 
 const HealthSection: React.FC<HealthSectionProps> = ({ plan, status, loading, error }) => {
   const templates = useSelector(selectProtectionPlanTemplates);
@@ -89,88 +175,14 @@ const HealthSection: React.FC<HealthSectionProps> = ({ plan, status, loading, er
           >
             {healthSummary(rows, plan.mode, labelOf)}
           </div>
-          {rows.map((row) => {
-            const dot = policyDotColor(row, plan.mode);
-            const label = policyLabel(row.name, plan.id, templates);
-            return (
-              <div
-                key={`${row.namespace}/${row.name}`}
-                // 10: the row padding sits between SM and MD.
-                style={{
-                  padding: '10px 0',
-                  borderBottom: SECTION_LAYOUT.SUBTLE_DIVIDER,
-                }}
-              >
-                <div
-                  style={{
-                    display: 'flex',
-                    gap: SPACING.MD,
-                    alignItems: 'flex-start',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  <div
-                    // 5: drops the dot to the middle of the first text line.
-                    style={{ ...STATUS_DOT, marginTop: 5, background: dot }}
-                  />
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div
-                      style={{
-                        display: 'flex',
-                        flexWrap: 'wrap',
-                        alignItems: 'center',
-                        gap: SPACING.S6,
-                      }}
-                    >
-                      {/* The operation it refuses, over the engine's policy name. */}
-                      <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
-                        <span
-                          style={{
-                            fontSize: FONT_SIZE.MD,
-                            fontWeight: FONT_WEIGHT.BOLD,
-                            color: DEFAULT_COLORS.TEXT_PRIMARY,
-                            overflowWrap: 'anywhere',
-                          }}
-                        >
-                          {label ?? row.name}
-                        </span>
-                        {label && (
-                          <span
-                            style={{
-                              fontSize: FONT_SIZE.SM,
-                              color: DEFAULT_COLORS.TEXT_MUTED,
-                              overflowWrap: 'anywhere',
-                            }}
-                          >
-                            {row.name}
-                          </span>
-                        )}
-                      </div>
-                      {row.namespace && (
-                        <Tag className={TAG_CLASS.AS_IS}>{`${HD.NAMESPACE}: ${row.namespace}`}</Tag>
-                      )}
-                      <Tag>{`${HD.IN_CLUSTER}: ${yesNo(row.present)}`}</Tag>
-                      <Tag>{`${HD.ACTIVE}: ${yesNo(row.ready)}`}</Tag>
-                      {row.failureAction && (
-                        <Tag>{`${HD.MODE_IN_CLUSTER}: ${row.failureAction}`}</Tag>
-                      )}
-                    </div>
-                    {auditsOnly(row, plan.mode) && (
-                      <div
-                        style={{
-                          marginTop: SPACING.S6,
-                          fontSize: FONT_SIZE.SM,
-                          color: DEFAULT_COLORS.WARNING,
-                        }}
-                      >
-                        {HD.AUDIT_ONLY(label ?? row.name)}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+          {rows.map((row) => (
+            <PolicyHealthRow
+              key={`${row.namespace}/${row.name}`}
+              row={row}
+              mode={plan.mode}
+              label={policyLabel(row.name, plan.id, templates)}
+            />
+          ))}
         </div>
       )}
 
@@ -183,12 +195,22 @@ const HealthSection: React.FC<HealthSectionProps> = ({ plan, status, loading, er
           }}
         >
           <strong>{HD.UNEXPECTED}:</strong>{' '}
-          {driftUnexpected
-            .map((name) => {
-              const label = policyLabel(name, plan.id, templates);
-              return label ? `${label} (${name})` : name;
-            })
-            .join(', ')}
+          {driftUnexpected.map((name, index) => {
+            const label = policyLabel(name, plan.id, templates);
+            const engineName = <span className={MONOSPACE_CLASS}>{name}</span>;
+            return (
+              <React.Fragment key={name}>
+                {index > 0 && ', '}
+                {label ? (
+                  <>
+                    {label} ({engineName})
+                  </>
+                ) : (
+                  engineName
+                )}
+              </React.Fragment>
+            );
+          })}
         </div>
       )}
     </div>

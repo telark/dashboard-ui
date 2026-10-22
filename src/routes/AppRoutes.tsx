@@ -1,7 +1,6 @@
 import React, { lazy, Suspense, useEffect } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { ProtectedRoute, AuthLayout } from '../features/auth/components';
-import { AnimatedPageWrapper } from '../components/animation';
 import { FeatureErrorBoundary } from '../components/error-boundary';
 import FullPageLoader from '../components/display/views/FullPageLoader';
 import { NoPermissionCard } from '../components/shared';
@@ -120,9 +119,7 @@ const AppRoutes: React.FC = () => {
                 fallback={noAccess(MENU_LABELS.APPLICATIONS, viewApplications)}
               >
                 <FeatureErrorBoundary featureName="Application Details">
-                  <AnimatedPageWrapper>
-                    <ApplicationDetailsView />
-                  </AnimatedPageWrapper>
+                  <ApplicationDetailsView />
                 </FeatureErrorBoundary>
               </PermissionGate>
             </ProtectedRoute>

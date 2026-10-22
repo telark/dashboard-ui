@@ -5,6 +5,7 @@ import { DeploymentUnitOutlined, LockOutlined } from '@ant-design/icons';
 import {
   APP_ROUTES,
   CARD_LAYOUT,
+  CARD_TEXTS,
   DEFAULT_COLORS,
   EMPTY_VALUE,
   LIST_TOOLBAR,
@@ -247,16 +248,14 @@ const ApplicationCard: React.FC<ApplicationCardProps> = memo(
         >
           <MetricsLine application={application} />
           <span style={FOOTER_STYLE}>
-            {APPLICATION_CARD.UPDATED_PREFIX}{' '}
+            {CARD_TEXTS.UPDATED_PREFIX}{' '}
             {lastUpdated ? (
               <TimeAgo
                 date={lastUpdated}
                 short
                 exactRows={[
-                  { label: APPLICATION_CARD.UPDATED_PREFIX, date: lastUpdated },
-                  ...(createdAt
-                    ? [{ label: APPLICATION_CARD.CREATED_PREFIX, date: createdAt }]
-                    : []),
+                  { label: CARD_TEXTS.UPDATED_PREFIX, date: lastUpdated },
+                  ...(createdAt ? [{ label: CARD_TEXTS.CREATED_PREFIX, date: createdAt }] : []),
                 ]}
               />
             ) : (

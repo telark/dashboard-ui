@@ -11,7 +11,7 @@ import {
 
 export function usePlanDetails(name?: string) {
   const dispatch: AppDispatch = useDispatch();
-  const { details, detailsLoading, detailsError, plans, loading } = useSelector(
+  const { details, detailsLoading, detailsError, plans, loading, loaded } = useSelector(
     (s: RootState) => s.protectionPlans,
   );
 
@@ -44,7 +44,8 @@ export function usePlanDetails(name?: string) {
     void dispatch(fetchProtectionPlanDetailsThunk(planId));
   }, [dispatch, planId]);
 
-  const notFound = !!name && !loading && plans.length > 0 && !planFromList && !details;
+  // Only this session's list proves it: `loaded` isn't persisted, so a cold load waits for it.
+  const notFound = !!name && loaded && !loading && !planFromList && !details;
 
   return {
     details: details ?? planFromList,

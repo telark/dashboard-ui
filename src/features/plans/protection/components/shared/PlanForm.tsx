@@ -19,7 +19,7 @@ import { formatDateTime, getTimeZone } from '../../../../../utils/shared/time';
 import { useScopeExclusionOptions } from '../../hooks/useScopeExclusionOptions';
 import PlanTaxonomyFields from './PlanTaxonomyFields';
 import PlanApprovalModeField from './PlanApprovalModeField';
-import { SPACING } from '../../../../../constants';
+import { SPACING, TIME_FORMATS } from '../../../../../constants';
 
 export interface PlanFormProps {
   form: FormInstance<FormValues>;
@@ -80,7 +80,7 @@ const PlanForm: React.FC<PlanFormProps> = ({
   const lockedAlert = openWindow
     ? PPC.PANELS.EDIT.WINDOW_OPEN_ALERT(
         PPC.LABELS.PHASE_INFO.IN_TIME_ZONE(
-          formatDateTime(openWindow.endAt, PPC.LABELS.PHASE_INFO.END_TIME_FORMAT),
+          formatDateTime(openWindow.endAt, TIME_FORMATS.SHORT_DATE_TIME),
           getTimeZone(),
         ),
       )

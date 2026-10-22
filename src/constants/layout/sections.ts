@@ -6,6 +6,14 @@ export const SECTION_LAYOUT = {
   SUBTLE_DIVIDER: `1px solid ${DEFAULT_COLORS.BORDER_ELEVATED}`,
 } as const;
 
+// The summary card of a details page: columns side by side while each fits its labels beside its values.
+export const SUMMARY_LAYOUT = {
+  /** A summary column keeps its 140px labels beside the values down to this width. */
+  BLOCK_MIN_WIDTH_PX: 300,
+  COLUMN_GAP_PX: 32,
+  ROW_GAP_PX: 20,
+} as const;
+
 // The other 1px borders, named by their color token.
 export const HAIRLINE = {
   SURFACE_BORDER_LIGHT: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,

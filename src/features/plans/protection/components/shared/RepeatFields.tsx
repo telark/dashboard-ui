@@ -3,9 +3,9 @@ import { Checkbox, Form, Select, TimePicker } from 'antd';
 import type dayjs from 'dayjs';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
 import { buildTimeZoneOptions } from '../../../../../utils/shared/time';
-import { FORM_ITEM_CLASS } from '../create/types';
+import { FORM_FIELD_PAIR_STYLE, FORM_ITEM_CLASS } from '../create/types';
 import { REPEAT_CLOCK_BASE } from '../../utils/planFormValues';
-import { SPACING } from '../../../../../constants';
+import { DATE_PICKER_POPUP_CLASS, SPACING } from '../../../../../constants';
 
 const { FORM, REPEAT_DAY_OPTIONS, REPEAT_TIME_FORMAT } = PPC.CREATE_PAGE;
 
@@ -29,13 +29,7 @@ const RepeatFields: React.FC<RepeatFieldsProps> = ({ disabled = false }) => {
       >
         <Checkbox.Group options={REPEAT_DAY_OPTIONS} disabled={disabled} />
       </Form.Item>
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
-          gap: SPACING.MD,
-        }}
-      >
+      <div style={FORM_FIELD_PAIR_STYLE}>
         <Form.Item
           name="repeatStart"
           label={FORM.REPEAT_START_LABEL}
@@ -49,6 +43,7 @@ const RepeatFields: React.FC<RepeatFieldsProps> = ({ disabled = false }) => {
             defaultOpenValue={REPEAT_CLOCK_BASE}
             style={{ width: '100%' }}
             disabled={disabled}
+            classNames={{ popup: { root: DATE_PICKER_POPUP_CLASS } }}
           />
         </Form.Item>
         <Form.Item
@@ -79,6 +74,7 @@ const RepeatFields: React.FC<RepeatFieldsProps> = ({ disabled = false }) => {
             defaultOpenValue={REPEAT_CLOCK_BASE}
             style={{ width: '100%' }}
             disabled={disabled}
+            classNames={{ popup: { root: DATE_PICKER_POPUP_CLASS } }}
           />
         </Form.Item>
       </div>

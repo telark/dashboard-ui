@@ -1,20 +1,25 @@
 import React from 'react';
 import { Tooltip } from 'antd';
-import { CARD_LAYOUT, TRUNCATE_STYLE, getPillSurface, SPACING } from '../../../constants';
+import { CARD_LAYOUT, DEFAULT_COLORS, TRUNCATE_STYLE, SPACING } from '../../../constants';
 import type { CardChipProps } from '../../../interfaces/layout/card';
 
+// A neutral outline: only the icon carries the accent, when one is given (red is never text).
 const CardChip: React.FC<CardChipProps> = ({ label, icon, accent, title, tooltip }) => {
   const chip = (
     <li
+      tabIndex={tooltip ? 0 : undefined}
+      aria-label={tooltip}
       style={{
-        // Off scale, kept exact: padding 3 (XXS to XS), padding 9 (SM to MD), padding 5 (XS to S6).
         display: 'inline-flex',
         alignItems: 'center',
         gap: SPACING.S6,
         minWidth: 0,
-        ...getPillSurface(accent),
+        border: `1px solid ${DEFAULT_COLORS.BORDER_HOVER}`,
+        color: DEFAULT_COLORS.TEXT_SECONDARY,
         borderRadius: CARD_LAYOUT.PILL_RADIUS_PX,
-        padding: icon ? '3px 9px 3px 5px' : '3px 9px',
+        padding: icon
+          ? `${SPACING.XXS}px ${SPACING.SM}px ${SPACING.XXS}px ${SPACING.XS}px`
+          : `${SPACING.XXS}px ${SPACING.SM}px`,
       }}
     >
       {icon && (
@@ -29,6 +34,7 @@ const CardChip: React.FC<CardChipProps> = ({ label, icon, accent, title, tooltip
             justifyContent: 'center',
             fontSize: 9,
             flexShrink: 0,
+            color: accent,
           }}
         >
           {icon}

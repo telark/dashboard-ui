@@ -80,7 +80,6 @@ export const APPLICATIONS_UI = {
       GROUP_TIMELINE: 'Timeline',
       GROUP_RUNTIME: 'Runtime',
       DRIFT: 'Drift',
-      DRIFT_NONE: 'None',
       DRIFT_CHANGED: 'Changed since first seen',
       DRIFT_CHANGED_TOOLTIP: 'The app no longer matches the first state recorded for it.',
       // Usage at or above the meters' danger share of a limit, named in the Health row.
@@ -102,8 +101,6 @@ export const APPLICATIONS_UI = {
       LAST_CHANGE: 'Last change',
       CHANGED_BY: 'by',
       NO_CHANGE_RECORDED: 'No change recorded',
-      DATE_FORMAT: 'MMM d, HH:mm',
-      DATE_SEPARATOR: '·',
     },
     DETAILS_TOOLBAR: {
       MORE_LABEL: 'More',
@@ -122,7 +119,6 @@ export const APPLICATIONS_UI = {
       PORTS: 'Ports',
       IMAGES: 'Images',
       ENV_VAR_KEYS: 'Environment variables',
-      NONE: 'None',
       ENV_VAR_COUNT: { one: 'variable', other: 'variables' } as CountLabel,
       ENV_SHOW_MORE_LABEL: (count: number) => `Show ${count} more variables`,
       ENV_SHOW_LESS: 'Show less',

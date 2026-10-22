@@ -1,20 +1,14 @@
 import React, { memo, useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { DEFAULT_COLORS, HEADER_LAYOUT, LIST_TOOLBAR, SPACING } from '../../../../constants';
+import { HEADER_LAYOUT, LIST_TOOLBAR, SPACING } from '../../../../constants';
 import { LIST_PAGE } from '../../../../constants/shared/pages';
 import type { Application } from '../../models';
-import {
-  APPLICATION_DETAILS_TOOLBAR,
-  APPLICATION_SECTION_LAYOUT,
-} from '../../constants/sectionLayout';
 import ApplicationDetailsIdentity from '../../components/layout/ApplicationDetailsIdentity';
 import ApplicationOverviewSection from '../../components/details/ApplicationOverviewSection';
 import ApplicationResourcesSection from '../../components/details/ApplicationResourcesSection';
 import ApplicationWorkloadMetricsSection from '../../components/details/ApplicationWorkloadMetricsSection';
 import ApplicationChangeLogSection from '../../components/details/ApplicationChangeLogSection';
 import type { RollbackDisabledReason } from '../../components/snapshots/ApplicationSnapshotRow';
-
-const T = APPLICATION_DETAILS_TOOLBAR;
 
 interface ApplicationDetailsContentProps {
   application: Application;
@@ -38,7 +32,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
       const observer = new IntersectionObserver(
         ([entry]) => setIdentityVisible(!entry.isIntersecting),
         {
-          rootMargin: `-${HEADER_LAYOUT.HEIGHT_PX + T.REVEAL_OFFSET_PX}px 0px 0px 0px`,
+          rootMargin: `-${HEADER_LAYOUT.HEIGHT_PX + LIST_PAGE.DETAILS_NAME_REVEAL_OFFSET_PX}px 0px 0px 0px`,
         },
       );
       observer.observe(sentinel);
@@ -49,16 +43,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
       <div>
         <div ref={revealSentinelRef} />
         {/* The list pages' toolbar row (ListToolbar), so the actions sit exactly where theirs do. */}
-        <div
-          style={{
-            position: 'sticky',
-            top: 0,
-            zIndex: LIST_PAGE.TOOLBAR_Z_INDEX,
-            background: DEFAULT_COLORS.PAGE_BG,
-            padding: LIST_PAGE.TOOLBAR_PADDING,
-            marginTop: LIST_PAGE.SUBHEADER_TOOLBAR_OFFSET_PX,
-          }}
-        >
+        <div style={LIST_PAGE.DETAILS_STICKY_ROW_STYLE}>
           <div
             style={{
               display: 'flex',
@@ -74,7 +59,10 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                   initial={{ opacity: 0, y: -4 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -4 }}
-                  transition={{ duration: T.REVEAL_DURATION_S, ease: 'easeOut' }}
+                  transition={{
+                    duration: LIST_PAGE.DETAILS_NAME_REVEAL_DURATION_S,
+                    ease: 'easeOut',
+                  }}
                   style={{ minWidth: 0 }}
                 >
                   <ApplicationDetailsIdentity application={application} />
@@ -86,15 +74,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
             {actions}
           </div>
         </div>
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: APPLICATION_SECTION_LAYOUT.STACK_GAP_PX,
-            // List pages get the gap from their container; here the toolbar shares this block.
-            marginTop: LIST_PAGE.CONTENT_GAP_PX + LIST_PAGE.CONTENT_OFFSET_PX,
-          }}
-        >
+        <div style={LIST_PAGE.DETAILS_SECTIONS_STYLE}>
           <ApplicationOverviewSection application={application} />
           <ApplicationResourcesSection application={application} />
           <ApplicationWorkloadMetricsSection application={application} />

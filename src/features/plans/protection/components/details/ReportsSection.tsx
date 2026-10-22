@@ -7,13 +7,12 @@ import {
   SECTION_LAYOUT,
   STATUS_COLORS,
   TAG_CLASS,
-  TIME_FORMATS,
   getPillColor,
   SPACING,
   FONT_SIZE,
 } from '../../../../../constants';
-import { formatDateTime } from '../../../../../utils/shared/time';
 import { FancySpinner } from '../../../../../components/animation';
+import { DateAndAge } from '../../../../../components/display/details';
 import { useUsernamesByIds } from '../../../../../hooks/useUsernamesByIds';
 import type { RootState } from '../../../../../store';
 import {
@@ -129,8 +128,7 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
                 {LABELS.TRIGGER_LABELS[report.trigger]}
               </Tag>
               <span style={{ fontSize: FONT_SIZE.SM, color: DEFAULT_COLORS.TEXT_MUTED }}>
-                {LABELS.GENERATED_AT}{' '}
-                {formatDateTime(report.generatedAt, TIME_FORMATS.DATE_TIME_12H)} ·{' '}
+                {LABELS.GENERATED_AT} <DateAndAge date={report.generatedAt} /> ·{' '}
                 {LABELS.GENERATED_BY}{' '}
                 <span title={report.generatedBy}>{resolveUser(report.generatedBy)}</span>
               </span>

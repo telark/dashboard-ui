@@ -92,7 +92,6 @@ export const APPLICATION_DETAILS_CONSTANTS = {
   MESSAGES: {
     ...SHARED_DETAILS_CONSTANTS.MESSAGES,
     ERROR: "Couldn't load this application",
-    EMPTY: 'No details available for this application.',
   },
 } as const;
 

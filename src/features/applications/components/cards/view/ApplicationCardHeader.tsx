@@ -5,7 +5,6 @@ import {
   ClearOutlined,
   EditOutlined,
   EyeOutlined,
-  HistoryOutlined,
   MoreOutlined,
   SyncOutlined,
 } from '@ant-design/icons';
@@ -17,6 +16,7 @@ import {
   CARD_IDENTITY_STYLE,
   CARD_LAYOUT,
   CARD_TAG_ROW_STYLE,
+  CARD_TEXTS,
   CARD_TITLE_COLUMN_STYLE,
   CARD_TITLE_STYLE,
   DEFAULT_COLORS,
@@ -25,7 +25,7 @@ import {
   FONT_SIZE,
 } from '../../../../../constants';
 import type { Application, ApplicationProtection, SyncStatusValue } from '../../../models';
-import { APPLICATION_CARD, APPLICATIONS_UI, SYNC_STATUS_VALUE } from '../../../constants';
+import { APPLICATIONS_UI, SYNC_STATUS_VALUE } from '../../../constants';
 import { CardTagList } from '../../../../../components/display/card';
 import ProtectionBadge from '../../protection/ProtectionBadge';
 import ApplicationHealthIndicator from '../../display/ApplicationHealthIndicator';
@@ -141,10 +141,6 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
           });
           return;
         }
-        if (info.key === 'rollbacks') {
-          navigate(detailsPath);
-          return;
-        }
         if (info.key === 'reset') {
           setMenuOpen(false);
           setResetModalOpen(true);
@@ -217,7 +213,7 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
               )}
             </span>
           </div>
-          <div style={{ ...CARD_ASIDE_STYLE, marginTop: APPLICATION_CARD.CORNER_OFFSET_PX }}>
+          <div style={{ ...CARD_ASIDE_STYLE, marginTop: CARD_LAYOUT.CORNER_OFFSET_PX }}>
             {syncTag ? (
               <Tooltip
                 title={
@@ -277,11 +273,6 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
                     icon: <EditOutlined />,
                     disabled: !canEdit || isSyncing,
                   },
-                  {
-                    key: 'rollbacks',
-                    label: APPLICATIONS_UI.CARD.ACTIONS.MANAGE_ROLLBACKS,
-                    icon: <HistoryOutlined />,
-                  },
                   { type: 'divider' as const },
                   {
                     key: 'reset',
@@ -305,7 +296,7 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
                 type="text"
                 shape="circle"
                 icon={<MoreOutlined rotate={90} />}
-                aria-label={APPLICATION_CARD.ACTIONS_LABEL(title)}
+                aria-label={CARD_TEXTS.ACTIONS_LABEL(title)}
                 onClick={(e) => {
                   e.stopPropagation();
                 }}

@@ -30,9 +30,9 @@ export const STATUS_COLORS = {
     drifted: WARNING,
     degraded: WARNING,
   },
-  // An audit plan only records what it would refuse, so it never reads as a red refusal.
+  // An audit plan only records what it would refuse, so it stays neutral: red is a refusal.
   PLAN_MODE: {
-    audit: WARNING,
+    audit: NEUTRAL,
     enforce: DANGER,
   },
   VIOLATION_RESULT: {
@@ -72,7 +72,8 @@ export const STATUS_COLORS = {
     enforcing: SUCCESS,
     auditing: TEXT_SECONDARY,
     upcoming: TEXT_MUTED,
-    none: WARNING,
+    // Neutral, like auditing: the warning icon alone marks it (user, 2026-10-22).
+    none: TEXT_SECONDARY,
   },
   ROLLBACK: {
     success: SUCCESS,

@@ -47,7 +47,6 @@ export const APPLICATION_CARD = {
   },
   // The Protect app button fits the protection line, so every card's line keeps one height.
   PROTECT_BUTTON_HEIGHT_PX: 22,
-  ACTIONS_LABEL: (name: string) => `Actions for ${name}`,
   // Health states that keep a filled pill; the rest are a dot and muted text.
   LOUD_HEALTH: ['degraded', 'down'] as readonly string[],
   HEALTH_LABELS: {
@@ -56,11 +55,6 @@ export const APPLICATION_CARD = {
     down: 'Down',
     unknown: 'Unknown',
   } as Readonly<Record<string, string>>,
-  HEALTH_DOT_PX: 6,
-  // Centers the corner (badge, health, 30px menu) on the 18px name line: (30 - 18) / 2.
-  CORNER_OFFSET_PX: -6,
-  UPDATED_PREFIX: 'Updated',
-  CREATED_PREFIX: 'Created',
 } as const;
 
 // A covering plan's name, linked: the cards and the detail summary share this look.

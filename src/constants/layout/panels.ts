@@ -1,6 +1,6 @@
-import { DEFAULT_COLORS } from '../shared/colors';
+import { DEFAULT_COLORS, withAlpha } from '../shared/colors';
 import { UNSTYLED_BUTTON } from './buttons';
-import { CONTROL_HEIGHT } from './controls';
+import { CONTROL_FONT_SIZE, CONTROL_HEIGHT } from './controls';
 import { HEADER_LAYOUT } from './header';
 import { HAIRLINE } from './sections';
 import { SIDEBAR_LAYOUT } from './sidebar';
@@ -71,6 +71,25 @@ export const PANEL_TABS_THEME = {
   horizontalItemGutter: 22,
   horizontalMargin: '0 0 14px 0',
 } as const;
+
+// Date and time pickers and their popups. Selection keeps the brand green of colorPrimary (user
+// decision, 2026-10-22), and hover and range take a 10% tint of it.
+export const DATE_PICKER_THEME = {
+  cellHoverBg: withAlpha(DEFAULT_COLORS.SUCCESS, 0.1),
+  cellActiveWithRangeBg: withAlpha(DEFAULT_COLORS.SUCCESS, 0.1),
+  // fontSize would also shrink the field's own text (inputFontSize derives from it).
+  fontSize: 12,
+  inputFontSize: CONTROL_FONT_SIZE,
+  cellHeight: 28,
+  cellWidth: 37,
+  textHeight: 54,
+  timeColumnWidth: 60,
+  // antd pads the day grid by padding + 2 on each side: 8px.
+  padding: 6,
+} as const;
+
+// Every picker popup carries it, for the few rules the tokens can't reach (datePicker.css).
+export const DATE_PICKER_POPUP_CLASS = 'custom-date-picker-popup';
 
 // Expanded panels stop at a fully opened sidebar's edge so navigation stays reachable;
 // small screens keep the panel's own width up to the viewport.

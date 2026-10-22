@@ -23,7 +23,7 @@ import {
   parseCpuToMillicores,
   parseMemoryToBytes,
 } from '../../utils/k8sQuantity';
-import MutedText from './MutedText';
+import { MutedText } from '../../../../components/display/details';
 import WorkloadUsageMeter from './WorkloadUsageMeter';
 import type { ApplicationWorkloadUsage, ApplicationWorkloadUsagePerInstance } from '../../models';
 

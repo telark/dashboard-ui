@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useState } from 'react';
+import React, { memo, useCallback, useMemo, useState } from 'react';
 import { App as AntdApp, Button, Dropdown, Form, Tag, Tooltip } from 'antd';
 import type { MenuProps } from 'antd';
 import {
@@ -18,19 +18,16 @@ import { useDispatch } from 'react-redux';
 import {
   APP_ROUTES,
   CARD_ASIDE_STYLE,
-  CARD_FOOTER_STYLE,
   CARD_HEADER_STYLE,
   CARD_IDENTITY_STYLE,
   CARD_LAYOUT,
-  CARD_STATS_GRID_STYLE,
   CARD_TAG_ROW_STYLE,
+  CARD_TEXTS,
   CARD_TITLE_COLUMN_STYLE,
   CARD_TITLE_STYLE,
   DEFAULT_COLORS,
   EMPTY_VALUE,
-  MICRO_LABEL_STYLE,
   STATUS_COLORS,
-  TAG_CLASS,
   TRUNCATE_STYLE,
   getCardMenuButtonStyle,
   getCardShellStyle,
@@ -43,12 +40,14 @@ import type { FormValues } from '../../create';
 import {
   PROTECTION_PLANS_CONSTANTS as PPC,
   PLAN_CARD_MAX_TAGS,
+  PLAN_LOUD_HEALTH,
   POLICY_CHIP_LABEL,
 } from '../../../constants/protectionPlans';
-import { CardChipSection, CardTagList, StatCell } from '../../../../../../components/display/card';
+import { CardChipSection, CardTagList } from '../../../../../../components/display/card';
+import { HealthIndicator } from '../../../../../../components/display/details';
 import TimeAgo from '../../../../../../components/display/time/TimeAgo';
 import TimeRemaining from '../../../../../../components/display/time/TimeRemaining';
-import { formatDateTime, toTimestamp } from '../../../../../../utils/shared/time';
+import { toTimestamp } from '../../../../../../utils/shared/time';
 import type { AppDispatch } from '../../../../../../store';
 import {
   cancelPlanThunk,
@@ -77,6 +76,7 @@ import {
   planPhaseLabel,
 } from '../../../utils/phaseRules';
 import { formatRepeatRule } from '../../../utils/repeatRule';
+import { formatWindowRange } from '../../../utils/windowRange';
 import { usePlanTaxonomyLists } from '../../../hooks/usePlanTaxonomies';
 import { useGeneratePlanReport } from '../../../hooks/usePlanReports';
 
@@ -90,15 +90,94 @@ interface ProtectionPlanCardProps {
 }
 
 const CARD_LABELS = PPC.LABELS.CARD;
-const BLANK = '';
+
+const MUTED_LINE_STYLE: React.CSSProperties = {
+  fontSize: CARD_LAYOUT.VALUE_FONT_SIZE_PX,
+  color: DEFAULT_COLORS.TEXT_MUTED,
+};
+
+const DESCRIPTION_STYLE: React.CSSProperties = {
+  ...TRUNCATE_STYLE,
+  fontSize: CARD_LAYOUT.META_FONT_SIZE_PX,
+  color: DEFAULT_COLORS.TEXT_MUTED,
+};
+
+// The row's height is reserved while the tag names load.
+const TAG_ROW_STYLE: React.CSSProperties = {
+  ...CARD_TAG_ROW_STYLE,
+  minHeight: CARD_LAYOUT.TAG_ROW_MIN_HEIGHT_PX,
+};
+
+// Centered on the name line and no taller than it, so the description follows the name closely.
+const CORNER_STYLE: React.CSSProperties = {
+  ...CARD_ASIDE_STYLE,
+  marginTop: CARD_LAYOUT.CORNER_OFFSET_PX,
+  marginBottom: CARD_LAYOUT.CORNER_OFFSET_PX,
+};
+
+// The countdown wraps under the range on a narrow card rather than cutting it.
+const WINDOW_LINE_STYLE: React.CSSProperties = {
+  ...MUTED_LINE_STYLE,
+  display: 'flex',
+  flexWrap: 'wrap',
+  alignItems: 'baseline',
+  columnGap: SPACING.SM,
+  rowGap: SPACING.XXS,
+  minWidth: 0,
+};
+
+const WINDOW_LABEL_STYLE: React.CSSProperties = { flexShrink: 0 };
+
+const WINDOW_VALUE_STYLE: React.CSSProperties = {
+  ...TRUNCATE_STYLE,
+  color: DEFAULT_COLORS.TEXT_PRIMARY,
+  fontVariantNumeric: 'tabular-nums',
+};
+
+const REMAINING_STYLE: React.CSSProperties = {
+  marginLeft: 'auto',
+  whiteSpace: 'nowrap',
+};
+
+// Neutral, like the usage meters: the rail measures time, it is not a status.
+const RAIL_TRACK_STYLE: React.CSSProperties = {
+  marginTop: SPACING.SM,
+  height: CARD_LAYOUT.TRACK_HEIGHT_PX,
+  borderRadius: CARD_LAYOUT.PILL_RADIUS_PX,
+  background: DEFAULT_COLORS.HOVER_BG,
+  overflow: 'hidden',
+};
+
+const RAIL_FILL_STYLE: React.CSSProperties = {
+  height: '100%',
+  borderRadius: CARD_LAYOUT.PILL_RADIUS_PX,
+  background: DEFAULT_COLORS.NEUTRAL,
+  transition: `width ${MOTION.BASE_MS}ms ${MOTION.EASE}`,
+};
+
+const BOTTOM_STYLE: React.CSSProperties = {
+  marginTop: 'auto',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: SPACING.XS,
+};
+
+const META_LINE_STYLE: React.CSSProperties = { ...MUTED_LINE_STYLE, minWidth: 0 };
+
+const FOOTER_STYLE: React.CSSProperties = {
+  ...TRUNCATE_STYLE,
+  fontSize: CARD_LAYOUT.META_FONT_SIZE_PX,
+  color: DEFAULT_COLORS.TEXT_MUTED,
+};
 
 interface PlanWindow {
   label: string;
-  range: string;
+  value: string;
   percent: number;
   /** A permanent plan has no window to run down, so it never renders a rail. */
   showRail: boolean;
-  remaining: React.ReactNode;
+  /** The countdown beside a set window. */
+  remaining?: React.ReactNode;
 }
 
 // A permanent plan, a stopped series (shown by its rule) or a range never set: nothing to run down.
@@ -106,14 +185,11 @@ const staticWindow = (plan: ProtectionPlan): PlanWindow => {
   const permanent = plan.timeMode === 'permanent';
   const rule =
     plan.timeMode === 'repeating' && plan.repeat ? formatRepeatRule(plan.repeat) : undefined;
-  // A permanent plan has no window, so the range slot stays empty rather than
-  // repeating "Always on" both beside the label and under it.
   return {
     label: permanent ? CARD_LABELS.PERMANENT_LABEL : CARD_LABELS.WINDOW_LABEL,
-    range: permanent || rule ? BLANK : CARD_LABELS.NO_SCHEDULE,
+    value: rule ?? (permanent ? CARD_LABELS.PERMANENT_RANGE : CARD_LABELS.NO_SCHEDULE),
     percent: 0,
     showRail: false,
-    remaining: rule ?? (permanent ? CARD_LABELS.PERMANENT_RANGE : CARD_LABELS.NO_SCHEDULE),
   };
 };
 
@@ -143,9 +219,7 @@ const buildWindow = (plan: ProtectionPlan): PlanWindow => {
 
   return {
     label: windowLabel(plan),
-    range: `${formatDateTime(timeRange.startAt, CARD_LABELS.WINDOW_TIME_FORMAT)}${
-      CARD_LABELS.RANGE_SEPARATOR
-    }${formatDateTime(timeRange.endAt, CARD_LABELS.WINDOW_TIME_FORMAT)}`,
+    value: formatWindowRange(timeRange),
     percent: Math.min(Math.max(elapsed, 0), 100),
     showRail: !awaitingApproval,
     remaining: awaitingApproval ? CARD_LABELS.OPENS_ONCE_APPROVED : countdown(timeRange),
@@ -238,30 +312,36 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
   const provenancePrefix = awaitingApproval
     ? CARD_LABELS.AWAITING_APPROVAL_BY_PREFIX
     : CARD_LABELS.CREATED_BY_PREFIX;
-  const provenanceLabel = provenanceName ? `${provenancePrefix} ${provenanceName}` : BLANK;
+  const updatedAt = plan.lastUpdatedAt || plan.createdAt;
+  const exactTimes = useMemo(
+    () => [
+      { label: CARD_TEXTS.UPDATED_PREFIX, date: updatedAt },
+      { label: CARD_TEXTS.CREATED_PREFIX, date: plan.createdAt },
+    ],
+    [updatedAt, plan.createdAt],
+  );
 
   const phaseLabel = planPhaseLabel(plan);
   const canCancel = CANCELLABLE_PHASES.includes(plan.phase);
 
   const phaseAccent = STATUS_COLORS.PLAN_PHASE[plan.phase] ?? DEFAULT_COLORS.NEUTRAL;
   const health = plan.health ?? 'unknown';
-  // Health only speaks while the plan is running; a canceled plan's last known
+  // Health only shows while the plan is running; a canceled plan's last known
   // health would otherwise light the card up green.
-  const healthAccent =
-    plan.phase === 'active' && plan.health
-      ? STATUS_COLORS.PLAN_HEALTH[health]
-      : DEFAULT_COLORS.TEXT_PRIMARY;
+  const running = plan.phase === 'active';
 
   const isPermanent = plan.timeMode === 'permanent';
   const planWindow = buildWindow(plan);
   const targets = buildTargets(plan);
+  const scopeValue = buildScopeValue(plan);
   const { kinds, environments, tags } = usePlanTaxonomyLists();
-  const kindName = kinds.find((c) => c.id === plan.kindRef)?.name;
-  const environmentName = environments.find((c) => c.id === plan.environmentRef)?.name;
+  // The environment first, then the kind and the tags.
   const classification = [
-    kindName,
+    environments.find((c) => c.id === plan.environmentRef)?.name,
+    kinds.find((c) => c.id === plan.kindRef)?.name,
     ...(plan.tagRefs ?? []).map((id) => tags.find((c) => c.id === id)?.name),
   ].filter((name): name is string => Boolean(name));
+  const description = plan.description?.trim();
   const policyLabels = (plan.policies ?? []).map(
     (policy) => POLICY_CHIP_LABEL[policy.templateID] ?? policy.templateID,
   );
@@ -428,6 +508,8 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
           },
         ]
       : []),
+    // Cancel and delete end a plan: both sit in the danger zone, as on the details page.
+    { type: 'divider' },
     ...(canCancel
       ? [
           {
@@ -440,7 +522,6 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
           },
         ]
       : []),
-    { type: 'divider' },
     {
       key: 'delete',
       label: PPC.LABELS.ACTIONS.DELETE,
@@ -473,141 +554,88 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
+        gap: CARD_LAYOUT.BLOCK_GAP_PX,
       }}
     >
-      {/* Header: identity on the left, phase pill and actions on the right */}
-      <div style={CARD_HEADER_STYLE}>
-        <div style={CARD_IDENTITY_STYLE}>
-          <span style={CARD_TITLE_COLUMN_STYLE}>
+      {/* Header: the name beside phase, health and actions, then the description and tags under
+          both, so the corner never squeezes them into a stack. */}
+      <div style={CARD_TITLE_COLUMN_STYLE}>
+        <div style={CARD_HEADER_STYLE}>
+          <div style={CARD_IDENTITY_STYLE}>
             <span title={plan.name} style={CARD_TITLE_STYLE}>
               {plan.name}
             </span>
-            {/* Keyed on the plan's ids, not the resolved names, so the row does not pop in when the lists load. */}
-            {(plan.kindRef || (plan.tagRefs?.length ?? 0) > 0) && (
-              <span style={{ ...CARD_TAG_ROW_STYLE, minHeight: CARD_LAYOUT.TAG_ROW_MIN_HEIGHT_PX }}>
-                <CardTagList tags={classification} max={PLAN_CARD_MAX_TAGS} />
-              </span>
-            )}
-          </span>
-        </div>
+          </div>
 
-        <div style={CARD_ASIDE_STYLE}>
-          {environmentName && (
-            <Tag className={`${TAG_CLASS.AS_IS} ${TAG_CLASS.TRUNCATE}`} title={environmentName}>
-              {environmentName}
-            </Tag>
-          )}
-          <Tag color={getPillColor(phaseAccent)}>{phaseLabel}</Tag>
-          {menuItems.length > 0 && (
-            <Dropdown
-              trigger={['click']}
-              placement="bottomRight"
-              open={menuOpen}
-              onOpenChange={setMenuOpen}
-              menu={{
-                items: menuItems,
-                onClick: ({ key, domEvent }) => {
-                  domEvent.stopPropagation();
-                  if (key === 'edit') handleEdit();
-                  if (key === 'cancel') setCancelModalOpen(true);
-                  if (key === 'delete') setDeleteModalOpen(true);
-                  if (key === 'duplicate') handleDuplicate();
-                  if (key === 'reactivate') setReactivateModalOpen(true);
-                  if (key === 'approve') openDecision('approved');
-                  if (key === 'reject') openDecision('rejected');
-                  if (key === 'generateReport') void generateReport();
-                },
-              }}
-            >
-              <Button
-                type="text"
-                shape="circle"
-                icon={<MoreOutlined rotate={90} />}
-                onClick={(e) => e.stopPropagation()}
-                style={menuButtonStyle}
+          <div style={CORNER_STYLE}>
+            <Tag color={getPillColor(phaseAccent)}>{phaseLabel}</Tag>
+            {running && (
+              <HealthIndicator
+                label={PPC.LABELS.HEALTH_LABELS[health]}
+                accent={STATUS_COLORS.PLAN_HEALTH[health]}
+                loud={PLAN_LOUD_HEALTH.includes(health)}
               />
-            </Dropdown>
-          )}
+            )}
+            {menuItems.length > 0 && (
+              <Dropdown
+                trigger={['click']}
+                placement="bottomRight"
+                open={menuOpen}
+                onOpenChange={setMenuOpen}
+                menu={{
+                  items: menuItems,
+                  onClick: ({ key, domEvent }) => {
+                    domEvent.stopPropagation();
+                    if (key === 'edit') handleEdit();
+                    if (key === 'cancel') setCancelModalOpen(true);
+                    if (key === 'delete') setDeleteModalOpen(true);
+                    if (key === 'duplicate') handleDuplicate();
+                    if (key === 'reactivate') setReactivateModalOpen(true);
+                    if (key === 'approve') openDecision('approved');
+                    if (key === 'reject') openDecision('rejected');
+                    if (key === 'generateReport') void generateReport();
+                  },
+                }}
+              >
+                <Button
+                  type="text"
+                  shape="circle"
+                  icon={<MoreOutlined rotate={90} />}
+                  aria-label={CARD_TEXTS.ACTIONS_LABEL(plan.name)}
+                  onClick={(e) => e.stopPropagation()}
+                  style={menuButtonStyle}
+                />
+              </Dropdown>
+            )}
+          </div>
         </div>
+        {description && (
+          <span title={description} style={DESCRIPTION_STYLE}>
+            {description}
+          </span>
+        )}
+        {/* Keyed on the plan's ids, not the resolved names, so the row does not pop in when the lists load. */}
+        {(plan.environmentRef || plan.kindRef || (plan.tagRefs?.length ?? 0) > 0) && (
+          <span style={TAG_ROW_STYLE}>
+            <CardTagList tags={classification} max={PLAN_CARD_MAX_TAGS} />
+          </span>
+        )}
       </div>
 
-      {/* Window: label and range, then the rail running the window down */}
-      <div style={{ marginTop: CARD_LAYOUT.BLOCK_GAP_PX }}>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'baseline',
-            justifyContent: 'space-between',
-            gap: SPACING.MD,
-          }}
-        >
-          <span style={MICRO_LABEL_STYLE}>{planWindow.label}</span>
-          <span
-            style={{
-              ...TRUNCATE_STYLE,
-              fontSize: CARD_LAYOUT.MONO_FONT_SIZE_PX,
-              fontVariantNumeric: 'tabular-nums',
-              color: DEFAULT_COLORS.TEXT_MUTED,
-            }}
-          >
-            {planWindow.range}
+      {/* Window: its range and countdown on one line, then the rail running it down */}
+      <div>
+        <div style={WINDOW_LINE_STYLE}>
+          <span style={WINDOW_LABEL_STYLE}>{planWindow.label}</span>
+          <span title={planWindow.value} style={WINDOW_VALUE_STYLE}>
+            {planWindow.value}
           </span>
+          {planWindow.remaining && <span style={REMAINING_STYLE}>{planWindow.remaining}</span>}
         </div>
         {planWindow.showRail && (
-          <div
-            aria-hidden
-            style={{
-              marginTop: SPACING.SM,
-              height: CARD_LAYOUT.TRACK_HEIGHT_PX,
-              borderRadius: CARD_LAYOUT.PILL_RADIUS_PX,
-              background: DEFAULT_COLORS.HOVER_BG,
-              overflow: 'hidden',
-            }}
-          >
-            <div
-              style={{
-                height: '100%',
-                width: `${planWindow.percent}%`,
-                borderRadius: CARD_LAYOUT.PILL_RADIUS_PX,
-                background: phaseAccent,
-                transition: `width ${MOTION.BASE_MS}ms ${MOTION.EASE}`,
-              }}
-            />
+          <div aria-hidden style={RAIL_TRACK_STYLE}>
+            <div style={{ ...RAIL_FILL_STYLE, width: `${planWindow.percent}%` }} />
           </div>
         )}
-        <p
-          // 1.3: the remaining-time line's leading sits between TIGHT and SNUG.
-          style={{
-            margin: `${SPACING.SM}px 0 0`,
-            fontSize: CARD_LAYOUT.VALUE_FONT_SIZE_PX,
-            color: DEFAULT_COLORS.TEXT_PRIMARY,
-            lineHeight: 1.3,
-          }}
-        >
-          {planWindow.remaining}
-        </p>
-      </div>
-
-      {/* Stats: the four answers a plan is scanned for */}
-      <div style={CARD_STATS_GRID_STYLE}>
-        <StatCell
-          label={CARD_LABELS.STATS.SCOPE}
-          value={
-            <Tooltip title={targets.join(', ')}>
-              <span>{buildScopeValue(plan)}</span>
-            </Tooltip>
-          }
-        />
-        <StatCell label={CARD_LABELS.STATS.MODE} value={PPC.LABELS.MODE_LABELS[plan.mode]} />
-        <StatCell
-          label={CARD_LABELS.STATS.TEMPLATES}
-          value={CARD_LABELS.TEMPLATES_COUNT(policyLabels.length)}
-        />
-        <StatCell
-          label={CARD_LABELS.STATS.HEALTH}
-          value={PPC.LABELS.HEALTH_LABELS[health]}
-          accent={healthAccent}
-        />
       </div>
 
       {/* What the plan refuses, in the operator's words rather than template ids */}
@@ -622,16 +650,31 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
         }))}
       />
 
-      {/* Grid rows stretch every card to one height: the spacer keeps the footer at the bottom. */}
-      <div style={{ flex: 1 }} />
-
-      {/* Provenance: who put this window in place and when it last moved */}
-      <div style={CARD_FOOTER_STYLE}>
-        <span style={TRUNCATE_STYLE} title={provenanceActor}>
-          {provenanceLabel}
-        </span>
-        <span style={TRUNCATE_STYLE}>
-          {CARD_LABELS.UPDATED_PREFIX} <TimeAgo date={plan.lastUpdatedAt || plan.createdAt} />
+      {/* Grid rows stretch every card to one height: the auto margin keeps this group at the bottom. */}
+      <div style={BOTTOM_STYLE}>
+        <div style={META_LINE_STYLE}>
+          <Tooltip title={targets.join(', ')}>
+            <span
+              tabIndex={0}
+              aria-label={CARD_LABELS.SCOPE_TARGETS_LABEL(scopeValue, targets.join(', '))}
+            >
+              {scopeValue}
+            </span>
+          </Tooltip>
+          {CARD_LABELS.META_SEPARATOR}
+          {PPC.LABELS.MODE_LABELS[plan.mode]}
+          {CARD_LABELS.META_SEPARATOR}
+          {PPC.LABELS.DETAIL_PAGE.ACTIONS.DECISION_POLICIES_COUNT(policyLabels.length)}
+        </div>
+        {/* Provenance: when the plan last moved, and who created or requested it */}
+        <span style={FOOTER_STYLE}>
+          {CARD_TEXTS.UPDATED_PREFIX} <TimeAgo date={updatedAt} short exactRows={exactTimes} />
+          {provenanceName && (
+            <span title={provenanceActor}>
+              {CARD_LABELS.META_SEPARATOR}
+              {provenancePrefix} {provenanceName}
+            </span>
+          )}
         </span>
       </div>
 

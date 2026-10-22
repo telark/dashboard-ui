@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { DEFAULT_COLORS, SPACING, FONT_SIZE, FONT_WEIGHT } from '../../../../constants';
+import { DEFAULT_COLORS, SPACING, FONT_SIZE, FONT_WEIGHT } from '../../../constants';
 
 export interface KeyValueGridRow {
   k: string;
@@ -26,7 +26,8 @@ const KeyValueGrid: React.FC<KeyValueGridProps> = memo(
     return (
       <div style={{ display: 'grid', rowGap }}>
         {rows.map((r) => (
-          <div key={r.k} style={rowStyle}>
+          // minWidth 0: a long unbreakable value ellipsizes in its column, never widens it.
+          <div key={r.k} style={{ ...rowStyle, minWidth: 0 }}>
             {/* The flex sizes apply to the wrapping rows only; a grid row ignores them. */}
             <div
               style={{

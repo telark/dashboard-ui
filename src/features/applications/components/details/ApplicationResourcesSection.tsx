@@ -3,7 +3,7 @@ import { ApartmentOutlined, ShareAltOutlined } from '@ant-design/icons';
 import { Segmented, Tooltip } from 'antd';
 import { DEFAULT_COLORS, EMPTY_VALUE, FONT_SIZE } from '../../../../constants';
 import SettingsCard from '../../../settings/components/SettingsCard';
-import MutedText from './MutedText';
+import { MutedText } from '../../../../components/display/details';
 import ApplicationResourceGraph from './ApplicationResourceGraph';
 import ApplicationResourceTree from './ApplicationResourceTree';
 import { APPLICATIONS_UI } from '../../constants';

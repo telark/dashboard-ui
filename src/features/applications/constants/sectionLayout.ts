@@ -3,20 +3,14 @@ import { SETTINGS_CONSTANTS } from '../../settings/constants';
 
 /** Applications feature: spacing and dividers aligned with settings/content tokens. */
 export const APPLICATION_SECTION_LAYOUT = {
-  STACK_GAP_PX: SETTINGS_CONSTANTS.CONTENT.GAP_BETWEEN_CARDS,
   CARD_RADIUS: SETTINGS_CONSTANTS.CONTENT.CARD_BORDER_RADIUS,
   CARD_PADDING: SETTINGS_CONSTANTS.CONTENT.CARD_PADDING,
   FIELD_LABEL_FONT_SIZE: 11,
   FIELD_VALUE_FONT_SIZE: 13,
-  COLUMN_HEADER_FONT_SIZE: 12,
   COLUMN_INNER_RADIUS: SETTINGS_CONSTANTS.CONTENT.CARD_BORDER_RADIUS,
   TAG_CLOUD_MAX_HEIGHT_PX: 120,
   /** Env var names listed before the "+N" link that expands the rest. */
   ENV_MAX_VISIBLE: 9,
-  /** A summary column keeps its 140px labels beside the values down to this width. */
-  SUMMARY_BLOCK_MIN_WIDTH_PX: 300,
-  SUMMARY_COLUMN_GAP_PX: 32,
-  SUMMARY_ROW_GAP_PX: 20,
 } as const;
 
 /** Inline manifest reader shown inside the manage-snapshots panel. */
@@ -69,9 +63,6 @@ export const APPLICATION_DETAILS_TOOLBAR = {
   META_FONT_SIZE_PX: 12,
   /** A last sync older than this reads as a warning. */
   SYNC_STALE_MS: 24 * 60 * 60 * 1000,
-  /** The identity strip only appears once the page header has scrolled away. */
-  REVEAL_OFFSET_PX: 48,
-  REVEAL_DURATION_S: 0.18,
 } as const;
 
 /** Resource usage: usage meters against the limit or request, one row per workload. */

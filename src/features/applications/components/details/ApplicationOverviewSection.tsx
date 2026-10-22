@@ -7,6 +7,7 @@ import {
   DEFAULT_COLORS,
   EMPTY_VALUE,
   MONOSPACE_CLASS,
+  NONE_TEXT,
   ROW_ACTION_CLASS,
   ROW_ICON_BUTTON_SIZE,
   TRUNCATE_STYLE,
@@ -17,10 +18,14 @@ import {
 import SettingsCard from '../../../settings/components/SettingsCard';
 import { CardTagList } from '../../../../components/display/card';
 import ApplicationChangeActivity from './ApplicationChangeActivity';
-import KeyValueGrid, { type KeyValueGridRow } from './KeyValueGrid';
-import MutedText from './MutedText';
-import DateAndAge from './DateAndAge';
-import LabelWithInfo from './LabelWithInfo';
+import {
+  DateAndAge,
+  LabelWithInfo,
+  MutedText,
+  SummaryBlock,
+  SummaryColumns,
+  type KeyValueGridRow,
+} from '../../../../components/display/details';
 import {
   APPLICATIONS_UI,
   APPLICATION_CARD,
@@ -31,12 +36,10 @@ import {
   APPLICATION_SECTION_LAYOUT,
   APPLICATION_WORKLOAD_METRICS,
 } from '../../constants/sectionLayout';
-import { ColumnShell } from '../../pages/details/contentBlocks';
 import type { Application, ApplicationWorkloadUsage } from '../../models';
 import { parseCpuToMillicores, parseMemoryToBytes } from '../../utils/k8sQuantity';
 import { useUsernamesByIds } from '../../../../hooks/useUsernamesByIds';
 import { useApplicationCoverage } from '../../hooks/useApplicationCoverage';
-import { useElementWidth } from '../../../../hooks/layout/useElementWidth';
 import { getApplicationProtection } from '../../utils/coverage';
 import ProtectionBadge from '../protection/ProtectionBadge';
 import ProtectButton from '../protection/ProtectButton';
@@ -54,7 +57,7 @@ const INLINE_ROW_STYLE: React.CSSProperties = {
   gap: SPACING.SM,
 };
 
-const none = <MutedText value={R.NONE} />;
+const none = <MutedText value={NONE_TEXT} />;
 
 // The badge first, then each covering plan by name, in the cards' order.
 const ProtectionValue: React.FC<{ application: Application }> = ({ application }) => {
@@ -180,7 +183,7 @@ const DriftValue: React.FC<{ drifted: boolean }> = ({ drifted }) =>
       <span tabIndex={0}>{O.DRIFT_CHANGED}</span>
     </Tooltip>
   ) : (
-    <>{O.DRIFT_NONE}</>
+    <>{NONE_TEXT}</>
   );
 
 function buildStatusRows(application: Application): KeyValueGridRow[] {
@@ -387,95 +390,36 @@ function buildRuntimeRows(application: Application): KeyValueGridRow[] {
   ];
 }
 
-const SummaryBlock: React.FC<{ title: string; rows: KeyValueGridRow[]; stacked: boolean }> = ({
-  title,
-  rows,
-  stacked,
-}) => (
-  <ColumnShell title={title}>
-    {/* Narrower than a label beside its value: each label goes above its value instead. */}
-    <KeyValueGrid compact={!stacked} plainLabels rows={rows} />
-  </ColumnShell>
-);
-
-// A column after the first in its row starts with a divider, centered in the column gap.
-const SummaryColumn: React.FC<{ divided: boolean; children: React.ReactNode }> = ({
-  divided,
-  children,
-}) => (
-  <div
-    style={{
-      minWidth: 0,
-      display: 'grid',
-      alignContent: 'start',
-      rowGap: L.SUMMARY_ROW_GAP_PX,
-      ...(divided && {
-        borderLeft: `1px solid ${DEFAULT_COLORS.BORDER_DEFAULT}`,
-        paddingLeft: L.SUMMARY_COLUMN_GAP_PX / 2,
-      }),
-    }}
-  >
-    {children}
-  </div>
-);
-
-// Read from the card's measured width, since the sidebar changes it without the viewport.
-const summaryColumns = (width: number): number => {
-  const span = (columns: number) =>
-    columns * L.SUMMARY_BLOCK_MIN_WIDTH_PX + (columns - 1) * L.SUMMARY_COLUMN_GAP_PX;
-  if (width >= span(3)) return 3;
-  if (width >= span(2)) return 2;
-  return 1;
-};
-
 // Columns in reading order: Status (with the namespace and its manager) above Timeline, Runtime,
 // then Change activity.
 const ApplicationOverviewSection: React.FC<{ application: Application }> = memo(
-  ({ application }) => {
-    const { ref, width } = useElementWidth<HTMLDivElement>();
-    const stacked = width > 0 && width < L.SUMMARY_BLOCK_MIN_WIDTH_PX;
-    const columns = summaryColumns(width);
-    const content = [
-      <React.Fragment key="status">
-        <SummaryBlock
-          title={O.GROUP_STATUS}
-          rows={[...buildStatusRows(application), ...buildSourceRows(application)]}
-          stacked={stacked}
-        />
-        <SummaryBlock
-          title={O.GROUP_TIMELINE}
-          rows={buildTimelineRows(application)}
-          stacked={stacked}
-        />
-      </React.Fragment>,
-      <SummaryBlock
-        key="runtime"
-        title={O.GROUP_RUNTIME}
-        rows={buildRuntimeRows(application)}
-        stacked={stacked}
-      />,
-      <ApplicationChangeActivity key="activity" application={application} stacked={stacked} />,
-    ];
-    return (
-      <SettingsCard title={O.TITLE}>
-        <div
-          ref={ref}
-          style={{
-            display: 'grid',
-            gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
-            columnGap: L.SUMMARY_COLUMN_GAP_PX / 2,
-            rowGap: L.SUMMARY_ROW_GAP_PX,
-          }}
-        >
-          {content.map((column, index) => (
-            <SummaryColumn key={column.key} divided={index % columns !== 0}>
-              {column}
-            </SummaryColumn>
-          ))}
-        </div>
-      </SettingsCard>
-    );
-  },
+  ({ application }) => (
+    <SettingsCard title={O.TITLE}>
+      <SummaryColumns
+        renderColumns={(stacked) => [
+          <React.Fragment key="status">
+            <SummaryBlock
+              title={O.GROUP_STATUS}
+              rows={[...buildStatusRows(application), ...buildSourceRows(application)]}
+              stacked={stacked}
+            />
+            <SummaryBlock
+              title={O.GROUP_TIMELINE}
+              rows={buildTimelineRows(application)}
+              stacked={stacked}
+            />
+          </React.Fragment>,
+          <SummaryBlock
+            key="runtime"
+            title={O.GROUP_RUNTIME}
+            rows={buildRuntimeRows(application)}
+            stacked={stacked}
+          />,
+          <ApplicationChangeActivity key="activity" application={application} stacked={stacked} />,
+        ]}
+      />
+    </SettingsCard>
+  ),
 );
 
 ApplicationOverviewSection.displayName = 'ApplicationOverviewSection';

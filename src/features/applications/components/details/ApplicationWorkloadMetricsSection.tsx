@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import SettingsCard from '../../../settings/components/SettingsCard';
-import MutedText from './MutedText';
+import { MutedText } from '../../../../components/display/details';
 import ApplicationWorkloadMetrics from './ApplicationWorkloadMetrics';
 import { APPLICATIONS_UI } from '../../constants';
 import type { Application } from '../../models';

@@ -24,7 +24,7 @@ const reportName = ({ report, planName }: DeleteTarget): string =>
   L.REPORT_NAME(
     planName,
     L.TRIGGER_LABELS[report.trigger],
-    formatDateTime(report.generatedAt, TIME_FORMATS.DATE_TIME_12H),
+    formatDateTime(report.generatedAt, TIME_FORMATS.DATE_TIME),
   );
 
 // Asks before deleting one report, then refreshes the host's list. A report someone else

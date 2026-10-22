@@ -2,22 +2,21 @@ import React, { memo, useCallback, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { Form, App as AntdApp } from 'antd';
-import LoadingDetailsView from '../../../../../components/display/views/LoadingDetailsView';
+import FullPageLoader from '../../../../../components/display/views/FullPageLoader';
 import { ActionConfirmModal } from '../../../../../components/display/modal';
 import ReactivatePlanModal from '../../components/shared/ReactivatePlanModal';
 import DeletePlanModal from '../../components/shared/DeletePlanModal';
 import ApprovalDecisionModal from '../../components/shared/ApprovalDecisionModal';
-import { APP_ROUTES, SHARED_DETAILS_CONSTANTS, SPACING } from '../../../../../constants';
+import { APP_ROUTES, HEADER_LAYOUT, SHARED_DETAILS_CONSTANTS } from '../../../../../constants';
+import { LIST_PAGE } from '../../../../../constants/shared/pages';
 import { DataViewError, PageContainer } from '../../../../../components/shared';
 import { usePlanDetails } from '../../hooks/usePlanDetails';
 import {
   cancelPlanThunk,
   decidePlanThunk,
   deletePlanThunk,
-  fetchProtectionPlanDetailsThunk,
   reactivatePlanThunk,
 } from '../../store';
-import { fetchPlanStatus } from '../../clients';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
 import type { AppDispatch } from '../../../../../store';
 import type { PlanApprovalDecision } from '../../models';
@@ -33,7 +32,7 @@ const ProtectionPlanDetailsView: React.FC = memo(() => {
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
   const { message } = AntdApp.useApp();
-  const { details, loading, error, refresh, notFound } = usePlanDetails(decodedName);
+  const { details, error, refresh, notFound } = usePlanDetails(decodedName);
   const [editForm] = Form.useForm<FormValues>();
 
   const [duplicatePanelOpen, setDuplicatePanelOpen] = useState(false);
@@ -41,7 +40,6 @@ const ProtectionPlanDetailsView: React.FC = memo(() => {
   const [canceling, setCanceling] = useState(false);
   const [reactivating, setReactivating] = useState(false);
   const [deleting, setDeleting] = useState(false);
-  const [refreshingHealth, setRefreshingHealth] = useState(false);
   const [cancelModalOpen, setCancelModalOpen] = useState(false);
   const [reactivateModalOpen, setReactivateModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -157,23 +155,6 @@ const ProtectionPlanDetailsView: React.FC = memo(() => {
     [decisionModal, details, dispatch, message],
   );
 
-  const handleRefreshHealth = useCallback(async () => {
-    if (!details) return;
-    setRefreshingHealth(true);
-    try {
-      await fetchPlanStatus(details.id);
-      await dispatch(fetchProtectionPlanDetailsThunk(details.id));
-    } catch (err: unknown) {
-      // fetchPlanStatus is a direct client call, so it rejects with an Error, not a thunk string.
-      message.error(err instanceof Error ? err.message : PPC.LABELS.ACTIONS.REFRESH_HEALTH_ERROR);
-    } finally {
-      setRefreshingHealth(false);
-    }
-  }, [details, dispatch, message]);
-
-  if (loading && !details) {
-    return <LoadingDetailsView />;
-  }
   if (error && !details) {
     return (
       <div style={SHARED_DETAILS_CONSTANTS.STATES.ERROR_CONTAINER}>
@@ -186,34 +167,40 @@ const ProtectionPlanDetailsView: React.FC = memo(() => {
       </div>
     );
   }
-  if (notFound || !details) {
+  if (notFound) {
     return <ProtectionPlanDetailsEmpty />;
+  }
+  // Until the plan is known: the route's spinner, in its place.
+  if (!details) {
+    return <FullPageLoader minHeight={HEADER_LAYOUT.MIN_HEIGHT} />;
   }
 
   return (
     <>
-      <PageContainer breadcrumbs={breadcrumbItems} subtitle={PPC.LABELS.DETAIL_PAGE.SUBTITLE}>
-        <div style={{ marginTop: SPACING.XXL }}>
-          <ProtectionPlanDetailsContent
-            plan={details}
-            duplicating={duplicatePanelOpen}
-            editing={editPanelOpen}
-            canceling={canceling}
-            reactivating={reactivating}
-            approving={deciding === 'approved'}
-            rejecting={deciding === 'rejected'}
-            deleting={deleting}
-            refreshingHealth={refreshingHealth}
-            onDuplicate={handleOpenDuplicate}
-            onEdit={handleOpenEdit}
-            onCancel={() => setCancelModalOpen(true)}
-            onReactivate={() => setReactivateModalOpen(true)}
-            onApprove={() => openDecision('approved')}
-            onReject={() => openDecision('rejected')}
-            onDelete={() => setDeleteModalOpen(true)}
-            onRefreshHealth={handleRefreshHealth}
-          />
-        </div>
+      <PageContainer
+        breadcrumbs={breadcrumbItems}
+        subtitle={PPC.LABELS.DETAIL_PAGE.SUBTITLE}
+        gap={LIST_PAGE.CONTENT_GAP_PX}
+      >
+        {/* The list pages' subheader slot, empty here, so the status row lands where their toolbar does. */}
+        <div aria-hidden style={{ height: LIST_PAGE.SUBHEADER_ROW_HEIGHT_PX }} />
+        <ProtectionPlanDetailsContent
+          plan={details}
+          duplicating={duplicatePanelOpen}
+          editing={editPanelOpen}
+          canceling={canceling}
+          reactivating={reactivating}
+          approving={deciding === 'approved'}
+          rejecting={deciding === 'rejected'}
+          deleting={deleting}
+          onDuplicate={handleOpenDuplicate}
+          onEdit={handleOpenEdit}
+          onCancel={() => setCancelModalOpen(true)}
+          onReactivate={() => setReactivateModalOpen(true)}
+          onApprove={() => openDecision('approved')}
+          onReject={() => openDecision('rejected')}
+          onDelete={() => setDeleteModalOpen(true)}
+        />
       </PageContainer>
 
       <ActionConfirmModal

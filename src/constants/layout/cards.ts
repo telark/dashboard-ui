@@ -1,7 +1,6 @@
 import type { CSSProperties } from 'react';
 import { DEFAULT_COLORS } from '../shared/colors';
 import { CONTROL_HEIGHT } from './controls';
-import { SECTION_LAYOUT } from './sections';
 
 /** Entity cards (protection plans, applications): the elevated panel geometry every block inside it measures from. */
 export const CARD_LAYOUT = {
@@ -10,7 +9,6 @@ export const CARD_LAYOUT = {
   PADDING_PX: 14,
   RADIUS_PX: 8,
   BLOCK_GAP_PX: 12,
-  DIVIDER_GAP_PX: 10,
   ICON_CHIP_RADIUS_PX: 8,
   AVATAR_CHIP_SIZE_PX: 16,
   TITLE_FONT_SIZE_PX: 14,
@@ -18,28 +16,18 @@ export const CARD_LAYOUT = {
   // 318px desktop card header (measured), so they stay in the corner and long names truncate.
   TITLE_MIN_WIDTH_PX: 64,
   META_FONT_SIZE_PX: 11,
+  // Centers the corner (pills, health, 30px menu) on the 18px name line: (30 - 18) / 2.
+  CORNER_OFFSET_PX: -6,
   // Height of one row of tags, reserved while their names are still loading.
   TAG_ROW_MIN_HEIGHT_PX: 20,
   MAX_TARGET_TAGS: 3,
-  MICRO_FONT_SIZE_PX: 11,
-  MICRO_TRACKING: '0.06em',
   VALUE_FONT_SIZE_PX: 12,
-  MONO_FONT_SIZE_PX: 10,
   TRACK_HEIGHT_PX: 4,
-  CHIPS_GAP_PX: 12,
   MAX_POLICY_CHIPS: 3,
   PILL_RADIUS_PX: 999,
-  // Widest stat label ("MANAGED BY", 11px/700 Geist + tracking) is ~79.4px.
-  STAT_MIN_WIDTH_PX: 80,
-  STATS_PER_ROW: 4,
 } as const;
 
-const STATS_ROW_MIN_WIDTH_PX =
-  CARD_LAYOUT.STATS_PER_ROW * CARD_LAYOUT.STAT_MIN_WIDTH_PX +
-  (CARD_LAYOUT.STATS_PER_ROW - 1) * CARD_LAYOUT.CHIPS_GAP_PX;
-
-// Keeps three cards across a 1440px window with the sidebar open (a 1069px grid). A card
-// narrower than its four stats need shows them two across (CARD_STAT_CELL_FLEX), never truncated.
+// Keeps three cards across a 1440px window with the sidebar open (a 1069px grid).
 export const CARD_MIN_WIDTH_PX = 338;
 
 // A disabled selectable card dims what it holds, never the line that says why it is disabled.
@@ -56,26 +44,18 @@ export const getCardGridColumns = (width: number): number => {
 
 export const CARD_MORE_LABEL = (count: number): string => `+${count}`;
 
-export const MICRO_LABEL_STYLE: CSSProperties = {
-  fontSize: CARD_LAYOUT.MICRO_FONT_SIZE_PX,
-  fontWeight: 700,
-  letterSpacing: CARD_LAYOUT.MICRO_TRACKING,
-  textTransform: 'uppercase',
-  color: DEFAULT_COLORS.TEXT_MUTED,
-  lineHeight: 1.2,
-};
+// The words both entity cards use: the menu's name and the footer's time prefixes.
+export const CARD_TEXTS = {
+  ACTIONS_LABEL: (name: string) => `Actions for ${name}`,
+  UPDATED_PREFIX: 'Updated',
+  CREATED_PREFIX: 'Created',
+} as const;
 
 export const TRUNCATE_STYLE: CSSProperties = {
   minWidth: 0,
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   whiteSpace: 'nowrap',
-};
-
-export const DIVIDED_BLOCK_STYLE: CSSProperties = {
-  marginTop: CARD_LAYOUT.BLOCK_GAP_PX,
-  paddingTop: CARD_LAYOUT.DIVIDER_GAP_PX,
-  borderTop: SECTION_LAYOUT.SUBTLE_DIVIDER,
 };
 
 export const CARD_HEADER_STYLE: CSSProperties = {
@@ -124,30 +104,6 @@ export const CARD_ASIDE_STYLE: CSSProperties = {
   flexShrink: 0,
   // Stays at the right edge when it wraps under the title.
   marginLeft: 'auto',
-};
-
-export const CARD_STATS_GRID_STYLE: CSSProperties = {
-  ...DIVIDED_BLOCK_STYLE,
-  display: 'flex',
-  flexWrap: 'wrap',
-  columnGap: CARD_LAYOUT.CHIPS_GAP_PX,
-  rowGap: CARD_LAYOUT.DIVIDER_GAP_PX,
-};
-
-// Four across while the row fits, otherwise two: the middle term flips from
-// negative to huge at the threshold, so clamp picks the quarter or the half.
-export const CARD_STAT_CELL_FLEX = `1 1 clamp(calc(25% - ${CARD_LAYOUT.CHIPS_GAP_PX}px), calc((${STATS_ROW_MIN_WIDTH_PX}px - 100%) * 999), calc(50% - ${CARD_LAYOUT.CHIPS_GAP_PX}px))`;
-
-export const CARD_FOOTER_STYLE: CSSProperties = {
-  ...DIVIDED_BLOCK_STYLE,
-  display: 'flex',
-  flexWrap: 'wrap',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  columnGap: 12,
-  rowGap: 4,
-  fontSize: CARD_LAYOUT.META_FONT_SIZE_PX,
-  color: DEFAULT_COLORS.TEXT_MUTED,
 };
 
 export const getCardShellStyle = (hovered: boolean): CSSProperties => ({

@@ -41,3 +41,6 @@ export const Icons = {
 } as const;
 
 export const STATUS_DOT = { width: 8, height: 8, borderRadius: '50%', flexShrink: 0 } as const;
+
+// The health indicator's dot, beside its 12px label.
+export const HEALTH_DOT_PX = 6;

@@ -5,7 +5,7 @@ import { CapitalizeFirstLetter } from '../../../../../utils/helpers/format';
 import { SlideOutPanel } from '../../../../../components/display/panels/slide-out';
 import ViewPanelDetails from '../../../../../components/display/panels/view/ViewPanelDetails';
 import type { ViewDetailRow } from '../../../../../components/display/panels/view/types';
-import DateAndAge from '../DateAndAge';
+import { DateAndAge } from '../../../../../components/display/details';
 import { APPLICATIONS_UI } from '../../../constants';
 import { APPLICATION_CHANGE_LINE_PALETTE } from '../../../constants/sectionLayout';
 import type { ApplicationChangeLogEntry } from '../../../models';

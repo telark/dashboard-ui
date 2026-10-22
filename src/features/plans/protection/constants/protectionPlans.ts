@@ -37,11 +37,10 @@ export const PROTECTION_PLANS_CONSTANTS = {
     },
     TOOLBAR_PHASE_FILTER: 'Filter by phase',
     BREADCRUMBS: {
-      ROOT: 'Protection Plans',
+      ROOT: 'Protection plans',
     },
     REPORTS: {
       GENERATE: 'Generate report',
-      OPEN_LATEST: 'Open latest report',
       REFRESH: 'Refresh',
       // Shared by the details page and the Reports tab.
       TRIGGER_LABELS: {
@@ -72,8 +71,7 @@ export const PROTECTION_PLANS_CONSTANTS = {
       DELETE: 'Delete report',
       DELETE_MODAL_TITLE: 'Delete Report',
       DELETE_MODAL_OK: 'Delete',
-      DELETE_MODAL_NOTE:
-        'The report file is removed for good. Download it first if you need a copy.',
+      DELETE_MODAL_NOTE: "This can't be undone. Download it first to keep a copy.",
       DELETE_SUCCESS: 'Report deleted.',
       DELETE_ERROR: 'Could not delete the report.',
       DELETE_ACTION: 'delete',
@@ -135,12 +133,11 @@ export const PROTECTION_PLANS_CONSTANTS = {
       LOADING_ERROR: "Couldn't load this plan",
       NOT_FOUND: 'Protection plan not found.',
       SECTIONS: {
-        OVERVIEW_TITLE: 'Overview',
-        OVERVIEW_DESCRIPTION: 'Identity, mode, and lifecycle metadata.',
-        OVERVIEW_COLUMN_PRIMARY: 'Details',
-        OVERVIEW_COLUMN_ACTIVITY: 'People and activity',
+        SUMMARY_TITLE: 'Plan summary',
+        GROUP_STATUS: 'Status',
+        GROUP_TIMELINE: 'Timeline',
+        GROUP_DETAILS: 'Details',
         SCOPE_TITLE: 'Scope',
-        SCOPE_DESCRIPTION: 'What this plan protects.',
         POLICIES_TITLE: 'Policies',
         HEALTH_TITLE: 'Health',
         HEALTH_DESCRIPTION: 'Whether the policies this plan expects are live in the cluster.',
@@ -148,42 +145,40 @@ export const PROTECTION_PLANS_CONSTANTS = {
         VIOLATIONS_DESCRIPTION:
           'Recent admission decisions: what the plan blocked, audited or let through.',
         REPORTS_TITLE: 'Reports',
-        REPORTS_DESCRIPTION:
-          'What happened in the cluster while this plan was in effect. A final report is captured when the plan ends or is canceled.',
-        REPORTS_DESCRIPTION_SERIES:
-          'What happened in the cluster during each window. A report is captured when each window ends, and when the plan is canceled.',
+        REPORTS_DESCRIPTION: 'What happened in the cluster while this plan was in effect.',
+        REPORTS_CAPTURE_INFO: 'A final report is captured when the plan ends or is canceled.',
+        REPORTS_DESCRIPTION_SERIES: 'What happened in the cluster during each window.',
+        REPORTS_CAPTURE_INFO_SERIES:
+          'A report is captured when each window ends, and when the plan is canceled.',
       },
       FIELDS: {
-        NAME: 'Name',
         DESCRIPTION: 'Description',
         SEVERITY: 'Severity',
         PRIORITY: 'Priority',
         MODE: 'Mode',
         PERMANENT: 'Permanent',
-        CREATED: 'Created By',
-        UPDATED: 'Last updated By',
-        STARTED: 'Started By',
+        HEALTH: 'Health',
+        CREATED: 'Created',
+        UPDATED: 'Last updated',
+        STARTED: 'Started',
         TERMINATED: 'Terminated',
         PARTICIPANTS: 'Participants',
         REASON: 'Reason',
-        SCOPE_TYPE: 'Scope type',
         APPLICATIONS: 'Applications',
         NAMESPACES: 'Namespaces',
         EXCLUDED_KINDS: 'Excluded kinds',
         EXCLUDED_RESOURCES: 'Excluded resources',
         EXECUTION: 'Execution',
-        REQUESTED_BY: 'Requested By',
-        APPROVED_BY: 'Approved By',
-        REJECTED_BY: 'Rejected By',
+        REQUESTED: 'Requested',
+        APPROVED: 'Approved',
+        REJECTED: 'Rejected',
         DECISION_COMMENT: 'Decision comment',
       },
       ACTIONS: {
         DUPLICATE: 'Duplicate',
         DUPLICATE_PANEL_TITLE: 'Duplicate Plan',
-        CANCEL: 'Cancel',
         EDIT: 'Edit',
         MORE_LABEL: 'More',
-        REFRESH_HEALTH: 'Refresh health',
         CANCEL_MODAL_TITLE: 'Cancel Protection Plan',
         CANCEL_MODAL_OK: 'Cancel plan',
         REACTIVATE: 'Reactivate',
@@ -242,7 +237,6 @@ export const PROTECTION_PLANS_CONSTANTS = {
       CANCEL_ERROR: 'Failed to cancel plan.',
       DELETE_SUCCESS: (name: string) => `Plan "${name}" deleted.`,
       DELETE_ERROR: 'Failed to delete plan.',
-      REFRESH_HEALTH_ERROR: 'Failed to refresh health status.',
       CREATE_ERROR: 'Failed to create plan.',
       UPDATE_SUCCESS: (name: string) => `Plan "${name}" updated.`,
       UPDATE_ERROR: 'Failed to update plan.',
@@ -302,14 +296,13 @@ export const PROTECTION_PLANS_CONSTANTS = {
       FILTER_ALL: 'All',
     },
     HEALTH_DETAIL: {
-      CHECKED_AT: 'Last checked',
+      CHECKED_AT: 'Checked',
       REFRESH_BUTTON: 'Refresh health',
       UNEXPECTED: 'Unexpected policies',
-      NAMESPACE: 'Namespace',
-      IN_CLUSTER: 'In cluster',
-      ACTIVE: 'Active',
-      YES: 'yes',
-      NO: 'no',
+      // A policy row shows a pill only for what keeps it out of force.
+      PILL_NOT_IN_CLUSTER: 'Not in cluster',
+      PILL_NOT_ACTIVE: 'Not active',
+      PILL_AUDIT_ONLY: 'Audit only',
       MODE_IN_CLUSTER: 'Mode in cluster',
       LOAD_ERROR: 'Failed to load health status.',
       EMPTY: 'No policy details available.',
@@ -335,15 +328,12 @@ export const PROTECTION_PLANS_CONSTANTS = {
       pending_approval: 'Pending approval',
     } as Record<PlanPhase, string>,
     PHASE_INFO: {
-      STARTS_PREFIX: 'Starts',
       STARTS_IN_PREFIX: 'Starts in',
       STARTED_PREFIX: 'Started',
-      ENDS_PREFIX: 'Ends',
       ENDS_IN_PREFIX: 'Ends in',
       TERMINATED_PREFIX: 'Terminated',
       AWAITING_APPROVAL_PREFIX: 'Awaiting approval · requested',
       REJECTED_LABEL: 'Rejected',
-      END_TIME_FORMAT: 'MMM d, h:mm a',
       IN_TIME_ZONE: (time: string, zone: string) => `${time} (${zone})`,
     },
     MODE_LABELS: {
@@ -359,29 +349,22 @@ export const PROTECTION_PLANS_CONSTANTS = {
       NEXT_WINDOW_LABEL: 'Next window',
       CURRENT_WINDOW_LABEL: 'Current window',
       PERMANENT_LABEL: 'Protection',
-      WINDOW_TIME_FORMAT: 'MMM d, HH:mm',
       RANGE_SEPARATOR: ' → ',
       PERMANENT_RANGE: 'Always on',
       NO_SCHEDULE: 'No schedule set',
       META_SEPARATOR: ' · ',
       APPLICATIONS_COUNT: (count: number) =>
         `${count} ${count === 1 ? 'application' : 'applications'}`,
-      UPDATED_PREFIX: 'updated',
       REFUSES_NONE: 'No policies configured',
-      STATS: {
-        SCOPE: 'Scope',
-        MODE: 'Mode',
-        TEMPLATES: 'Templates',
-        HEALTH: 'Health',
-      },
-      TEMPLATES_COUNT: (count: number) => `${count} active`,
+      // The scope count's name for a screen reader: the targets its tooltip lists.
+      SCOPE_TARGETS_LABEL: (scope: string, targets: string) => `${scope}: ${targets}`,
       NAMESPACES_COUNT: (count: number) => `${count} ${count === 1 ? 'namespace' : 'namespaces'}`,
       BLOCKED_LABEL: {
         audit: { window: 'Would refuse in this window', permanent: 'Would always refuse' },
         enforce: { window: 'Refuses in this window', permanent: 'Always refuses' },
       } as Record<PlanMode, { window: string; permanent: string }>,
       CREATED_BY_PREFIX: 'by',
-      AWAITING_APPROVAL_BY_PREFIX: 'awaiting approval · requested by',
+      AWAITING_APPROVAL_BY_PREFIX: 'requested by',
       // A repeating plan's rule, e.g. "Sun, Mon · 02:00 → 04:00 (Europe/Paris)".
       REPEAT_RULE: (days: string, start: string, end: string, zone: string) =>
         `${days} · ${start} → ${end} (${zone})`,
@@ -571,6 +554,9 @@ export const PLAN_TAXONOMY_LIMITS = { MAX_TAGS: 20 } as const;
 // Tags per row on a plan card; the rest go behind the "+N" pill.
 export const PLAN_CARD_MAX_TAGS = 2;
 
+// Health states that earn a filled pill on a running plan; the rest are a dot and muted text.
+export const PLAN_LOUD_HEALTH: readonly PlanHealth[] = ['drifted', 'degraded'];
+
 // mirrors internal/data constants.CategoryIDEnvProduction
 export const PLAN_APPROVAL = {
   PRODUCTION_ENVIRONMENT_ID: 'cat-00002-0001-0001',
@@ -586,9 +572,6 @@ export const REPORT_FORMATS: ReadonlyArray<{ key: PlanReportFormat; label: strin
 
 export const REPORT_FILE_NAME = (planName: string, reportId: string, format: string) =>
   `${planName}-${reportId}.${format}`;
-
-// "Open latest report" fetches the readable format: it opens in a browser, which prints it to PDF.
-export const REPORT_OPEN_FORMAT: PlanReportFormat = 'html';
 
 export const REPORT_GENERATE_TIMEOUT_MS = 35_000;
 export const REPORT_DOWNLOAD_TIMEOUT_MS = 60_000;

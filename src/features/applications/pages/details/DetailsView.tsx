@@ -1,14 +1,13 @@
 import React, { memo, useEffect, useMemo, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import LoadingDetailsView from '../../../../components/display/views/LoadingDetailsView';
+import FullPageLoader from '../../../../components/display/views/FullPageLoader';
 import { APPLICATION_DETAILS_CONSTANTS, SYNC_STATUS_VALUE } from '../../constants';
 import { useApplicationDetails } from '../../hooks';
-import ApplicationsDetailsEmpty from './Empty';
 import ApplicationDetailsContent from './Content';
 import { DataViewError, PageContainer } from '../../../../components/shared';
 import { APPLICATIONS_UI } from '../../constants/texts';
-import { APP_ROUTES } from '../../../../constants';
+import { APP_ROUTES, HEADER_LAYOUT } from '../../../../constants';
 import { LIST_PAGE } from '../../../../constants/shared/pages';
 import { useDispatch } from 'react-redux';
 import type { AppDispatch, RootState } from '../../../../store';
@@ -42,7 +41,7 @@ const ApplicationDetailsView: React.FC = memo(() => {
   const [resetLoading, setResetLoading] = React.useState(false);
   // A new object per click, so asking twice for the same generation still opens the confirm.
   const [rollbackRequest, setRollbackRequest] = React.useState<{ generation: number } | null>(null);
-  const { details, loading, error, refresh } = useApplicationDetails(name);
+  const { details, error, refresh } = useApplicationDetails(name);
   const syncingFlag = useSelector((s: RootState) =>
     details?.name ? !!s.applications.syncing?.[details.name] : false,
   );
@@ -100,10 +99,6 @@ const ApplicationDetailsView: React.FC = memo(() => {
     }
   }, [details?.name, dispatch, message, navigate]);
 
-  if (loading) {
-    return <LoadingDetailsView />;
-  }
-
   if (error) {
     return (
       <div style={APPLICATION_DETAILS_CONSTANTS.STATES.ERROR_CONTAINER}>
@@ -117,8 +112,9 @@ const ApplicationDetailsView: React.FC = memo(() => {
     );
   }
 
+  // Not loaded yet, the frame before the first fetch included: the route's spinner, in its place.
   if (!details) {
-    return <ApplicationsDetailsEmpty />;
+    return <FullPageLoader minHeight={HEADER_LAYOUT.MIN_HEIGHT} />;
   }
 
   // The analyzer keys an app's insights document by its first namespace.

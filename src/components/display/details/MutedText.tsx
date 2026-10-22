@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { DEFAULT_COLORS, FONT_SIZE } from '../../../../constants';
+import { DEFAULT_COLORS, FONT_SIZE } from '../../../constants';
 
 export interface MutedTextProps {
   value: string;

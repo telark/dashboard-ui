@@ -1,11 +1,14 @@
 import React, { memo } from 'react';
 import { DEFAULT_COLORS, TIME_FORMATS } from '../../../../constants';
-import { ColumnShell } from '../../pages/details/contentBlocks';
-import MutedText from './MutedText';
+import {
+  ColumnShell,
+  DateAndAge,
+  KeyValueGrid,
+  LabelWithInfo,
+  MutedText,
+  type KeyValueGridRow,
+} from '../../../../components/display/details';
 import { formatDateTime } from '../../../../utils/shared/time';
-import KeyValueGrid, { type KeyValueGridRow } from './KeyValueGrid';
-import DateAndAge from './DateAndAge';
-import LabelWithInfo from './LabelWithInfo';
 import { APPLICATIONS_UI, INCIDENT_DOT_STYLE } from '../../constants';
 import type { Application, ApplicationMetricsDerived } from '../../models';
 

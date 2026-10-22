@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Input } from 'antd';
 import { ActionConfirmModal } from '../../../../../components/display/modal';
-import { DEFAULT_COLORS, SPACING, FONT_SIZE } from '../../../../../constants';
+import { DEFAULT_COLORS, SPACING, FONT_SIZE, TIME_FORMATS } from '../../../../../constants';
 import { formatDateTime } from '../../../../../utils/shared/time';
 import { PLAN_APPROVAL, PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
 import { usePlanTaxonomyLists } from '../../hooks/usePlanTaxonomies';
@@ -28,9 +28,9 @@ const buildSummary = (plan: ProtectionPlan, environmentName: string | undefined)
       : CARD_LABELS.APPLICATIONS_COUNT(plan.scope.applicationRefs?.length ?? 0);
   const window =
     plan.timeMode === 'time_range' && plan.timeRange
-      ? `${formatDateTime(plan.timeRange.startAt, CARD_LABELS.WINDOW_TIME_FORMAT)}${
+      ? `${formatDateTime(plan.timeRange.startAt, TIME_FORMATS.SHORT_DATE_TIME)}${
           CARD_LABELS.RANGE_SEPARATOR
-        }${formatDateTime(plan.timeRange.endAt, CARD_LABELS.WINDOW_TIME_FORMAT)}`
+        }${formatDateTime(plan.timeRange.endAt, TIME_FORMATS.SHORT_DATE_TIME)}`
       : CARD_LABELS.PERMANENT_RANGE;
   const schedule =
     plan.timeMode === 'repeating' && plan.repeat ? formatRepeatRule(plan.repeat) : window;

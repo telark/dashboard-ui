@@ -1,151 +1,27 @@
-/* Custom DatePicker styles - Replace blue with success color (DEFAULT_COLORS.SUCCESS) */
-/* Make DatePicker smaller */
-.ant-picker-dropdown.custom-date-picker-popup {
-  font-size: 12px !important;
-}
-
-.ant-picker-dropdown.custom-date-picker-popup .ant-picker-panel {
-  min-width: 280px !important;
-}
-
-.ant-picker-dropdown.custom-date-picker-popup .ant-picker-header {
-  padding: 8px 12px !important;
-}
-
-.ant-picker-dropdown.custom-date-picker-popup .ant-picker-body {
-  padding: 8px !important;
-}
-
+/* The popup's look is DATE_PICKER_THEME (panels.ts); these are what its tokens can't reach. */
+/* antd pads day cells by paddingXXS, which also spaces the time columns: rows stay 28px. */
 .ant-picker-dropdown.custom-date-picker-popup .ant-picker-cell {
-  min-width: 28px !important;
-  height: 28px !important;
-  padding: 0 !important;
+  padding: 0;
 }
 
-.ant-picker-dropdown.custom-date-picker-popup .ant-picker-cell-inner {
-  width: 28px !important;
-  height: 28px !important;
-  line-height: 28px !important;
-  font-size: 12px !important;
-}
-
-.ant-picker-dropdown.custom-date-picker-popup .ant-picker-time-panel {
-  min-width: 120px !important;
-}
-
-.ant-picker-dropdown.custom-date-picker-popup .ant-picker-time-panel-column {
-  width: 60px !important;
-}
-
-.ant-picker-dropdown.custom-date-picker-popup .ant-picker-time-panel-cell {
-  height: 28px !important;
-  padding: 0 !important;
-}
-
-.ant-picker-dropdown.custom-date-picker-popup .ant-picker-time-panel-cell-inner {
-  font-size: 12px !important;
-}
-
-.ant-picker-dropdown.custom-date-picker-popup .ant-picker-footer {
-  padding: 8px 12px !important;
-}
-
-.ant-picker-dropdown.custom-date-picker-popup .ant-picker-now-btn,
+/* OK is an antd Button, sized by Button's small tokens rather than the picker's. Its own
+   variables keep it green; disabled, it keeps antd's gray look. */
 .ant-picker-dropdown.custom-date-picker-popup .ant-picker-ok button {
-  height: 28px !important;
-  padding: 0 12px !important;
-  font-size: 12px !important;
+  --ant-btn-border-color: var(--color-success);
+  --ant-btn-color-hover: var(--color-success-hover);
+  --ant-btn-border-color-hover: var(--color-success-hover);
+  height: 28px;
+  padding: 0 12px;
+  font-size: 12px;
 }
 
-/* Selected date cells */
-.ant-picker-dropdown.custom-date-picker-popup .ant-picker-cell-selected .ant-picker-cell-inner,
-.ant-picker-dropdown.custom-date-picker-popup .ant-picker-cell-range-start .ant-picker-cell-inner,
-.ant-picker-dropdown.custom-date-picker-popup .ant-picker-cell-range-end .ant-picker-cell-inner,
-.custom-date-picker-wrapper .ant-picker-cell-selected .ant-picker-cell-inner,
-.custom-date-picker-wrapper .ant-picker-cell-range-start .ant-picker-cell-inner,
-.custom-date-picker-wrapper .ant-picker-cell-range-end .ant-picker-cell-inner {
-  background: var(--color-success) !important;
-  color: var(--color-pill-text) !important;
-}
-
-/* Range selection background */
-.ant-picker-dropdown.custom-date-picker-popup .ant-picker-cell-in-range::before,
-.custom-date-picker-wrapper .ant-picker-cell-in-range::before {
-  background: color-mix(in srgb, var(--color-success) 10%, transparent) !important;
-}
-
-/* Today's date border */
-.ant-picker-dropdown.custom-date-picker-popup .ant-picker-today .ant-picker-cell-inner,
-.custom-date-picker-wrapper .ant-picker-today .ant-picker-cell-inner {
-  border-color: var(--color-success) !important;
-}
-
-/* Header navigation buttons hover */
-.ant-picker-dropdown.custom-date-picker-popup .ant-picker-header-view button:hover,
-.custom-date-picker-wrapper .ant-picker-header-view button:hover {
-  color: var(--color-success) !important;
-}
-
-/* Time picker selected cell */
-.ant-picker-dropdown.custom-date-picker-popup .ant-picker-time-panel-column > li.ant-picker-time-panel-cell-selected .ant-picker-time-panel-cell-inner,
-.custom-date-picker-wrapper .ant-picker-time-panel-column > li.ant-picker-time-panel-cell-selected .ant-picker-time-panel-cell-inner {
-  background: var(--color-success) !important;
-  color: var(--color-pill-text) !important;
-}
-
-/* Time picker hover - only for non-selected cells */
-.ant-picker-dropdown.custom-date-picker-popup .ant-picker-time-panel-column > li.ant-picker-time-panel-cell:hover:not(.ant-picker-time-panel-cell-selected) .ant-picker-time-panel-cell-inner,
-.custom-date-picker-wrapper .ant-picker-time-panel-column > li.ant-picker-time-panel-cell:hover:not(.ant-picker-time-panel-cell-selected) .ant-picker-time-panel-cell-inner {
-  background: color-mix(in srgb, var(--color-success) 10%, transparent) !important;
-}
-
-/* OK button */
-.ant-picker-dropdown.custom-date-picker-popup .ant-picker-ok button,
-.custom-date-picker-wrapper .ant-picker-ok button {
-  background: var(--color-success) !important;
-  border-color: var(--color-success) !important;
-}
-
-.ant-picker-dropdown.custom-date-picker-popup .ant-picker-ok button:hover,
-.custom-date-picker-wrapper .ant-picker-ok button:hover {
-  background: var(--color-success-hover) !important;
-  border-color: var(--color-success-hover) !important;
-}
-
-/* Month/Year panel selected */
-.ant-picker-dropdown.custom-date-picker-popup .ant-picker-month-panel-selected-cell .ant-picker-cell-inner,
-.ant-picker-dropdown.custom-date-picker-popup .ant-picker-year-panel-selected-cell .ant-picker-cell-inner,
-.ant-picker-dropdown.custom-date-picker-popup .ant-picker-decade-panel-selected-cell .ant-picker-cell-inner,
-.custom-date-picker-wrapper .ant-picker-month-panel-selected-cell .ant-picker-cell-inner,
-.custom-date-picker-wrapper .ant-picker-year-panel-selected-cell .ant-picker-cell-inner,
-.custom-date-picker-wrapper .ant-picker-decade-panel-selected-cell .ant-picker-cell-inner {
-  background: var(--color-success) !important;
-  color: var(--color-pill-text) !important;
-}
-
-/* Month/Year panel hover */
-.ant-picker-dropdown.custom-date-picker-popup .ant-picker-month-panel-cell:hover .ant-picker-cell-inner,
-.ant-picker-dropdown.custom-date-picker-popup .ant-picker-year-panel-cell:hover .ant-picker-cell-inner,
-.ant-picker-dropdown.custom-date-picker-popup .ant-picker-decade-panel-cell:hover .ant-picker-cell-inner,
-.custom-date-picker-wrapper .ant-picker-month-panel-cell:hover .ant-picker-cell-inner,
-.custom-date-picker-wrapper .ant-picker-year-panel-cell:hover .ant-picker-cell-inner,
-.custom-date-picker-wrapper .ant-picker-decade-panel-cell:hover .ant-picker-cell-inner {
-  background: color-mix(in srgb, var(--color-success) 10%, transparent) !important;
-}
-
-/* Active date cell - only for non-selected cells */
-.ant-picker-dropdown.custom-date-picker-popup .ant-picker-cell:hover:not(.ant-picker-cell-disabled):not(.ant-picker-cell-selected) .ant-picker-cell-inner,
-.custom-date-picker-wrapper .ant-picker-cell:hover:not(.ant-picker-cell-disabled):not(.ant-picker-cell-selected) .ant-picker-cell-inner {
-  background: color-mix(in srgb, var(--color-success) 10%, transparent) !important;
-}
-
-/* Range start/end hover */
-.ant-picker-dropdown.custom-date-picker-popup .ant-picker-cell-range-start:hover:not(.ant-picker-cell-disabled) .ant-picker-cell-inner,
-.ant-picker-dropdown.custom-date-picker-popup .ant-picker-cell-range-end:hover:not(.ant-picker-cell-disabled) .ant-picker-cell-inner,
-.custom-date-picker-wrapper .ant-picker-cell-range-start:hover:not(.ant-picker-cell-disabled) .ant-picker-cell-inner,
-.custom-date-picker-wrapper .ant-picker-cell-range-end:hover:not(.ant-picker-cell-disabled) .ant-picker-cell-inner {
-  background: var(--color-success) !important;
-  color: var(--color-pill-text) !important;
+/* antd fills the selected time with the range tint: it takes the selected day's green instead. */
+.ant-picker-dropdown.custom-date-picker-popup
+  .ant-picker-time-panel-column
+  > li.ant-picker-time-panel-cell.ant-picker-time-panel-cell-selected
+  .ant-picker-time-panel-cell-inner {
+  background: var(--color-success);
+  color: var(--color-pill-text);
 }
 
 /* Clear button */
@@ -172,22 +48,4 @@
 .ant-picker-dropdown.custom-date-picker-popup .ant-picker-time-panel-column::-webkit-scrollbar,
 .custom-date-picker-wrapper .ant-picker-time-picker-column::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Opera */
-}
-
-/* Now button */
-.ant-picker-dropdown.custom-date-picker-popup .ant-picker-now-btn,
-.custom-date-picker-wrapper .ant-picker-now-btn {
-  color: var(--color-success) !important;
-}
-
-.ant-picker-dropdown.custom-date-picker-popup .ant-picker-now-btn:hover,
-.custom-date-picker-wrapper .ant-picker-now-btn:hover {
-  color: var(--color-success-hover) !important;
-}
-
-/* Time panel active state */
-.ant-picker-dropdown.custom-date-picker-popup .ant-picker-time-panel-column > li.ant-picker-time-panel-cell-active .ant-picker-time-panel-cell-inner,
-.custom-date-picker-wrapper .ant-picker-time-panel-column > li.ant-picker-time-panel-cell-active .ant-picker-time-panel-cell-inner {
-  background: var(--color-success) !important;
-  color: var(--color-pill-text) !important;
 }

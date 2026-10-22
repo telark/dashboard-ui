@@ -1,3 +1,4 @@
+import { TIME_FORMATS } from '../../../../../constants';
 import { formatDateTime, getTimeZone } from '../../../../../utils/shared/time';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
 import type { PlanViolationsResponse, ProtectionPlan } from '../../models';
@@ -6,7 +7,7 @@ const V = PPC.LABELS.VIOLATIONS;
 
 const sinceText = (since: string): string =>
   PPC.LABELS.PHASE_INFO.IN_TIME_ZONE(
-    formatDateTime(since, PPC.LABELS.PHASE_INFO.END_TIME_FORMAT),
+    formatDateTime(since, TIME_FORMATS.SHORT_DATE_TIME),
     getTimeZone(),
   );
 
