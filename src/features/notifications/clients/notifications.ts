@@ -1,7 +1,12 @@
-import { Client, exporterApiClient, type ExtendedAxiosError } from '../../../api/index';
+import {
+  Client,
+  exporterApiClient,
+  keepEventStream,
+  type ExtendedAxiosError,
+} from '../../../api/index';
 import logger from '../../../logging';
-import { Endpoints, HTTP_HEADERS, HEADER_VALUES } from '../../../constants';
-import { NOTIFICATIONS_ERROR_MESSAGES } from '../constants';
+import { Endpoints, EXPORTER_API, HTTP_HEADERS, HEADER_VALUES } from '../../../constants';
+import { NOTIFICATIONS_ERROR_MESSAGES, NOTIFICATIONS_STREAM_CHANGED } from '../constants';
 import type { NotificationListResponse, NotificationMutationResponse } from '../models';
 
 export interface FetchNotificationsParams {
@@ -41,6 +46,23 @@ export const fetchNotifications = async ({
     throw error;
   }
 };
+
+// The stream carries no list, only "yours changed": the caller refetches on that and on every connect.
+export const keepNotificationsStream = (
+  onChanged: () => void,
+  onConnected: (connected: boolean) => void,
+  signal: AbortSignal,
+): Promise<void> =>
+  keepEventStream(
+    `${EXPORTER_API.BASE_URL}/${Endpoints.NOTIFICATIONS.EVENTS.path}`,
+    {
+      onEvent: (name) => {
+        if (name === NOTIFICATIONS_STREAM_CHANGED) onChanged();
+      },
+      onConnected,
+    },
+    signal,
+  );
 
 export const markNotificationRead = async (id: string, userId: string) => {
   try {

@@ -18,6 +18,7 @@ const StorageBox: React.FC<{ storage: SnapshotStorageState } & Pick<BoxState, 'n
         noAccess={noAccess}
         value={`${percent.toFixed(1)}%`}
         caption={S.USED}
+        valueBelowTitle
       >
         {infos ? (
           <SnapshotStorageBar

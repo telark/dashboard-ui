@@ -1,5 +1,5 @@
 import { Client, exporterApiClient, discoveryApiClient } from '../../../../api/index';
-import { Endpoints } from '../../../../constants';
+import { Endpoints, PROTECTION_PLAN_PATHS } from '../../../../constants';
 import type {
   ProtectionPlan,
   PlanTemplate,
@@ -48,6 +48,7 @@ export const fetchPlanStatus = async (planId: string): Promise<PlanStatusRespons
 interface ViolationsQuery {
   limit?: number;
   result?: ViolationResult;
+  window?: typeof PROTECTION_PLAN_PATHS.WINDOW_RUN;
 }
 
 const VIOLATIONS_REQUEST_TIMEOUT_MS = 10_000;
@@ -59,6 +60,7 @@ export const fetchPlanViolations = async (
   const params = new URLSearchParams();
   if (query?.limit) params.set('limit', String(query.limit));
   if (query?.result) params.set('result', query.result);
+  if (query?.window) params.set(PROTECTION_PLAN_PATHS.QUERY_WINDOW, query.window);
   const qs = params.toString();
   const path = Endpoints.PROTECTION_PLANS.VIOLATIONS(planId).path + (qs ? `?${qs}` : '');
   const res = await Client<ApiResponse<PlanViolationsResponse>>(discoveryApiClient, path, {

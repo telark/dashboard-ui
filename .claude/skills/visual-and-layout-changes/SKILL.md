@@ -22,7 +22,7 @@ Fix only what was reported, with no side adjustments to opacity, spacing or colo
 
 ## Fonts
 
-Inline `fontFamily` and antd font tokens do nothing, because `#root *` forces Geist with `!important`. Monospace goes through the `manifest-code` class.
+Inside `#root`, inline `fontFamily` does nothing, because `#root *` forces Geist with `!important`. Portals (tooltips, menus, popups, toasts) render outside it and take `token.fontFamily` (`FONT_FAMILY`). Monospace goes through the `manifest-code` class.
 
 ## Sizes
 

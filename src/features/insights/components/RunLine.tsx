@@ -1,10 +1,10 @@
 import React from 'react';
-import { Tag } from 'antd';
-import { DEFAULT_COLORS, EMPTY_VALUE, TAG_CLASS } from '../../../constants';
+import { CloseCircleFilled } from '@ant-design/icons';
+import { DEFAULT_COLORS, EMPTY_VALUE, FONT_SIZE, SPACING } from '../../../constants';
 import { FancySpinner } from '../../../components/animation';
 import TimeAgo from '../../../components/display/time/TimeAgo';
 import { INSIGHTS_UI as T } from '../constants/texts';
-import { insightErrorMessage, RUN_STATUS_LABELS, RUN_TRIGGER_LABELS } from '../constants/insights';
+import { insightErrorMessage, RUN_STARTED_BY, RUN_TRIGGER_LABELS } from '../constants/insights';
 import type { CountLabel } from '../../../interfaces/layout/toolbar';
 import type { LastRun } from '../models';
 
@@ -13,39 +13,70 @@ const counted = (label: CountLabel, count: number): string =>
 
 const DARK = {
   muted: DEFAULT_COLORS.TEXT_MUTED,
+  text: DEFAULT_COLORS.TEXT_PRIMARY,
 };
 const LIGHT = {
   muted: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+  text: DEFAULT_COLORS.TEXT_ON_SURFACE,
+};
+
+// What follows "Last analysis {time ago}" for a done or failed run.
+const finishedRunText = (run: LastRun): string => {
+  const startedBy = RUN_STARTED_BY[run.trigger];
+  if (run.status === 'failed') return T.RUN_FAILED.replace('{startedBy}', startedBy);
+  if (run.steps === 0) return T.RUN_RULES_ONLY;
+  return T.RUN_DONE.replace('{startedBy}', startedBy)
+    .replace('{model}', run.model || EMPTY_VALUE)
+    .replace('{steps}', counted(T.RUN_STEPS, run.steps));
 };
 
 // A document written only by setup reviews has no run yet. `light` is for the panel surface.
 const RunLine: React.FC<{ run: LastRun | null; light?: boolean }> = ({ run, light = false }) => {
   const palette = light ? LIGHT : DARK;
-  const mutedStyle: React.CSSProperties = { fontSize: 12, color: palette.muted };
+  const mutedStyle: React.CSSProperties = { fontSize: FONT_SIZE.SM, color: palette.muted };
   if (!run) return <div style={mutedStyle}>{T.NOT_ANALYZED_YET}</div>;
   if (run.status === 'queued') return <div style={mutedStyle}>{T.QUEUED}</div>;
   if (run.status === 'running') {
     return (
-      <div style={{ ...mutedStyle, display: 'flex', alignItems: 'center', gap: 8 }}>
+      <div style={{ ...mutedStyle, display: 'flex', alignItems: 'center', gap: SPACING.SM }}>
         <FancySpinner size={12} />
         {T.ANALYZING.replace('{trigger}', RUN_TRIGGER_LABELS[run.trigger])}
       </div>
     );
   }
   return (
-    <div style={{ ...mutedStyle, display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8 }}>
-      <Tag className={TAG_CLASS.MEDIUM}>{RUN_TRIGGER_LABELS[run.trigger]}</Tag>
+    <div
+      style={{
+        ...mutedStyle,
+        display: 'flex',
+        flexWrap: 'wrap',
+        alignItems: 'center',
+        gap: SPACING.SM,
+      }}
+    >
       <span>
-        {(run.status === 'done' && run.steps === 0 ? T.RUN_LINE_RULES_ONLY : T.RUN_LINE)
-          .replace('{status}', RUN_STATUS_LABELS[run.status])
-          .replace('{model}', run.model || EMPTY_VALUE)
-          .replace('{steps}', counted(T.RUN_STEPS, run.steps))
-          .replace('{toolCalls}', counted(T.RUN_TOOL_CALLS, run.toolCalls))
-          .replace('{reads}', counted(T.RUN_READS, run.toolCalls))}
+        {T.RUN_LAST_ANALYSIS}
+        {run.finishedAt ? (
+          <>
+            {' '}
+            <TimeAgo date={run.finishedAt} />
+          </>
+        ) : null}
+        {finishedRunText(run)}
       </span>
-      {run.finishedAt ? <TimeAgo date={run.finishedAt} /> : null}
       {run.status === 'failed' ? (
-        <span style={{ color: DEFAULT_COLORS.DANGER }}>{insightErrorMessage(run.error)}</span>
+        // Red can't be text on the dark page: the icon carries it.
+        <span
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: SPACING.S6,
+            color: palette.text,
+          }}
+        >
+          <CloseCircleFilled aria-hidden style={{ color: DEFAULT_COLORS.DANGER }} />
+          {insightErrorMessage(run.error)}
+        </span>
       ) : null}
     </div>
   );
@@ -56,7 +87,7 @@ export const SetupReviewLine: React.FC<{ at?: string; style?: React.CSSPropertie
   at,
   style,
 }) => (
-  <span style={{ ...style, display: 'inline-flex', gap: 4 }}>
+  <span style={{ ...style, display: 'inline-flex', gap: SPACING.XS }}>
     {at ? (
       <>
         {T.SETUP_REVIEWED}

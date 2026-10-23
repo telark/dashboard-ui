@@ -1,5 +1,12 @@
 import React from 'react';
-import { DEFAULT_COLORS } from '../../../../constants';
+import {
+  DEFAULT_COLORS,
+  SPACING,
+  RADIUS,
+  FONT_WEIGHT,
+  FONT_SIZE,
+  LINE_HEIGHT,
+} from '../../../../constants';
 
 interface AuthHeaderProps {
   icon?: React.ReactNode;
@@ -8,13 +15,14 @@ interface AuthHeaderProps {
 }
 
 export const AuthHeader: React.FC<AuthHeaderProps> = ({ icon, title, subtitle }) => (
-  <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+  <div style={{ textAlign: 'center', marginBottom: SPACING.XXL }}>
     {icon && (
       <div
+        // 14: the icon-to-title space sits between MD and LG.
         style={{
           width: '48px',
           height: '48px',
-          borderRadius: '12px',
+          borderRadius: RADIUS.LG,
           background: 'var(--color-primary)',
           display: 'flex',
           alignItems: 'center',
@@ -26,10 +34,11 @@ export const AuthHeader: React.FC<AuthHeaderProps> = ({ icon, title, subtitle })
       </div>
     )}
     <h1
+      // 22 and 1.25: the auth title's size and leading sit between the XXL-H2 and TIGHT-SNUG steps.
       style={{
-        margin: 0,
+        margin: SPACING.NONE,
         fontSize: '22px',
-        fontWeight: 700,
+        fontWeight: FONT_WEIGHT.BOLD,
         color: `var(--auth-text-primary, ${DEFAULT_COLORS.AUTH_LIGHT_TEXT})`,
         letterSpacing: '-0.4px',
         lineHeight: 1.25,
@@ -38,11 +47,12 @@ export const AuthHeader: React.FC<AuthHeaderProps> = ({ icon, title, subtitle })
       {title}
     </h1>
     <p
+      // 3: the title-to-subtitle space sits between XXS and XS.
       style={{
         margin: '3px 0 0',
-        fontSize: '14px',
+        fontSize: FONT_SIZE.BASE,
         color: `var(--auth-text-muted, ${DEFAULT_COLORS.AUTH_LIGHT_TEXT_MUTED})`,
-        lineHeight: 1.5,
+        lineHeight: LINE_HEIGHT.BASE,
         opacity: 0.85,
       }}
     >

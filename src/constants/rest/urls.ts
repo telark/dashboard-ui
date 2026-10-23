@@ -35,3 +35,15 @@ export const buildApiUrl = (port: number): string => {
 };
 
 export const DOCS_URL = 'https://docs.telark.io';
+
+// Docs sections the first-run screens link to (checked on docs.telark.io 2026-10-16).
+export const DOCS_LINKS = {
+  DISCOVERY: {
+    HREF: `${DOCS_URL}/features/applications#how-it-works`,
+    LABEL: 'How discovery works',
+  },
+  AUDIT_AND_ENFORCE: {
+    HREF: `${DOCS_URL}/features/protection-plans#audit-and-enforce`,
+    LABEL: 'Audit and Enforce explained',
+  },
+} as const;

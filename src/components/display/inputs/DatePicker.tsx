@@ -2,6 +2,7 @@ import React from 'react';
 import { DatePicker as AntDatePicker } from 'antd';
 import type { Dayjs } from 'dayjs';
 import '../../../styles/datePicker.css';
+import { DATE_PICKER_POPUP_CLASS } from '../../../constants';
 import { fromZonedDayjs, getDisabledTimeForFutureDates, toZonedDayjs } from '../../../utils/layout';
 
 export interface DisabledTimeConfig {
@@ -68,7 +69,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
         allowClear={allowClear}
         classNames={{
           popup: {
-            root: 'custom-date-picker-popup',
+            root: DATE_PICKER_POPUP_CLASS,
           },
         }}
       />

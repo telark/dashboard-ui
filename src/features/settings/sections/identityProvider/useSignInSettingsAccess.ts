@@ -7,6 +7,8 @@ const EDIT_OIDC_PERMISSION = ACTION_PERMISSIONS.settings.editOidcConfig;
 interface SignInSettingsAccess {
   canEdit: boolean;
   deniedTooltip?: string;
+  /** Not the bootstrap account: the card says so in text, not only on the disabled controls. */
+  bootstrapOnly?: boolean;
 }
 
 // Whoever controls sign-in can mint a login for anyone, so auth takes these edits from the
@@ -18,7 +20,7 @@ export const useSignInSettingsAccess = (): SignInSettingsAccess => {
     EDIT_OIDC_PERMISSION.deny,
   );
   if (getCurrentUser()?.bootstrap !== true) {
-    return { canEdit: false, deniedTooltip: C.LABELS.BOOTSTRAP_ONLY };
+    return { canEdit: false, deniedTooltip: C.LABELS.BOOTSTRAP_ONLY, bootstrapOnly: true };
   }
   return canEditSettings
     ? { canEdit: true }

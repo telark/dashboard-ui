@@ -5,6 +5,7 @@ export const APP_CONFIGS = {
   MESSAGE: {
     TOP: HEADER_LAYOUT.HEIGHT_PX + 12,
     MAX_COUNT: 3,
+    AUTH_SUCCESS_DURATION_S: 2,
   },
   LAYOUT: {
     MIN_HEIGHT: '100vh',
@@ -14,6 +15,7 @@ export const APP_CONFIGS = {
     CONTENT_TOP: HEADER_LAYOUT.HEIGHT,
     CONTENT_HEIGHT: HEADER_LAYOUT.MIN_HEIGHT,
     CONTENT_OVERFLOW: 'auto',
+    SCROLLBAR_GUTTER: 'stable',
     MARGIN_LEFT: 'var(--sidebar-width)',
     TRANSITION: `margin-left ${SIDEBAR_LAYOUT.TRANSITION_MS}ms ${SIDEBAR_LAYOUT.TRANSITION_EASING}`,
   },
@@ -25,6 +27,8 @@ export const APP_ROUTES = {
   LOGIN: '/login',
   REGISTER: '/register',
   GOOGLE_CALLBACK: '/auth/google/callback',
+  // A break-glass request's approval page: public, so the bootstrap account approves without a sign-in.
+  BREAK_GLASS: '/break-glass',
   // resources
   APPLICATIONS: '/applications',
   APPLICATION_DETAILS: '/applications/:name',
@@ -38,4 +42,11 @@ export const APP_ROUTES = {
   // settings
   SETTINGS: '/settings',
   PASSKEYS: '/settings/security/passkeys',
+  AUTHENTICATION: '/settings/authentication',
+} as const;
+
+// Here, not in a feature, so a deep link from always-loaded code (the bell) loads no feature constants.
+export const APP_ROUTE_PARAMS = {
+  // /insights?insight=<id> opens that insight's details panel.
+  INSIGHT: 'insight',
 } as const;

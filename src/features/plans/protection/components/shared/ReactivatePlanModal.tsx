@@ -5,6 +5,7 @@ import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPla
 interface ReactivatePlanModalProps {
   open: boolean;
   planName: string;
+  repeating: boolean;
   loading: boolean;
   onClose: () => void;
   onConfirm: () => void;
@@ -16,6 +17,7 @@ const RESOURCE_TYPE = 'protection plan';
 const ReactivatePlanModal: React.FC<ReactivatePlanModalProps> = ({
   open,
   planName,
+  repeating,
   loading,
   onClose,
   onConfirm,
@@ -31,7 +33,11 @@ const ReactivatePlanModal: React.FC<ReactivatePlanModalProps> = ({
     confirmText={PPC.LABELS.DETAIL_PAGE.ACTIONS.REACTIVATE_MODAL_OK}
     loading={loading}
     danger={false}
-    customMessage={PPC.LABELS.DETAIL_PAGE.ACTIONS.REACTIVATE_MODAL_BODY}
+    customMessage={
+      repeating
+        ? PPC.LABELS.DETAIL_PAGE.ACTIONS.REACTIVATE_MODAL_BODY_SERIES
+        : PPC.LABELS.DETAIL_PAGE.ACTIONS.REACTIVATE_MODAL_BODY
+    }
     getContainer={() => document.body}
   />
 );

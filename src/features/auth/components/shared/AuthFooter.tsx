@@ -1,5 +1,12 @@
 import React from 'react';
-import { DEFAULT_COLORS } from '../../../../constants';
+import {
+  DEFAULT_COLORS,
+  UNSTYLED_BUTTON,
+  FONT_SIZE,
+  FONT_WEIGHT,
+  SPACING,
+  LINE_HEIGHT,
+} from '../../../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/login';
 
 interface AuthFooterProps {
@@ -17,19 +24,17 @@ export const AuthFooter: React.FC<AuthFooterProps> = ({
   linkHref,
 }) => {
   const mutedStyle: React.CSSProperties = {
-    fontSize: '11px',
+    fontSize: FONT_SIZE.XS,
     color: `var(--auth-text-muted, ${DEFAULT_COLORS.AUTH_LIGHT_TEXT_MUTED})`,
   };
   const linkProps = {
     style: {
+      ...UNSTYLED_BUTTON,
       color: `var(--auth-text-muted, ${DEFAULT_COLORS.AUTH_LIGHT_TEXT_MUTED})`,
-      fontWeight: 600,
-      cursor: 'pointer',
-      background: 'none',
-      border: 'none',
-      padding: 0,
-      font: 'inherit',
-      fontSize: '13px',
+      fontWeight: FONT_WEIGHT.SEMIBOLD,
+      fontFamily: 'inherit',
+      lineHeight: 'inherit',
+      fontSize: FONT_SIZE.MD,
       textDecoration: 'underline',
       textDecorationColor: `var(--auth-card-border, ${DEFAULT_COLORS.AUTH_LIGHT_BORDER})`,
     },
@@ -42,13 +47,13 @@ export const AuthFooter: React.FC<AuthFooterProps> = ({
   };
 
   return (
-    <div style={{ marginTop: '20px' }}>
+    <div style={{ marginTop: SPACING.XL }}>
       <div
         style={{
           textAlign: 'center',
-          fontSize: '13px',
+          fontSize: FONT_SIZE.MD,
           color: `var(--auth-text-muted, ${DEFAULT_COLORS.AUTH_LIGHT_TEXT_MUTED})`,
-          marginBottom: '16px',
+          marginBottom: SPACING.LG,
         }}
       >
         {text}{' '}
@@ -64,13 +69,21 @@ export const AuthFooter: React.FC<AuthFooterProps> = ({
       </div>
 
       <div
+        // 14: the divider-to-terms space sits between MD and LG.
         style={{
           borderTop: `1px solid var(--auth-divider, ${DEFAULT_COLORS.AUTH_LIGHT_DIVIDER})`,
           marginBottom: '14px',
         }}
       />
 
-      <p style={{ ...mutedStyle, textAlign: 'center', margin: 0, lineHeight: 1.5 }}>
+      <p
+        style={{
+          ...mutedStyle,
+          textAlign: 'center',
+          margin: SPACING.NONE,
+          lineHeight: LINE_HEIGHT.BASE,
+        }}
+      >
         {LOGIN_CONSTANTS.UI.TERMS_TEXT}{' '}
         <a
           href={LOGIN_CONSTANTS.UI.TERMS_URL}

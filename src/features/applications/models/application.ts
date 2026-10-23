@@ -269,11 +269,14 @@ export type SyncStatusValue = 'syncing' | 'success' | 'failed';
 export interface ApplicationsLastErrorMap {
   [name: string]: string;
 }
-export type ApplicationHealthQuickFilter = 'all' | 'healthy' | 'degraded' | 'unhealthy';
-export type ApplicationCoverageState = 'active' | 'upcoming';
+export type ApplicationHealthQuickFilter = 'all' | 'healthy' | 'degraded' | 'unhealthy' | 'unknown';
+export type ApplicationCoverageState = 'enforcing' | 'auditing' | 'upcoming';
+// The app's protection: the state of its strongest covering plan, or none.
+export type ApplicationProtection = ApplicationCoverageState | 'none';
 export interface ApplicationCoverage {
   known: boolean;
-  active: string[];
+  enforcing: string[];
+  auditing: string[];
   upcoming: string[];
   // The viewer may not read plans: the card says so rather than claim no coverage.
   noAccess?: boolean;

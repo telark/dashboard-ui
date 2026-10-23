@@ -5,7 +5,13 @@ import type { GenerateColumnCtx } from '../../../../../../interfaces/layout/tabl
 import type { Category } from '../../../models';
 import { AiOutlineTag, AiOutlineCalendar, AiOutlineAppstore } from 'react-icons/ai';
 import TimeAgo from '../../../../../../components/display/time/TimeAgo';
-import { DEFAULT_COLORS, EMPTY_VALUE, TAG_CLASS } from '../../../../../../constants';
+import {
+  DEFAULT_COLORS,
+  EMPTY_VALUE,
+  TAG_CLASS,
+  FONT_SIZE,
+  FONT_WEIGHT,
+} from '../../../../../../constants';
 import { CATEGORIES_CONSTANTS as CC } from '../../../constants';
 
 interface CategoryColumnsContext extends GenerateColumnCtx {
@@ -29,8 +35,8 @@ const CategoryColumns = (ctx: CategoryColumnsContext) => {
         render: (_: unknown, record: Category) => (
           <span
             style={{
-              fontWeight: 600,
-              fontSize: 14,
+              fontWeight: FONT_WEIGHT.SEMIBOLD,
+              fontSize: FONT_SIZE.BASE,
               color: DEFAULT_COLORS.TEXT_PRIMARY,
               display: 'inline-block',
               whiteSpace: 'nowrap',

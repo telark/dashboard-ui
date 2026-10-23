@@ -226,6 +226,10 @@ export const ACTION_PERMISSIONS = {
       deny: 'settings.editoidcconfig.deny',
     },
   },
+  // The exporter serves the bootstrap pin and its break-glass requests to Admins on ALL.
+  bootstrap: {
+    view: { scope: ALL_SCOPE_NAME, level: 'Admin' as PermissionLevel },
+  },
   protectionPlans: {
     viewViolations: {
       scope: 'protection-plans' as const,

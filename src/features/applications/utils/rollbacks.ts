@@ -28,7 +28,7 @@ export function hasActiveRollback(
 }
 
 export function formatRollbackStatusLabel(raw: string): string {
-  const cleaned = raw.trim().replace(/[_-]+/g, ' ').replace(/\s+/g, ' ');
+  const cleaned = raw.trim().replaceAll(/[_-]+/g, ' ').replaceAll(/\s+/g, ' ');
   if (!cleaned) return 'Unknown';
   return cleaned
     .split(' ')

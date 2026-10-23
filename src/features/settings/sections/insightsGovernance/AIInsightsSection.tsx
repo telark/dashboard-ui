@@ -9,6 +9,7 @@ import {
   SettingsDivider,
   SettingsField,
   SettingsFieldLabel,
+  SettingsHint,
   SettingsSubsectionHeader,
   type SettingsDetail,
 } from '../../components/SettingsFields';
@@ -18,7 +19,7 @@ import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 import type { ResourceDetailsResponse } from '../../../../interfaces/http';
 import type { ExtendedAxiosError } from '../../../../api/client/normalize';
 import { Client, exporterApiClient } from '../../../../api';
-import { Endpoints, DEFAULT_COLORS } from '../../../../constants';
+import { Endpoints, DEFAULT_COLORS, FONT_WEIGHT, SPACING } from '../../../../constants';
 import logger from '../../../../logging';
 import type { AppDispatch } from '../../../../store';
 import { fetchGlobalConfigThunk, selectGlobalConfigState } from '../../../globalconfig/store';
@@ -78,12 +79,13 @@ const COLUMN: React.CSSProperties = {
   gap: C.LAYOUT.FIELD_ROW_GAP,
 };
 
+// Off scale, kept exact: gap 10 (SM to MD).
 const TOGGLE_ROW: React.CSSProperties = {
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
   gap: 10,
-  padding: '2px 0',
+  padding: `${SPACING.XXS}px 0`,
 };
 
 const AIInsightsSection: React.FC = memo(() => {
@@ -312,6 +314,10 @@ const AIInsightsSection: React.FC = memo(() => {
 
   // Turning the analyzer on needs a ready runtime; turning it off never does.
   const enableBlocked = !form.enabled && !ready;
+  const enableBlockedHint =
+    runtimeState === 'model_missing' || runtimeState === 'pulling'
+      ? C.LABELS.ENABLE_BLOCKED_HINT_MODEL
+      : C.LABELS.ENABLE_BLOCKED_HINT;
 
   // The runtime's state and the picked model's facts read as one list under the picker.
   const runtimeDetails: SettingsDetail[] = isLoading
@@ -323,7 +329,7 @@ const AIInsightsSection: React.FC = memo(() => {
             <>
               <span
                 style={{
-                  fontWeight: 700,
+                  fontWeight: FONT_WEIGHT.BOLD,
                   color: ready ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.WARNING,
                 }}
               >
@@ -366,29 +372,35 @@ const AIInsightsSection: React.FC = memo(() => {
         description={C.LABELS.AI_INSIGHTS_DESCRIPTION}
       >
         <div style={COLUMN}>
-          <div style={TOGGLE_ROW}>
-            <SettingsFieldLabel
-              label={C.LABELS.ENABLE_AI_LABEL}
-              info={C.LABELS.ENABLE_AI_TOOLTIP}
-            />
-            <Switch
-              checked={form.enabled}
-              onChange={(enabled) => setForm((prev) => ({ ...prev, enabled }))}
-              disabled={!canControlAiInsights || enableBlocked}
-              tooltip={deniedTooltip ?? (enableBlocked ? stateLabel : undefined)}
-            />
+          <div>
+            <div style={TOGGLE_ROW}>
+              <SettingsFieldLabel
+                label={C.LABELS.ENABLE_AI_LABEL}
+                info={C.LABELS.ENABLE_AI_TOOLTIP}
+              />
+              <Switch
+                checked={form.enabled}
+                onChange={(enabled) => setForm((prev) => ({ ...prev, enabled }))}
+                disabled={!canControlAiInsights || enableBlocked}
+                tooltip={deniedTooltip}
+              />
+            </div>
+            {enableBlocked && !isLoading ? <SettingsHint>{enableBlockedHint}</SettingsHint> : null}
           </div>
-          <div style={TOGGLE_ROW}>
-            <SettingsFieldLabel
-              label={C.LABELS.AUTO_ANALYZE_LABEL}
-              info={C.LABELS.AUTO_ANALYZE_TOOLTIP}
-            />
-            <Switch
-              checked={form.autoAnalyze}
-              onChange={(autoAnalyze) => setForm((prev) => ({ ...prev, autoAnalyze }))}
-              disabled={!canControlAiInsights}
-              tooltip={deniedTooltip}
-            />
+          <div>
+            <div style={TOGGLE_ROW}>
+              <SettingsFieldLabel
+                label={C.LABELS.AUTO_ANALYZE_LABEL}
+                info={C.LABELS.AUTO_ANALYZE_TOOLTIP}
+              />
+              <Switch
+                checked={form.autoAnalyze}
+                onChange={(autoAnalyze) => setForm((prev) => ({ ...prev, autoAnalyze }))}
+                disabled={!canControlAiInsights}
+                tooltip={deniedTooltip}
+              />
+            </div>
+            <SettingsHint>{C.LABELS.AUTO_ANALYZE_HINT}</SettingsHint>
           </div>
           <SettingsDivider />
           <SettingsSubsectionHeader
@@ -423,7 +435,7 @@ const AIInsightsSection: React.FC = memo(() => {
             <div
               style={{
                 color: currentCheck.ok ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.DANGER,
-                fontWeight: 700,
+                fontWeight: FONT_WEIGHT.BOLD,
               }}
             >
               {currentCheck.text}
@@ -438,7 +450,6 @@ const AIInsightsSection: React.FC = memo(() => {
               <Progress
                 percent={pullPercent}
                 status="normal"
-                strokeColor={DEFAULT_COLORS.SUCCESS}
                 format={(percent) => `${percent ?? 0}%`}
               />
             </div>

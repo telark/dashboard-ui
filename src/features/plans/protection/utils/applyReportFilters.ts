@@ -14,6 +14,7 @@ export function applyReportFilters(
   filters: Record<string, unknown>,
   search: string,
   planById: Map<string, ProtectionPlan>,
+  keptNameById: Map<string, string>,
 ): PlanReportMeta[] {
   const planIds = selected(filters, PPC.FILTER_KEYS.PLAN);
   const environments = selected(filters, PPC.FILTER_KEYS.ENVIRONMENT);
@@ -26,6 +27,7 @@ export function applyReportFilters(
     if (excludes(planIds, report.planId)) return false;
     if (excludes(environments, plan?.environmentRef ?? '')) return false;
     if (excludes(triggers, report.trigger)) return false;
-    return !query || (plan?.name ?? '').toLowerCase().includes(query);
+    const name = plan?.name ?? keptNameById.get(report.planId) ?? '';
+    return !query || name.toLowerCase().includes(query);
   });
 }

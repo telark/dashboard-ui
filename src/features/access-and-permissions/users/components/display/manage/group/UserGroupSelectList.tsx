@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
-import { Checkbox, Form, Tooltip } from 'antd';
+import { Checkbox, Form } from 'antd';
 import { SelectableListItem } from '../../../../../../../components/display/list';
 import { USERS_CONSTANTS as UC } from '../../../../constants';
 import {
@@ -8,6 +8,7 @@ import {
 } from '../../../../../groups/constants';
 import { CapitalizeFirstLetter } from '../../../../../../../utils/helpers/format';
 import type { Group } from '../../../../../groups/models';
+import { SPACING } from '../../../../../../../constants';
 
 interface UserGroupSelectListProps {
   groups?: Group[];
@@ -61,7 +62,7 @@ const UserGroupSelectList: React.FC<UserGroupSelectListProps> = ({
   );
 
   return (
-    <Form.Item name="groupRefs" style={{ margin: 0, width: '100%' }}>
+    <Form.Item name="groupRefs" style={{ margin: SPACING.NONE, width: '100%' }}>
       <Checkbox.Group
         value={visibleSelectedGroups}
         onChange={handleChange}
@@ -69,11 +70,13 @@ const UserGroupSelectList: React.FC<UserGroupSelectListProps> = ({
       >
         <div className="role-list-container" style={AMC.LIST.CONTAINER}>
           {groups.map((group) => {
-            const blockedTooltip = blockedReason?.(group.id);
-            const listItem = (
+            const reason = blockedReason?.(group.id);
+            return (
               <SelectableListItem
+                key={group.id}
                 value={group.id}
-                disabled={Boolean(blockedTooltip)}
+                disabled={Boolean(reason)}
+                disabledReason={reason}
                 name={CapitalizeFirstLetter(group.name)}
                 description={
                   group.description ? CapitalizeFirstLetter(group.description) : undefined
@@ -81,20 +84,13 @@ const UserGroupSelectList: React.FC<UserGroupSelectListProps> = ({
                 itemStyles={{
                   base: {
                     ...AMC.LIST.ITEM.BASE,
-                    ...(blockedTooltip ? ARC.LIST.ITEM.DISABLED : {}),
+                    ...(reason ? ARC.LIST.ITEM.DISABLED : {}),
                   },
-                  hover: blockedTooltip ? ARC.LIST.ITEM.DISABLED : AMC.LIST.ITEM.HOVER,
+                  hover: reason ? ARC.LIST.ITEM.DISABLED : AMC.LIST.ITEM.HOVER,
                 }}
                 nameStyles={AMC.LIST.MEMBER_NAME}
                 descriptionStyles={AMC.LIST.MEMBER_EMAIL}
               />
-            );
-            return blockedTooltip ? (
-              <Tooltip key={group.id} title={blockedTooltip} placement="left">
-                <div>{listItem}</div>
-              </Tooltip>
-            ) : (
-              <React.Fragment key={group.id}>{listItem}</React.Fragment>
             );
           })}
         </div>

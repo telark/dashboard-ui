@@ -1,4 +1,4 @@
-import { DEFAULT_COLORS } from '../../../../constants';
+import { DEFAULT_COLORS, HAIRLINE } from '../../../../constants';
 
 export const ATTACHED_MEMBERS_CONSTANTS = {
   LIST: {
@@ -22,7 +22,7 @@ export const ATTACHED_MEMBERS_CONSTANTS = {
         alignItems: 'center' as const,
         padding: '5px 14px',
         background: DEFAULT_COLORS.SURFACE_WHITE,
-        border: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
+        border: HAIRLINE.SURFACE_BORDER_LIGHT,
         borderRadius: 8,
         transition: 'all 0.2s ease',
         cursor: 'pointer' as const,

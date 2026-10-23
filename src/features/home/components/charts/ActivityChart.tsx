@@ -57,8 +57,9 @@ const ActivityChart: React.FC<ActivityChartData> = memo(({ data, colors }) => {
       scale: { color: colors, y: { nice: true } },
       style: {
         lineWidth: C.LINE_WIDTH_PX,
-        lineDash: (d: ActivityDatum) =>
-          C.LINE_DASHES[colors.domain.indexOf(d.series) % C.LINE_DASHES.length],
+        // G2 hands a line's style callback the series' points, not one datum.
+        lineDash: ([first]: ActivityDatum[]) =>
+          C.LINE_DASHES[colors.domain.indexOf(first.series) % C.LINE_DASHES.length],
       },
       point: { sizeField: C.POINT_SIZE_PX, style: { fill: DEFAULT_COLORS.SURFACE_ELEVATED } },
       axis: {
@@ -85,7 +86,8 @@ const ActivityChart: React.FC<ActivityChartData> = memo(({ data, colors }) => {
       interaction: {
         tooltip: { css: CHART_TOOLTIP_CSS, bounding: { x: 0, y: 0, ...size } },
       },
-      animate: { enter: { type: 'pathIn', duration: C.ANIMATION_MS } },
+      // pathIn draws the line by animating lineDash and keeps it solid; growInX reveals it by a clip.
+      animate: { enter: { type: 'growInX', duration: C.ANIMATION_MS } },
     }),
     [data, colors, size],
   );

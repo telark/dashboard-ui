@@ -6,7 +6,10 @@ export const TIME_FORMATS = {
   SHORT: 'MMM d, yyyy',
   TIME_ONLY: 'HH:mm:ss',
   DATE_TIME: 'MMM d, yyyy HH:mm',
-  DATE_TIME_12H: 'MMM d, yyyy h:mm a',
+  // A moment this year, to compare at a glance: "Oct 20, 19:45".
+  SHORT_DATE_TIME: 'MMM d, HH:mm',
+  // The end of a range on its start's day: "Oct 22, 08:00 → 20:00".
+  HOUR_MINUTE: 'HH:mm',
   LONG_DATE_TIME_12H: 'MMMM d, yyyy h:mm a',
   DAY_HEADER: 'MMMM d, yyyy',
   DATE_KEY: 'yyyy-MM-dd',
@@ -16,7 +19,11 @@ export const TIME_ZONE = {
   FALLBACK: 'UTC',
   PARTS_LOCALE: 'en-US',
   HOUR_CYCLE: 'h23',
-  OFFSET_NAME: 'shortOffset',
+  OFFSET_NAME: 'longOffset',
+  // Intl writes GMT+02:00, or a bare GMT at zero offset: labels read UTC+02:00 and UTC+00:00.
+  INTL_OFFSET_PREFIX: 'GMT',
+  OFFSET_PREFIX: 'UTC',
+  ZERO_OFFSET_LABEL: 'UTC+00:00',
 } as const;
 
 export const TIME_CONFIGS = {
@@ -26,7 +33,20 @@ export const TIME_CONFIGS = {
 
 export const TIME_TEXTS = {
   INVALID_DATE: COMMON_VALUES.DATES.INVALID,
+  JUST_NOW: 'just now',
+  AGO_SHORT: (count: number, unit: string) => `${count}${unit} ago`,
+  // Between a date and its age: "Oct 20, 19:45 · 1d ago".
+  DATE_AGE_SEPARATOR: '·',
 } as const;
+
+// Compact relative time ("5h ago"), largest unit first, as [suffix, seconds].
+export const TIME_AGO_SHORT_UNITS: readonly (readonly [string, number])[] = [
+  ['y', 31536000],
+  ['mo', 2592000],
+  ['d', 86400],
+  ['h', 3600],
+  ['m', 60],
+];
 
 export const TIME_REMAINING = {
   ENDED: 'Ended',

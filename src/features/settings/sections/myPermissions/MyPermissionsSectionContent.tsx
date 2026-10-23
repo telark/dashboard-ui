@@ -7,7 +7,17 @@ import type { PermissionLevel, ResolvedRole } from '../../../auth/models/permiss
 import { AUTH_PERMISSIONS_LABELS } from '../../../auth/constants';
 import { getCurrentUser } from '../../../auth/utils';
 import SettingsCard from '../../components/SettingsCard';
-import { DEFAULT_COLORS, EMPTY_VALUE, getPillSurface } from '../../../../constants';
+import {
+  DEFAULT_COLORS,
+  EMPTY_VALUE,
+  getPillSurface,
+  FONT_SIZE,
+  FONT_WEIGHT,
+  RADIUS,
+  SPACING,
+} from '../../../../constants';
+import { SCOPE_LABELS } from '../../../../components/shared';
+import { denyRuleSentence } from '../../../access-and-permissions/roles/constants';
 
 const LEVEL_COLOR = DEFAULT_COLORS.TEXT_MUTED;
 
@@ -82,21 +92,41 @@ interface ScopeRowProps {
 }
 
 const ScopeRow: React.FC<ScopeRowProps> = memo(({ title, level, rules, sourceText }) => (
-  <div style={{ marginBottom: 8 }}>
+  <div style={{ marginBottom: SPACING.SM }}>
     <div
-      style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: SPACING.MD,
+      }}
     >
-      <span style={{ fontSize: 13, fontWeight: 600, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
+      <span
+        style={{
+          fontSize: FONT_SIZE.MD,
+          fontWeight: FONT_WEIGHT.SEMIBOLD,
+          color: DEFAULT_COLORS.TEXT_PRIMARY,
+        }}
+      >
         {title}
       </span>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
+      <div
+        style={{
+          // Off scale, kept exact: gap 10 (SM to MD).
+          display: 'flex',
+          alignItems: 'center',
+          gap: 10,
+          flexShrink: 0,
+        }}
+      >
         <span
           style={{
-            fontSize: 11,
-            fontWeight: 600,
+            // Off scale, kept exact: padding 7 (S6 to SM).
+            fontSize: FONT_SIZE.XS,
+            fontWeight: FONT_WEIGHT.SEMIBOLD,
             ...getPillSurface(LEVEL_COLOR),
-            borderRadius: 4,
-            padding: '2px 7px',
+            borderRadius: RADIUS.XS,
+            padding: `${SPACING.XXS}px 7px`,
           }}
         >
           {level}
@@ -111,7 +141,7 @@ const ScopeRow: React.FC<ScopeRowProps> = memo(({ title, level, rules, sourceTex
         >
           <span
             style={{
-              fontSize: 12,
+              fontSize: FONT_SIZE.SM,
               color: DEFAULT_COLORS.TEXT_MUTED,
               cursor: 'help',
             }}
@@ -122,11 +152,12 @@ const ScopeRow: React.FC<ScopeRowProps> = memo(({ title, level, rules, sourceTex
       </div>
     </div>
     {rules.length > 0 && (
-      <div style={{ marginTop: 4, fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
-        <span style={{ fontWeight: 500, color: DEFAULT_COLORS.TEXT_SECONDARY }}>
-          {AUTH_PERMISSIONS_LABELS.DENY_PREFIX}
-        </span>
-        {rules.join(', ')}
+      <div
+        style={{ marginTop: SPACING.XS, fontSize: FONT_SIZE.SM, color: DEFAULT_COLORS.TEXT_MUTED }}
+      >
+        {rules.map((rule) => (
+          <div key={rule}>{denyRuleSentence(rule)}</div>
+        ))}
       </div>
     )}
   </div>
@@ -161,7 +192,13 @@ const MyPermissionsSectionContent: React.FC = memo(() => {
   if (getCurrentUser()?.bootstrap === true) {
     return (
       <SettingsCard title={AUTH_PERMISSIONS_LABELS.FULL_ACCESS_TITLE}>
-        <p style={{ margin: 0, fontSize: 14, color: DEFAULT_COLORS.TEXT_MUTED }}>
+        <p
+          style={{
+            margin: SPACING.NONE,
+            fontSize: FONT_SIZE.BASE,
+            color: DEFAULT_COLORS.TEXT_MUTED,
+          }}
+        >
           {AUTH_PERMISSIONS_LABELS.FULL_ACCESS_DESCRIPTION}
         </p>
       </SettingsCard>
@@ -171,7 +208,13 @@ const MyPermissionsSectionContent: React.FC = memo(() => {
   if (!hasActiveRoles) {
     return (
       <SettingsCard title={AUTH_PERMISSIONS_LABELS.NO_PERMISSIONS_TITLE}>
-        <p style={{ margin: 0, fontSize: 14, color: DEFAULT_COLORS.TEXT_MUTED }}>
+        <p
+          style={{
+            margin: SPACING.NONE,
+            fontSize: FONT_SIZE.BASE,
+            color: DEFAULT_COLORS.TEXT_MUTED,
+          }}
+        >
           {AUTH_PERMISSIONS_LABELS.NO_PERMISSIONS_DESCRIPTION}
         </p>
       </SettingsCard>
@@ -190,7 +233,7 @@ const MyPermissionsSectionContent: React.FC = memo(() => {
   }
   for (const { scope, level, rules, sourceText } of scopeRows) {
     allRows.push({
-      title: scope.charAt(0).toUpperCase() + scope.slice(1),
+      title: SCOPE_LABELS[scope] ?? scope,
       level,
       rules,
       sourceText,

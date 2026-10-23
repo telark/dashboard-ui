@@ -1,4 +1,6 @@
+// The fallback while the live stream is down: connecting, backing off, or an exporter without it.
 export const NOTIFICATIONS_POLL_INTERVAL_MS = 30000;
+export const NOTIFICATIONS_STREAM_CHANGED = 'changed';
 export const NOTIFICATIONS_CACHE_KEY = 'telark:notifications:cache';
 export const NOTIFICATIONS_CACHE_MAX_ITEMS = 200;
 export const NOTIFICATIONS_PANEL_WIDTH = 420;
@@ -11,6 +13,8 @@ export const NOTIFICATION_TYPES = {
   PLAN_APPROVAL_DECIDED: 'plan.approval.decided',
   ENROLL_LINK_CREATED: 'enroll.link.created',
   ENROLL_LINK_USED: 'enroll.link.used',
+  INCIDENT_CRITICAL: 'incident.critical',
+  BOOTSTRAP_REQUEST: 'bootstrap.request',
 } as const;
 
 export const NOTIFICATIONS_STORE_ACTIONS = {

@@ -1,18 +1,26 @@
 import React from 'react';
 import { Empty, Tag, Typography } from 'antd';
 import { SafetyCertificateOutlined } from '@ant-design/icons';
+import { useSelector } from 'react-redux';
 import {
   DEFAULT_COLORS,
   EMPTY_CLASS,
   EMPTY_VALUE,
   SECTION_LAYOUT,
   STATUS_COLORS,
+  STATUS_DOT,
   TAG_CLASS,
+  TRUNCATE_STYLE,
   getPillColor,
+  SPACING,
+  FONT_SIZE,
+  FONT_WEIGHT,
+  LINE_HEIGHT,
 } from '../../../../../constants';
 import { formatDateKey, toDateKey } from '../../../../../utils/shared/time';
 import { FancySpinner } from '../../../../../components/animation';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
+import { selectProtectionPlanTemplates } from '../../store';
 import type {
   PlanMode,
   PlanViolation,
@@ -20,13 +28,21 @@ import type {
   ViolationResult,
 } from '../../models';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
+import { policyLabel } from './policyHealth';
 
 interface ViolationsSectionProps {
   data: PlanViolationsResponse | null;
   loading: boolean;
   error: string | null;
+  planId: string;
   mode: PlanMode;
+  empty: { title: string; body: string };
 }
+
+export const resultLabel = (result: ViolationResult, mode: PlanMode): string =>
+  result === 'fail' && mode === 'audit'
+    ? PPC.LABELS.VIOLATIONS.AUDIT_FAIL
+    : PPC.LABELS.VIOLATION_RESULT_LABELS[result];
 
 const groupByDay = (
   violations: PlanViolation[],
@@ -52,14 +68,23 @@ const groupByDay = (
 };
 
 const { Title, Text } = Typography;
+const V = PPC.LABELS.VIOLATIONS;
 
-const ViolationsSection: React.FC<ViolationsSectionProps> = ({ data, loading, error, mode }) => {
+const ViolationsSection: React.FC<ViolationsSectionProps> = ({
+  data,
+  loading,
+  error,
+  planId,
+  mode,
+  empty,
+}) => {
+  const templates = useSelector(selectProtectionPlanTemplates);
   const violations = data?.violations ?? [];
   const grouped = groupByDay(violations);
 
   if (loading && violations.length === 0) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', padding: 24 }}>
+      <div style={{ display: 'flex', justifyContent: 'center', padding: SPACING.XXL }}>
         <FancySpinner showLabel={false} size={24} />
       </div>
     );
@@ -82,12 +107,8 @@ const ViolationsSection: React.FC<ViolationsSectionProps> = ({ data, loading, er
         image={<SafetyCertificateOutlined style={{ color: DEFAULT_COLORS.SUCCESS }} />}
         description={
           <>
-            <Title level={4}>{PPC.LABELS.VIOLATIONS.EMPTY_TITLE}</Title>
-            <Text>
-              {mode === 'enforce'
-                ? PPC.LABELS.VIOLATIONS.EMPTY_ENFORCE
-                : PPC.LABELS.VIOLATIONS.EMPTY_AUDIT}
-            </Text>
+            <Title level={3}>{empty.title}</Title>
+            <Text>{empty.body}</Text>
           </>
         }
       />
@@ -100,24 +121,25 @@ const ViolationsSection: React.FC<ViolationsSectionProps> = ({ data, loading, er
         <div key={group.dayKey}>
           <div
             style={{
-              fontSize: 11,
-              fontWeight: 700,
+              fontSize: FONT_SIZE.XS,
+              fontWeight: FONT_WEIGHT.BOLD,
               color: DEFAULT_COLORS.TEXT_MUTED,
               textTransform: 'uppercase',
               letterSpacing: '0.04em',
-              marginTop: groupIdx === 0 ? 0 : 12,
-              marginBottom: 8,
-              paddingBottom: 6,
+              marginTop: groupIdx === 0 ? SPACING.NONE : SPACING.MD,
+              marginBottom: SPACING.SM,
+              paddingBottom: SPACING.S6,
               borderBottom: SECTION_LAYOUT.SUBTLE_DIVIDER,
             }}
           >
             {group.dayKey === 'unknown' ? EMPTY_VALUE : formatDateKey(group.dayKey)}
           </div>
           {group.entries.map((entry, idx) => {
-            const resultLabel = PPC.LABELS.VIOLATION_RESULT_LABELS[entry.result];
+            const operation = policyLabel(entry.policy, planId, templates) ?? entry.rule;
             return (
               <div
                 key={`${entry.namespace}:${entry.resource.kind}:${entry.resource.name}:${entry.rule}:${entry.timestamp}:${idx}`}
+                // 10: the row padding sits between SM and MD.
                 style={{
                   padding: '10px 0',
                   borderBottom: SECTION_LAYOUT.SUBTLE_DIVIDER,
@@ -126,18 +148,16 @@ const ViolationsSection: React.FC<ViolationsSectionProps> = ({ data, loading, er
                 <div
                   style={{
                     display: 'flex',
-                    gap: 12,
+                    gap: SPACING.MD,
                     alignItems: 'flex-start',
                     justifyContent: 'space-between',
                   }}
                 >
                   <div
+                    // 5: drops the dot to the middle of the first text line.
                     style={{
-                      width: 8,
-                      height: 8,
-                      borderRadius: '50%',
+                      ...STATUS_DOT,
                       marginTop: 5,
-                      flexShrink: 0,
                       background: STATUS_COLORS.VIOLATION_RESULT[entry.result],
                     }}
                   />
@@ -147,11 +167,11 @@ const ViolationsSection: React.FC<ViolationsSectionProps> = ({ data, loading, er
                         display: 'flex',
                         flexWrap: 'wrap',
                         alignItems: 'center',
-                        gap: 6,
+                        gap: SPACING.S6,
                       }}
                     >
                       <Tag color={getPillColor(STATUS_COLORS.VIOLATION_RESULT[entry.result])}>
-                        {`${PPC.LABELS.VIOLATIONS.TABLE_RESULT}: ${resultLabel}`}
+                        {`${PPC.LABELS.VIOLATIONS.TABLE_RESULT}: ${resultLabel(entry.result, mode)}`}
                       </Tag>
                       {entry.resource.kind && (
                         <Tag>{`${PPC.LABELS.VIOLATIONS.TABLE_RESOURCE_KIND}: ${entry.resource.kind}`}</Tag>
@@ -166,32 +186,42 @@ const ViolationsSection: React.FC<ViolationsSectionProps> = ({ data, loading, er
                           {`${PPC.LABELS.VIOLATIONS.TABLE_NAMESPACE}: ${entry.namespace}`}
                         </Tag>
                       )}
-                      {entry.rule && (
-                        <Tag className={TAG_CLASS.AS_IS}>
-                          {`${PPC.LABELS.VIOLATIONS.TABLE_RULE}: ${entry.rule}`}
-                        </Tag>
-                      )}
+                      {operation && <Tag className={TAG_CLASS.AS_IS}>{operation}</Tag>}
                     </div>
                     {entry.message && (
                       <div
                         style={{
-                          marginTop: 6,
-                          fontSize: 13,
+                          marginTop: SPACING.S6,
+                          fontSize: FONT_SIZE.MD,
                           color: DEFAULT_COLORS.TEXT_PRIMARY,
-                          lineHeight: 1.5,
+                          lineHeight: LINE_HEIGHT.BASE,
                         }}
                       >
                         {entry.message}
                       </div>
                     )}
+                    {/* Shown only when the request named its user: never imply a requester. */}
+                    {entry.requestedBy && (
+                      <div
+                        title={entry.requestedBy}
+                        style={{
+                          ...TRUNCATE_STYLE,
+                          marginTop: SPACING.XS,
+                          fontSize: FONT_SIZE.SM,
+                          color: DEFAULT_COLORS.TEXT_MUTED,
+                        }}
+                      >
+                        {V.REQUESTED_BY(entry.requestedBy)}
+                      </div>
+                    )}
                   </div>
                   <div
                     style={{
-                      fontSize: 12,
+                      fontSize: FONT_SIZE.SM,
                       color: DEFAULT_COLORS.TEXT_MUTED,
                       flexShrink: 0,
                       textAlign: 'right',
-                      lineHeight: 1.35,
+                      lineHeight: LINE_HEIGHT.SNUG,
                     }}
                   >
                     {entry.timestamp ? <TimeAgo date={entry.timestamp} /> : EMPTY_VALUE}

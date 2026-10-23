@@ -52,7 +52,6 @@ export const useBulkDeleteRoles = ({
       message.success({
         content: RC.LABELS.ACTIONS.BULK_DELETE_SUCCESS(deleteCount),
         key: loadingKey,
-        duration: 3,
       });
 
       setSelectedRoles([]);
@@ -60,7 +59,6 @@ export const useBulkDeleteRoles = ({
       message.error({
         content: rejectionMessage(rejection, RC.LABELS.ACTIONS.BULK_DELETE_FAILED),
         key: loadingKey,
-        duration: 3,
       });
     } finally {
       setIsDeleting(false);

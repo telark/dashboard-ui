@@ -2,6 +2,7 @@ import React from 'react';
 import { Switch as AntSwitch, Tooltip } from 'antd';
 import { DEFAULT_COLORS } from '../../../constants/shared/colors';
 import { BUTTON_COLORS } from '../../../constants/layout/buttons';
+import { FONT_SIZE, FONT_WEIGHT, SPACING } from '../../../constants';
 
 export interface SwitchProps {
   checked?: boolean;
@@ -31,9 +32,9 @@ const Switch: React.FC<SwitchProps> = ({
       {label && (
         <span
           style={{
-            fontSize: '14px',
-            fontWeight: 600,
-            marginRight: 8,
+            fontSize: FONT_SIZE.BASE,
+            fontWeight: FONT_WEIGHT.SEMIBOLD,
+            marginRight: SPACING.SM,
             ...labelStyle,
           }}
         >
@@ -47,7 +48,7 @@ const Switch: React.FC<SwitchProps> = ({
         checkedChildren={checkedChildren}
         unCheckedChildren={unCheckedChildren}
         style={{
-          marginLeft: label ? 8 : 0,
+          marginLeft: label ? SPACING.SM : SPACING.NONE,
           backgroundColor: checked ? DEFAULT_COLORS.SUCCESS : BUTTON_COLORS.SWITCH_OFF,
         }}
       />

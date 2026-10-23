@@ -24,6 +24,7 @@ const rowKey = (record: User) => record.id;
 const USERS_EMPTY = (
   <Empty
     description={UC.LABELS.EMPTY.NO_USERS_FOUND}
+    // Off scale, kept exact: marginTop 22 (XL to XXL).
     image={<UserIcon size={64} style={{ color: DEFAULT_COLORS.ICON_MUTED, marginTop: 22 }} />}
   />
 );

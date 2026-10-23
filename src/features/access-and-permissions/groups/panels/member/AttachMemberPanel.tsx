@@ -8,7 +8,7 @@ import {
 import { SearchInput } from '../../../../../components/display/inputs';
 import { ToggleButton } from '../../../../../components/display/buttons';
 import { ActionConfirmModal } from '../../../../../components/display/modal';
-import { SLIDE_OUT } from '../../../../../constants';
+import { SLIDE_OUT, SPACING } from '../../../../../constants';
 import { useAttachMemberPanel, useDeassignGroupMember } from '../../hooks';
 import {
   usePermission,
@@ -22,6 +22,7 @@ import { useHasRoleAboveCaller, useRoles } from '../../../roles/hooks';
 import { USERS_CONSTANTS as UC } from '../../../users/constants';
 import { filterBySearchTerm } from '../../../users/utils/search/filter';
 import { CapitalizeFirstLetter } from '../../../../../utils/helpers/format';
+import { formatList, useGrantConfirm } from '../../../shared';
 
 const PANEL_WIDTH = 600;
 const PANEL_WIDTH_EXPANDED = 900;
@@ -134,9 +135,23 @@ const AttachMemberPanel: React.FC<AttachMemberPanelProps> = ({ open, onClose, gr
     setShowAssignedOnly((prev) => !prev);
   }, []);
 
+  const panelWidth = expanded ? PANEL_WIDTH_EXPANDED : PANEL_WIDTH;
+  const { confirmGrant, modal: grantConfirmModal } = useGrantConfirm(panelWidth);
+
   if (!currentGroup) return null;
 
-  const panelWidth = expanded ? PANEL_WIDTH_EXPANDED : PANEL_WIDTH;
+  // New members get every role the group carries.
+  const submitMembers = (values: Record<string, unknown>) => {
+    const added = ((values.userRefs as string[] | undefined) ?? []).filter(
+      (id) => !initialSelectedUsers.includes(id),
+    );
+    const names = added.map((id) => allUsers?.find((u) => u.id === id)?.username ?? id);
+    return confirmGrant(
+      added.length > 0 ? (currentGroup.roleRefs ?? []) : [],
+      formatList(names),
+      () => handleSubmit(values),
+    );
+  };
 
   return (
     <>
@@ -152,18 +167,18 @@ const AttachMemberPanel: React.FC<AttachMemberPanelProps> = ({ open, onClose, gr
           <ExpandPanelButton expanded={expanded} onToggle={() => setExpanded((prev) => !prev)} />
         }
         formContent={
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.MD, width: '100%' }}>
             <div
               style={{
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 flexWrap: 'wrap',
-                gap: 12,
+                gap: SPACING.MD,
                 width: '100%',
                 boxSizing: 'border-box',
-                margin: 0,
-                padding: 0,
+                margin: SPACING.NONE,
+                padding: SPACING.NONE,
               }}
             >
               <SearchInput
@@ -180,7 +195,14 @@ const AttachMemberPanel: React.FC<AttachMemberPanelProps> = ({ open, onClose, gr
                 tooltip={GC.LABELS.PANELS.ASSIGN_MEMBERS.SHOW_ASSIGNED_TOOLTIP}
               />
             </div>
-            <div style={{ width: '100%', margin: 0, padding: 0, boxSizing: 'border-box' }}>
+            <div
+              style={{
+                width: '100%',
+                margin: SPACING.NONE,
+                padding: SPACING.NONE,
+                boxSizing: 'border-box',
+              }}
+            >
               {showAssignedOnly ? (
                 <GroupAssignedMembersView
                   assignedUserIds={filteredAssignedUserIds}
@@ -200,7 +222,7 @@ const AttachMemberPanel: React.FC<AttachMemberPanelProps> = ({ open, onClose, gr
             </div>
           </div>
         }
-        onSubmit={handleSubmit as (values: Record<string, unknown>) => Promise<void>}
+        onSubmit={submitMembers}
         onCancel={onClose}
         submitButtonText={GC.LABELS.PANELS.ASSIGN_MEMBERS.SUBMIT_BUTTON}
         loading={submitting}
@@ -221,6 +243,7 @@ const AttachMemberPanel: React.FC<AttachMemberPanelProps> = ({ open, onClose, gr
         getContainer={() => document.body}
         offsetRight={panelWidth}
       />
+      {grantConfirmModal}
     </>
   );
 };

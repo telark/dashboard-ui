@@ -1,6 +1,14 @@
 import React, { memo } from 'react';
 import { Tag } from 'antd';
-import { DEFAULT_COLORS, getPillColor } from '../../../constants';
+import {
+  DEFAULT_COLORS,
+  getPillColor,
+  UNSTYLED_BUTTON,
+  FONT_SIZE,
+  FONT_WEIGHT,
+  LINE_HEIGHT,
+  SPACING,
+} from '../../../constants';
 
 export interface SectionHeaderBreadcrumbItem {
   label: string;
@@ -16,40 +24,37 @@ interface SectionHeaderProps {
 
 const SECTION_HEADER_STYLES = {
   wrapper: {
-    marginBottom: 32,
+    marginBottom: SPACING.XXXL,
     display: 'flex' as const,
     flexDirection: 'column' as const,
-    gap: 0,
+    gap: SPACING.NONE,
   },
   title: {
-    margin: 0,
-    padding: 0,
-    fontSize: 28,
-    fontWeight: 700,
+    margin: SPACING.NONE,
+    padding: SPACING.NONE,
+    fontSize: FONT_SIZE.H1,
+    fontWeight: FONT_WEIGHT.BOLD,
     color: DEFAULT_COLORS.TEXT_PRIMARY,
-    lineHeight: 1.2,
+    lineHeight: LINE_HEIGHT.TIGHT,
     display: 'flex' as const,
     alignItems: 'center' as const,
-    gap: 8,
+    gap: SPACING.SM,
   },
   description: {
-    margin: 0,
-    marginTop: 0,
-    padding: 0,
-    fontSize: 14,
-    fontWeight: 400,
+    margin: SPACING.NONE,
+    marginTop: SPACING.NONE,
+    padding: SPACING.NONE,
+    fontSize: FONT_SIZE.BASE,
+    fontWeight: FONT_WEIGHT.REGULAR,
     color: DEFAULT_COLORS.TEXT_MUTED,
-    lineHeight: 1.2,
+    lineHeight: LINE_HEIGHT.TIGHT,
   },
   breadcrumbSeparator: { color: DEFAULT_COLORS.TEXT_MUTED },
   breadcrumbButton: {
-    background: 'none',
-    border: 'none',
-    padding: 0,
-    cursor: 'pointer',
+    ...UNSTYLED_BUTTON,
     color: DEFAULT_COLORS.TEXT_MUTED,
-    fontSize: 28,
-    fontWeight: 700,
+    fontSize: FONT_SIZE.H1,
+    fontWeight: FONT_WEIGHT.BOLD,
     fontFamily: 'inherit',
     textDecoration: 'none',
   },

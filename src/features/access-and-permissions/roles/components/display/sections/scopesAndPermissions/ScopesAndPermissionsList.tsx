@@ -5,7 +5,7 @@ import ScopeRow from './ScopeRow';
 const RolesScopesAndPermissionsList: React.FC<RolesScopesAndPermissionsListProps> = ({
   areas,
   permissionLevels,
-  tooltipMap,
+  descriptionMap,
   rowPaddingPx = 4,
   isLocked = false,
   initialScopes,
@@ -18,7 +18,7 @@ const RolesScopesAndPermissionsList: React.FC<RolesScopesAndPermissionsListProps
           scopeKey={area.key}
           scopeLabel={area.label}
           permissionLevels={permissionLevels}
-          tooltipMap={tooltipMap}
+          descriptionMap={descriptionMap}
           rowPaddingPx={rowPaddingPx}
           isLast={index === areas.length - 1}
           isLocked={isLocked}

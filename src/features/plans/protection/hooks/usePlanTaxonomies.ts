@@ -5,15 +5,17 @@ import { useCategories } from '../../../access-and-permissions/categories/hooks'
 import { selectCategoriesByScope } from '../../../access-and-permissions/categories/store/selectors/categorySelectors';
 
 export const usePlanTaxonomies = () => {
+  const { categories: kinds } = useCategories(CC.SCOPES.PLAN_KINDS);
   const { categories: environments } = useCategories(CC.SCOPES.PLAN_ENVIRONMENTS);
   const { categories: tags } = useCategories(CC.SCOPES.PLAN_TAGS);
-  return { environments, tags };
+  return { kinds, environments, tags };
 };
 
 export const usePlanTaxonomyLists = () => {
+  const kinds = useSelector((s: RootState) => selectCategoriesByScope(s, CC.SCOPES.PLAN_KINDS));
   const environments = useSelector((s: RootState) =>
     selectCategoriesByScope(s, CC.SCOPES.PLAN_ENVIRONMENTS),
   );
   const tags = useSelector((s: RootState) => selectCategoriesByScope(s, CC.SCOPES.PLAN_TAGS));
-  return { environments, tags };
+  return { kinds, environments, tags };
 };

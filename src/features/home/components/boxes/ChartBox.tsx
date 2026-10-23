@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
-import { HOME_DASHBOARD_STYLES as S } from '../../constants/dashboard';
 import DashboardBox, { type DashboardBoxProps } from '../box/DashboardBox';
+import BoxEmpty from '../display/BoxEmpty';
 
 interface ChartBoxProps extends DashboardBoxProps {
   isEmpty: boolean;
@@ -12,7 +12,7 @@ interface ChartBoxProps extends DashboardBoxProps {
 const ChartBox: React.FC<ChartBoxProps> = memo(({ isEmpty, emptyText, children, ...boxProps }) => (
   <DashboardBox bodyOverflow="visible" {...boxProps}>
     {isEmpty ? (
-      <div style={S.MUTED_TEXT}>{emptyText}</div>
+      <BoxEmpty icon={boxProps.icon}>{emptyText}</BoxEmpty>
     ) : (
       <div style={{ flex: 1, minHeight: 0, height: '100%' }}>{children}</div>
     )}

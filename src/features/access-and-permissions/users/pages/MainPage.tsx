@@ -6,6 +6,7 @@ import { useUserListPageConfig } from '../hooks/list/useUserListPageConfig';
 import { useUserPanelState } from '../hooks/panels/user/useUserPanelState';
 import { applyUserFilters } from '../utils/filter/applyUserFilters';
 import { CreateUserPanel } from '../panels';
+import { SLIDE_OUT } from '../../../../constants';
 import { noop } from '../../../../utils/helpers/noop';
 import type { User } from '../models';
 import UsersEmptyPage from './UsersEmptyPage';
@@ -69,10 +70,10 @@ const MainPage: React.FC = () => {
     closeManageGroupPanel,
   } = useUserPanelState();
 
+  // The bootstrap account is never listed here (user decision, 2026-10-20). Pickers and actor names still show it.
   const usersExcludingSelf = useMemo(() => {
-    const currentUser = getCurrentUser();
-    if (!currentUser?.id) return users;
-    return users.filter((u) => u.id !== currentUser.id);
+    const currentUserId = getCurrentUser()?.id;
+    return users.filter((u) => !u.bootstrap && u.id !== currentUserId);
   }, [users]);
 
   const filteredUsers = useMemo(
@@ -106,7 +107,7 @@ const MainPage: React.FC = () => {
   const handleViewPanelEdit = useCallback(() => {
     if (viewingUser) {
       closeViewPanel();
-      setTimeout(() => openEditPanel(viewingUser), 150);
+      setTimeout(() => openEditPanel(viewingUser), SLIDE_OUT.HANDOFF_DELAY_MS);
     }
   }, [viewingUser, closeViewPanel, openEditPanel]);
 
@@ -180,7 +181,7 @@ const MainPage: React.FC = () => {
   if (shouldShowEmpty) {
     return (
       <>
-        <UsersEmptyPage onCreateUserClick={canCreateUser ? openCreatePanel : undefined} />
+        <UsersEmptyPage onCreateUserClick={openCreatePanel} canCreate={canCreateUser} />
         {createPanelOpen && (
           <CreateUserPanel open={createPanelOpen} onClose={closeCreatePanel} form={createForm} />
         )}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { DEFAULT_COLORS } from '../../../constants';
+import { DEFAULT_COLORS, FONT_SIZE, FONT_WEIGHT, SPACING } from '../../../constants';
 import { Typography } from 'antd';
 
 interface SectionProps {
@@ -15,10 +15,10 @@ const Section: React.FC<SectionProps> = ({ title, subtitle, content, className, 
     <div className={`app-section ${className || ''}`.trim()} style={{ width: '100%', ...style }}>
       <div
         style={{
-          fontWeight: 600,
-          fontSize: 16,
+          fontWeight: FONT_WEIGHT.SEMIBOLD,
+          fontSize: FONT_SIZE.LG,
           color: DEFAULT_COLORS.TEXT_ON_SURFACE,
-          marginBottom: subtitle ? 0 : 12,
+          marginBottom: subtitle ? SPACING.NONE : SPACING.MD,
         }}
       >
         {title}
@@ -28,16 +28,17 @@ const Section: React.FC<SectionProps> = ({ title, subtitle, content, className, 
           className="app-section-subtitle"
           type="secondary"
           style={{
-            margin: 0,
+            // Off scale, kept exact: marginBottom 1 (NONE to XXS).
+            margin: SPACING.NONE,
             marginBottom: 1,
-            fontSize: 13,
+            fontSize: FONT_SIZE.MD,
             color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
           }}
         >
           {subtitle}
         </Typography.Paragraph>
       ) : null}
-      <div className="app-section-content" style={{ marginTop: 0 }}>
+      <div className="app-section-content" style={{ marginTop: SPACING.NONE }}>
         {content}
       </div>
     </div>

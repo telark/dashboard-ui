@@ -4,7 +4,13 @@ import type { Dayjs } from 'dayjs';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { SlideOutPanel } from '../../../../../components/display/panels/slide-out';
-import { APP_ROUTES, DEFAULT_COLORS, FILTER_PANEL } from '../../../../../constants';
+import {
+  APP_ROUTES,
+  DEFAULT_COLORS,
+  FILTER_PANEL,
+  SPACING,
+  FONT_SIZE,
+} from '../../../../../constants';
 import DatePicker from '../../../../../components/display/inputs/DatePicker';
 import { zonedNow } from '../../../../../utils/layout';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
@@ -16,6 +22,10 @@ import { mapCategoriesToOptions } from '../../../../access-and-permissions/categ
 import { usePlanTaxonomyLists } from '../../hooks/usePlanTaxonomies';
 import PlanTaxonomyFields from '../shared/PlanTaxonomyFields';
 import PlanApprovalModeField from '../shared/PlanApprovalModeField';
+import RepeatFields from '../shared/RepeatFields';
+import type { RepeatFormValues } from '../create/types';
+import { repeatFormValues, repeatPayload } from '../../utils/planFormValues';
+import type { DuplicatePlanPayload } from '../../clients';
 
 const { FORM } = PPC.CREATE_PAGE;
 
@@ -25,15 +35,36 @@ interface DuplicatePlanPanelProps {
   plan: ProtectionPlan | null;
 }
 
-interface DuplicateFormShape {
+interface DuplicateFormShape extends RepeatFormValues {
   name?: string;
   timeMode?: string;
   startAt?: Dayjs;
   endAt?: Dayjs;
+  kindRef?: string;
   environmentRef?: string;
   tagRefs?: string[];
   approvalMode?: PlanApprovalMode;
 }
+
+// Untouched classification, and a rule the form never showed, are left to the server: it copies the source's.
+const buildDuplicatePayload = (
+  v: DuplicateFormShape,
+  touched: (fields: string[]) => boolean,
+): DuplicatePlanPayload => {
+  const timeMode = v.timeMode ?? 'permanent';
+  const payload: DuplicatePlanPayload = { name: (v.name ?? '').trim(), timeMode };
+  if (touched(['kindRef'])) payload.kindRef = v.kindRef ?? '';
+  if (touched(['environmentRef', 'tagRefs'])) {
+    payload.environmentRef = v.environmentRef ?? '';
+    payload.tagRefs = v.tagRefs ?? [];
+  }
+  if (touched(['approvalMode'])) payload.approvalMode = v.approvalMode;
+  if (timeMode === 'time_range' && v.startAt && v.endAt) {
+    payload.timeRange = { startAt: v.startAt.toISOString(), endAt: v.endAt.toISOString() };
+  }
+  if (timeMode === 'repeating' && v.repeatDays?.length) payload.repeat = repeatPayload(v);
+  return payload;
+};
 
 const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, plan }) => {
   const dispatch: AppDispatch = useDispatch();
@@ -44,14 +75,17 @@ const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, 
   useEffect(() => {
     if (open) form.resetFields();
   }, [open, form]);
-  const { environments, tags } = usePlanTaxonomyLists();
+  const { kinds, environments, tags } = usePlanTaxonomyLists();
+  const planKindOptions = useMemo(() => mapCategoriesToOptions(kinds), [kinds]);
   const environmentOptions = useMemo(() => mapCategoriesToOptions(environments), [environments]);
   const tagOptions = useMemo(() => mapCategoriesToOptions(tags), [tags]);
   const watchedStartAt = Form.useWatch('startAt', form) as Dayjs | undefined;
   const watchedEndAt = Form.useWatch('endAt', form) as Dayjs | undefined;
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [timeMode, setTimeMode] = useState<string>(plan?.timeMode ?? 'permanent');
+  // Read from the form: the panel can stay mounted, and a reset on reopen restores the source's mode.
+  const timeMode =
+    (Form.useWatch('timeMode', form) as string | undefined) ?? plan?.timeMode ?? 'permanent';
 
   const initialValues = useMemo<Record<string, unknown>>(() => {
     return {
@@ -59,6 +93,8 @@ const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, 
       timeMode: plan?.timeMode ?? 'permanent',
       startAt: undefined,
       endAt: undefined,
+      ...repeatFormValues(plan?.timeMode === 'repeating' ? plan.repeat : undefined),
+      kindRef: plan?.kindRef || undefined,
       environmentRef: plan?.environmentRef || undefined,
       tagRefs: plan?.tagRefs ?? [],
       approvalMode: plan?.approvalMode ?? 'automatic',
@@ -73,44 +109,15 @@ const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, 
     onClose();
   };
 
-  const handleValuesChange = (_changed: unknown, all: Record<string, unknown>) => {
-    const next = (all as DuplicateFormShape).timeMode;
-    if (typeof next === 'string' && next !== timeMode) {
-      setTimeMode(next);
-    }
-  };
-
   const handleSubmit = async (values: Record<string, unknown>) => {
     if (!plan) return;
 
-    const v = values as DuplicateFormShape;
     setSubmitting(true);
     setError(null);
     try {
-      const payload: {
-        name: string;
-        timeMode: string;
-        timeRange?: { startAt: string; endAt: string };
-        environmentRef?: string;
-        tagRefs?: string[];
-        approvalMode?: PlanApprovalMode;
-      } = {
-        name: (v.name ?? '').trim(),
-        timeMode: v.timeMode ?? 'permanent',
-      };
-      if (form.isFieldsTouched(['environmentRef', 'tagRefs'])) {
-        payload.environmentRef = v.environmentRef ?? '';
-        payload.tagRefs = v.tagRefs ?? [];
-      }
-      if (form.isFieldsTouched(['approvalMode'])) {
-        payload.approvalMode = v.approvalMode;
-      }
-      if (payload.timeMode === 'time_range' && v.startAt && v.endAt) {
-        payload.timeRange = {
-          startAt: v.startAt.toISOString(),
-          endAt: v.endAt.toISOString(),
-        };
-      }
+      const payload = buildDuplicatePayload(values as DuplicateFormShape, (fields) =>
+        form.isFieldsTouched(fields),
+      );
       const created = await dispatch(
         duplicatePlanThunk({ planId: plan.id, overrides: payload }),
       ).unwrap();
@@ -134,7 +141,7 @@ const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, 
   };
 
   const formContent = (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.MD }}>
       <Form.Item
         name="name"
         label={FORM.NAME_LABEL}
@@ -143,16 +150,24 @@ const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, 
           { required: true, message: FORM.NAME_REQUIRED_ERROR },
           { validator: nameValidator },
         ]}
-        style={{ marginBottom: 0 }}
+        style={{ marginBottom: SPACING.NONE }}
       >
         <Input placeholder={FORM.NAME_PLACEHOLDER} />
       </Form.Item>
 
-      <Form.Item name="timeMode" label={FORM.TIME_MODE_LABEL} style={{ marginBottom: 0 }}>
+      <Form.Item
+        name="timeMode"
+        label={FORM.TIME_MODE_LABEL}
+        style={{ marginBottom: SPACING.NONE }}
+      >
         <Select options={PPC.CREATE_PAGE.TIME_MODE_OPTIONS} style={{ width: '100%' }} />
       </Form.Item>
 
-      <PlanTaxonomyFields environmentOptions={environmentOptions} tagOptions={tagOptions} />
+      <PlanTaxonomyFields
+        planKindOptions={planKindOptions}
+        environmentOptions={environmentOptions}
+        tagOptions={tagOptions}
+      />
       <PlanApprovalModeField />
 
       {timeMode === 'time_range' && (
@@ -161,7 +176,7 @@ const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, 
             <Form.Item
               name="startAt"
               label={FORM.START_AT_LABEL}
-              style={{ marginBottom: 0 }}
+              style={{ marginBottom: SPACING.NONE }}
               rules={[{ required: true, message: 'Start time is required' }]}
             >
               <DatePicker
@@ -172,12 +187,12 @@ const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, 
               />
             </Form.Item>
           </div>
-          <div style={{ ...FILTER_PANEL.DATE_ARROW, marginBottom: 4 }}>→</div>
+          <div style={{ ...FILTER_PANEL.DATE_ARROW, marginBottom: SPACING.XS }}>→</div>
           <div style={FILTER_PANEL.DATE_INPUT_WRAPPER}>
             <Form.Item
               name="endAt"
               label={FORM.END_AT_LABEL}
-              style={{ marginBottom: 0 }}
+              style={{ marginBottom: SPACING.NONE }}
               rules={[
                 { required: true, message: 'End time is required' },
                 ({ getFieldValue }) => ({
@@ -202,7 +217,9 @@ const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, 
         </div>
       )}
 
-      {error && <div style={{ color: DEFAULT_COLORS.DANGER, fontSize: 13 }}>{error}</div>}
+      {timeMode === 'repeating' && <RepeatFields />}
+
+      {error && <div style={{ color: DEFAULT_COLORS.DANGER, fontSize: FONT_SIZE.MD }}>{error}</div>}
     </div>
   );
 
@@ -219,7 +236,6 @@ const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, 
       disabled={submitDisabled}
       form={form}
       initialValues={initialValues}
-      onValuesChange={handleValuesChange}
     />
   );
 };

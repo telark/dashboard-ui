@@ -5,6 +5,7 @@ import { Switch, NumberInput, DatePicker } from '../../../../../../../components
 import { ROLES_CONSTANTS as RPC } from '../../../../constants';
 import { zonedNow } from '../../../../../../../utils/layout';
 import type { ValiditySectionProps } from '../../../../models';
+import { SPACING } from '../../../../../../../constants';
 
 const ValiditySection: React.FC<ValiditySectionProps> = memo(({ disabled = false }) => {
   const validityTypeOptions = [
@@ -23,14 +24,14 @@ const ValiditySection: React.FC<ValiditySectionProps> = memo(({ disabled = false
       title={RPC.VALIDITY.TITLE}
       subtitle={RPC.VALIDITY.SUBTITLE}
       content={
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.NONE }}>
           <Form.Item noStyle dependencies={[]}>
             {({ setFieldsValue }) => (
               <Form.Item
                 name={['validity', 'type']}
                 label={RPC.VALIDITY.TYPE_LABEL}
                 rules={[{ required: true, message: 'Please select a validity type' }]}
-                style={{ marginBottom: 12 }}
+                style={{ marginBottom: SPACING.MD }}
                 className="form-item-compact"
               >
                 <Select
@@ -67,7 +68,7 @@ const ValiditySection: React.FC<ValiditySectionProps> = memo(({ disabled = false
                       name={['validity', 'expirationModel']}
                       label={RPC.VALIDITY.EXPIRATION_MODEL_LABEL}
                       rules={[{ required: true, message: 'Please select an expiration model' }]}
-                      style={{ marginBottom: 12 }}
+                      style={{ marginBottom: SPACING.MD }}
                       className="form-item-compact"
                     >
                       <Select
@@ -101,7 +102,7 @@ const ValiditySection: React.FC<ValiditySectionProps> = memo(({ disabled = false
                               rules={[
                                 { required: true, message: 'Please select an expiration date' },
                               ]}
-                              style={{ marginBottom: 12 }}
+                              style={{ marginBottom: SPACING.MD }}
                               className="form-item-compact"
                             >
                               <DatePicker
@@ -126,7 +127,7 @@ const ValiditySection: React.FC<ValiditySectionProps> = memo(({ disabled = false
                               rules={[
                                 { required: true, message: 'Please enter duration in hours' },
                               ]}
-                              style={{ marginBottom: 12 }}
+                              style={{ marginBottom: SPACING.MD }}
                               className="form-item-compact"
                             >
                               <NumberInput
@@ -176,7 +177,7 @@ const ValiditySection: React.FC<ValiditySectionProps> = memo(({ disabled = false
                   checked={autoRevoke}
                   onChange={(checked) => setFieldValue(['validity', 'autoRevoke'], checked)}
                   label={RPC.VALIDITY.AUTO_REVOKE_LABEL}
-                  containerStyle={{ marginTop: 20 }}
+                  containerStyle={{ marginTop: SPACING.XL }}
                   disabled={disabled}
                 />
               );

@@ -1,6 +1,5 @@
 import { memo } from 'react';
-import type { CSSProperties } from 'react';
-import { BUTTON_CONFIGS, DEFAULT_COLORS, MENU_LABELS, SIDEBAR_LAYOUT } from '../../../constants';
+import { BUTTON_CONFIGS, MENU_LABELS, SIDEBAR_LAYOUT } from '../../../constants';
 import {
   HomeMenuButton,
   ApplicationsMenuButton,
@@ -16,17 +15,6 @@ interface MenuItemsProps {
   isCollapsed?: boolean;
 }
 
-const sectionLabelStyle: CSSProperties = {
-  fontSize: SIDEBAR_LAYOUT.SECTION_LABEL_FONT_SIZE,
-  fontWeight: 500,
-  letterSpacing: '0.06em',
-  textTransform: 'uppercase',
-  color: DEFAULT_COLORS.TEXT_SECONDARY,
-  padding: '4px 12px 2px 22px',
-  marginTop: 20,
-  userSelect: 'none',
-};
-
 const MenuItems = memo(({ isCollapsed = false }: MenuItemsProps) => {
   return (
     <nav
@@ -38,11 +26,11 @@ const MenuItems = memo(({ isCollapsed = false }: MenuItemsProps) => {
       }}
     >
       <HomeMenuButton isCollapsed={isCollapsed} />
-      {!isCollapsed && <div style={sectionLabelStyle}>{MENU_LABELS.OPERATIONS}</div>}
+      {!isCollapsed && <div style={SIDEBAR_LAYOUT.SECTION_LABEL}>{MENU_LABELS.OPERATIONS}</div>}
       <ApplicationsMenuButton isCollapsed={isCollapsed} />
       <ProtectionPlansMenuButton isCollapsed={isCollapsed} />
       <InsightsMenuButton isCollapsed={isCollapsed} />
-      {!isCollapsed && <div style={sectionLabelStyle}>{MENU_LABELS.ADMINISTRATION}</div>}
+      {!isCollapsed && <div style={SIDEBAR_LAYOUT.SECTION_LABEL}>{MENU_LABELS.ADMINISTRATION}</div>}
       <UsersMenuButton isCollapsed={isCollapsed} />
       <GroupsMenuButton isCollapsed={isCollapsed} />
       <RolesMenuButton isCollapsed={isCollapsed} />

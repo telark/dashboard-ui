@@ -6,7 +6,10 @@ import {
   BUTTON_TEXTS,
   DEFAULT_COLORS,
   MODAL_CHROME,
+  UNSTYLED_BUTTON,
   withAlpha,
+  MOTION,
+  SPACING,
 } from '../../../constants';
 import { FancySpinner } from '../../animation';
 import { BaseModal } from '../modal';
@@ -206,14 +209,11 @@ const AvatarItem: React.FC<AvatarItemProps> = ({ option, isSelected, previewUrl,
       onMouseLeave={handleMouseLeave}
       aria-label={`Select ${option.style} avatar style`}
       style={{
-        cursor: 'pointer',
+        ...UNSTYLED_BUTTON,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        transition: 'all 0.2s',
-        background: 'transparent',
-        border: 'none',
-        padding: 0,
+        transition: `all ${MOTION.BASE_MS}ms`,
         outline: 'none',
       }}
     >
@@ -224,11 +224,11 @@ const AvatarItem: React.FC<AvatarItemProps> = ({ option, isSelected, previewUrl,
           borderRadius: '50%',
           border: `2px solid ${borderColor}`,
           backgroundColor,
-          padding: 2,
+          padding: SPACING.XXS,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          transition: 'all 0.2s',
+          transition: `all ${MOTION.BASE_MS}ms`,
         }}
       >
         <Avatar src={previewUrl || undefined} size={AVATAR_SIZE} style={{ border: 'none' }} />
@@ -329,6 +329,7 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({
           onClick={openModal}
           aria-label="Choose avatar"
           style={{
+            // Off scale, kept exact: padding 3 (XXS to XS).
             cursor: 'pointer',
             display: 'inline-flex',
             alignItems: 'center',
@@ -336,7 +337,7 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({
             borderRadius: '50%',
             border: '2px solid transparent',
             padding: 3,
-            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            transition: `all ${MOTION.SLOW_MS}ms ${MOTION.EASE_STANDARD}`,
             background: `linear-gradient(135deg, ${withAlpha(DEFAULT_COLORS.SUCCESS, 0.1)} 0%, ${withAlpha(DEFAULT_COLORS.INFO_STRONG, 0.1)} 100%)`,
             outline: 'none',
             boxShadow: previewAvatar
@@ -387,7 +388,14 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({
         }
       >
         {isLoadingStyles ? (
-          <div style={{ display: 'flex', justifyContent: 'center', padding: 40 }}>
+          <div
+            style={{
+              // Off scale, kept exact: padding 40 (above XXXL).
+              display: 'flex',
+              justifyContent: 'center',
+              padding: 40,
+            }}
+          >
             <FancySpinner />
           </div>
         ) : (
@@ -397,7 +405,7 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({
               gridTemplateColumns: `repeat(${columns}, 1fr)`,
               gap: AVATAR_GAP,
               width: '100%',
-              padding: '8px 0',
+              padding: `${SPACING.SM}px 0`,
             }}
           >
             {AVATAR_OPTIONS.map((option) => (

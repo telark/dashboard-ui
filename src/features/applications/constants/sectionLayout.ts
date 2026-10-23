@@ -1,26 +1,16 @@
-import { ROW_ICON_BUTTON_SIZE } from '../../../constants';
+import { DEFAULT_COLORS, MONOSPACE_CLASS, ROW_ICON_BUTTON_SIZE } from '../../../constants';
 import { SETTINGS_CONSTANTS } from '../../settings/constants';
 
 /** Applications feature: spacing and dividers aligned with settings/content tokens. */
 export const APPLICATION_SECTION_LAYOUT = {
-  STACK_GAP_PX: SETTINGS_CONSTANTS.CONTENT.GAP_BETWEEN_CARDS,
   CARD_RADIUS: SETTINGS_CONSTANTS.CONTENT.CARD_BORDER_RADIUS,
   CARD_PADDING: SETTINGS_CONSTANTS.CONTENT.CARD_PADDING,
   FIELD_LABEL_FONT_SIZE: 11,
   FIELD_VALUE_FONT_SIZE: 13,
-  COLUMN_HEADER_FONT_SIZE: 12,
   COLUMN_INNER_RADIUS: SETTINGS_CONSTANTS.CONTENT.CARD_BORDER_RADIUS,
   TAG_CLOUD_MAX_HEIGHT_PX: 120,
-  /** Env chips size to their text; this only caps the outliers so a single long
-   *  key cannot stretch the row. */
-  ENV_CHIP_MAX_WIDTH_PX: 260,
-  ENV_CHIP_GAP_PX: 6,
-  ENV_CHIP_MAX_VISIBLE: 9,
-  /** Overflow tooltip: keys ellipsize at this width rather than escaping the bubble. */
-  ENV_TOOLTIP_MAX_WIDTH_PX: 320,
-  ENV_TOOLTIP_FONT_SIZE_PX: 12,
-  ENV_TOOLTIP_ROW_GAP_PX: 4,
-  STAT_MIN_WIDTH_PX: 96,
+  /** Env var names listed before the "+N" link that expands the rest. */
+  ENV_MAX_VISIBLE: 9,
 } as const;
 
 /** Inline manifest reader shown inside the manage-snapshots panel. */
@@ -71,13 +61,11 @@ export const APPLICATION_DETAILS_TOOLBAR = {
   IDENTITY_GAP_PX: 8,
   NAME_FONT_SIZE_PX: 13,
   META_FONT_SIZE_PX: 12,
-  HEALTH_DOT_SIZE_PX: 7,
-  /** The identity strip only appears once the page header has scrolled away. */
-  REVEAL_OFFSET_PX: 48,
-  REVEAL_DURATION_S: 0.18,
+  /** A last sync older than this reads as a warning. */
+  SYNC_STALE_MS: 24 * 60 * 60 * 1000,
 } as const;
 
-/** Workload metrics: usage-vs-baseline meters, one row per workload. */
+/** Resource usage: usage meters against the limit or request, one row per workload. */
 export const APPLICATION_WORKLOAD_METRICS = {
   ROW_GAP_PX: 6,
   ROW_PADDING: '10px 12px',
@@ -89,12 +77,17 @@ export const APPLICATION_WORKLOAD_METRICS = {
   METER_GAP_PX: 10,
   METER_ROW_GAP_PX: 6,
   METER_VALUE_FONT_SIZE_PX: 11,
-  /** Limit marker drawn on the meter track. */
-  LIMIT_TICK_WIDTH_PX: 2,
+  /** The bar stops growing here, so the value stays beside it on wide screens. */
+  METER_MAX_WIDTH_PX: 280,
+  METER_MIN_WIDTH_PX: 48,
+  /** Request marker on the track, with a wider invisible hit area for its tooltip. */
+  REQUEST_MARKER_WIDTH_PX: 2,
+  REQUEST_MARKER_HIT_PX: 10,
   NAME_FONT_SIZE_PX: 13,
   LABEL_FONT_SIZE_PX: 11,
-  /** Fraction of the limit above which usage turns amber, then red at 1. */
-  WARN_RATIO: 0.85,
+  /** Share of the limit from which usage turns to warning, then above which to danger. */
+  WARN_RATIO: 0.7,
+  DANGER_RATIO: 0.9,
   PAGE_SIZE: 5,
   PAGINATION_GAP_PX: 12,
   MAX_INSTANCES: 3,
@@ -112,6 +105,9 @@ export const APPLICATION_RESOURCE_VIEW = {
   GRAPH: 'graph',
   TREE: 'tree',
 } as const;
+
+/** Below this many resources the structure view opens first: the graph has little to show. */
+export const APPLICATION_RESOURCE_LIST_DEFAULT_BELOW = 5;
 
 export type ApplicationResourceView =
   (typeof APPLICATION_RESOURCE_VIEW)[keyof typeof APPLICATION_RESOURCE_VIEW];
@@ -173,4 +169,29 @@ export const APPLICATION_RESOURCE_GRAPH = {
   DIM_OPACITY: 0.25,
   /** Resource names listed in a kind node's tooltip before it is truncated. */
   TOOLTIP_NAME_LIMIT: 12,
+} as const;
+
+/** Change history: an entry shows three one-line changes until it is expanded. */
+export const APPLICATION_CHANGE_LIST = {
+  VISIBLE_ROWS: 3,
+  /** No change line runs the full card width: a long value ellipsizes here until expanded. */
+  LINE_MAX_WIDTH: '72ch',
+} as const;
+
+/** Change lines: rows sit on the dark card, the panel is a light surface that wraps long values. */
+export const APPLICATION_CHANGE_LINE_PALETTE = {
+  CARD: {
+    text: DEFAULT_COLORS.TEXT_PRIMARY,
+    muted: DEFAULT_COLORS.TEXT_MUTED,
+    valueClass: undefined,
+    wrap: 'anywhere',
+    maxWidth: APPLICATION_CHANGE_LIST.LINE_MAX_WIDTH,
+  },
+  PANEL: {
+    text: DEFAULT_COLORS.TEXT_ON_SURFACE,
+    muted: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+    valueClass: MONOSPACE_CLASS,
+    wrap: 'anywhere',
+    maxWidth: undefined,
+  },
 } as const;

@@ -95,8 +95,8 @@ export interface LoginFinishRequest extends DeviceMetadata {
   type: string;
 }
 
+// The session is set as auth's HttpOnly cookie, never in the body.
 export interface LoginFinishResponse {
-  sessionToken: string;
   user: User;
 }
 

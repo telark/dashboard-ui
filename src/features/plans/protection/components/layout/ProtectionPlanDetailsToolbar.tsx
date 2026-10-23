@@ -9,7 +9,6 @@ import {
   EllipsisOutlined,
   FileTextOutlined,
   PlayCircleOutlined,
-  ReloadOutlined,
   StopOutlined,
 } from '@ant-design/icons';
 import Toolbar from '../../../../../components/display/toolbar/Toolbar';
@@ -38,7 +37,6 @@ interface ProtectionPlanDetailsToolbarProps {
   approving: boolean;
   rejecting: boolean;
   deleting: boolean;
-  refreshingHealth: boolean;
   onDuplicate: () => void;
   onEdit: () => void;
   onCancel: () => void;
@@ -46,11 +44,11 @@ interface ProtectionPlanDetailsToolbarProps {
   onApprove: () => void;
   onReject: () => void;
   onDelete: () => void;
-  onRefreshHealth: () => void;
   generatingReport: boolean;
   onGenerateReport: () => void;
 }
 
+const DUPLICATE_MENU_KEY = 'duplicate';
 const CANCEL_MENU_KEY = 'cancel';
 const DELETE_MENU_KEY = 'delete';
 const PD = PPC.LABELS.PERMISSION_DENIED;
@@ -81,7 +79,8 @@ const decideButtons = ({
       key: 'approve',
       label: PPC.LABELS.DETAIL_PAGE.ACTIONS.APPROVE,
       icon: <CheckCircleOutlined />,
-      variant: 'primary',
+      // Outlined, like Applications' main verb: no filled primary on a details page.
+      variant: 'default',
       onClick: onApprove,
       disabled: !canApprove || decideDisabled,
       tooltip: permissionTooltip(canApprove, PD.APPROVE, blockedTooltip),
@@ -100,26 +99,39 @@ const decideButtons = ({
 
 interface OverflowItemsArgs {
   plan: ProtectionPlan;
+  canDuplicate: boolean;
   canCancel: boolean;
   canDelete: boolean;
+  duplicating: boolean;
   canceling: boolean;
   deleting: boolean;
 }
 
+// A disabled item keeps its reason in its title.
 const overflowItems = ({
   plan,
+  canDuplicate,
   canCancel,
   canDelete,
+  duplicating,
   canceling,
   deleting,
 }: OverflowItemsArgs): MenuProps['items'] => [
+  {
+    key: DUPLICATE_MENU_KEY,
+    icon: <CopyOutlined />,
+    label: PPC.LABELS.ACTIONS.DUPLICATE,
+    disabled: !canDuplicate || duplicating,
+    title: permissionTooltip(canDuplicate, PD.DUPLICATE),
+  },
+  { type: 'divider' as const },
   ...(CANCELLABLE_PHASES.includes(plan.phase)
     ? [
         {
           key: CANCEL_MENU_KEY,
           danger: true,
           icon: <StopOutlined />,
-          label: PPC.LABELS.DETAIL_PAGE.ACTIONS.CANCEL,
+          label: PPC.LABELS.ACTIONS.CANCEL,
           disabled: !canCancel || canceling,
           title: permissionTooltip(canCancel, PD.CANCEL),
         },
@@ -144,7 +156,6 @@ const ProtectionPlanDetailsToolbar: React.FC<ProtectionPlanDetailsToolbarProps> 
   approving,
   rejecting,
   deleting,
-  refreshingHealth,
   onDuplicate,
   onEdit,
   onCancel,
@@ -152,7 +163,6 @@ const ProtectionPlanDetailsToolbar: React.FC<ProtectionPlanDetailsToolbarProps> 
   onApprove,
   onReject,
   onDelete,
-  onRefreshHealth,
   generatingReport,
   onGenerateReport,
 }) => {
@@ -199,10 +209,11 @@ const ProtectionPlanDetailsToolbar: React.FC<ProtectionPlanDetailsToolbarProps> 
 
   const handleMenuClick = useCallback(
     (key: string) => {
-      if (key === CANCEL_MENU_KEY) onCancel();
+      if (key === DUPLICATE_MENU_KEY) onDuplicate();
+      else if (key === CANCEL_MENU_KEY) onCancel();
       else if (key === DELETE_MENU_KEY) onDelete();
     },
-    [onCancel, onDelete],
+    [onDuplicate, onCancel, onDelete],
   );
 
   const toolbarConfig: ToolbarConfig = useMemo(() => {
@@ -221,15 +232,14 @@ const ProtectionPlanDetailsToolbar: React.FC<ProtectionPlanDetailsToolbarProps> 
         }),
       );
     }
-    // Reactivate is the primary verb when it applies — same "main action first"
-    // placement as Applications' force-sync button.
+    // Reactivate is the main verb when it applies: first and outlined, like Applications' Force Sync.
     if (REACTIVATABLE_PHASES.includes(phase)) {
       const expired = isReactivateExpired(plan);
       buttons.push({
         key: 'reactivate',
         label: PPC.LABELS.DETAIL_PAGE.ACTIONS.REACTIVATE,
         icon: <PlayCircleOutlined />,
-        variant: 'primary',
+        variant: 'default',
         onClick: onReactivate,
         disabled: !canReactivate || reactivating || expired,
         tooltip: permissionTooltip(
@@ -250,15 +260,6 @@ const ProtectionPlanDetailsToolbar: React.FC<ProtectionPlanDetailsToolbarProps> 
         tooltip: permissionTooltip(canEdit, PD.EDIT),
       },
       {
-        key: 'duplicate',
-        label: PPC.LABELS.DETAIL_PAGE.ACTIONS.DUPLICATE,
-        icon: <CopyOutlined />,
-        variant: 'ghost',
-        onClick: onDuplicate,
-        disabled: !canDuplicate || duplicating,
-        tooltip: permissionTooltip(canDuplicate, PD.DUPLICATE),
-      },
-      {
         key: 'generateReport',
         label: PPC.LABELS.REPORTS.GENERATE,
         icon: <FileTextOutlined />,
@@ -273,25 +274,23 @@ const ProtectionPlanDetailsToolbar: React.FC<ProtectionPlanDetailsToolbarProps> 
         tooltip: getGenerateReportTooltip(plan, canGenerateReport),
       },
     );
-    if (phase === 'active') {
-      buttons.push({
-        key: 'refreshHealth',
-        label: PPC.LABELS.DETAIL_PAGE.ACTIONS.REFRESH_HEALTH,
-        icon: <ReloadOutlined />,
-        variant: 'ghost',
-        onClick: onRefreshHealth,
-        disabled: refreshingHealth,
-      });
-    }
-    // Cancel and delete live behind the overflow, same as Applications' delete:
-    // both are consequential and one slip away from the buttons above.
+    // Duplicate sits in the overflow above cancel and delete, like Applications' panels above
+    // reset.
     buttons.push({
       key: 'more',
       label: PPC.LABELS.DETAIL_PAGE.ACTIONS.MORE_LABEL,
       icon: <EllipsisOutlined />,
       variant: 'ghost',
       dropdown: {
-        items: overflowItems({ plan, canCancel, canDelete, canceling, deleting }),
+        items: overflowItems({
+          plan,
+          canDuplicate,
+          canCancel,
+          canDelete,
+          duplicating,
+          canceling,
+          deleting,
+        }),
         onItemClick: handleMenuClick,
       },
     });
@@ -305,15 +304,12 @@ const ProtectionPlanDetailsToolbar: React.FC<ProtectionPlanDetailsToolbarProps> 
     approving,
     rejecting,
     deleting,
-    refreshingHealth,
     generatingReport,
     handleMenuClick,
-    onDuplicate,
     onEdit,
     onReactivate,
     onApprove,
     onReject,
-    onRefreshHealth,
     onGenerateReport,
     canEdit,
     canDuplicate,

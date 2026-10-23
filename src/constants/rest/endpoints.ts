@@ -77,6 +77,20 @@ export const Endpoints = {
       method: 'GET',
     },
   },
+  BOOTSTRAP: {
+    GET: {
+      path: API_PATHS.BOOTSTRAP,
+      method: 'GET',
+    },
+    ASSERT_START: (requestId: string) => ({
+      path: AUTH_PATHS.BOOTSTRAP_ASSERT(requestId, 'start'),
+      method: 'POST',
+    }),
+    ASSERT_FINISH: (requestId: string) => ({
+      path: AUTH_PATHS.BOOTSTRAP_ASSERT(requestId, 'finish'),
+      method: 'POST',
+    }),
+  },
   GLOBALCONFIG: {
     GET: {
       path: API_PATHS.CONFIG,
@@ -158,6 +172,10 @@ export const Endpoints = {
     },
     SELF_REGISTRATION: {
       path: AUTH_PATHS.SELF_REGISTRATION,
+      method: 'PATCH',
+    },
+    BREAK_GLASS_ALERTS: {
+      path: AUTH_PATHS.BREAK_GLASS_ALERTS,
       method: 'PATCH',
     },
     PERMISSIONS: {
@@ -312,14 +330,20 @@ export const Endpoints = {
   },
   REPORTS: {
     LIST_ALL: { path: API_PATHS.REPORTS, method: 'GET' },
+    LIST_KEPT: { path: `${API_PATHS.REPORTS}/kept`, method: 'GET' },
     PLANS: {
       LIST: (id: string) => ({ path: planAction(id, PPA.REPORTS), method: 'GET' }),
       DOWNLOAD: (id: string) => ({ path: planAction(id, PPA.REPORTS_DOWNLOAD), method: 'GET' }),
+      DELETE: (id: string) => ({ path: planAction(id, PPA.REPORTS), method: 'DELETE' }),
     },
   },
   NOTIFICATIONS: {
     LIST: {
       path: API_PATHS.NOTIFICATIONS,
+      method: 'GET',
+    },
+    EVENTS: {
+      path: `${API_PATHS.NOTIFICATIONS}/events`,
       method: 'GET',
     },
     MARK_READ: (id: string) => ({

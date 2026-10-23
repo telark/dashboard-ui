@@ -1,13 +1,16 @@
-import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
-import type { RootState } from '../../../store';
+import React, { useCallback, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import type { AppDispatch, RootState } from '../../../store';
 import { APP_ROUTES, HEADER_LAYOUT } from '../../../constants';
 import { PageContainer } from '../../../components/shared';
 import FullPageLoader from '../../../components/display/views/FullPageLoader';
 import { LIST_PAGE } from '../../../constants/shared/pages';
 import { ACTION_PERMISSIONS, usePermission } from '../../auth/hooks/permissions/permissionEngine';
 import { selectPermissionsReady } from '../../auth/store/selectors/permissionsSelectors';
-import { filterByExcludedNamespaces } from '../../applications/utils/management/state';
+import {
+  filterByExcludedNamespaces,
+  loadApplicationsSilent,
+} from '../../applications/utils/management/state';
 import {
   selectProtectionPlans,
   selectProtectionPlansError,
@@ -37,22 +40,33 @@ import {
 } from '../utils/rows';
 import { changeActivityData, planActivityData } from '../utils/charts';
 import { parseClusterVersion } from '../utils/cluster';
-import { ChartBox, ClusterBox, ListBox, StorageBox, SummaryBox } from '../components';
+import { useAttentionInsights } from '../../insights';
+import {
+  AttentionBox,
+  ChartBox,
+  ClusterBox,
+  GetStartedBox,
+  ListBox,
+  StorageBox,
+  SummaryBox,
+} from '../components';
 import ActivityChart from '../components/charts/ActivityChart';
+import { SuccessCheck } from '../components/display/BoxEmpty';
 import type { NoAccess } from '../models';
 
-// Equal-width columns and fixed-height rows: every box is the same size wherever it lands.
-// min() keeps a single column from overflowing on screens narrower than one track.
-const gridStyle = (rowHeightPx: number): React.CSSProperties => ({
+// Equal-width columns; each row is as tall as its tallest box, so that box ends one padding below
+// its content at any width. auto-fit lets a row's boxes fill the width, so both rows end flush.
+// min() keeps one column inside screens narrower than a track.
+const ROW_STYLE: React.CSSProperties = {
   display: 'grid',
-  gridTemplateColumns: `repeat(auto-fill, minmax(min(${L.BOX_MIN_WIDTH_PX}px, 100%), 1fr))`,
-  gridAutoRows: rowHeightPx,
+  gridTemplateColumns: `repeat(auto-fit, minmax(min(${L.BOX_MIN_WIDTH_PX}px, 100%), 1fr))`,
   gap: L.GRID_GAP_PX,
-});
+};
 
 const { view: viewApplications, viewSnapshots } = ACTION_PERMISSIONS.applications;
 const { view: viewPlans } = ACTION_PERMISSIONS.protectionPlans;
 const { view: viewSettings } = ACTION_PERMISSIONS.settings;
+const { view: viewInsights } = ACTION_PERMISSIONS.insights;
 const APPS_NO_ACCESS: NoAccess = {
   featureName: T.APPLICATIONS.TITLE,
   permission: viewApplications,
@@ -60,6 +74,10 @@ const APPS_NO_ACCESS: NoAccess = {
 const PLANS_NO_ACCESS: NoAccess = { featureName: T.PLANS.TITLE, permission: viewPlans };
 const SNAPSHOTS_NO_ACCESS: NoAccess = { featureName: T.STORAGE.TITLE, permission: viewSnapshots };
 const CLUSTER_NO_ACCESS: NoAccess = { featureName: T.CLUSTER.TITLE, permission: viewSettings };
+const INSIGHTS_NO_ACCESS: NoAccess = {
+  featureName: T.NEEDS_ATTENTION.TITLE,
+  permission: viewInsights,
+};
 
 const Dashboard: React.FC = () => {
   const permissionsReady = useSelector(selectPermissionsReady);
@@ -71,7 +89,12 @@ const Dashboard: React.FC = () => {
     viewSnapshots.deny,
   );
   const canViewSettings = usePermission(viewSettings.scope, viewSettings.level);
+  const canViewInsights = usePermission(viewInsights.scope, viewInsights.level);
   const storage = useDashboardData({ canViewApplications, canViewPlans, canViewSnapshots });
+  const attention = useAttentionInsights();
+  const attentionState = canViewInsights
+    ? toBoxState(attention.loading, attention.error, attention.page !== null)
+    : { noAccess: INSIGHTS_NO_ACCESS };
 
   const applications = useSelector((s: RootState) => s.applications.applications);
   const appsLoaded = useSelector((s: RootState) => s.applications.loaded);
@@ -112,12 +135,26 @@ const Dashboard: React.FC = () => {
     };
   }, [plans, plansLoaded, plansError, canViewPlans]);
 
+  const dispatch: AppDispatch = useDispatch();
+  const reloadApplications = useCallback(() => void loadApplicationsSilent(dispatch), [dispatch]);
+  // Until a first plan exists, Get started leads, and the charts go while both are empty.
+  const firstRun =
+    canViewApplications && canViewPlans && appsLoaded && plansLoaded && plans.length === 0;
+  const showCharts = !firstRun || appsView.activity.data.length > 0;
+
   if (!permissionsReady) return <FullPageLoader minHeight={HEADER_LAYOUT.MIN_HEIGHT} />;
 
   return (
     <PageContainer title={T.TITLE} subtitle={T.SUBTITLE} gap={LIST_PAGE.CONTENT_GAP_PX}>
       <div style={{ display: 'flex', flexDirection: 'column', gap: L.GRID_GAP_PX }}>
-        <div style={gridStyle(L.BOX_HEIGHT_PX)}>
+        {firstRun && (
+          <GetStartedBox
+            applicationCount={apps.length}
+            discoveredCount={applications.length}
+            onDiscoveryCycleComplete={reloadApplications}
+          />
+        )}
+        <div style={ROW_STYLE}>
           <ClusterBox
             cluster={parseClusterVersion(clusterVersion)}
             loading={globalConfigState.loading && !clusterVersion}
@@ -144,12 +181,16 @@ const Dashboard: React.FC = () => {
             storage={storage}
             noAccess={canViewSnapshots ? undefined : SNAPSHOTS_NO_ACCESS}
           />
+        </div>
+        <div style={ROW_STYLE}>
+          <AttentionBox page={attention.page} {...attentionState} />
           <ListBox
             title={T.PLANS_ATTENTION.TITLE}
             icon={HOME_BOX_ICONS.PLANS_ATTENTION}
             viewAllTo={APP_ROUTES.PROTECTION_PLANS}
             rows={plansView.attentionRows}
-            emptyText={T.PLANS_ATTENTION.EMPTY}
+            emptyText={plans.length === 0 ? T.PLANS_ATTENTION.NO_PLANS : T.PLANS_ATTENTION.EMPTY}
+            emptyIcon={plans.length === 0 ? HOME_BOX_ICONS.PLANS : SuccessCheck}
             {...plansView.state}
           />
           <ListBox
@@ -158,29 +199,34 @@ const Dashboard: React.FC = () => {
             viewAllTo={APP_ROUTES.APPLICATIONS}
             rows={appsView.recentRows}
             emptyText={T.RECENT_CHANGES.EMPTY}
+            emptyIcon={HOME_BOX_ICONS.RECENT_CHANGES}
             {...appsView.state}
           />
         </div>
-        <div style={{ display: 'grid', gridAutoRows: C.ROW_HEIGHT_PX, gap: L.GRID_GAP_PX }}>
-          <ChartBox
-            title={CT.CHANGE_ACTIVITY.TITLE}
-            icon={HOME_BOX_ICONS.ACTIVITY}
-            isEmpty={appsView.activity.data.length === 0}
-            emptyText={CT.CHANGE_ACTIVITY.EMPTY}
-            {...appsView.state}
-          >
-            <ActivityChart {...appsView.activity} />
-          </ChartBox>
-          <ChartBox
-            title={CT.PLAN_ACTIVITY.TITLE}
-            icon={HOME_BOX_ICONS.ACTIVITY}
-            isEmpty={plansView.activity.data.length === 0}
-            emptyText={CT.PLAN_ACTIVITY.EMPTY}
-            {...plansView.state}
-          >
-            <ActivityChart {...plansView.activity} />
-          </ChartBox>
-        </div>
+        {showCharts && (
+          <div style={{ display: 'grid', gridAutoRows: C.ROW_HEIGHT_PX, gap: L.GRID_GAP_PX }}>
+            <ChartBox
+              title={CT.CHANGE_ACTIVITY.TITLE}
+              icon={HOME_BOX_ICONS.ACTIVITY}
+              meta={CT.RANGE}
+              isEmpty={appsView.activity.data.length === 0}
+              emptyText={CT.CHANGE_ACTIVITY.EMPTY}
+              {...appsView.state}
+            >
+              <ActivityChart {...appsView.activity} />
+            </ChartBox>
+            <ChartBox
+              title={CT.PLAN_ACTIVITY.TITLE}
+              icon={HOME_BOX_ICONS.ACTIVITY}
+              meta={CT.RANGE}
+              isEmpty={plansView.activity.data.length === 0}
+              emptyText={CT.PLAN_ACTIVITY.EMPTY}
+              {...plansView.state}
+            >
+              <ActivityChart {...plansView.activity} />
+            </ChartBox>
+          </div>
+        )}
       </div>
     </PageContainer>
   );

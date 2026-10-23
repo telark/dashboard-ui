@@ -17,6 +17,7 @@ export const API_PATHS = {
   PROTECTION_PLANS: 'protectionplans',
   POLICY_TEMPLATES: 'policytemplates',
   REPORTS: 'reports',
+  BOOTSTRAP: 'bootstrap',
 } as const;
 
 export const byId = (base: string, id: string) => `${base}/${seg(id)}`;
@@ -64,7 +65,10 @@ export const AUTH_PATHS = {
     CONFIG: 'auth/oidc/config',
   },
   SELF_REGISTRATION: 'auth/self-registration',
+  BREAK_GLASS_ALERTS: 'auth/break-glass-alerts',
   USER_ENROLL_LINK: (id: string) => `${byId('auth/users', id)}/enroll-link`,
+  BOOTSTRAP_ASSERT: (id: string, step: 'start' | 'finish') =>
+    `${byId('auth/bootstrap/requests', id)}/assert/${step}`,
   PERMISSIONS: 'auth/permissions',
   CLEANUP: {
     DELETE_USER: (id: string) => byId('auth/users', id),
@@ -92,4 +96,8 @@ export const PROTECTION_PLAN_PATHS = {
     REPORTS: 'reports',
     REPORTS_DOWNLOAD: 'reports/download',
   },
+  QUERY_KEEP_REPORTS: 'keepReports',
+  QUERY_WINDOW: 'window',
+  // Violations of the plan's whole run (its ledger plus the live Events), not only the live hour.
+  WINDOW_RUN: 'run',
 } as const;

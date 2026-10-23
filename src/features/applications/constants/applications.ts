@@ -1,4 +1,4 @@
-import { DEFAULT_COLORS } from '../../../constants';
+import { APP_ROUTES, DEFAULT_COLORS } from '../../../constants';
 import { LIST_PAGE } from '../../../constants/shared/pages';
 import { SHARED_DETAILS_CONSTANTS } from '../../../constants/shared/details';
 
@@ -23,9 +23,8 @@ export const APPLICATION_TRACKING_ANNOTATION_PREFIX =
 // evicts the least-recently-opened entry once it's full.
 export const SNAPSHOT_MANIFEST_CACHE_LIMIT = 20;
 
-export const APPLICATION_CONDITION_TYPES = {
-  PUBLISHED: 'Published',
-} as const;
+// The API server's wording for a webhook refusal, the same marker discovery classifies by.
+export const ADMISSION_DENIED_MARKER = 'admission webhook';
 
 export const FORCE_SYNC_PHASE = {
   QUEUED: 'queued',
@@ -40,6 +39,17 @@ export const SYNC_STATUS_VALUE = {
   FAILED: 'failed',
 } as const;
 
+// Discovery's identity labels, in its order (telark discovery derivation/helpers.go).
+export const DISCOVERY_LABELS =
+  'app.kubernetes.io/name, app.kubernetes.io/part-of, app.kubernetes.io/instance with app.kubernetes.io/component, or app';
+
+export const ALL_EXCLUDED = (count: number): string =>
+  count === 1
+    ? '1 application is in an excluded namespace.'
+    : `All ${count} applications are in excluded namespaces.`;
+
+export const DISCOVERY_SETTINGS_ROUTE = `${APP_ROUTES.SETTINGS}/discovery`;
+
 export const APPLICATIONS_CONSTANTS = {
   UI: {},
   MESSAGES: {
@@ -47,9 +57,16 @@ export const APPLICATIONS_CONSTANTS = {
     SUCCESS: 'Applications loaded successfully!',
     RETRY_FAILED_ATTEMPT: 'Failed to fetch applications. Retrying...',
     RETRY_ATTEMPT_LOG: 'applications fetch retry attempt failed',
-    NO_APPLICATIONS_TITLE: 'No applications yet',
+    NO_APPLICATIONS_TITLE: 'No applications found yet',
     NO_APPLICATIONS_DESCRIPTION:
-      'Telark groups your workloads into applications automatically, so you protect checkout, not seventeen Deployments. Sync the cluster to pull the latest.',
+      'Telark groups workloads into applications by their labels. Discovery runs on its own, and new applications appear here within a minute.',
+    HELP_TITLE: 'Nothing showing up?',
+    HELP_LABELS_LEAD: 'Check that your workloads carry',
+    HELP_EXCLUDED: 'Check that their namespace is not excluded in Settings, Discovery & Storage.',
+    CHECK_AGAIN: 'Check again',
+    OPEN_DISCOVERY_SETTINGS: 'Open discovery settings',
+    LAST_CHECKED: 'Last checked just now',
+    ALL_EXCLUDED,
   },
   RETRY: {
     KEY: 'applications.fetch',
@@ -74,8 +91,7 @@ export const APPLICATION_DETAILS_CONSTANTS = {
   STATES: SHARED_DETAILS_CONSTANTS.STATES,
   MESSAGES: {
     ...SHARED_DETAILS_CONSTANTS.MESSAGES,
-    ERROR: 'Error fetching application details:',
-    EMPTY: 'No details available for this application.',
+    ERROR: "Couldn't load this application",
   },
 } as const;
 

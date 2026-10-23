@@ -1,5 +1,13 @@
 import React from 'react';
-import { DEFAULT_COLORS } from '../../../constants';
+import {
+  DEFAULT_COLORS,
+  HAIRLINE,
+  FONT_SIZE,
+  FONT_WEIGHT,
+  MOTION,
+  RADIUS,
+  SPACING,
+} from '../../../constants';
 
 export interface LockBannerProps {
   title: string;
@@ -13,14 +21,14 @@ const LockBanner: React.FC<LockBannerProps> = ({ title, message, icon }) => {
       <div
         style={{
           background: DEFAULT_COLORS.SURFACE_SUBTLE,
-          borderRadius: 8,
-          padding: '12px 16px',
-          marginBottom: 16,
-          border: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER}`,
+          borderRadius: RADIUS.MD,
+          padding: `${SPACING.MD}px ${SPACING.LG}px`,
+          marginBottom: SPACING.LG,
+          border: HAIRLINE.SURFACE_BORDER,
           display: 'flex',
           alignItems: 'center',
-          gap: 12,
-          animation: 'lockBannerFadeIn 0.3s ease-out',
+          gap: SPACING.MD,
+          animation: `lockBannerFadeIn ${MOTION.SLOW_MS}ms ${MOTION.EASE_OUT}`,
         }}
       >
         {icon && <div style={{ display: 'flex', alignItems: 'center' }}>{icon}</div>}
@@ -28,17 +36,18 @@ const LockBanner: React.FC<LockBannerProps> = ({ title, message, icon }) => {
           <div
             style={{
               color: DEFAULT_COLORS.TEXT_ON_SURFACE,
-              fontWeight: 500,
-              fontSize: 14,
-              marginBottom: 2,
+              fontWeight: FONT_WEIGHT.MEDIUM,
+              fontSize: FONT_SIZE.BASE,
+              marginBottom: SPACING.XXS,
             }}
           >
             {title}
           </div>
           <div
             style={{
+              // Off scale, kept exact: lineHeight 1.4 (SNUG to BASE).
               color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
-              fontSize: 12,
+              fontSize: FONT_SIZE.SM,
               lineHeight: 1.4,
             }}
           >

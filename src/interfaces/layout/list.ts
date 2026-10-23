@@ -5,22 +5,13 @@ export interface SelectableListItemStyles {
   hover?: React.CSSProperties;
 }
 
-export interface ProtectionIconPosition {
-  top?: number;
-  right?: number;
-}
-
 export interface SelectableListItemProps {
   value: string;
   name?: string;
   description?: string;
   customContent?: React.ReactNode;
-  isProtected?: boolean;
-  protectionIcon?: React.ReactNode;
-  protectionTooltip?: string;
-  protectionIconColor?: string;
-  protectionIconSize?: number;
-  protectionIconPosition?: ProtectionIconPosition;
+  /** Shown at the end of the name row, e.g. the "Locked role" pill. */
+  protectionBadge?: React.ReactNode;
   itemStyles?: SelectableListItemStyles;
   contentStyles?: React.CSSProperties;
   nameStyles?: React.CSSProperties;
@@ -31,4 +22,6 @@ export interface SelectableListItemProps {
   checkboxStyle?: React.CSSProperties;
   children?: React.ReactNode;
   disabled?: boolean;
+  /** Why the item can't be picked, as visible text on the card (never only a hover). */
+  disabledReason?: string;
 }

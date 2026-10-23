@@ -21,7 +21,6 @@ export interface PageLayoutConfig<T = unknown> {
     getCheckboxProps?: (record: T) => { disabled?: boolean; style?: React.CSSProperties };
   };
   onRowClick?: (record: T) => void;
-  rowHeight?: number;
   empty?: React.ReactNode;
   loading?: boolean;
   /** Loads behind the full-page loader instead of this frame: set while the list is unknown

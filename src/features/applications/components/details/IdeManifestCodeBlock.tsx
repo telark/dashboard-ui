@@ -1,5 +1,5 @@
 import React, { memo, useMemo } from 'react';
-import { MONOSPACE_CLASS } from '../../../../constants';
+import { MONOSPACE_CLASS, SPACING } from '../../../../constants';
 import { APPLICATION_MANIFEST_VIEW } from '../../constants/sectionLayout';
 import { IDE_MANIFEST_THEME as IDE } from './ideManifestTheme';
 
@@ -215,7 +215,9 @@ function renderYamlHighlighted(code: string): React.ReactNode {
         </span>
       );
     }
-    const m = /^(\s*)([^:]+):\s*(.*)$/.exec(line);
+    // Each part starts where the previous one can't match, so this stays linear; the `\s` key
+    // keeps the old parse of an indented bare colon.
+    const m = /^(\s*)([^:\s][^:]*|\s):(\s*)((?:\S.*)?)$/.exec(line);
     if (!m) {
       return (
         <span key={key} style={{ color: IDE.text }}>
@@ -224,16 +226,14 @@ function renderYamlHighlighted(code: string): React.ReactNode {
         </span>
       );
     }
-    const [, indent, yamlKey, rest] = m;
-    const hasSpaceAfterColon = line.includes(':') && rest.length > 0 && /^ /.test(rest);
-    const valueTrim = hasSpaceAfterColon ? rest.slice(1) : rest;
+    const [, indent, yamlKey, gap, value] = m;
     return (
       <span key={key}>
         <span style={{ color: IDE.text }}>{indent}</span>
         <span style={{ color: IDE.key }}>{yamlKey}</span>
         <span style={{ color: IDE.punct }}>:</span>
-        {hasSpaceAfterColon ? <span style={{ color: IDE.text }}> </span> : null}
-        {highlightYamlValue(valueTrim, lineIdx)}
+        {gap ? <span style={{ color: IDE.text }}>{gap}</span> : null}
+        {highlightYamlValue(value, lineIdx)}
         {lineIdx < lines.length - 1 ? '\n' : ''}
       </span>
     );
@@ -284,7 +284,7 @@ const IdeManifestCodeBlock: React.FC<IdeManifestCodeBlockProps> = memo(
       >
         <pre
           style={{
-            margin: 0,
+            margin: SPACING.NONE,
             whiteSpace: 'pre-wrap',
             wordBreak: 'break-word',
             color: IDE.text,

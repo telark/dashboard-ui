@@ -1,6 +1,14 @@
 import React from 'react';
 import { generateDeviceNameSuggestions } from '../../../utils';
-import { DEFAULT_COLORS, withAlpha } from '../../../../../constants';
+import {
+  DEFAULT_COLORS,
+  withAlpha,
+  SPACING,
+  FONT_SIZE,
+  FONT_WEIGHT,
+  RADIUS,
+  MOTION,
+} from '../../../../../constants';
 import { PASSKEYS_CONSTANTS as PPC } from '../../../constants/passkeys';
 import type { Passkey } from '../../../models/passkeys';
 
@@ -28,13 +36,13 @@ const DeviceNameSuggestions: React.FC<DeviceNameSuggestionsProps> = ({
   }
 
   return (
-    <div style={{ marginTop: 12, marginBottom: 0 }}>
+    <div style={{ marginTop: SPACING.MD, marginBottom: SPACING.NONE }}>
       <div
         style={{
-          fontSize: 11,
+          fontSize: FONT_SIZE.XS,
           color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
-          marginBottom: 8,
-          fontWeight: 500,
+          marginBottom: SPACING.SM,
+          fontWeight: FONT_WEIGHT.MEDIUM,
           textTransform: 'uppercase',
           letterSpacing: '0.5px',
         }}
@@ -45,7 +53,7 @@ const DeviceNameSuggestions: React.FC<DeviceNameSuggestionsProps> = ({
         style={{
           display: 'flex',
           flexWrap: 'wrap',
-          gap: 6,
+          gap: SPACING.S6,
         }}
       >
         {suggestions.map((suggestion) => (
@@ -54,15 +62,15 @@ const DeviceNameSuggestions: React.FC<DeviceNameSuggestionsProps> = ({
             type="button"
             onClick={() => onSelect(suggestion)}
             style={{
-              padding: '6px 12px',
-              fontSize: 12,
-              borderRadius: 8,
+              padding: `${SPACING.S6}px ${SPACING.MD}px`,
+              fontSize: FONT_SIZE.SM,
+              borderRadius: RADIUS.MD,
               border: `1px solid ${DEFAULT_COLORS.AUTH_LIGHT_BORDER}`,
               background: DEFAULT_COLORS.SURFACE_WHITE,
               color: DEFAULT_COLORS.TEXT_ON_SURFACE,
               cursor: 'pointer',
-              transition: 'all 0.15s ease',
-              fontWeight: 400,
+              transition: `all ${MOTION.FAST_MS}ms ${MOTION.EASE}`,
+              fontWeight: FONT_WEIGHT.REGULAR,
               boxShadow: `0 1px 2px 0 ${withAlpha(DEFAULT_COLORS.SHADOW, 0.05)}`,
             }}
             onMouseEnter={(e) => {

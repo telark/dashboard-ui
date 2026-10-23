@@ -4,6 +4,7 @@ import { DEFAULT_COLORS } from '../../../constants/shared/colors';
 import { AVATAR_RING } from '../../../constants/layout/avatars';
 import { BUTTON_COLORS } from '../../../constants/layout/buttons';
 import type { User } from '../../../features/access-and-permissions/users/models';
+import { SPACING } from '../../../constants';
 
 interface UserDisplayProps {
   user: (Pick<User, 'username' | 'avatar'> & Partial<Pick<User, 'fullname'>>) | null | undefined;
@@ -14,8 +15,9 @@ interface UserDisplayProps {
 }
 
 const SIZE_CONFIG = {
-  small: { avatar: 16, container: 23, gap: 6 },
-  medium: { avatar: 20, container: 28, gap: 8 },
+  small: { avatar: 16, container: 23, gap: SPACING.S6 },
+  medium: { avatar: 20, container: 28, gap: SPACING.SM },
+  // Off scale, kept exact: gap 10 (SM to MD).
   large: { avatar: 24, container: 32, gap: 10 },
 } as const;
 

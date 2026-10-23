@@ -8,7 +8,7 @@ import { pollWhileVisible } from '../../../utils/helpers/poll';
 
 export function useApplicationDetails(name?: string) {
   const dispatch: AppDispatch = useDispatch();
-  const { details, loading, error } = useSelector((s: RootState) => s.applications);
+  const { details, error } = useSelector((s: RootState) => s.applications);
   const isSyncing = useSelector(
     (s: RootState) =>
       Boolean(name && s.applications.syncing?.[name]) ||
@@ -36,5 +36,5 @@ export function useApplicationDetails(name?: string) {
     void dispatch(fetchApplicationDetailsThunk(name));
   }, [dispatch, name]);
 
-  return { details, loading, error, refresh };
+  return { details, error, refresh };
 }

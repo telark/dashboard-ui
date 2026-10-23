@@ -9,8 +9,10 @@ import { useCreateUserPanel } from '../../hooks/panels/user/useCreateUserPanel';
 import { useRoles } from '../../../roles/hooks';
 import { ACTION_PERMISSIONS, usePermission } from '../../../../auth/hooks';
 import { filterBySearchTerm } from '../../utils/search/filter';
+import { useGrantConfirm } from '../../../shared';
 import type { FormInstance } from 'antd';
 import type { CreateUserFormValues } from '../../models';
+import { SPACING } from '../../../../../constants';
 
 const ASSIGN_ROLE = ACTION_PERMISSIONS.users.manageRoles;
 const VIEW_ROLES = ACTION_PERMISSIONS.roles.view;
@@ -40,6 +42,7 @@ const CreateUserPanel: React.FC<CreateUserPanelProps> = ({ open, onClose, form }
     () => filterBySearchTerm(roles, roleSearch, (r) => [r.name, r.description]),
     [roles, roleSearch],
   );
+  const { confirmGrant, modal: grantConfirmModal } = useGrantConfirm();
 
   return (
     <SlideOutPanel
@@ -47,14 +50,14 @@ const CreateUserPanel: React.FC<CreateUserPanelProps> = ({ open, onClose, form }
       onClose={onClose}
       title={UC.LABELS.PANELS.CREATE.TITLE}
       formContent={
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.LG }}>
           <UserFormFields usernameRules={usernameRules} emailRules={emailRules} />
           <Form.Item
             label={UC.LABELS.FORM.FIELDS.ROLE_LABEL}
             className="form-item-compact"
-            style={{ marginBottom: 0 }}
+            style={{ marginBottom: SPACING.NONE }}
           >
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.MD }}>
               {canViewRoles ? (
                 <SearchInput
                   value={roleSearch}
@@ -73,9 +76,14 @@ const CreateUserPanel: React.FC<CreateUserPanelProps> = ({ open, onClose, form }
               />
             </div>
           </Form.Item>
+          {grantConfirmModal}
         </div>
       }
-      onSubmit={handleSubmit}
+      onSubmit={(values) =>
+        confirmGrant((values.roleRefs as string[] | undefined) ?? [], String(values.username), () =>
+          handleSubmit(values),
+        )
+      }
       onCancel={onClose}
       submitButtonText={UC.LABELS.PANELS.CREATE.SUBMIT_BUTTON}
       loading={submitting}

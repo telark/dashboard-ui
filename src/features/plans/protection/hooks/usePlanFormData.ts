@@ -27,7 +27,7 @@ export const usePlanFormData = (enabled: boolean) => {
   const applications = useSelector(selectApplications);
   const applicationsLoading = useSelector(selectApplicationsLoading);
   const { users, loading: usersLoading } = useUsers();
-  const { environments, tags } = usePlanTaxonomyLists();
+  const { kinds, environments, tags } = usePlanTaxonomyLists();
 
   const [allNamespaces, setAllNamespaces] = useState<string[]>([]);
   const [namespacesLoading, setNamespacesLoading] = useState(false);
@@ -99,6 +99,7 @@ export const usePlanFormData = (enabled: boolean) => {
     [applications],
   );
 
+  const planKindOptions = useMemo(() => mapCategoriesToOptions(kinds), [kinds]);
   const environmentOptions = useMemo(() => mapCategoriesToOptions(environments), [environments]);
   const tagOptions = useMemo(() => mapCategoriesToOptions(tags), [tags]);
 
@@ -112,6 +113,7 @@ export const usePlanFormData = (enabled: boolean) => {
     userOptions,
     userMap,
     usersLoading,
+    planKindOptions,
     environmentOptions,
     tagOptions,
   };

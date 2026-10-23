@@ -12,7 +12,7 @@ export const getSessionsList = async (userId: string): Promise<ListSessionsRespo
 };
 
 // The current session is addressed as "self": the token travels only in the
-// header, never in a URL that proxies and access logs would keep.
+// cookie, never in a URL that proxies and access logs would keep.
 export const getCurrentSession = async (): Promise<SessionDetailsResponse> => {
   const { path, method } = Endpoints.SESSIONS.GET_SELF;
   return await Client<SessionDetailsResponse>(exporterApiClient, path, {

@@ -1,13 +1,25 @@
 import React from 'react';
+import { Button, Tooltip } from 'antd';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { NotificationBell } from '../../../features/notifications/components';
 import SidebarToggleButton from './SidebarToggleButton';
-import { APP_ROUTES, DEFAULT_COLORS, HEADER_LAYOUT } from '../../../constants';
+import {
+  APP_ROUTES,
+  DEFAULT_COLORS,
+  DOCS_URL,
+  HAIRLINE,
+  HEADER_LAYOUT,
+  Z_INDEX,
+  FONT_SIZE,
+  SPACING,
+} from '../../../constants';
 
 const Header: React.FC = () => {
   return (
     <div
       style={{
+        // Off scale, kept exact: padding 10 (SM to MD).
         width: '100%',
         backgroundColor: DEFAULT_COLORS.PAGE_BG,
         height: HEADER_LAYOUT.HEIGHT,
@@ -18,8 +30,8 @@ const Header: React.FC = () => {
         position: 'fixed',
         left: '0', // Start from the left edge
         top: '0',
-        zIndex: 1000,
-        borderBottom: `1px solid ${DEFAULT_COLORS.BORDER_SUBTLE}`,
+        zIndex: Z_INDEX.HEADER,
+        borderBottom: HAIRLINE.BORDER_SUBTLE,
       }}
     >
       {/* Logo pinned to the sidebar menu items' left edge, toggle beside it */}
@@ -48,7 +60,20 @@ const Header: React.FC = () => {
         </Link>
         <SidebarToggleButton />
       </div>
-      <div style={{ marginRight: '20px' }}>
+      <div
+        style={{ marginRight: SPACING.XL, display: 'flex', alignItems: 'center', gap: SPACING.XS }}
+      >
+        <Tooltip title={HEADER_LAYOUT.DOCS_LABEL}>
+          <Button
+            type="text"
+            shape="circle"
+            icon={<QuestionCircleOutlined style={{ fontSize: FONT_SIZE.XL }} />}
+            href={DOCS_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={HEADER_LAYOUT.DOCS_LABEL}
+          />
+        </Tooltip>
         <NotificationBell />
       </div>
     </div>

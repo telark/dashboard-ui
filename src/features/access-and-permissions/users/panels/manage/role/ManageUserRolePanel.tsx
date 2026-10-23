@@ -9,7 +9,7 @@ import { FilterPanel } from '../../../../../../components/display/panels/filter'
 import { FilterButton, ToggleButton } from '../../../../../../components/display/buttons';
 import { SearchInput } from '../../../../../../components/display/inputs';
 import { ActionConfirmModal } from '../../../../../../components/display/modal';
-import { SLIDE_OUT } from '../../../../../../constants';
+import { SLIDE_OUT, SPACING } from '../../../../../../constants';
 import { USERS_CONSTANTS as UC } from '../../../constants';
 import { useManageUserRolePanel } from '../../../hooks/panels/role/useManageUserRolePanel';
 import { useDeassignUserRole } from '../../../hooks/panels/role/useDeassignUserRole';
@@ -29,6 +29,7 @@ import { applyRoleFilters } from '../../../../groups/utils';
 import { useRoleCategoryOptions } from '../../../../groups/hooks/categories/useRoleCategoryOptions';
 import { CapitalizeFirstLetter } from '../../../../../../utils/helpers/format';
 import { filterBySearchTerm } from '../../../utils/search/filter';
+import { useGrantConfirm } from '../../../../shared';
 import type { User } from '../../../models';
 
 type ActiveView = 'select' | 'assigned' | 'groupRoles';
@@ -102,6 +103,8 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
     [initialSelectedRoles, addBlocked, removeBlocked],
   );
   const hasRoleAboveCaller = useHasRoleAboveCaller();
+  const panelWidth = expanded ? PANEL_WIDTH_EXPANDED : PANEL_WIDTH;
+  const { confirmGrant, modal: grantConfirmModal } = useGrantConfirm(panelWidth);
 
   const handleDeassignSuccess = useCallback((updatedRoles: string[]) => {
     setLocalAssignedIds(updatedRoles);
@@ -144,7 +147,7 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
     [inheritedGroupsByRoleId],
   );
 
-  const inheritedRoleTooltips = useMemo(
+  const inheritedRoleReasons = useMemo(
     () =>
       new Map(
         Array.from(inheritedGroupsByRoleId.entries()).map(([roleId, groupNames]) => [
@@ -204,13 +207,13 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
           UC.LABELS.PANELS.MANAGE_ROLE.TITLE,
           CapitalizeFirstLetter(user.fullname || user.username),
         )}
-        width={expanded ? PANEL_WIDTH_EXPANDED : PANEL_WIDTH}
+        width={panelWidth}
         offsetX={filterPanelOpen ? FILTER_PANEL_WIDTH : 0}
         headerExtra={
           <ExpandPanelButton expanded={expanded} onToggle={() => setExpanded((prev) => !prev)} />
         }
         formContent={
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.MD, width: '100%' }}>
             {canViewRoles ? (
               <div
                 style={{
@@ -218,11 +221,11 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   flexWrap: 'wrap',
-                  gap: 12,
+                  gap: SPACING.MD,
                   width: '100%',
                   boxSizing: 'border-box',
-                  margin: 0,
-                  padding: 0,
+                  margin: SPACING.NONE,
+                  padding: SPACING.NONE,
                 }}
               >
                 <SearchInput
@@ -232,7 +235,9 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
                   minWidth={ARC.SEARCH_MIN_WIDTH}
                   block
                 />
-                <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
+                <div
+                  style={{ display: 'flex', alignItems: 'center', gap: SPACING.XS, flexShrink: 0 }}
+                >
                   <ToggleButton
                     active={activeView === 'assigned'}
                     onClick={handleToggleAssigned}
@@ -254,7 +259,14 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
                 </div>
               </div>
             ) : null}
-            <div style={{ width: '100%', margin: 0, padding: 0, boxSizing: 'border-box' }}>
+            <div
+              style={{
+                width: '100%',
+                margin: SPACING.NONE,
+                padding: SPACING.NONE,
+                boxSizing: 'border-box',
+              }}
+            >
               {activeView === 'assigned' && (
                 <AssignedRolesView
                   assignedRoleIds={filteredAssignedRoleIds}
@@ -280,14 +292,22 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
                   roles={filteredRoles}
                   loading={rolesLoading}
                   allRoles={allRoles}
-                  inheritedRoleTooltips={inheritedRoleTooltips}
+                  inheritedRoleReasons={inheritedRoleReasons}
                   blockedReason={blockedReason}
                 />
               )}
             </div>
           </div>
         }
-        onSubmit={handleSubmit as (values: Record<string, unknown>) => Promise<void>}
+        onSubmit={(values) =>
+          confirmGrant(
+            ((values.roleRefs as string[] | undefined) ?? []).filter(
+              (id) => !initialSelectedRoles.includes(id),
+            ),
+            CapitalizeFirstLetter(user.fullname || user.username),
+            () => handleSubmit(values),
+          )
+        }
         onCancel={onClose}
         submitButtonText={UC.LABELS.PANELS.MANAGE_ROLE.SUBMIT_BUTTON}
         loading={submitting}
@@ -317,6 +337,7 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
         getContainer={() => document.body}
         offsetRight={PANEL_WIDTH}
       />
+      {grantConfirmModal}
     </>
   );
 };

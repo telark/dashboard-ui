@@ -4,11 +4,12 @@ import type { LogoutResponse } from '../models';
 
 const LOGOUT_TIMEOUT_MS = 5000;
 
-export const logout = async (sessionToken: string | null): Promise<LogoutResponse> => {
+// Auth revokes the session behind the cookie and clears it. A token is passed only to revoke a pre-0.2.0 one.
+export const logout = async (legacyToken?: string): Promise<LogoutResponse> => {
   const { path, method } = Endpoints.AUTH.LOGOUT;
   const headers: Record<string, string> = {};
-  if (sessionToken) {
-    headers[HTTP_HEADERS.CUSTOM.SESSION_TOKEN] = sessionToken;
+  if (legacyToken) {
+    headers[HTTP_HEADERS.CUSTOM.SESSION_TOKEN] = legacyToken;
   }
   return await Client<LogoutResponse>(authApiClient, path, {
     method,

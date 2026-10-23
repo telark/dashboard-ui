@@ -74,9 +74,7 @@ export const LOGIN_CONSTANTS = {
     },
   },
   SESSION: {
-    SET_FAILED: 'Failed to save session token',
-    REMOVE_FAILED: 'Failed to remove session token',
-    QUOTA_EXCEEDED: 'Storage quota exceeded. Please free up space and try again.',
+    SET_FAILED: 'Could not keep you signed in. Allow this site to store data, then try again.',
   },
   UI: {
     TITLE: 'Sign in to your account',
@@ -119,9 +117,5 @@ export const LOGIN_CONSTANTS = {
   LOGS: {
     AUTH_ERROR: 'Authentication error:',
     INVALID_RESPONSE_STRUCTURE: 'Invalid login response structure:',
-    SESSION_GET_ERROR: 'Failed to get session token:',
-    SESSION_SET_ERROR: 'Failed to set session token:',
-    SESSION_REMOVE_ERROR: 'Failed to remove session token:',
-    SESSION_NAME_ERROR: 'Failed to derive session name:',
   },
 } as const;

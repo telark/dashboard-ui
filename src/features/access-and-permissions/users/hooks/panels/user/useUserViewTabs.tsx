@@ -16,11 +16,16 @@ import type { Role } from '../../../../roles/models';
 import type { Group } from '../../../../groups/models';
 import ViewRolePanel from '../../../../roles/panels/role/ViewRolePanel';
 import ViewGroupPanel from '../../../../groups/panels/group/ViewGroupPanel';
+import { SPACING } from '../../../../../../constants';
 
 const VIEW_ROLES = ACTION_PERMISSIONS.roles.view;
 const VIEW_GROUPS = ACTION_PERMISSIONS.groups.view;
-const ROLES_TAB_STYLE: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: 12 };
-const ROLE_SOURCE_STYLE: React.CSSProperties = { display: 'flex', gap: 8 };
+const ROLES_TAB_STYLE: React.CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: SPACING.MD,
+};
+const ROLE_SOURCE_STYLE: React.CSSProperties = { display: 'flex', gap: SPACING.SM };
 
 type RoleSource = 'direct' | 'groups';
 

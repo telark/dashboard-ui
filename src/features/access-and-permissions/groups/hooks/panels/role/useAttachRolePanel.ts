@@ -9,11 +9,12 @@ import { useRoles } from '../../../../roles/hooks';
 import type { Group } from '../../../models';
 import { fetchFreshGroupIds } from '../../../utils';
 import { applySelectionChange } from '../../../../shared';
+import { compareCodeUnits } from '../../../../../../utils/layout/sort';
 
 const arraysEqual = (a: string[], b: string[]): boolean => {
   if (a.length !== b.length) return false;
-  const sortedA = [...a].sort();
-  const sortedB = [...b].sort();
+  const sortedA = [...a].sort(compareCodeUnits);
+  const sortedB = [...b].sort(compareCodeUnits);
   return sortedA.every((val, index) => val === sortedB[index]);
 };
 

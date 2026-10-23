@@ -6,6 +6,7 @@ export const ERROR_MESSAGES = {
     FORBIDDEN_WARNING: 'API Warning (403):',
     GENERIC_ERROR: 'API Error:',
     UNKNOWN_ERROR: 'Unknown error',
+    EVENT_STREAM_FAILED: 'Event stream lost, reconnecting:',
   },
 } as const;
 

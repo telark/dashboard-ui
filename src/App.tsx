@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Layout, message, App as AntdApp, ConfigProvider, theme } from 'antd';
+import { Layout, App as AntdApp, ConfigProvider, theme } from 'antd';
 import { BrowserRouter as Router, useLocation, Navigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import Sidebar from './components/layout/sidebar/Sidebar';
@@ -14,17 +14,24 @@ import {
   DEFAULT_COLORS,
   SELECT_THEME,
   TAG_CLASS,
+  TAG_STYLES,
   TAG_THEME,
   APP_CONFIGS,
   APP_ROUTES,
   CONTROL_HEIGHT,
   CONTROL_RADIUS,
   CONTROL_FONT_SIZE,
+  FONT_FAMILY,
+  FONT_SIZE,
+  FORM_ITEM_GAP,
+  FORM_LABEL_GAP,
+  SELECT_LOADING_ICON_SIZE,
   SIDEBAR_LAYOUT,
 } from './constants';
+import { LIST_PAGE } from './constants/shared/pages';
 import AppRoutes from './routes/AppRoutes';
 import { useMediaQuery } from './hooks/layout';
-import { hasSessionToken, useSessionExpirationCheck } from './features/auth/utils';
+import { isSignedIn, useSessionExpirationCheck } from './features/auth/utils';
 import {
   ACTION_PERMISSIONS,
   useCrossTabLogout,
@@ -32,15 +39,19 @@ import {
   usePermission,
 } from './features/auth/hooks';
 import { ensureGlobalConfigThunk } from './features/globalconfig/store';
+import { AttentionInsightsProvider } from './features/insights/hooks';
 import type { AppDispatch } from './store';
-
-message.config({ top: APP_CONFIGS.MESSAGE.TOP, maxCount: APP_CONFIGS.MESSAGE.MAX_COUNT });
 
 const { view: viewSettings } = ACTION_PERMISSIONS.settings;
 
-// The dark algorithm shifts every seed color, so links get the exact brand green back.
+// The dark algorithm shifts every seed color, so the base colors get their exact tokens back.
 const darkAlgorithm: typeof theme.darkAlgorithm = (seed) => ({
   ...theme.darkAlgorithm(seed),
+  colorPrimary: seed.colorPrimary,
+  colorSuccess: seed.colorSuccess,
+  colorWarning: seed.colorWarning,
+  colorError: seed.colorError,
+  colorInfo: seed.colorInfo,
   colorLink: seed.colorLink,
 });
 
@@ -49,9 +60,11 @@ const AppContent: React.FC = () => {
   const isAuthRoute =
     location.pathname === APP_ROUTES.LOGIN ||
     location.pathname === APP_ROUTES.REGISTER ||
-    location.pathname === APP_ROUTES.GOOGLE_CALLBACK;
-  const isAuthenticated = hasSessionToken();
+    location.pathname === APP_ROUTES.GOOGLE_CALLBACK ||
+    location.pathname === APP_ROUTES.BREAK_GLASS;
+  const isAuthenticated = isSignedIn();
   const [showSessionExpiredModal, setShowSessionExpiredModal] = useState(false);
+  const [duplicateSessionCookie, setDuplicateSessionCookie] = useState(false);
   const [showAccountSuspendedModal, setShowAccountSuspendedModal] = useState(false);
   // A suspended session is over: its checks and polling stop, and the modal's sign-out is the only way on.
   const isSessionLive = isAuthenticated && !showAccountSuspendedModal;
@@ -60,7 +73,10 @@ const AppContent: React.FC = () => {
   useSessionExpirationCheck({
     isAuthenticated: isSessionLive,
     isAuthRoute,
-    onSessionExpired: () => setShowSessionExpiredModal(true),
+    onSessionExpired: (duplicateCookie) => {
+      setDuplicateSessionCookie(duplicateCookie);
+      setShowSessionExpiredModal(true);
+    },
     onAccountSuspended: () => setShowAccountSuspendedModal(true),
   });
 
@@ -93,9 +109,8 @@ const AppContent: React.FC = () => {
               marginTop: APP_CONFIGS.LAYOUT.CONTENT_TOP,
               height: APP_CONFIGS.LAYOUT.CONTENT_HEIGHT,
               overflowY: APP_CONFIGS.LAYOUT.CONTENT_OVERFLOW,
-              scrollbarGutter: 'stable',
+              scrollbarGutter: APP_CONFIGS.LAYOUT.SCROLLBAR_GUTTER,
               transition: reduceMotion ? 'none' : APP_CONFIGS.LAYOUT.TRANSITION,
-              background: DEFAULT_COLORS.PAGE_BG,
             }}
           >
             <Header />
@@ -108,11 +123,14 @@ const AppContent: React.FC = () => {
   };
 
   return (
-    <AntdApp>
-      {renderMainContent()}
+    <AntdApp message={{ top: APP_CONFIGS.MESSAGE.TOP, maxCount: APP_CONFIGS.MESSAGE.MAX_COUNT }}>
+      <AttentionInsightsProvider active={isSessionLive && !isAuthRoute}>
+        {renderMainContent()}
+      </AttentionInsightsProvider>
       {isAuthenticated && !isAuthRoute ? <PanelThemePrewarm /> : null}
       <SessionExpiredModal
         open={showSessionExpiredModal}
+        duplicateCookie={duplicateSessionCookie}
         onClose={() => setShowSessionExpiredModal(false)}
       />
       <AccountSuspendedModal
@@ -129,8 +147,8 @@ const App: React.FC = () => {
       <ConfigProvider
         // currentColor follows the button text: the default green vanishes on a primary button.
         button={{ loadingIcon: <FancySpinner size={CONTROL_FONT_SIZE} color="currentColor" /> }}
-        select={{ loadingIcon: <FancySpinner size={12} /> }}
-        tag={{ variant: 'solid', className: TAG_CLASS.PILL }}
+        select={{ loadingIcon: <FancySpinner size={SELECT_LOADING_ICON_SIZE} /> }}
+        tag={{ variant: 'solid', className: TAG_CLASS.PILL, styles: TAG_STYLES }}
         theme={{
           cssVar: { key: 'telark' },
           hashed: false,
@@ -142,7 +160,14 @@ const App: React.FC = () => {
             controlHeight: CONTROL_HEIGHT,
             borderRadius: CONTROL_RADIUS,
             fontSize: CONTROL_FONT_SIZE,
+            // Portals (tooltips, menus, popups, toasts) render outside #root's Geist rule.
+            fontFamily: FONT_FAMILY,
             colorPrimary: DEFAULT_COLORS.SUCCESS,
+            colorSuccess: DEFAULT_COLORS.SUCCESS,
+            // No blue: antd's info Alerts and icons take the muted gray.
+            colorInfo: DEFAULT_COLORS.TEXT_MUTED,
+            // antd draws every keyboard focus ring in this color; its derived dark mint is 1.76:1 on the page.
+            colorPrimaryBorder: DEFAULT_COLORS.TEXT_SECONDARY,
             // Every link in the app, antd's or a plain <a>, takes the brand green from here.
             colorLink: DEFAULT_COLORS.SUCCESS,
             colorLinkHover: DEFAULT_COLORS.SUCCESS_HOVER,
@@ -171,6 +196,12 @@ const App: React.FC = () => {
             },
             Select: SELECT_THEME,
             Tag: TAG_THEME,
+            Form: {
+              itemMarginBottom: FORM_ITEM_GAP,
+              labelFontSize: FONT_SIZE.MD,
+              labelColor: DEFAULT_COLORS.TEXT_PRIMARY,
+              verticalLabelPadding: `0 0 ${FORM_LABEL_GAP}px`,
+            },
             // Focus ring matches Select: colorPrimary is the app green, which antd
             // would otherwise use for the active border and shadow.
             Input: {
@@ -211,10 +242,10 @@ const App: React.FC = () => {
               colorText: DEFAULT_COLORS.TEXT_ON_SURFACE,
               colorTextHeading: DEFAULT_COLORS.TEXT_ON_SURFACE,
             },
-            // Status icons (success/error/etc.) key off colorSuccess/colorError and
-            // are untouched by this — only the toast surface and its text join the
-            // light-surface family.
+            // The toast surface and its text join the light-surface family. The success icon
+            // takes the pressed green (3.2:1 on white), since the brand green is 2.1:1.
             Message: {
+              colorSuccess: DEFAULT_COLORS.SUCCESS_ACTIVE,
               contentBg: DEFAULT_COLORS.SURFACE_WHITE,
               colorText: DEFAULT_COLORS.TEXT_ON_SURFACE,
               // antd 6.6 renders the message text as the notice title.
@@ -222,18 +253,26 @@ const App: React.FC = () => {
             },
             // The dark algorithm tints row and header borders blue; rows take the
             // same muted hairline the rest of the dark surface uses.
-            // Selection reads as the same green tint as a selected application card,
-            // not a solid primary fill.
+            // Selection is a neutral tint: teal means brand, primary action and success.
             Table: {
               borderColor: DEFAULT_COLORS.BORDER_SUBTLE,
-              rowSelectedBg: DEFAULT_COLORS.SUCCESS_TINT,
-              rowSelectedHoverBg: DEFAULT_COLORS.SUCCESS_TINT,
+              rowSelectedBg: DEFAULT_COLORS.NEUTRAL_TINT,
+              rowSelectedHoverBg: DEFAULT_COLORS.NEUTRAL_TINT,
               rowHoverBg: DEFAULT_COLORS.HOVER_BG,
               // The horizontal scrollbar track is drawn from colorSplit, which the
               // dark algorithm also derives as blue.
               colorSplit: DEFAULT_COLORS.BORDER_SUBTLE,
               stickyScrollBarBg: DEFAULT_COLORS.BORDER_HOVER,
+              selectionColumnWidth: LIST_PAGE.TABLE_SELECTION_COLUMN_WIDTH_PX,
+              headerSplitColor: 'transparent',
             },
+            // The current page is a selection, not a status: the selected quick filter's neutral fill.
+            Pagination: {
+              itemActiveBg: DEFAULT_COLORS.TEXT_MUTED,
+              itemActiveColor: DEFAULT_COLORS.TEXT_ON_SURFACE,
+              itemActiveColorHover: DEFAULT_COLORS.TEXT_ON_SURFACE,
+            },
+            Progress: { defaultColor: DEFAULT_COLORS.SUCCESS },
             Button: {
               primaryColor: BUTTON_CONFIGS.PRIMARY_BUTTON.TEXT_COLOR,
               primaryShadow: 'none',

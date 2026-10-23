@@ -41,7 +41,7 @@ export interface Role {
 export interface RolesScopesAndPermissionsListProps {
   areas: ReadonlyArray<{ key: string; label: string }>;
   permissionLevels: ReadonlyArray<{ value: PermissionLevel; label: string }>;
-  tooltipMap: Record<PermissionLevel, string>;
+  descriptionMap: Record<PermissionLevel, string>;
   rowPaddingPx?: number;
   isLocked?: boolean;
   initialScopes?: Record<string, { level: string; rules?: string[] }>;

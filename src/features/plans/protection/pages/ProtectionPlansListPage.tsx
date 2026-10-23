@@ -218,6 +218,12 @@ const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
           multiSelectOptions: targetOptions,
         },
         {
+          key: PPC.FILTER_KEYS.KIND,
+          label: PPC.LABELS.FILTER.BY_KIND,
+          type: 'multiSelect',
+          multiSelectOptions: mapCategoriesToOptions(taxonomies.kinds),
+        },
+        {
           key: PPC.FILTER_KEYS.ENVIRONMENT,
           label: PPC.LABELS.FILTER.BY_ENVIRONMENT,
           type: 'multiSelect',
@@ -230,7 +236,17 @@ const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
           multiSelectOptions: mapCategoriesToOptions(taxonomies.tags),
         },
       ];
-    }, [plans, usernamesById, userMap, currentUserId, taxonomies.environments, taxonomies.tags]);
+    }, [
+      plans,
+      usernamesById,
+      userMap,
+      currentUserId,
+      taxonomies.kinds,
+      taxonomies.environments,
+      taxonomies.tags,
+    ]);
+
+    const showEmptyPage = !error && !timedOut && !loading && !hasData;
 
     let dataRegion: React.ReactNode;
     if (error || timedOut) {
@@ -255,7 +271,7 @@ const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
           <FancySpinner size={40} showLabel />
         </div>
       );
-    } else if (plans.length === 0) {
+    } else if (showEmptyPage) {
       dataRegion = <ProtectionPlansEmptyPage />;
     } else if (filteredPlans.length === 0) {
       dataRegion = <NoProtectionPlansState />;
@@ -295,6 +311,7 @@ const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
           phaseCounts={phaseCounts}
           totalCount={phaseCounts.all}
           onViewModeChange={onViewModeChange}
+          empty={showEmptyPage}
         />
 
         <div ref={gridRef} style={{ marginTop: LIST_PAGE.CONTENT_OFFSET_PX }}>

@@ -9,7 +9,7 @@ import {
 } from '@ant-design/icons';
 import { Button, Segmented, Tooltip, App as AntdApp } from 'antd';
 import { dump } from 'js-yaml';
-import { DEFAULT_COLORS } from '../../../../constants';
+import { DEFAULT_COLORS, FONT_WEIGHT, LINE_HEIGHT, SPACING } from '../../../../constants';
 import { FancySpinner } from '../../../../components/animation';
 import { APPLICATIONS_UI } from '../../constants';
 import { APPLICATION_MANIFEST_VIEW } from '../../constants/sectionLayout';
@@ -105,7 +105,7 @@ const ManifestState: React.FC<{
       <span
         style={{
           fontSize: V.STATE_TITLE_FONT_SIZE_PX,
-          fontWeight: 700,
+          fontWeight: FONT_WEIGHT.BOLD,
           color: DEFAULT_COLORS.TEXT_PRIMARY,
         }}
       >
@@ -116,7 +116,7 @@ const ManifestState: React.FC<{
           fontSize: V.STATE_TEXT_FONT_SIZE_PX,
           color: DEFAULT_COLORS.TEXT_MUTED,
           maxWidth: V.STATE_MAX_WIDTH_PX,
-          lineHeight: 1.5,
+          lineHeight: LINE_HEIGHT.BASE,
         }}
       >
         {description}
@@ -132,13 +132,13 @@ const ManifestState: React.FC<{
               cursor: 'pointer',
               display: 'inline-flex',
               alignItems: 'center',
-              gap: 4,
+              gap: SPACING.XS,
               fontSize: V.STATE_TEXT_FONT_SIZE_PX,
               color: DEFAULT_COLORS.TEXT_MUTED,
             }}
           >
             {detailOpen ? <DownOutlined /> : <RightOutlined />}
-            <span>{detailOpen ? UI.MANIFEST_HIDE_DETAILS : UI.MANIFEST_SHOW_DETAILS}</span>
+            <span>{detailOpen ? UI.HIDE_DETAILS : UI.TECHNICAL_DETAILS}</span>
           </button>
           {detailOpen ? (
             <div
@@ -197,7 +197,7 @@ const SnapshotManifestView: React.FC<SnapshotManifestViewProps> = memo(
               fontSize: V.STATE_TEXT_FONT_SIZE_PX,
               display: 'inline-flex',
               alignItems: 'center',
-              gap: 8,
+              gap: SPACING.SM,
             }}
           >
             <FancySpinner size={V.STATE_TEXT_FONT_SIZE_PX} /> {UI.MANIFEST_LOADING}
@@ -256,7 +256,7 @@ const SnapshotManifestView: React.FC<SnapshotManifestViewProps> = memo(
               flex: 1,
               minWidth: 0,
               fontSize: V.TITLE_FONT_SIZE_PX,
-              fontWeight: 600,
+              fontWeight: FONT_WEIGHT.SEMIBOLD,
               color: DEFAULT_COLORS.TEXT_PRIMARY,
               overflow: 'hidden',
               textOverflow: 'ellipsis',

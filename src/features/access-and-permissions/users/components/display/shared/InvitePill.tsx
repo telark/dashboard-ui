@@ -15,7 +15,7 @@ const pillFor = (invite?: UserInvite, acceptedAt?: string) => {
   if (invite) {
     const when = formatDateTime(invite.expiresAt, TIME_FORMATS.DATE_TIME);
     return isPending(invite)
-      ? { text: PILL.PENDING, accent: DEFAULT_COLORS.INFO, tooltip: PILL.EXPIRES_AT(when) }
+      ? { text: PILL.PENDING, accent: DEFAULT_COLORS.WARNING, tooltip: PILL.EXPIRES_AT(when) }
       : { text: PILL.EXPIRED, accent: DEFAULT_COLORS.WARNING, tooltip: PILL.EXPIRED_AT(when) };
   }
   if (!acceptedAt) return null;

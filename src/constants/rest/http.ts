@@ -22,7 +22,11 @@ export const AUTH_REFUSAL_CODES = {
   BOOTSTRAP_PASSKEY_ONLY: 'bootstrap_passkey_only',
   USER_NOT_FOUND: 'user_not_found',
   ENROLL_LINK_RECOVERY: 'enroll_link_recovery',
+  SESSION_COOKIE_DUPLICATE: 'session_cookie_duplicate',
 } as const;
 
 // Raised by the API client when any request is refused for a suspended account.
 export const ACCOUNT_SUSPENDED_EVENT = 'accountSuspended';
+
+// Raised when an event stream is refused (401 or 403): the session check runs at once instead of at its next tick.
+export const SESSION_CHECK_EVENT = 'sessionCheck';

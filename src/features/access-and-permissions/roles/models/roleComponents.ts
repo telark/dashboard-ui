@@ -44,7 +44,7 @@ export interface ScopeRowProps {
   scopeKey: string;
   scopeLabel: string;
   permissionLevels: readonly { value: PermissionLevel; label: string }[];
-  tooltipMap: Record<string, string>;
+  descriptionMap: Record<string, string>;
   rowPaddingPx?: number;
   isLast?: boolean;
   isLocked?: boolean;
@@ -55,7 +55,7 @@ export interface LevelSelectorProps {
   value?: PermissionLevel;
   onChange: (value?: PermissionLevel) => void;
   options: readonly { value: PermissionLevel; label: string }[];
-  tooltipMap: Record<PermissionLevel, string>;
+  descriptionMap: Record<PermissionLevel, string>;
   placeholder?: string;
   style?: React.CSSProperties;
   disabled?: boolean;

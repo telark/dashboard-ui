@@ -1,8 +1,14 @@
 import React from 'react';
 import { CloseOutlined } from '@ant-design/icons';
 import { Checkbox } from 'antd';
-import { DEFAULT_COLORS, LIST_TOOLBAR, TOOLBAR_ITEM_GAP, getPillSurface } from '../../../constants';
-import { LIST_PAGE } from '../../../constants/shared/pages';
+import {
+  DEFAULT_COLORS,
+  LIST_TOOLBAR,
+  TOOLBAR_ITEM_GAP,
+  getPillSurface,
+  LINE_HEIGHT,
+} from '../../../constants';
+import { LIST_PAGE, PAGE_CONTENT_LAYOUT } from '../../../constants/shared/pages';
 import type {
   FilterChip,
   ListToolbarProps,
@@ -15,7 +21,7 @@ import Toolbar from './Toolbar';
 const metaStyle: React.CSSProperties = {
   fontSize: LIST_TOOLBAR.META_FONT_SIZE_PX,
   color: DEFAULT_COLORS.TEXT_MUTED,
-  lineHeight: 1,
+  lineHeight: LINE_HEIGHT.NONE,
   flexShrink: 0,
   display: 'inline-flex',
   alignItems: 'center',
@@ -81,6 +87,27 @@ const SelectionSummary: React.FC<{ selection: ListToolbarSelection }> = ({ selec
   );
 };
 
+// Browsers without CSS anchor positioning read the toolbar's bottom from the page box instead (antd.css).
+// Its parent is watched too: a header that rewraps above it moves it without resizing it.
+const shareBottomWithoutAnchors = (toolbar: HTMLDivElement | null) => {
+  const page = toolbar?.closest<HTMLElement>(`.${PAGE_CONTENT_LAYOUT.CLASS_NAME}`);
+  if (!toolbar || !page || CSS.supports('top', `anchor(${LIST_TOOLBAR.ANCHOR_NAME} bottom)`)) {
+    return undefined;
+  }
+  const measure = () => {
+    const bottom = toolbar.getBoundingClientRect().bottom - page.getBoundingClientRect().top;
+    page.style.setProperty(LIST_TOOLBAR.BOTTOM_VAR, `${bottom}px`);
+  };
+  measure();
+  const observer = new ResizeObserver(measure);
+  observer.observe(toolbar);
+  if (toolbar.parentElement) observer.observe(toolbar.parentElement);
+  return () => {
+    observer.disconnect();
+    page.style.removeProperty(LIST_TOOLBAR.BOTTOM_VAR);
+  };
+};
+
 const ListToolbar: React.FC<ListToolbarProps> = ({
   totalCount,
   countSuffix,
@@ -128,12 +155,15 @@ const ListToolbar: React.FC<ListToolbarProps> = ({
   return (
     // Sticks under the app header so the controls stay reachable while the list scrolls.
     <div
+      ref={shareBottomWithoutAnchors}
       style={{
         position: 'sticky',
         top: 0,
         zIndex: LIST_PAGE.TOOLBAR_Z_INDEX,
         background: DEFAULT_COLORS.PAGE_BG,
         padding: LIST_PAGE.TOOLBAR_PADDING,
+        marginTop: LIST_PAGE.SUBHEADER_TOOLBAR_OFFSET_PX,
+        anchorName: LIST_TOOLBAR.ANCHOR_NAME,
       }}
     >
       <div
@@ -144,7 +174,7 @@ const ListToolbar: React.FC<ListToolbarProps> = ({
           justifyContent: 'space-between',
           alignItems: 'center',
           width: '100%',
-          height: LIST_TOOLBAR.ROW_HEIGHT_PX,
+          minHeight: LIST_TOOLBAR.ROW_HEIGHT_PX,
         }}
       >
         <div
@@ -155,7 +185,8 @@ const ListToolbar: React.FC<ListToolbarProps> = ({
             flexWrap: 'nowrap',
             overflowX: 'auto',
             minWidth: 0,
-            height: '100%',
+            // Gives way first: the controls on the right wrap only once this is gone.
+            flexShrink: 100000,
           }}
         >
           {bulkMode && selection && selection.pageCount > 0 ? (
@@ -171,15 +202,17 @@ const ListToolbar: React.FC<ListToolbarProps> = ({
           {filterNote ? <span style={metaStyle}>{filterNote}</span> : null}
           <Toolbar config={clearAllConfig} compact={isCompact} />
         </div>
-        {/* Fills the rest of the row, so the count appearing grows it inward: its start never moves. */}
+        {/* Fills the rest of the row, so the count appearing grows it inward: its start never moves.
+            On a phone it wraps onto more lines instead of running off the edge. */}
         <div
           style={{
             display: 'flex',
-            flex: '1 0 auto',
+            flex: '1 1 auto',
+            flexWrap: 'wrap',
             justifyContent: 'flex-end',
             alignItems: 'center',
             gap: TOOLBAR_ITEM_GAP,
-            height: '100%',
+            minWidth: 0,
           }}
         >
           {bulkMode ? null : count}

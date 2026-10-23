@@ -1,7 +1,7 @@
 import React from 'react';
 import { Empty, Typography } from 'antd';
 import { LockOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS, EMPTY_CLASS, withAlpha } from '../../constants';
+import { DEFAULT_COLORS, EMPTY_CLASS, withAlpha, FONT_WEIGHT } from '../../constants';
 import { usePermission } from '../../features/auth/hooks/permissions/permissionEngine';
 import type { RequiredPermission } from '../../interfaces/shared';
 import { NO_PERMISSION_CONSTANTS as NP } from './noPermission.constants';
@@ -61,7 +61,7 @@ const NoPermissionCard: React.FC<NoPermissionCardProps> = ({
         image={<LockOutlined style={{ fontSize: NP.LAYOUT.PAGE_ICON_PX }} />}
         description={
           <>
-            <Typography.Title level={3}>{NP.LABELS.TITLE(featureName)}</Typography.Title>
+            <Typography.Title level={2}>{NP.LABELS.TITLE(featureName)}</Typography.Title>
             <Typography.Text>
               {denied ? NP.LABELS.SHORT_DENY : NP.LABELS.PAGE_HINT(level, scope)}
             </Typography.Text>
@@ -83,7 +83,13 @@ const NoPermissionCard: React.FC<NoPermissionCardProps> = ({
         <LockOutlined />
       </span>
       <div style={{ display: 'flex', flexDirection: 'column', gap: NP.LAYOUT.LOCK_LINE_GAP_PX }}>
-        <span style={{ fontSize: NP.LAYOUT.BOX.TITLE_PX, fontWeight: 600, color: colors.title }}>
+        <span
+          style={{
+            fontSize: NP.LAYOUT.BOX.TITLE_PX,
+            fontWeight: FONT_WEIGHT.SEMIBOLD,
+            color: colors.title,
+          }}
+        >
           {NP.LABELS.EMPTY_TITLE}
         </span>
         <span style={{ fontSize: NP.LAYOUT.BOX.LINE_PX, color: colors.muted }}>

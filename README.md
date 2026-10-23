@@ -9,10 +9,11 @@ This repository holds the dashboard SPA only. The services it calls, the Helm ch
 | Area | What operators do there |
 |---|---|
 | Applications | Browse discovered applications and their workloads, the plans that cover them, change history and rollback, and Insights for each app |
-| Protection plans | Create, schedule, approve, cancel, and reactivate plans; see health, violations, and reports; organize environments and tags |
+| Protection plans | Create, schedule, approve, cancel, and reactivate plans; see health, admission decisions, and reports (download or delete any report, and keep a plan's reports when deleting it); run them in repeating weekly windows; organize kinds, environments and tags |
 | Insights | Incident cards and setup recommendations, updated live |
 | Administration | Members, groups, and access roles |
-| Settings | Profile, appearance, security, authentication (Google SSO and self-registration), Insights and the local AI runtime, discovery scope and snapshot storage |
+| Settings | Profile, appearance, security, authentication (Google SSO, self-registration and the bootstrap account's break-glass requests), Insights and the local AI runtime, discovery scope and snapshot storage |
+| Break-glass approval | `/break-glass#request=<id>`, the link break-glass prints: the bootstrap account approves or denies a request with a passkey, without signing in |
 
 Every action is gated by the signed-in user's permissions, including deny rules. The backend enforces the same checks.
 
@@ -71,6 +72,8 @@ npm install
 npm run dev          # http://localhost:3000
 ```
 
+Open the dashboard at `http://localhost:3000`, not `127.0.0.1`: the session is an HttpOnly cookie that auth sets for `localhost`, and the services allow only that origin. The cookie is `Secure`, which Chrome, Edge and Firefox accept on `http://localhost`; Safari drops it there, so use one of those browsers or serve the dashboard over https. Cookies aren't scoped to a port: while you are signed in, every server you run on `localhost`, on any port, receives the session cookie, not just the dashboard and the forwarded services.
+
 | Script                        | Purpose                                       |
 | ----------------------------- | --------------------------------------------- |
 | `npm run build`               | Production build                              |
@@ -80,7 +83,7 @@ npm run dev          # http://localhost:3000
 | `npm run lint:f`              | Autofix lint issues                           |
 | `npm run format`              | Format the codebase                           |
 | `npm run check-all`           | Type-check and lint                           |
-| `npm run check-all-and-build` | Full validation used by the UI build pipeline |
+| `npm run check-all-and-build` | Full validation used by CI and the UI build pipeline |
 
 ### Code conventions
 
@@ -93,9 +96,9 @@ npm run dev          # http://localhost:3000
 
 ## Build and release
 
-This repository has no CI of its own. Images and Helm charts are built and released from the [Telark](https://github.com/telark/telark) repository:
+[`ci.yaml`](./.github/workflows/ci.yaml) runs on every pull request and push to `main`: `npm ci` and `npm run check-all-and-build`, through the [Telark](https://github.com/telark/telark) repository's shared [`ui-gate`](https://github.com/telark/telark/blob/main/.github/actions/ui-gate/action.yaml) action. Images and Helm charts are built and released from the Telark repository:
 
-* [`build-ui.yaml`](https://github.com/telark/telark/blob/main/.github/workflows/build-ui.yaml) ("Build · UI Image") checks out this repository at a selected branch (default `main`) and runs `npm ci` and `npm run check-all-and-build` in its `gate-ui` job. It then builds the image from this repository's [`Dockerfile`](./Dockerfile) (Node 26 build stage, nginx serving stage), versions it, signs it with cosign and pushes it.
+* [`build-ui.yaml`](https://github.com/telark/telark/blob/main/.github/workflows/build-ui.yaml) ("Build · UI Image") checks out this repository at a selected branch (default `main`) and runs the same `ui-gate` action in its `gate-ui` job. It then builds the image from this repository's [`Dockerfile`](./Dockerfile) (Node 26 build stage, nginx serving stage), versions it, signs it with cosign and pushes it.
 * [`release-charts.yaml`](https://github.com/telark/telark/blob/main/.github/workflows/release-charts.yaml) ("Release · Publish Charts") packages, signs and pushes the `telark` and `telark-crds` charts to `oci://ghcr.io/telark/charts`.
 * [`docs/PUBLISHING.md`](https://github.com/telark/telark/blob/main/docs/PUBLISHING.md) covers manual publishing for testing a chart or image release.
 

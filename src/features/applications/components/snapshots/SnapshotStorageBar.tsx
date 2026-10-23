@@ -1,5 +1,12 @@
 import React, { memo } from 'react';
-import { DEFAULT_COLORS } from '../../../../constants';
+import {
+  DEFAULT_COLORS,
+  HAIRLINE,
+  SPACING,
+  FONT_SIZE,
+  LINE_HEIGHT,
+  MOTION,
+} from '../../../../constants';
 import { CONNECTIVITY_CONSTANTS } from '../../../../constants/pages/connectivity';
 import { SHARED_PAGE_CONSTANTS } from '../../../../constants/shared/pages';
 import { parseConsumedPercent } from './snapshotStorageUtils';
@@ -33,7 +40,7 @@ const SnapshotStorageBar: React.FC<SnapshotStorageBarProps> = memo(
             height: barH,
             borderRadius: barR,
             background: DEFAULT_COLORS.PAGE_BG,
-            border: `1px solid ${DEFAULT_COLORS.BORDER_SUBTLE}`,
+            border: HAIRLINE.BORDER_SUBTLE,
             overflow: 'hidden',
           }}
         >
@@ -43,17 +50,17 @@ const SnapshotStorageBar: React.FC<SnapshotStorageBarProps> = memo(
               width: `${widthPct}%`,
               background: fill,
               borderRadius: barR,
-              transition: 'width 0.2s ease',
+              transition: `width ${MOTION.BASE_MS}ms ${MOTION.EASE}`,
             }}
           />
         </div>
         {metricsLine ? (
           <div
             style={{
-              marginTop: 4,
-              fontSize: 11,
+              marginTop: SPACING.XS,
+              fontSize: FONT_SIZE.XS,
               color: DEFAULT_COLORS.TEXT_MUTED,
-              lineHeight: 1.35,
+              lineHeight: LINE_HEIGHT.SNUG,
             }}
           >
             {metricsLine}

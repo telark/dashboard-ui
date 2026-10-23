@@ -2,7 +2,11 @@ import React from 'react';
 import { Button, Dropdown, Tooltip } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 import { BUTTON_COLORS, ROW_ICON_BUTTON_SIZE } from '../../../../../constants';
-import { PROTECTION_PLANS_CONSTANTS as PPC, REPORT_FORMATS } from '../../constants/protectionPlans';
+import {
+  PROTECTION_PLANS_CONSTANTS as PPC,
+  REPORT_FILE_NAME,
+  REPORT_FORMATS,
+} from '../../constants/protectionPlans';
 import type { PlanReportFormat, PlanReportMeta } from '../../models';
 
 interface ReportDownloadButtonProps {
@@ -59,7 +63,7 @@ const ReportDownloadButton: React.FC<ReportDownloadButtonProps> = ({
       menu={{
         items: MENU_ITEMS,
         onClick: ({ key }) =>
-          onDownload(report, key as PlanReportFormat, `${planName}-${report.id}.${key}`),
+          onDownload(report, key as PlanReportFormat, REPORT_FILE_NAME(planName, report.id, key)),
       }}
     >
       <Tooltip title={LABEL}>{button}</Tooltip>

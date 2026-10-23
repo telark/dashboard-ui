@@ -2,7 +2,7 @@ import React, { memo, useState } from 'react';
 import { Tooltip } from 'antd';
 import { TbLayoutSidebar } from 'react-icons/tb';
 import { useSidebarCollapse } from '../../../hooks/layout';
-import { DEFAULT_COLORS, SIDEBAR_LAYOUT } from '../../../constants';
+import { DEFAULT_COLORS, SIDEBAR_LAYOUT, UNSTYLED_BUTTON } from '../../../constants';
 
 const isMacPlatform = (): boolean => navigator.userAgent.toLowerCase().includes('mac');
 
@@ -39,16 +39,13 @@ const SidebarToggleButton: React.FC = memo(() => {
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
           style={{
+            ...UNSTYLED_BUTTON,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             width: config.BUTTON_SIZE,
             height: config.BUTTON_SIZE,
-            padding: 0,
-            border: 'none',
-            background: 'transparent',
             color: hovered ? DEFAULT_COLORS.TEXT_PRIMARY : DEFAULT_COLORS.TEXT_MUTED,
-            cursor: 'pointer',
             transition: config.TRANSITION,
           }}
         >

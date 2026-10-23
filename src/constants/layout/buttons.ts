@@ -1,4 +1,5 @@
-import { CONTROL_HEIGHT } from './controls';
+import { CONTROL_HEIGHT, SPACING } from './controls';
+import { SIDEBAR_LAYOUT } from './sidebar';
 import { DEFAULT_COLORS } from '../shared/colors';
 
 export const BUTTON_TEXTS = {
@@ -9,6 +10,14 @@ export const BUTTON_TEXTS = {
   APPLY: 'Apply',
   CLOSE: 'Close',
   SELECT: 'Select',
+} as const;
+
+// Strips a button's chrome but, unlike `all: 'unset'`, keeps its focus ring.
+export const UNSTYLED_BUTTON = {
+  background: 'none',
+  border: 'none',
+  padding: SPACING.NONE,
+  cursor: 'pointer',
 } as const;
 
 // Spacing between toolbar items, and between a toolbar and its neighbors, so
@@ -22,7 +31,7 @@ export const TOOLBAR_CONTROL = {
   PADDING: '0 10px',
   // Below this the labels no longer fit beside the sidebar, so every toolbar
   // control falls back to its icon and moves its label into a tooltip.
-  COMPACT_QUERY: '(max-width: 767px)',
+  COMPACT_QUERY: SIDEBAR_LAYOUT.FORCE_COLLAPSE_QUERY,
   // Without this the label box keeps its half-leading, so centering the box
   // leaves the glyphs off-center against icons, which set their own.
   LINE_HEIGHT: 1,
@@ -42,6 +51,12 @@ export const LIST_TOOLBAR = {
   PILL_RADIUS_PX: 999,
   // Also scopes the green checkbox styling in antd.css.
   BULK_SELECT_CLASS: 'app-bulk-select',
+  // Quick-filter pills are unstyled buttons: this class gives them back a keyboard focus ring.
+  QUICK_FILTER_CLASS: 'tk-quick-filter',
+  // A page empty state keeps its distance below the toolbar through this anchor (antd.css).
+  ANCHOR_NAME: '--tk-list-toolbar',
+  // Without anchor positioning, ListToolbar sets its bottom on the page box in this variable instead.
+  BOTTOM_VAR: '--tk-list-toolbar-bottom',
   CLEAR_ALL_LABEL: 'Clear All',
   SELECTED_SUFFIX: 'selected',
   OVERFLOW_SUFFIX: 'more',
@@ -70,6 +85,8 @@ export const BUTTON_CONFIGS = {
     FONT_WEIGHT: 500,
     FONT_SIZE: 13,
     TRANSITION: 'background-color 150ms ease, color 150ms ease, opacity 150ms ease',
+    // The phone rail's icon over its short name: the box widens to fit "Members" in 52px.
+    RAIL: { MARGIN_X: 2, PADDING: '4px 0', GAP: 2, LABEL_FONT_SIZE: 10, LABEL_LINE_HEIGHT: '12px' },
   },
   PRIMARY_BUTTON: {
     FONT_WEIGHT: 600,

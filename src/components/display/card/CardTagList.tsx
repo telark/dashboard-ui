@@ -22,7 +22,7 @@ const CardTagList: React.FC<{ tags: string[]; max?: number }> = ({
       ))}
       {hidden.length > 0 && (
         <Tooltip title={hidden.join(', ')}>
-          <span style={{ display: 'inline-flex' }}>
+          <span tabIndex={0} aria-label={hidden.join(', ')} style={{ display: 'inline-flex' }}>
             <Tag className={`${TAG_CLASS.XSMALL} ${TAG_CLASS.AS_IS}`}>
               {CARD_MORE_LABEL(hidden.length)}
             </Tag>

@@ -14,18 +14,3 @@ export interface LabeledInputProps {
   tooltip?: string;
   disabled?: boolean;
 }
-
-export interface LabeledSelectProps {
-  name: string;
-  label: string;
-  options: Array<{ label: string; value: string }>;
-  placeholder?: string;
-  required?: boolean;
-  rules?: Rule[];
-  marginBottom?: number;
-  allowClear?: boolean;
-  mode?: 'multiple' | 'tags';
-  className?: string;
-  disabled?: boolean;
-  tooltip?: string;
-}

@@ -8,7 +8,7 @@ import { FilterPanel } from '../../../../../components/display/panels/filter';
 import { FilterButton, ToggleButton } from '../../../../../components/display/buttons';
 import { SearchInput } from '../../../../../components/display/inputs';
 import ActionConfirmModal from '../../../../../components/display/modal/confirm/ActionConfirmModal';
-import { SLIDE_OUT } from '../../../../../constants';
+import { SLIDE_OUT, SPACING } from '../../../../../constants';
 import { useAttachRolePanel, useDeassignGroupRole } from '../../hooks';
 import {
   usePermission,
@@ -26,6 +26,7 @@ import { filterBySearchTerm } from '../../../users/utils/search/filter';
 import { USERS_CONSTANTS as UC } from '../../../users/constants';
 import { CapitalizeFirstLetter } from '../../../../../utils/helpers/format';
 import { CheckCircleOutlined } from '@ant-design/icons';
+import { useGrantConfirm } from '../../../shared';
 
 type ActiveView = 'select' | 'assigned';
 
@@ -93,6 +94,8 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
     [initialSelectedRoles, addBlocked, removeBlocked],
   );
   const hasRoleAboveCaller = useHasRoleAboveCaller();
+  const panelWidth = expanded ? PANEL_WIDTH_EXPANDED : PANEL_WIDTH;
+  const { confirmGrant, modal: grantConfirmModal } = useGrantConfirm(panelWidth);
 
   const {
     deassignModalOpen,
@@ -156,13 +159,13 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
           GC.LABELS.PANELS.ATTACH_ROLES.TITLE,
           CapitalizeFirstLetter(currentGroup.name),
         )}
-        width={expanded ? PANEL_WIDTH_EXPANDED : PANEL_WIDTH}
+        width={panelWidth}
         offsetX={filterPanelOpen ? FILTER_PANEL_WIDTH : 0}
         headerExtra={
           <ExpandPanelButton expanded={expanded} onToggle={() => setExpanded((prev) => !prev)} />
         }
         formContent={
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.MD, width: '100%' }}>
             {canViewRoles ? (
               <div
                 style={{
@@ -170,11 +173,11 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   flexWrap: 'wrap',
-                  gap: 12,
+                  gap: SPACING.MD,
                   width: '100%',
                   boxSizing: 'border-box',
-                  margin: 0,
-                  padding: 0,
+                  margin: SPACING.NONE,
+                  padding: SPACING.NONE,
                 }}
               >
                 <SearchInput
@@ -184,7 +187,9 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
                   minWidth={ARC.SEARCH_MIN_WIDTH}
                   block
                 />
-                <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
+                <div
+                  style={{ display: 'flex', alignItems: 'center', gap: SPACING.XS, flexShrink: 0 }}
+                >
                   <ToggleButton
                     active={activeView === 'assigned'}
                     onClick={handleToggleAssigned}
@@ -199,7 +204,14 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
                 </div>
               </div>
             ) : null}
-            <div style={{ width: '100%', margin: 0, padding: 0, boxSizing: 'border-box' }}>
+            <div
+              style={{
+                width: '100%',
+                margin: SPACING.NONE,
+                padding: SPACING.NONE,
+                boxSizing: 'border-box',
+              }}
+            >
               {activeView === 'assigned' && (
                 <AssignedRolesView
                   assignedRoleIds={filteredAssignedRoleIds}
@@ -223,7 +235,15 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
             </div>
           </div>
         }
-        onSubmit={handleSubmit as (values: Record<string, unknown>) => Promise<void>}
+        onSubmit={(values) =>
+          confirmGrant(
+            ((values.roleRefs as string[] | undefined) ?? []).filter(
+              (id) => !initialSelectedRoles.includes(id),
+            ),
+            CapitalizeFirstLetter(currentGroup.name),
+            () => handleSubmit(values),
+          )
+        }
         onCancel={onClose}
         submitButtonText={GC.LABELS.PANELS.ATTACH_ROLES.SUBMIT_BUTTON}
         loading={submitting}
@@ -252,8 +272,9 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
         cancelText={GC.LABELS.MODAL.CANCEL}
         loading={isDeassigning}
         getContainer={() => document.body}
-        offsetRight={expanded ? PANEL_WIDTH_EXPANDED : PANEL_WIDTH}
+        offsetRight={panelWidth}
       />
+      {grantConfirmModal}
     </>
   );
 };

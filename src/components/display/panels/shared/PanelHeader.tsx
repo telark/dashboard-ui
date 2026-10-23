@@ -1,6 +1,6 @@
 import React from 'react';
 import { CloseOutlined } from '@ant-design/icons';
-import { BUTTON_TEXTS, SLIDE_OUT } from '../../../../constants';
+import { BUTTON_TEXTS, SLIDE_OUT, SPACING } from '../../../../constants';
 
 interface PanelHeaderProps {
   title?: string;
@@ -17,7 +17,7 @@ const PanelHeader: React.FC<PanelHeaderProps> = ({ title = 'Panel', extra, onClo
             {title}
           </h2>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: SPACING.SM }}>
           {extra}
           <button
             type="button"

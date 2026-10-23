@@ -1,4 +1,5 @@
-import { DEFAULT_COLORS, getPillColor } from '../shared/colors';
+import type { TagProps } from 'antd';
+import { DEFAULT_COLORS, getPillColor, getPillTextColor } from '../shared/colors';
 
 // Pills are antd Tags. These tokens give them the pill box and colors; the TAG_CLASS
 // rules in src/styles/antd.css cover what no Tag token reaches.
@@ -13,6 +14,11 @@ export const TAG_THEME = {
   colorTextLightSolid: DEFAULT_COLORS.PILL_TEXT,
 } as const;
 
+// antd gives every solid Tag one text color, so the ConfigProvider sets each Tag's own from its fill.
+export const TAG_STYLES: TagProps['styles'] = ({ props }) => ({
+  root: { color: getPillTextColor(props.color) },
+});
+
 /** `PILL` is set on every Tag by the ConfigProvider; the others are per-Tag modifiers. */
 export const TAG_CLASS = {
   PILL: 'tk-pill',
@@ -24,4 +30,6 @@ export const TAG_CLASS = {
   META: 'tk-pill-meta',
   // Children laid out in a row (an icon or spinner before the label).
   ICON: 'tk-pill-icon',
+  // A quiet status: no fill, a 1px border in the text color (set on the Tag's style).
+  OUTLINE: 'tk-pill-outline',
 } as const;

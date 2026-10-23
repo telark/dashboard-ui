@@ -1,3 +1,3 @@
 export { ROLES_CONSTANTS, PERMISSION_LEVELS, ROLES_ERROR_MESSAGES } from './roles';
-export { SCOPE_RULES, getScopeRules, formatRuleKey } from './scopeRules';
+export { SCOPE_RULES, getScopeRules, formatRuleKey, denyRuleSentence } from './scopeRules';
 export type { ScopeRule, ScopeRulesConfig } from './scopeRules';

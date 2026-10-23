@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, current, PayloadAction } from '@reduxjs/toolkit';
 import type { Notification, NotificationsState } from '../../models';
 import {
   fetchNotificationsThunk,
@@ -87,8 +87,11 @@ const notificationsSlice = createSlice({
       })
       .addCase(fetchNotificationsThunk.fulfilled, (state, action) => {
         state.loading = false;
-        state.items = action.payload.items ?? [];
-        state.unreadCount = action.payload.unreadCount ?? computeUnread(state.items);
+        const items = action.payload.items ?? [];
+        // An answer that matches what is shown keeps the array, so a delete's or a clear's echo renders
+        // nothing. A mark-read's echo still swaps in the server's readAt, once.
+        if (JSON.stringify(current(state.items)) !== JSON.stringify(items)) state.items = items;
+        state.unreadCount = action.payload.unreadCount ?? computeUnread(items);
         state.fetchedAt = Date.now();
         state.error = null;
       })

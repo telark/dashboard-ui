@@ -6,6 +6,7 @@ export type {
   ApplicationsState,
   ApplicationHealthQuickFilter,
   ApplicationCoverageState,
+  ApplicationProtection,
   ApplicationCoverage,
   ApplicationCoverageIndex,
   ApplicationLastForceSync,

@@ -1,7 +1,7 @@
 import { Tag } from 'antd';
 import type { TableColumnType } from 'antd';
 import { GROUPS_CONSTANTS as GC } from '../../../constants';
-import { DEFAULT_COLORS, EMPTY_VALUE, TAG_CLASS } from '../../../../../../constants';
+import { DEFAULT_COLORS, EMPTY_VALUE, TAG_CLASS, FONT_WEIGHT } from '../../../../../../constants';
 import { ROLES_CONSTANTS as RPC } from '../../../../roles/constants';
 import { generateColumn } from '../../../../../../components/display/table/utils';
 import type { GenerateColumnCtx } from '../../../../../../interfaces/layout/table';
@@ -50,7 +50,9 @@ const Columns = (ctx: ColumnsContext): TableColumnType<Group>[] => {
         align: 'left',
         width: GC.SIZES.COLUMNS.NAME,
         render: (_: unknown, record: Group) => (
-          <span style={{ fontWeight: 700, color: DEFAULT_COLORS.TEXT_PRIMARY }}>{record.name}</span>
+          <span style={{ fontWeight: FONT_WEIGHT.BOLD, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
+            {record.name}
+          </span>
         ),
       },
       ctx,

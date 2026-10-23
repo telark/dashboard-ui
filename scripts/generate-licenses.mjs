@@ -65,7 +65,7 @@ function usedIconSets() {
     const source = readFileSync(path.join(rootDir, 'src', file), 'utf8');
     for (const [, set] of source.matchAll(/from 'react-icons\/(\w+)'/g)) sets.add(set);
   }
-  return [...sets].sort();
+  return [...sets].sort((a, b) => a.localeCompare(b, 'en'));
 }
 
 const packages = new Map();
@@ -76,7 +76,8 @@ for (const [key, meta] of Object.entries(lock.packages)) {
   const depPkg = JSON.parse(readFileSync(path.join(dir, 'package.json'), 'utf8'));
   const files = readdirSync(dir)
     .filter((f) => LICENSE_FILE.test(f) && !CODE_FILE.test(f))
-    .sort();
+    // Code-unit order: file names mix case and punctuation, which locales order differently.
+    .sort((a, b) => (a < b ? -1 : Number(a > b)));
   const texts = files.map((f) => readFileSync(path.join(dir, f), 'utf8').trim());
   const repository = depPkg.repository?.url ?? depPkg.repository ?? depPkg.homepage ?? '';
   packages.set(`${depPkg.name}@${depPkg.version}`, {
@@ -89,7 +90,7 @@ for (const [key, meta] of Object.entries(lock.packages)) {
 }
 
 const sorted = [...packages.values()].sort(
-  (a, b) => a.name.localeCompare(b.name) || a.version.localeCompare(b.version),
+  (a, b) => a.name.localeCompare(b.name, 'en') || a.version.localeCompare(b.version, 'en'),
 );
 
 const sections = sorted.map(({ name, version, license, texts, repository }) => {

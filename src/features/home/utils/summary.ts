@@ -53,6 +53,7 @@ export const plansNeedingAttention = (plans: ProtectionPlan[]): ProtectionPlan[]
 
 // Keep showing the last good data through a failed or in-flight poll.
 export const toBoxState = (loading: boolean, error: string | null, hasData: boolean): BoxState => ({
-  loading: loading && !hasData,
+  // A failed list may keep its loading flag (apps and plans stay unloaded), so the error wins.
+  loading: loading && !hasData && !error,
   failed: Boolean(error) && !hasData,
 });

@@ -4,14 +4,10 @@ import { HiChevronUpDown } from 'react-icons/hi2';
 import { useNavigate } from 'react-router-dom';
 import {
   getCurrentUser,
-  setCurrentUser as storeCurrentUser,
   CURRENT_USER_UPDATED_EVENT,
   handleUserLogout,
-  hasSessionToken,
-  validateSession,
 } from '../../../../auth/utils';
 import { fetchCurrentUserDetails } from '../../utils';
-import { fetchUserById } from '../../clients/fetch';
 import { createUserMenuItems } from './UserMenuItems';
 import UserAvatar from './UserAvatar';
 import UserAvatarComponent from '../../../../../components/display/avatars/UserAvatar';
@@ -21,22 +17,9 @@ import {
   DEFAULT_COLORS,
   HEADER_CONSTANTS,
   SIDEBAR_USER_MENU,
+  SPACING,
 } from '../../../../../constants';
-import { isDevelopment } from '../../../../../utils/helpers/env';
 import type { User } from '../../models';
-import logger from '../../../../../logging';
-
-// Enough for the menu (and its logout) when the user may not read its own record.
-const sessionOnlyUser = (id: string): User => ({
-  id,
-  username: '',
-  fullname: '',
-  email: '',
-  roleRefs: [],
-  groupRefs: [],
-  creationDate: '',
-  status: { phase: 'active' },
-});
 
 interface UserAvatarDropdownProps {
   variant?: 'header' | 'sidebar';
@@ -54,26 +37,7 @@ const UserAvatarDropdown: React.FC<UserAvatarDropdownProps> = memo(
     useEffect(() => {
       const initialUser = getCurrentUser();
 
-      if (hasSessionToken() && !initialUser) {
-        if (isDevelopment()) {
-          logger.warn(HEADER_CONSTANTS.USER.WARNINGS.MISSING_USER_DATA);
-        }
-        // Self-heal: token exists but user not in localStorage (e.g. after OIDC login)
-        validateSession()
-          .then((result) => {
-            const userId = result.isValid ? result.sessionDetails?.userId : undefined;
-            if (!userId) return;
-            return fetchUserById(userId, true).then(
-              (res) => {
-                if (!res?.data) return;
-                storeCurrentUser(res.data);
-                setCurrentUser(res.data);
-              },
-              () => setCurrentUser(sessionOnlyUser(userId)),
-            );
-          })
-          .catch(() => {});
-      } else if (initialUser?.id) {
+      if (initialUser?.id) {
         fetchCurrentUserDetails((user) => {
           setCurrentUser(user);
         });
@@ -136,7 +100,7 @@ const UserAvatarDropdown: React.FC<UserAvatarDropdownProps> = memo(
               justifyContent: isCollapsed ? 'center' : 'flex-start',
               gap: row.GAP,
               height: row.HEIGHT,
-              padding: isCollapsed ? 0 : row.PADDING,
+              padding: isCollapsed ? SPACING.NONE : row.PADDING,
               marginLeft: isCollapsed ? row.COLLAPSED_MARGIN_X : row.MARGIN_LEFT,
               marginRight: isCollapsed ? row.COLLAPSED_MARGIN_X : row.MARGIN_RIGHT,
               border: 'none',

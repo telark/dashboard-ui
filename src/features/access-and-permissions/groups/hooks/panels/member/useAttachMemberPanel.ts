@@ -8,11 +8,12 @@ import { fetchAllUsersSilentThunk } from '../../../../users/store';
 import { applySelectionChange } from '../../../../shared';
 import { fetchFreshGroupIds } from '../../../utils';
 import type { Group } from '../../../models';
+import { compareCodeUnits } from '../../../../../../utils/layout/sort';
 
 const arraysEqual = (a: string[], b: string[]): boolean => {
   if (a.length !== b.length) return false;
-  const sortedA = [...a].sort();
-  const sortedB = [...b].sort();
+  const sortedA = [...a].sort(compareCodeUnits);
+  const sortedB = [...b].sort(compareCodeUnits);
   return sortedA.every((val, index) => val === sortedB[index]);
 };
 

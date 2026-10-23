@@ -1,7 +1,7 @@
 import type { User } from '../../models';
 import { USERS_CONSTANTS as UC } from '../../constants';
 
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const EMAIL_REGEX = /^[^\s@]+@[^\s@.]+(?:\.[^\s@.]+)+$/;
 const FULLNAME_ALLOWED_CHARS = /^[a-zA-ZÀ-ÿ\s'\-.]+$/;
 
 export const makeUsernameUniqueRule = (existingUsers: User[], currentUserId?: string) => ({

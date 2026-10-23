@@ -1,15 +1,7 @@
 import React from 'react';
 import { AiOutlineWarning } from 'react-icons/ai';
-import {
-  DEFAULT_COLORS,
-  EMPTY_VALUE,
-  LIST_TOOLBAR,
-  ROW_ACTION_CLASS,
-  STATUS_COLORS,
-  TOOLBAR_CONTROL,
-  getQuickFilterPillColors,
-} from '../../../constants';
-import { CompactQuickFilter } from '../../../components/display/toolbar';
+import { DEFAULT_COLORS, EMPTY_VALUE, STATUS_COLORS } from '../../../constants';
+import { CompactQuickFilter, QuickFilterPills } from '../../../components/display/toolbar';
 import { INSIGHTS_UI } from '../constants/texts';
 import { INSIGHT_SEVERITY_LABELS } from '../constants/insights';
 import type { InsightSeverity } from '../models';
@@ -52,39 +44,16 @@ const SeverityPills: React.FC<Props> = ({ active, counts, compact, onChange }) =
     );
   }
   return (
-    <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, height: '100%' }}>
-      {PILLS.map((pill) => {
-        const isActive = active === pill;
-        const accent = accentOf(pill);
-        return (
-          <button
-            key={pill}
-            type="button"
-            className={ROW_ACTION_CLASS}
-            onClick={() => onChange(pill)}
-            style={{
-              all: 'unset',
-              cursor: 'pointer',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 6,
-              height: TOOLBAR_CONTROL.HEIGHT,
-              boxSizing: 'border-box',
-              padding: TOOLBAR_CONTROL.PADDING,
-              borderRadius: LIST_TOOLBAR.PILL_RADIUS_PX,
-              ...getQuickFilterPillColors(accent, isActive),
-              fontSize: 12,
-              fontWeight: 700,
-              lineHeight: TOOLBAR_CONTROL.LINE_HEIGHT,
-              userSelect: 'none',
-            }}
-          >
-            <span>{labelOf(pill)}</span>
-            <span style={{ opacity: 0.85 }}>· {countText(counts[pill])}</span>
-          </button>
-        );
-      })}
-    </div>
+    <QuickFilterPills
+      options={PILLS.map((pill) => ({
+        key: pill,
+        label: labelOf(pill),
+        accent: accentOf(pill),
+        count: countText(counts[pill]),
+      }))}
+      active={active}
+      onChange={onChange}
+    />
   );
 };
 
