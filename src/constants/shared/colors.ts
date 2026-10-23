@@ -91,7 +91,7 @@ const rgbChannels = (color: string): string => {
     color.length === HEX_SHORT_LENGTH
       ? [...color.slice(1)].map((c) => c + c).join('')
       : color.slice(1, 7);
-  return [0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16)).join(', ');
+  return [0, 2, 4].map((i) => Number.parseInt(hex.slice(i, i + 2), 16)).join(', ');
 };
 
 /** A token at another opacity, so alpha variants never become new literals. */
@@ -101,7 +101,7 @@ export const withAlpha = (color: string, alpha: number): string =>
 /** CSS can't import this file: every token is exposed as `--color-<kebab-key>` on :root. */
 export const applyColorVariables = (root: HTMLElement = document.documentElement): void => {
   Object.entries(DEFAULT_COLORS).forEach(([key, value]) =>
-    root.style.setProperty(`--color-${key.toLowerCase().replace(/_/g, '-')}`, value),
+    root.style.setProperty(`--color-${key.toLowerCase().replaceAll('_', '-')}`, value),
   );
 };
 

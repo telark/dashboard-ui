@@ -17,9 +17,6 @@ export const SHARED_DETAILS_CONSTANTS = {
       minHeight: '50vh',
       display: 'flex',
     },
-    EMPTY_CONTAINER: {
-      padding: 24,
-    },
   },
   SYNC: {
     POLLING: {

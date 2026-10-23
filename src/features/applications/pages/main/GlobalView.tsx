@@ -326,7 +326,7 @@ function uniqOptions(
     const v = (getValue(a) ?? '').trim();
     if (v) set.add(v);
   }
-  return [...set].sort().map((v) => ({ value: v, label: v }));
+  return [...set].sort((a, b) => a.localeCompare(b)).map((v) => ({ value: v, label: v }));
 }
 
 function uniqNamespaceOptions(apps: Application[]): { value: string; label: string }[] {
@@ -338,7 +338,7 @@ function uniqNamespaceOptions(apps: Application[]): { value: string; label: stri
       if (v) set.add(v);
     }
   }
-  return [...set].sort().map((v) => ({ value: v, label: v }));
+  return [...set].sort((a, b) => a.localeCompare(b)).map((v) => ({ value: v, label: v }));
 }
 
 function applyApplicationFilters(

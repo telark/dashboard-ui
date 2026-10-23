@@ -3,6 +3,7 @@ import { deepEqual } from './deepEqual';
 import { buildValidityForAPI } from '../validity/builders';
 import { textChanged } from '../../../../shared';
 import type { RoleFormValues } from '../../models';
+import { compareCodeUnits } from '../../../../../utils/layout/sort';
 
 type Protection = NonNullable<RoleFormValues['protection']>;
 
@@ -26,7 +27,7 @@ const enabledFlags = (protection: RoleFormValues['protection']) =>
   Object.entries(protection ?? {})
     .filter(([, on]) => on)
     .map(([flag]) => flag)
-    .sort();
+    .sort(compareCodeUnits);
 
 const unlocking = (before: Protection, after: Protection, flag: keyof Protection) =>
   Boolean(before[flag]) && !after[flag];

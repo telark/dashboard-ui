@@ -3,7 +3,7 @@ import { App as AntdApp } from 'antd';
 import { useDispatch } from 'react-redux';
 import type { AppDispatch } from '../../../../store';
 import { preparePlanThunk, updatePlanThunk } from '../store';
-import type { PreparePlanPayload, UpdatePlanPayload } from '../clients';
+import type { PlanPayload } from '../clients';
 import type { ProtectionPlan } from '../models';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../constants/protectionPlans';
 import { createdMessage } from '../utils/createPlanSummary';
@@ -14,7 +14,7 @@ export const usePlanActions = () => {
   const [submitting, setSubmitting] = useState(false);
 
   const handleCreate = useCallback(
-    async (payload: PreparePlanPayload): Promise<ProtectionPlan> => {
+    async (payload: PlanPayload): Promise<ProtectionPlan> => {
       setSubmitting(true);
       try {
         const created = await dispatch(preparePlanThunk({ payload })).unwrap();
@@ -33,7 +33,7 @@ export const usePlanActions = () => {
   );
 
   const handleUpdate = useCallback(
-    async (planId: string, payload: UpdatePlanPayload): Promise<ProtectionPlan> => {
+    async (planId: string, payload: PlanPayload): Promise<ProtectionPlan> => {
       setSubmitting(true);
       try {
         const body = { ...payload };

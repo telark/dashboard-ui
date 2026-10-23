@@ -14,8 +14,7 @@ import {
   reactivatePlan,
   updatePlan,
   type DuplicatePlanPayload,
-  type PreparePlanPayload,
-  type UpdatePlanPayload,
+  type PlanPayload,
 } from '../../clients';
 import type { PlanApprovalDecision, ProtectionPlan, PlanTemplate } from '../../models';
 
@@ -68,7 +67,7 @@ export const fetchProtectionPlanTemplatesThunk = createAsyncThunk<PlanTemplate[]
 );
 
 export interface PreparePlanArgs {
-  payload: PreparePlanPayload;
+  payload: PlanPayload;
 }
 
 export const preparePlanThunk = createAsyncThunk<ProtectionPlan, PreparePlanArgs>(
@@ -160,7 +159,7 @@ export interface ReactivatePlanArgs {
 
 export interface UpdatePlanArgs {
   planId: string;
-  payload: UpdatePlanPayload;
+  payload: PlanPayload;
 }
 
 export const updatePlanThunk = createAsyncThunk<ProtectionPlan, UpdatePlanArgs>(

@@ -3,6 +3,7 @@ import { Form } from 'antd';
 import type { FormInstance } from 'antd';
 import type { FormValues, PolicyEntry } from '../components/create';
 import { repeatPayload } from '../utils/planFormValues';
+import { compareCodeUnits } from '../../../../utils/layout/sort';
 
 interface UsePlanFormStateOptions {
   form: FormInstance<FormValues>;
@@ -18,7 +19,7 @@ const stableStringify = (value: unknown): string => {
   if (Array.isArray(value)) return `[${value.map(stableStringify).join(',')}]`;
   if (typeof value === 'object') {
     const obj = value as Record<string, unknown>;
-    const keys = Object.keys(obj).sort();
+    const keys = Object.keys(obj).sort(compareCodeUnits);
     return `{${keys.map((k) => `${k}:${stableStringify(obj[k])}`).join(',')}}`;
   }
   return JSON.stringify(value);
@@ -31,25 +32,25 @@ const normalizeFormSnapshot = (values: FormValues, policies: PolicyEntry[]) => (
   priority: values.priority ?? null,
   mode: values.mode ?? '',
   scopeType: values.scopeType,
-  applicationRefs: [...(values.applicationRefs ?? [])].sort(),
-  namespaces: [...(values.namespaces ?? [])].sort(),
-  excludedKinds: [...(values.excludedKinds ?? [])].sort(),
-  excludedResources: [...(values.excludedResources ?? [])].sort(),
+  applicationRefs: [...(values.applicationRefs ?? [])].sort(compareCodeUnits),
+  namespaces: [...(values.namespaces ?? [])].sort(compareCodeUnits),
+  excludedKinds: [...(values.excludedKinds ?? [])].sort(compareCodeUnits),
+  excludedResources: [...(values.excludedResources ?? [])].sort(compareCodeUnits),
   timeMode: values.timeMode,
   startAt: values.startAt ? values.startAt.toISOString() : null,
   endAt: values.endAt ? values.endAt.toISOString() : null,
   // Only what the payload would send: the rule's fields don't count under another mode.
   repeat: values.timeMode === 'repeating' ? repeatPayload(values) : null,
-  participantRefs: [...(values.participantRefs ?? [])].sort(),
+  participantRefs: [...(values.participantRefs ?? [])].sort(compareCodeUnits),
   kindRef: values.kindRef ?? '',
   environmentRef: values.environmentRef ?? '',
-  tagRefs: [...(values.tagRefs ?? [])].sort(),
+  tagRefs: [...(values.tagRefs ?? [])].sort(compareCodeUnits),
   approvalMode: values.approvalMode ?? '',
   policies: policies.map((p) => ({
     templateID: p.templateID,
     params: Object.fromEntries(
       Object.entries(p.params ?? {})
-        .map<[string, string[]]>(([k, v]) => [k, [...(v ?? [])].sort()])
+        .map<[string, string[]]>(([k, v]) => [k, [...(v ?? [])].sort(compareCodeUnits)])
         .sort(([a], [b]) => a.localeCompare(b)),
     ),
   })),

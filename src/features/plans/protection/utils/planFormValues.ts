@@ -15,6 +15,7 @@ import {
 import { CREATE_PANEL_TEXTS } from '../constants/createPanel';
 import { sanitizeName } from '../../../shared/utils/nameSanitization';
 import { getTimeZone } from '../../../../utils/shared/time';
+import { compareCodeUnits } from '../../../../utils/layout/sort';
 
 const { FORM, REPEAT_DAY_OPTIONS, REPEAT_TIME_FORMAT, REPEAT_CLOCK_DATE } = PPC.CREATE_PAGE;
 
@@ -150,7 +151,8 @@ export const hasInvalidParams = (policies: PolicyEntry[], templates: PlanTemplat
     ),
   );
 
-const normalizeStringArray = (arr: string[] | undefined): string[] => [...(arr ?? [])].sort();
+const normalizeStringArray = (arr: string[] | undefined): string[] =>
+  [...(arr ?? [])].sort(compareCodeUnits);
 
 const arraysEqualUnordered = (a: string[], b: string[]): boolean => {
   const ax = normalizeStringArray(a);
@@ -170,7 +172,7 @@ export const buildPreparePayload = ({ values, policies }: BuildPreparePayloadInp
   severity: values.severity,
   priority:
     values.priority !== undefined && values.priority !== null && (values.priority as unknown) !== ''
-      ? parseInt(String(values.priority), 10)
+      ? Number.parseInt(String(values.priority), 10)
       : undefined,
   mode: values.mode,
   timeMode: values.timeMode,

@@ -5,8 +5,9 @@ export {
   fetchPlanStatus,
   fetchPlanViolations,
 } from './fetch';
-export { preparePlan, type PreparePlanPayload } from './prepare';
-export { updatePlan, type UpdatePlanPayload } from './update';
+export { preparePlan } from './prepare';
+export { updatePlan } from './update';
+export type { PlanPayload } from './shared';
 export { cancelPlan } from './cancel';
 export { reactivatePlan } from './reactivate';
 export { decidePlan, type DecidePlanPayload } from './decide';

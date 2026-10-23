@@ -1,10 +1,12 @@
+import { compareCodeUnits } from '../../../../../utils/layout/sort';
+
 export const normalizeValue = (value: unknown): unknown => {
   if (value === null || value === undefined) return undefined;
   if (Array.isArray(value)) {
     const nonEmpty = value.filter((v) => v !== null && v !== undefined && v !== '');
     if (nonEmpty.length === 0) return undefined;
     if (nonEmpty.every((v) => typeof v === 'string')) {
-      return nonEmpty.map((v) => (v as string).toLowerCase().trim()).sort();
+      return nonEmpty.map((v) => (v as string).toLowerCase().trim()).sort(compareCodeUnits);
     }
     return nonEmpty.map(normalizeValue);
   }

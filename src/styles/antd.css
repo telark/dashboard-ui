@@ -475,6 +475,17 @@
   }
 }
 
+/* Without anchors, ListToolbar sets that bottom on the page box (LIST_TOOLBAR.BOTTOM_VAR) for the
+   same band, which the empty state fills and centers its content in. */
+@supports not (top: anchor(--tk-any bottom)) {
+  .tk-page .ant-empty.tk-empty-page:last-child:not(.tk-empty-no-access) {
+    top: calc(var(--tk-list-toolbar-bottom, 0px) + var(--ant-margin-lg));
+    bottom: calc(var(--tk-list-toolbar-bottom, 0px) + var(--ant-margin-lg));
+    justify-content: safe center;
+    transform: none;
+  }
+}
+
 .tk-empty-page .ant-empty-image {
   margin-bottom: var(--ant-margin-lg);
   color: var(--ant-color-text-secondary);

@@ -9,11 +9,11 @@ import { addBase64Padding, convertCredentialDescriptors, handleWebAuthnError } f
 
 export const base64UrlToArrayBuffer = (base64url: string): ArrayBuffer => {
   const base64 = base64url
-    .replace(
+    .replaceAll(
       LOGIN_CONSTANTS.WEBAUTHN.REGEX.BASE64URL_TO_BASE64.REPLACE_DASH,
       LOGIN_CONSTANTS.WEBAUTHN.REGEX.BASE64URL_TO_BASE64.REPLACE_WITH_PLUS,
     )
-    .replace(
+    .replaceAll(
       LOGIN_CONSTANTS.WEBAUTHN.REGEX.BASE64URL_TO_BASE64.REPLACE_UNDERSCORE,
       LOGIN_CONSTANTS.WEBAUTHN.REGEX.BASE64URL_TO_BASE64.REPLACE_WITH_SLASH,
     );
@@ -36,11 +36,11 @@ const arrayBufferToBase64Url = (buffer: ArrayBuffer): string => {
   }
   const base64 = globalThis.btoa(binary);
   return base64
-    .replace(
+    .replaceAll(
       LOGIN_CONSTANTS.WEBAUTHN.REGEX.BASE64_TO_BASE64URL.REPLACE_PLUS,
       LOGIN_CONSTANTS.WEBAUTHN.REGEX.BASE64_TO_BASE64URL.REPLACE_WITH_DASH,
     )
-    .replace(
+    .replaceAll(
       LOGIN_CONSTANTS.WEBAUTHN.REGEX.BASE64_TO_BASE64URL.REPLACE_SLASH,
       LOGIN_CONSTANTS.WEBAUTHN.REGEX.BASE64_TO_BASE64URL.REPLACE_WITH_UNDERSCORE,
     )

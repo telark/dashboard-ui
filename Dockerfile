@@ -5,7 +5,7 @@ FROM node:26.10.0-alpine3.24 AS builder
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN --mount=type=cache,target=/root/.npm \
-    npm ci
+    npm ci --ignore-scripts
 COPY . .
 RUN npm run build:cluster
 
@@ -20,15 +20,12 @@ RUN rm -f /etc/nginx/conf.d/default.conf \
     && chown -R nginx:nginx \
         /var/cache/nginx \
         /var/log/nginx \
-        /etc/nginx \
     && touch /tmp/nginx.pid \
     && chown nginx:nginx /tmp/nginx.pid
 
-COPY --chown=nginx:nginx \
-    --from=builder /app/dist /usr/share/nginx/html
+COPY --from=builder /app/dist /usr/share/nginx/html
 
-COPY --chown=nginx:nginx \
-    nginx/nginx.conf /etc/nginx/nginx.conf
+COPY nginx/nginx.conf /etc/nginx/nginx.conf
 
 COPY LICENSE.md THIRD-PARTY-NOTICES.md /licenses/
 

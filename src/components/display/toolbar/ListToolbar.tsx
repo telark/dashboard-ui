@@ -8,7 +8,7 @@ import {
   getPillSurface,
   LINE_HEIGHT,
 } from '../../../constants';
-import { LIST_PAGE } from '../../../constants/shared/pages';
+import { LIST_PAGE, PAGE_CONTENT_LAYOUT } from '../../../constants/shared/pages';
 import type {
   FilterChip,
   ListToolbarProps,
@@ -87,6 +87,27 @@ const SelectionSummary: React.FC<{ selection: ListToolbarSelection }> = ({ selec
   );
 };
 
+// Browsers without CSS anchor positioning read the toolbar's bottom from the page box instead (antd.css).
+// Its parent is watched too: a header that rewraps above it moves it without resizing it.
+const shareBottomWithoutAnchors = (toolbar: HTMLDivElement | null) => {
+  const page = toolbar?.closest<HTMLElement>(`.${PAGE_CONTENT_LAYOUT.CLASS_NAME}`);
+  if (!toolbar || !page || CSS.supports('top', `anchor(${LIST_TOOLBAR.ANCHOR_NAME} bottom)`)) {
+    return undefined;
+  }
+  const measure = () => {
+    const bottom = toolbar.getBoundingClientRect().bottom - page.getBoundingClientRect().top;
+    page.style.setProperty(LIST_TOOLBAR.BOTTOM_VAR, `${bottom}px`);
+  };
+  measure();
+  const observer = new ResizeObserver(measure);
+  observer.observe(toolbar);
+  if (toolbar.parentElement) observer.observe(toolbar.parentElement);
+  return () => {
+    observer.disconnect();
+    page.style.removeProperty(LIST_TOOLBAR.BOTTOM_VAR);
+  };
+};
+
 const ListToolbar: React.FC<ListToolbarProps> = ({
   totalCount,
   countSuffix,
@@ -134,6 +155,7 @@ const ListToolbar: React.FC<ListToolbarProps> = ({
   return (
     // Sticks under the app header so the controls stay reachable while the list scrolls.
     <div
+      ref={shareBottomWithoutAnchors}
       style={{
         position: 'sticky',
         top: 0,

@@ -60,7 +60,9 @@ const GroupName: React.FC<{ groupBy: InsightGroupBy; group: InsightGroup }> = ({
     );
   }
   if (groupBy !== 'app') return <span style={nameStyle}>{group.key}</span>;
-  const namespaces = [...group.namespaces].sort().join(T.PAGE.GROUP_NAMESPACES_SEPARATOR);
+  const namespaces = [...group.namespaces]
+    .sort((a, b) => a.localeCompare(b))
+    .join(T.PAGE.GROUP_NAMESPACES_SEPARATOR);
   return (
     <>
       <span style={iconStyle}>

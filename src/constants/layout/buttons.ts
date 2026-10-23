@@ -55,6 +55,8 @@ export const LIST_TOOLBAR = {
   QUICK_FILTER_CLASS: 'tk-quick-filter',
   // A page empty state keeps its distance below the toolbar through this anchor (antd.css).
   ANCHOR_NAME: '--tk-list-toolbar',
+  // Without anchor positioning, ListToolbar sets its bottom on the page box in this variable instead.
+  BOTTOM_VAR: '--tk-list-toolbar-bottom',
   CLEAR_ALL_LABEL: 'Clear All',
   SELECTED_SUFFIX: 'selected',
   OVERFLOW_SUFFIX: 'more',

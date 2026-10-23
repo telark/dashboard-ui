@@ -86,7 +86,12 @@ const ApplicationResourceGraph: React.FC<ApplicationResourceGraphProps> = memo(
     return (
       <div style={{ width: '100%', overflowX: 'auto' }}>
         <div style={{ position: 'relative', width, height, margin: '0 auto' }}>
-          <svg width={width} height={height} style={{ position: 'absolute', inset: 0 }}>
+          <svg
+            width={width}
+            height={height}
+            style={{ position: 'absolute', inset: 0 }}
+            aria-hidden="true"
+          >
             {kinds.map((node) => (
               <g key={node.kind} opacity={isDimmed(node.kind) ? G.DIM_OPACITY : 1}>
                 <line

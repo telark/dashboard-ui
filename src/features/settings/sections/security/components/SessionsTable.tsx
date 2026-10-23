@@ -17,8 +17,7 @@ import type { SessionDetails } from '../../../../../features/auth/models/session
 
 const { LABELS } = SECURITY_SECTION_CONSTANTS;
 
-const formatBrowser = (browser: string): string =>
-  browser.replace(/\s+[\d][\d.]*.*$/, '').trim() || browser;
+const formatBrowser = (browser: string): string => browser.split(/\s\d/, 1)[0].trim() || browser;
 
 const formatDevice = (device: string): string => {
   if (/^mac/i.test(device)) return 'Mac';
@@ -29,7 +28,7 @@ const formatDevice = (device: string): string => {
 
 const formatOS = (os: string): string => {
   if (os.toLowerCase().startsWith('macos')) return 'macOS';
-  const stripped = os.replace(/\s+\d+\.\d+(\.\d+)*$/, '').trim();
+  const stripped = os.replace(/\s\d+(?:\.\d+)+$/, '').trim();
   return stripped || os;
 };
 

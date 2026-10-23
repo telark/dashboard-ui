@@ -56,7 +56,7 @@ const openEventStream = async (
       clearTimeout(watchdog);
       watchdog = setTimeout(abort, SSE_WATCHDOG_MS);
       // Normalized after appending, so a CRLF split across two chunks still joins.
-      buffer = (buffer + decoder.decode(value, { stream: true })).replace(/\r\n/g, '\n');
+      buffer = (buffer + decoder.decode(value, { stream: true })).replaceAll('\r\n', '\n');
       let end = buffer.indexOf(BLOCK_END);
       while (end !== -1) {
         const block = buffer.slice(0, end);

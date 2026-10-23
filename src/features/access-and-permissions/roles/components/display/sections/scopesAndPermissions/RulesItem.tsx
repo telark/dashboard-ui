@@ -13,7 +13,7 @@ import type { RulesItemProps } from '../../../../models';
 
 const RulesItem: React.FC<RulesItemProps> = ({ ruleLabel, formattedKey, isChecked, onToggle }) => {
   const checkboxId = useMemo(
-    () => `rule-checkbox-${formattedKey.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
+    () => `rule-checkbox-${formattedKey.toLowerCase().replaceAll(/[^a-z0-9]+/g, '-')}`,
     [formattedKey],
   );
 

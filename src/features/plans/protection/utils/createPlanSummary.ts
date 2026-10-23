@@ -1,5 +1,5 @@
 import type { FormValues, PolicyEntry } from '../components/create';
-import type { PreparePlanPayload } from '../clients';
+import type { PlanPayload } from '../clients';
 import type {
   CreateOutcome,
   PlanPhase,
@@ -52,7 +52,7 @@ export const createOutcome = (
     mode,
     timeRange,
     repeat,
-  }: Pick<PreparePlanPayload, 'approvalMode' | 'mode' | 'timeRange' | 'repeat'>,
+  }: Pick<PlanPayload, 'approvalMode' | 'mode' | 'timeRange' | 'repeat'>,
   now = Date.now(),
 ): CreateOutcome => {
   if (approvalMode === 'required') return 'approval';

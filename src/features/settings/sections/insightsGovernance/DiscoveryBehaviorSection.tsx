@@ -13,6 +13,7 @@ import type { AppDispatch, RootState } from '../../../../store';
 import { SETTINGS_CONSTANTS } from '../../constants';
 import { INSIGHTS_GOVERNANCE_CONSTANTS as C } from './constants';
 import { pluralize } from '../../../../utils/helpers/format';
+import { compareCodeUnits } from '../../../../utils/layout/sort';
 import {
   ACTION_PERMISSIONS,
   usePermission,
@@ -54,12 +55,12 @@ const DiscoveryBehaviorSection: React.FC = memo(() => {
     const cfg = globalConfig.data;
     const savedExcluded = Array.isArray(cfg?.excludedNamespaces) ? cfg.excludedNamespaces : [];
     setExcludedNamespaces(savedExcluded);
-    setInitialExcluded([...savedExcluded].sort());
+    setInitialExcluded([...savedExcluded].sort(compareCodeUnits));
   }, [globalConfig?.data]);
 
   const discoveryHasChanges = useMemo(() => {
     if (!initialExcluded) return false;
-    const current = [...(excludedNamespaces || [])].sort();
+    const current = [...(excludedNamespaces || [])].sort(compareCodeUnits);
     if (current.length !== initialExcluded.length) return true;
     for (let i = 0; i < current.length; i++) {
       if (current[i] !== initialExcluded[i]) return true;
@@ -93,7 +94,7 @@ const DiscoveryBehaviorSection: React.FC = memo(() => {
         data: { excludedNamespaces },
       });
       message.success(C.MESSAGES.SAVE_SUCCESS);
-      setInitialExcluded([...(excludedNamespaces || [])].sort());
+      setInitialExcluded([...(excludedNamespaces || [])].sort(compareCodeUnits));
       dispatch(fetchGlobalConfigThunk());
     } catch {
       message.error(C.MESSAGES.SAVE_FAILED);
