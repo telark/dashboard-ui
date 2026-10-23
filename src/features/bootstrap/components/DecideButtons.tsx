@@ -11,6 +11,8 @@ interface DecideButtonsProps {
   requestId: string;
   /** A pending request is approved or denied; an approved one can only be denied. */
   canApprove: boolean;
+  /** A recovery is only ever denied: Approve stays, off, with the reason. */
+  recovery?: boolean;
   /** Why the buttons are off for this viewer, on hover and focus; unset when they may decide. */
   deniedReason?: string;
   block?: boolean;
@@ -21,15 +23,15 @@ interface DecideButtonsProps {
 const DecideButtons: React.FC<DecideButtonsProps> = ({
   requestId,
   canApprove,
+  recovery = false,
   deniedReason,
   block = false,
   onDecided,
 }) => {
   const { message } = AntdApp.useApp();
   const [running, setRunning] = useState<BootstrapAction | null>(null);
-  // Auth answers 409 for a request that is no longer open: its buttons give way to the reason.
-  const [closedId, setClosedId] = useState<string | null>(null);
-  const denied = deniedReason !== undefined;
+  // Auth's 409 says why the request can't be decided now: the buttons give way to that reason.
+  const [closed, setClosed] = useState<{ id: string; reason: string } | null>(null);
 
   const decide = async (action: BootstrapAction) => {
     setRunning(action);
@@ -38,7 +40,9 @@ const DecideButtons: React.FC<DecideButtonsProps> = ({
       onDecided(action);
     } catch (err: unknown) {
       if ((err as ExtendedAxiosError).normalized?.status === HTTP_STATUS.CONFLICT) {
-        setClosedId(requestId);
+        // Auth's reasons are Go errors, which start lowercase.
+        const reason = extractErrorMessage(err, T.NOT_OPEN);
+        setClosed({ id: requestId, reason: reason.charAt(0).toUpperCase() + reason.slice(1) });
       } else {
         message.error(extractErrorMessage(err, T.DECIDE_FAILED));
       }
@@ -47,29 +51,30 @@ const DecideButtons: React.FC<DecideButtonsProps> = ({
     }
   };
 
-  if (closedId === requestId) {
-    return <Alert title={T.NOT_OPEN} type="error" showIcon style={C.LAYOUT.ALERT} />;
+  if (closed?.id === requestId) {
+    return <Alert title={closed.reason} type="error" showIcon style={C.LAYOUT.ALERT} />;
   }
 
   // aria-disabled rather than disabled, so the button keeps hover and focus, and both show the reason.
-  const button = (action: BootstrapAction, label: string, primary: boolean) => (
-    <Tooltip key={action} title={deniedReason} trigger={['hover', 'focus']}>
+  const button = (action: BootstrapAction, label: string, primary: boolean, offReason?: string) => (
+    <Tooltip key={action} title={offReason} trigger={['hover', 'focus']}>
       <Button
         type={primary ? 'primary' : 'default'}
         danger={!primary}
         block={block}
         loading={running === action}
-        aria-disabled={denied}
-        className={denied ? C.DISABLED_CLASS : undefined}
+        aria-disabled={offReason !== undefined}
+        className={offReason === undefined ? undefined : C.DISABLED_CLASS}
         disabled={running !== null && running !== action}
         onClick={() => {
-          if (!denied) void decide(action);
+          if (offReason === undefined) void decide(action);
         }}
       >
         {label}
       </Button>
     </Tooltip>
   );
+  const approveOffReason = deniedReason ?? (recovery ? T.APPROVE_RECOVERY : undefined);
 
   return (
     <div
@@ -80,8 +85,8 @@ const DecideButtons: React.FC<DecideButtonsProps> = ({
         gap: C.LAYOUT.BUTTON_GAP,
       }}
     >
-      {canApprove && button(C.ACTION.APPROVE, T.APPROVE, true)}
-      {button(C.ACTION.DENY, T.DENY, false)}
+      {canApprove && button(C.ACTION.APPROVE, T.APPROVE, true, approveOffReason)}
+      {button(C.ACTION.DENY, T.DENY, false, deniedReason)}
     </div>
   );
 };

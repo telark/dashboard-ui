@@ -61,7 +61,8 @@ const RequestRow: React.FC<{ request: BootstrapRequest; decide?: React.ReactNode
   </div>
 );
 
-// Admins on ALL read the pin and the requests; only the bootstrap account decides, with a passkey.
+// The bootstrap account sees its pin, its alerts switch and its requests, and decides with a passkey.
+// Other Admins on ALL see the requests alone, and only while its alerts are on.
 const BootstrapAccountSection: React.FC = memo(() => {
   const isAdminOnAll = useIsAdminOnAll();
   const { message } = AntdApp.useApp();
@@ -100,17 +101,32 @@ const BootstrapAccountSection: React.FC = memo(() => {
 
   if (!isAdminOnAll) {
     return (
-      <SettingsCard title={T.CARD_TITLE}>
-        <NoPermissionCard featureName={T.CARD_TITLE} permission={VIEW} emptyState />
+      <SettingsCard title={T.REQUESTS_LABEL}>
+        <NoPermissionCard featureName={T.REQUESTS_LABEL} permission={VIEW} emptyState />
+      </SettingsCard>
+    );
+  }
+
+  const requests = status?.requests ?? [];
+  if (getCurrentUser()?.bootstrap !== true) {
+    if (!failed && (!status || status.notifyAdmins === false)) return null;
+    return (
+      <SettingsCard title={T.REQUESTS_LABEL}>
+        {failed && <div style={hintStyle}>{T.LOAD_FAILED}</div>}
+        {status && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: C.LAYOUT.ROW_GAP }}>
+            {requests.length === 0 && <div style={hintStyle}>{T.NO_REQUESTS}</div>}
+            {requests.map((request) => (
+              <RequestRow key={request.id} request={request} />
+            ))}
+          </div>
+        )}
       </SettingsCard>
     );
   }
 
   // The pinned account's passkey is the one that decides.
   const isPinned = status?.userID !== undefined && status.userID === getCurrentUser()?.id;
-  const isBootstrap = getCurrentUser()?.bootstrap === true;
-  const notifyAdmins = status?.notifyAdmins !== false;
-  const requests = status?.requests ?? [];
   const newest = requests[0];
   const open = newest?.state === C.STATE.PENDING || newest?.state === C.STATE.APPROVED;
   return (
@@ -126,14 +142,9 @@ const BootstrapAccountSection: React.FC = memo(() => {
                 : T.NOT_PINNED}
             </div>
           </div>
-          <BreakGlassAlertsSetting stored={notifyAdmins} canEdit={isBootstrap} onSaved={reload} />
+          <BreakGlassAlertsSetting stored={status.notifyAdmins !== false} onSaved={reload} />
           <div style={{ fontWeight: FONT_WEIGHT.BOLD }}>{T.REQUESTS_LABEL}</div>
-          {/* The exporter sends no requests to the others then, so an empty list would mislead. */}
-          {requests.length === 0 && (
-            <div style={hintStyle}>
-              {notifyAdmins || isBootstrap ? T.NO_REQUESTS : T.REQUESTS_PRIVATE}
-            </div>
-          )}
+          {requests.length === 0 && <div style={hintStyle}>{T.NO_REQUESTS}</div>}
           {requests.map((request) => (
             <RequestRow
               key={request.id}
@@ -143,6 +154,7 @@ const BootstrapAccountSection: React.FC = memo(() => {
                   <DecideButtons
                     requestId={request.id}
                     canApprove={request.state === C.STATE.PENDING}
+                    recovery={request.kind === C.KIND_RECOVER}
                     deniedReason={isPinned ? undefined : T.READ_ONLY}
                     onDecided={onDecided}
                   />

@@ -11,19 +11,17 @@ import { FONT_WEIGHT } from '../../../../constants';
 
 interface BreakGlassAlertsSettingProps {
   stored: boolean;
-  canEdit: boolean;
   onSaved: () => void;
 }
 
-// Auth takes this from the bootstrap account only: it decides who hears of its recovery.
+// Auth takes this from the bootstrap account only: it decides who hears of its requests.
 const BreakGlassAlertsSetting: React.FC<BreakGlassAlertsSettingProps> = memo(
-  ({ stored, canEdit, onSaved }) => {
+  ({ stored, onSaved }) => {
     const { message } = AntdApp.useApp();
     const [draft, setDraft] = useState<boolean | null>(null);
     const [saving, setSaving] = useState(false);
     const enabled = draft ?? stored;
     const hasChanges = enabled !== stored;
-    const deniedTooltip = canEdit ? undefined : T.ALERTS_BOOTSTRAP_ONLY;
 
     const handleSave = useCallback(async () => {
       setSaving(true);
@@ -46,13 +44,12 @@ const BreakGlassAlertsSetting: React.FC<BreakGlassAlertsSettingProps> = memo(
             label: C.LABELS.SAVE_BUTTON,
             variant: 'primary',
             loading: saving,
-            disabled: !hasChanges || !canEdit,
-            tooltip: deniedTooltip,
+            disabled: !hasChanges,
             onClick: handleSave,
           },
         ],
       }),
-      [saving, hasChanges, canEdit, deniedTooltip, handleSave],
+      [saving, hasChanges, handleSave],
     );
 
     return (
@@ -71,12 +68,7 @@ const BreakGlassAlertsSetting: React.FC<BreakGlassAlertsSettingProps> = memo(
               {T.ALERTS_HINT}
             </div>
           </div>
-          <Switch
-            checked={enabled}
-            onChange={setDraft}
-            disabled={!canEdit}
-            tooltip={deniedTooltip}
-          />
+          <Switch checked={enabled} onChange={setDraft} />
         </div>
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <Toolbar config={saveToolbarConfig} />
