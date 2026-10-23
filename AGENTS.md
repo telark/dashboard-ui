@@ -1,8 +1,8 @@
 # dashboard-ui agent guide
 
-This is the canonical instruction file for coding agents working in this repo; `CLAUDE.md` only imports it. Procedures for recurring work live in `.claude/skills/<name>/SKILL.md`. They are plain Markdown, so any agent can open them; the [skills index](#skills-index) says when each one applies.
+Canonical instructions for coding agents in this repo (`CLAUDE.md` only imports it). Procedures for recurring work are plain Markdown in `.claude/skills/<name>/SKILL.md`, so any agent can open and follow them; the [skills index](#skills-index) says when each applies.
 
-dashboard-ui is the operator-facing SPA for telark: React 19, TypeScript 7, Vite, Redux Toolkit, Ant Design 6. It has no backend logic of its own. `README.md` covers the backend services, dev ports and scripts. Branch, commit and PR conventions are in the [Telark contribution guide](https://github.com/telark/telark/blob/main/CONTRIBUTING.md#branches-commits-and-pull-requests).
+dashboard-ui is the operator-facing SPA for telark (React 19, TypeScript 7, Vite, Redux Toolkit, Ant Design 6), with no backend logic of its own. Backend services, dev ports and scripts are in `README.md`; branch, commit and PR conventions in the [Telark contribution guide](https://github.com/telark/telark/blob/main/CONTRIBUTING.md#branches-commits-and-pull-requests).
 
 ## Repository map
 
@@ -27,61 +27,48 @@ dashboard-ui is the operator-facing SPA for telark: React 19, TypeScript 7, Vite
 
 ### Code navigation
 
-If the code-review-graph MCP server is available and `list_graph_stats` shows this repo is indexed, prefer it for questions about callers, impact radius, affected flows and test coverage (`query_graph`, `get_impact_radius`, `get_affected_flows`, `detect_changes`), because it answers from the import and call graph instead of text matches. Otherwise use normal search. Some server versions add a `_tool` suffix to these names. If the graph's last update predates your edits, refresh it with `build_or_update_graph` first. The `graph-*` skills cover exploring, debugging, reviewing and refactoring.
+If the code-review-graph MCP server is available and `list_graph_stats` shows this repo indexed, prefer it for callers, impact radius, affected flows and test coverage (`query_graph`, `get_impact_radius`, `get_affected_flows`, `detect_changes`; some server versions add a `_tool` suffix), because it answers from the import and call graph, not text matches. Otherwise use normal search. If the graph's last update predates your edits, refresh it with `build_or_update_graph` first.
 
 ## Working agreements
 
 ### 1. Surface assumptions
 
-Don't assume. Don't hide confusion. Surface tradeoffs.
+Don't assume. Don't hide confusion. Surface tradeoffs. Before implementing:
 
-Before implementing:
-- State your assumptions explicitly. For minor choices (naming, formatting, default values, which approach among equivalents), pick a reasonable option and note it rather than asking. For scope changes, destructive or irreversible actions, or requirements you can't infer from the request or the code, ask first.
+- State your assumptions explicitly. Minor choices (naming, formatting, default values, which approach among equivalents): pick a reasonable option and note it rather than asking. Scope changes, destructive or irreversible actions, or requirements you can't infer from the request or the code: ask first.
 - If multiple interpretations exist, present them; don't pick silently.
 - If a simpler approach exists, say so. Push back when warranted.
 
 ### 2. Simplicity first
 
 Minimum code that solves the problem. Nothing speculative.
-- No features beyond what was asked.
-- No abstractions for single-use code.
-- No "flexibility" or "configurability" that wasn't requested.
-- No error handling for impossible scenarios.
-- If you write 200 lines and it could be 50, rewrite it.
-- Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, simplify.
+
+- No features beyond what was asked, no abstractions for single-use code, no "flexibility" or "configurability" that wasn't requested, no error handling for impossible scenarios.
+- If you write 200 lines and it could be 50, rewrite it. Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, simplify.
 
 ### 3. Surgical changes
 
-Touch only what you must. Clean up only your own mess.
+Touch only what you must. Clean up only your own mess. The test: every changed line should trace directly to the user's request.
 
-When editing existing code:
-- Don't "improve" adjacent code, comments, or formatting.
-- Don't refactor things that aren't broken.
-- Match existing style, even if you'd do it differently.
-- If you notice unrelated dead code, mention it; don't delete it.
-
-When your changes create orphans:
+- When editing existing code, don't "improve" adjacent code, comments, or formatting, don't refactor things that aren't broken, and match existing style, even if you'd do it differently.
+- If you notice unrelated dead code, mention it; don't remove pre-existing dead code unless asked.
 - Remove imports, variables and functions that your changes made unused.
-- Don't remove pre-existing dead code unless asked.
-
-The test: every changed line should trace directly to the user's request.
 
 ### 4. Goal-driven execution
 
-Define success criteria. Loop until verified.
+Define success criteria. Loop until verified. Transform tasks into verifiable goals:
 
-Transform tasks into verifiable goals:
 - "Add validation" → "Write tests for invalid inputs, then make them pass"
 - "Fix the bug" → "Write a test that reproduces it, then make it pass"
 - "Refactor X" → "Ensure tests pass before and after"
 
-Verify each step against its success criterion before moving on. Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
+Verify each step against its success criterion before moving on. Strong criteria let you loop independently; weak ones ("make it work") need constant clarification.
 
 ### In this repo
 
-- Comment only where the why is non-obvious (a hidden constraint, an invariant, a workaround), in at most two lines. Skip header comments that restate what a well-named function or constant does. If a comment needs more than two lines, the code probably needs simplifying instead.
-- For an unused parameter, remove it and update every caller instead of renaming it `_x`. Keep a placeholder only when a signature you don't own forces it, because padded parameters make readers guess whether the value is ignored on purpose.
-- Don't open browser windows or tabs (Playwright, browser extensions, or `npm run dev`, which opens Chrome through `--open`) unless the user asks, because it takes over their screen and a fresh profile is usually logged out anyway. For visual checks, ask for a screenshot.
+- Comment only a non-obvious why (a hidden constraint, an invariant, a workaround), in at most two lines; needing more probably means the code needs simplifying. Skip header comments that restate what a well-named function or constant does.
+- Remove an unused parameter and update every caller instead of renaming it `_x`. Keep a placeholder only when a signature you don't own forces it, because padded parameters make readers guess whether the value is ignored on purpose.
+- Don't open browser windows or tabs (Playwright, browser extensions, or `npm run dev`, which opens Chrome through `--open`) unless the user asks, because it takes over their screen and a fresh profile is usually logged out anyway.
 - Commit messages are short, imperative, present tense, plain and human (`fix loading state across pages`), with no AI formatting and no agent references.
 
 ## Architecture & feature folders
@@ -91,11 +78,11 @@ Verify each step against its success criterion before moving on. Strong success 
 - Redux state lives in Redux Toolkit slices in a feature's `store/`, combined in `src/store/index.ts`. Don't introduce a second state library or store pattern next to it.
 - A capability shown by more than one feature, now or planned, gets its own `src/features/<name>/` folder with an `index.ts`, like `src/features/insights/`. Host features import its public pieces through that `index.ts` and keep only their own wiring, because nesting it under its first consumer forces the others to import its internals or move it later.
 - Don't import another feature's internals (anything not exported from its `index.ts`). When something becomes shared, move it to `src/constants/`, `src/components/` or `src/features/shared/`, remove the old definition and update every caller, because a cross-feature import creates false ownership and coupling.
-- Full-page loading uses `FullPageLoader` (`src/components/display/views/FullPageLoader.tsx`). Loaders that can follow each other during one wait must render identically (same size, same label or none), because a switch between two spinners reads as a glitch. Don't wrap a lazy route in a second `Suspense` when the route-level one in `src/routes/AppRoutes.tsx` already covers it. The store's rehydration shows nothing (`PersistGate loading={null}` in `main.tsx`), and a details page shows the route's loader (`FullPageLoader minHeight={HEADER_LAYOUT.MIN_HEIGHT}`) until its record is known, never a not-found or empty page before the data that decides it, so one spinner stays in place from the shell's mount to the content.
-- A list page picks loading, empty or populated from its slice's `loaded` flag (set when the list arrives), never from `loading`: that one is false before the first fetch and true on every refetch or poll, so it shows the empty page before the data and flips a known page to a spinner. A page whose empty state is a page of its own loads behind `FullPageLoader` (`PageLayout`'s `fullPageLoading`), because its frame isn't known until the list is.
+- Full-page loading uses `FullPageLoader` (`src/components/display/views/FullPageLoader.tsx`). Loaders that can follow each other in one wait must render identically (same size, same label or none), because a switch between spinners reads as a glitch. Don't wrap a lazy route in a second `Suspense` when the route-level one in `src/routes/AppRoutes.tsx` covers it. Store rehydration shows nothing (`PersistGate loading={null}` in `main.tsx`), and a details page shows the route's loader (`FullPageLoader minHeight={HEADER_LAYOUT.MIN_HEIGHT}`) until its record is known, never a not-found or empty page before the data that decides it, so one spinner stays in place from the shell's mount to the content.
+- A list page picks loading, empty or populated from its slice's `loaded` flag (set when the list arrives), never from `loading`, which is false before the first fetch and true on every refetch or poll, so it shows the empty page before the data and flips a known page to a spinner. A page whose empty state is a page of its own loads behind `FullPageLoader` (`PageLayout`'s `fullPageLoading`), because its frame isn't known until the list is.
 - Pollers run through `pollWhileVisible` (`src/utils/helpers/poll.ts`) inside their effect: no requests while the tab is hidden, one poll on return. One poller per data source: a second consumer takes the first one's data (the notifications bell passes its feed to the panel), because a second hook call starts a second interval. A poll that returns what is shown keeps the old state object (`useDiscoveryStatus`), or every subscriber re-renders each period. So does a revalidation: every panel mount refetches the categories, and their reducer keeps an unchanged list.
 - The session is auth's HttpOnly cookie: no JS stores, reads or sends a session token. The one exception, until 0.3.0: at load, `dropLegacySessionToken` (`src/features/auth/utils/session/token.ts`) drops a pre-0.2.0 token from `localStorage` and sends it once, to auth logout. Requests go through the shared clients in `src/api/client/instances.ts`, which send credentials and `X-Requested-With` (the backends refuse a change without that header or a header credential), and a raw `fetch` adds `credentials: 'include'`, plus `X-Requested-With` for a change. "Signed in" is the stored current user (`isSignedIn`), and "this device's session" comes from `GET auth/sessions/self`. Only auth can clear the cookie, so a logout clears local state (and signs out other tabs) only once auth answers: a failed one keeps the user signed in and shows a retry error.
-- Server-sent event streams go through `keepEventStream` (`src/api/client/eventStream.ts`): fetch with the session cookie, never `EventSource` or a token in the URL. A refused stream (401 or 403) raises `SESSION_CHECK_EVENT`, which runs the session check at once. A stream is closed while the tab is hidden, its connect makes the one refetch on return, and its consumer polls with `pollWhileVisible` while it is down (`useNotifications`). Browsers allow 6 HTTP/1.1 connections per origin, and a port-forward puts every API on one origin, so hidden tabs must not hold streams open. The insights streams (`useApplicationInsights`, `useAnalyzerRuntime`) are the exception: they still stay open while hidden.
+- Server-sent event streams go through `keepEventStream` (`src/api/client/eventStream.ts`): fetch with the session cookie, never `EventSource` or a token in the URL. A refused stream (401 or 403) raises `SESSION_CHECK_EVENT`, which runs the session check at once. A stream is closed while the tab is hidden, its connect makes the one refetch on return, and its consumer polls with `pollWhileVisible` while it is down (`useNotifications`). Browsers allow 6 HTTP/1.1 connections per origin, and a port-forward puts every API on one origin, so hidden tabs must not hold streams open. The insights streams (`useApplicationInsights`, `useAnalyzerRuntime`) are the exception and stay open while hidden.
 - Permission checks (`usePermission`, `PermissionGate`) use the last known permissions and never read `permissions.loading`. Access mutations refetch permissions, and a check that reads that refetch as denied swaps the route for its `NoPermissionCard`, unmounting the page (and any open panel) and remounting it when the refetch lands. The first load is `ProtectedRoute`'s job: it holds gated routes until `ready`.
 - Toasts come from `App.useApp()`, which reads `<AntdApp message>` in `App.tsx` (`APP_CONFIGS.MESSAGE`: under the header, at most 3). The static `message.config` reaches none of them, and antd's 3 s default needs no per-toast `duration`.
 - Every spinner is `FancySpinner` (`src/components/animation`). antd Button and Select loading icons come from the `ConfigProvider` in `App.tsx`, so don't use antd `Spin` or `LoadingOutlined`.
@@ -111,9 +98,8 @@ Verify each step against its success criterion before moving on. Strong success 
 
 - User-facing text (labels, tooltips, messages, empty states, notifications) and log messages live in constants, never inline in components or hooks: feature text in the feature's `constants/` (for example `src/features/insights/constants/texts.ts`), shared text under `src/constants/`. One place to edit keeps copy consistent and auditable.
 - Config values (thresholds, sizes, timeouts, storage keys) are constants too. Pixel values that carry meaning (shared sizes, breakpoints, minimum widths) go in `src/constants/layout/` or the feature's constants.
-- A literal repeated in two or more files moves into a shared constants file, because copies drift.
+- A literal repeated in two or more files moves into a shared constants file, because copies drift. A constant needed outside its feature moves to the root `src/constants/`.
 - Help text under a control stays short and plain. A longer explanation goes behind an info icon: antd `Tooltip` around `InfoCircleOutlined` with `tabIndex={0}` and `aria-label` set to the text.
-- A constant needed outside its feature moves to the root `src/constants/` (see the feature-boundary rule above).
 - UI text doesn't name internal vendors or tools (for example Kyverno). Say "the engine" or "the policy engine", or describe the effect, because naming them leaks implementation details and ties the copy to swappable infrastructure. Non-UI code and internal constants may use the names.
 - UI copy, comments and docs use American English spelling ("enroll", "color", "canceled"), never British.
 
@@ -137,13 +123,14 @@ Verify each step against its success criterion before moving on. Strong success 
   | Light: slide-out panels, modals, dropdowns, popovers, tooltips | `SURFACE_WHITE`, `SURFACE_SUBTLE`, `SURFACE_HOVER`, `SURFACE_BORDER*`, `TEXT_ON_SURFACE`, `TEXT_ON_SURFACE_MUTED`, `TEXT_ON_SURFACE_DISABLED`, `CHIP_ON_SURFACE_*` | Dark-surface text tokens here render white on white |
 
   The wrong palette fails silently: `check-all` passes and the text still copies, so it looks like missing data. When something "shows nothing", suspect white on white first.
+
 - A shared control that renders on both surfaces takes its colors from a `BUTTON_COLORS` `var()` (`src/constants/layout/buttons.ts`) that falls back to the dark token and that `.app-panel-surface` re-points to the light one in `antd.css`, not from a `light` prop, because a prop must be remembered at every call site and a missing one fails silently. Examples: `Toolbar` and `FilterButton` (`TOOLBAR_*`), `Switch` (`SWITCH_OFF`), `ValidityDisplay` and `UserDisplay` (`MUTED_TEXT`). Panels, filter panels and modals carry that class; dropdowns, popovers and tooltips are portals outside it, so their content uses the light tokens directly.
 - Pills are antd `Tag`s: `<Tag color={getPillColor(accent)}>`, with no color for the neutral pill. The look comes from `TAG_THEME` in the `App.tsx` `ConfigProvider` plus the `tk-pill` class it puts on every Tag; vary it only with `TAG_CLASS` modifiers (`src/constants/layout/tags.ts`, rules in `antd.css`): 11px and capitalized by default, `MEDIUM` 12px, `XSMALL` 10px, `AS_IS` keeps the text's case. Don't build pill spans or wrap `Tag`. The accent is a `DEFAULT_COLORS` value (`SUCCESS`, `DANGER`, `WARNING`, `INFO`, `NEUTRAL`, `TEXT_MUTED`); any other value, or none, gives the neutral pill. Pill text follows the fill for WCAG AA contrast (user decision, 2026-10-16): `TEXT_ON_SURFACE` on the light fills (`SUCCESS`, `WARNING`, `TEXT_MUTED`, `NEUTRAL`), white on `INFO`, `DANGER` (4.6:1) and the neutral pill. `getPillTextColor` decides it: `TAG_STYLES` in the `ConfigProvider` applies it to every Tag, and `getPillSurface` returns it for pills that aren't Tags. `INFO` renders as `INFO_STRONG`, since the light `INFO` can't carry white text. Card status pills are standard pills too, capitalized, never uppercase (user decision, 2026-10-07). A list toolbar's quick-filter pills are `QuickFilterPills` (`src/components/display/toolbar/`), colored by `getQuickFilterPillColors`.
 - Every status → color mapping lives in `STATUS_COLORS` (`src/constants/shared/statusColors.ts`); add a status there, not in a feature.
 - Each color keeps one meaning across features (user decision, 2026-10-21). Teal (`SUCCESS`) is the logo, primary actions and success only, so selection (table rows, the current page) and decoration take neutral tokens. Red (`DANGER`) means down, failed, refused or an incident; amber (`WARNING`) means degraded, drifted or pending; scheduled and in-progress states are `NEUTRAL`.
 - Red is never text on the dark page: `DANGER` is 3.6:1 on cards and 3.9:1 on the page. Put a red dot or icon beside `TEXT_PRIMARY` text (`INCIDENT_DOT_STYLE`, `CloseCircleFilled`); as a fill under white text and as an icon it passes.
 - Headings follow the page outline with no skipped level, styled inline (empty states by their `antd.css` rule) so the level never changes the look: the page title is the h1 (`PageContainer`, `SectionHeader`), `SettingsCard` titles and a `PAGE` empty state's title (`Typography.Title level={2}`) are h2, and `SettingsSubsectionHeader` and a `SECTION` empty state's title (`Typography.Title level={3}`) are h3.
-- Empty states are antd `Empty` with an `EMPTY_CLASS` (`src/constants/layout/empty.ts`) for their surface: `PAGE`, `PANEL` or `SECTION`. The icon goes in `image` (`image={false}` for none), a `Typography.Title` and `Typography.Text` in `description`, and buttons as children, styled with `EMPTY_ACTION_STYLE` on a page. A `PAGE` empty state that ends its page sits at the content pane's exact center, whatever title, toolbar or status row is above it (`antd.css`, under `PageContainer`'s `tk-page` box), but never within 24px of the list toolbar above it (`LIST_TOOLBAR.ANCHOR_NAME`, in browsers with CSS anchor positioning); one followed by more content (Applications' help card) stays in the flow.
+- Empty states are antd `Empty` with an `EMPTY_CLASS` (`src/constants/layout/empty.ts`) for their surface: `PAGE`, `PANEL` or `SECTION`. The icon goes in `image` (`image={false}` for none), a `Typography.Title` and `Typography.Text` in `description`, and buttons as children, styled with `EMPTY_ACTION_STYLE` on a page. A `PAGE` empty state that ends its page sits at the content pane's exact center, whatever title, toolbar or status row is above it (`antd.css`, under `PageContainer`'s `tk-page` box), but never within 24px of the list toolbar above it (`LIST_TOOLBAR.ANCHOR_NAME`, or, in browsers without CSS anchor positioning, the bottom `ListToolbar` measures into `LIST_TOOLBAR.BOTTOM_VAR`); one followed by more content (Applications' help card) stays in the flow.
 - No box-shadow on buttons unless the user asks for it.
 
 ### Ant Design theme
@@ -153,7 +140,7 @@ Verify each step against its success criterion before moving on. Strong success 
 - antd generates a control's styles the first time it renders under a theme, which the first panel opened on a page paid while it slid in. `PanelThemePrewarm` (mounted in `App.tsx`) renders the common panel controls (`PanelThemeControls`) offscreen under `PANEL_THEME` once the app is idle, and that theme's css-var key is fixed so every panel reuses those styles (antd otherwise keys each provider by its own id). A provider on that key must use that exact theme, because two themes on one key overwrite each other's variables. The prewarm loads its chunk before it renders in a transition: a transition that suspends on a lazy chunk holds back the page's deferred renders (it delayed the Members list by 210 ms).
 - The `darkAlgorithm` wrapper in `App.tsx` hands back the seed `colorPrimary`, `colorSuccess`, `colorWarning`, `colorError`, `colorInfo` and `colorLink`, because the algorithm shifts every seed color and antd would draw its own shades beside ours. Set a base color in the root `token`, not per component.
 - Each surface has one keyboard focus ring color, because antd draws every ring in `colorPrimaryBorder` and its derived mint fails on both surfaces. The dark page uses `TEXT_SECONDARY` (the root token, plus one `:focus-visible` rule in `antd.css` for the app's own controls that reset the outline inline; table rows draw theirs in the cells). The light surfaces use `TEXT_ON_SURFACE_MUTED` (4.8:1 on white), set in `PANEL_THEME_TOKENS`.
-- Date and time pickers take their popup's sizes and green hover and range tints from `DATE_PICKER_THEME` in `PANEL_THEME` (`panels.ts`), and their selection keeps the brand green of `colorPrimary`, the one selection that stays teal (user decision, 2026-10-22: date pickers keep the brand green). The few rules its tokens can't reach (the selected time, the OK button) are in `src/styles/datePicker.css` under `DATE_PICKER_POPUP_CLASS`, so every picker passes it as `classNames={{ popup: { root: … } }}` (the shared `DatePicker` does; a raw antd `TimePicker` must).
+- Date and time pickers take their popup's sizes and green hover and range tints from `DATE_PICKER_THEME` in `PANEL_THEME` (`panels.ts`), and their selection keeps the brand green of `colorPrimary`, the one selection that stays teal (user decision, 2026-10-22). The few rules its tokens can't reach (the selected time, the OK button) are in `src/styles/datePicker.css` under `DATE_PICKER_POPUP_CLASS`, so every picker passes it as `classNames={{ popup: { root: … } }}` (the shared `DatePicker` does; a raw antd `TimePicker` must).
 - Don't set `colorText` on a component whose parts render on different surfaces. A `Select`'s closed control sits on the dark page while its dropdown is a portal on white, and one `Select.colorText` drives both, so it is deliberately unset; the dropdown text is pinned in `src/styles/antd.css` (the `.ant-select-dropdown` and `.ant-select-multiple` rules). Panels are scoped by `PANEL_SURFACE_CLASS` (`app-panel-surface`) and portals render outside it, so style against that seam.
 - A two-class CSS selector doesn't beat antd's CSS-in-JS, whose rules are deeper and injected later. Fix the token first; when CSS is needed, scope it by surface in `antd.css` like the existing rules.
 - Reuse the global classes in `src/styles/` (`form-item-compact`, `no-asterisk`, `manifest-code`, `tk-scroll-hidden`) before adding a new one.
@@ -196,7 +183,7 @@ Verify each step against its success criterion before moving on. Strong success 
 
 ## Panels & forms
 
-- Side panels use the shared components in `src/components/display/panels/`: `SlideOutPanel` (form panel; `contentOnly` for other content), `AnimationWrapper` (the frame it renders in) and `FilterPanel`. They bring the light surface class and theme, the scroll lock and the header, so don't build a panel frame by hand.
+- Side panels use the shared components in `src/components/display/panels/`: `SlideOutPanel` (form panel; `contentOnly` for other content), `AnimationWrapper` (the frame it renders in) and `FilterPanel`. They bring the light surface class and theme (everything inside a panel uses the light palette), the scroll lock and the header, so don't build a panel frame by hand.
 - `AnimationWrapper` paints the frame on the click and renders the body and footer a frame later, because rendering a large form inside the click held the first frame back (up to 1.6 s in prod, more in dev). Motion durations and curves live in `SLIDE_OUT` (`NO_MOTION` under `prefers-reduced-motion`), and a closed panel slides out inert so it never blocks the next click.
 - An edit panel that mounts per open creates its own form (`Form.useForm` inside the panel), never one passed in from the page. The body renders a frame after the panel, so a reset or `setFieldsValue` in an on-open effect runs before the fields exist, and the fields that mount later merge their values under the previous record's (Edit Role showed another role this way). Change checks compare only the fields the panel has: a stored field the form never registers reads as changed forever.
 - `SlideOutPanel` closes the panel when `onSubmit` resolves. A handler that shows its own error must rethrow, or a failed save closes the panel and drops the input. It shows the error once, in one place, and a failed save leaves the slice's `error` alone, because the page reads that as a failed load (a second toast).
@@ -208,7 +195,6 @@ Verify each step against its success criterion before moving on. Strong success 
 - Panels and dialogs share one action footer, `ActionButtons` (`src/components/display/buttons/`): Cancel, then the primary, on the right, 8px apart. Both are plain antd `Button`s, so their height, radius, font, colors and spinner come from the `App.tsx` theme; the layout lives in `PANEL_FOOTER` (`src/constants/layout/panels.ts`) and Cancel's muted look and inverted hover in one `antd.css` rule (`PANEL_FOOTER.CANCEL_CLASS`). Don't give footer buttons an icon, an inline size or color, or a loading label: a running action keeps its label and shows the theme spinner, and Cancel is disabled meanwhile. Edit panels say "Save changes" (`BUTTON_TEXTS.SAVE_CHANGES`); create and assignment panels name their action.
 - Panels pin that footer in a bar rendered by the frame (`PanelFooter`, as tall as the header with a full-width top line): `SlideOutPanel` builds it from its submit props, `AnimationWrapper` takes `footer` (the `PanelFooter` props), and `FilterPanel` renders through `AnimationWrapper`. Read-only panels have no footer; the header X closes them. Don't render a footer or an inner scroll container in a feature, because the padded body must be the scroller for its scrollbar to sit at the panel edge. Panels have a title and no subtitle; the shared panel header takes none.
 - The panel header is exactly as tall as the app header: `SLIDE_OUT.HEADER.height` is `HEADER_LAYOUT.HEIGHT_PX`. Change the header constant, not the panel, so the two top bars stay aligned.
-- Everything inside a panel is on the light surface; use its palette.
 - Dialogs use `BaseModal` (`src/components/display/modal/`), and confirmations `ActionConfirmModal` on top of it. It owns the frame, the light-surface theme, the title and text styles and the placement of its `footer`, the same `ActionButtons` panels pin (solid primary or danger), so don't render antd `Modal` directly or style a modal frame by hand.
 - A role or group list without read access renders its own no-access card instead of its form field, which unregisters the field. A panel hosting it shows its search, toggles and filter only with that read permission and disables submit without it, because the form would otherwise send an empty selection that removes every assignment.
 - Form fields are antd vertical `Form.Item`s with `className="form-item-compact"` (plus `no-asterisk` to hide the required mark), 16px apart (`FORM_ITEM_GAP`, the root `components.Form.itemMarginBottom`). Filter panel fields get this from `FILTER_PANEL.ITEM_CLASS` and `FILTER_PANEL.ITEM`, and their labels are sentence case ("Filter by severity").
@@ -228,9 +214,18 @@ Verify each step against its success criterion before moving on. Strong success 
 ## Logging
 
 - Log through the project logger (`import logger from '<relative path>/logging'`, then `logger.debug`, `info`, `warn` or `error`), not `console.*`. `no-console` is an error everywhere except `src/logging/**` and `k6/**`; keep it that way. The logger applies levels, environment gating and persistence that console calls bypass.
-- Log messages are constants like any other string.
 - To see debug output in the browser, run `localStorage.setItem('loglevel', 'debug')` and reload, or change `DEFAULT_LOG_LEVELS.DEVELOPMENT` in `src/logging/levels.ts`.
 - For sub-second glitches a screenshot can't catch, add temporary `logger.debug` calls with `performance.now()` at the suspected mount points, reproduce, read the log, and remove the calls before finishing.
+
+## SonarCloud rules
+
+SonarCloud scans this repo, and these rules fired on 0.2.0 (fixed 2026-10-23). Don't bring them back:
+
+- No regex with nested or overlapping quantifiers on the same characters (`(a+)+`, `\s+\d.*$`): S5852 rates it a critical vulnerability and S8786 flags it as super-linear, because a crafted string makes it backtrack for seconds. Use `indexOf`, `startsWith`, `slice` or `split`, or a linear pattern, and prove a rewrite returns the same matches and groups.
+- `sort()` and `toSorted()` take a comparator (S2871): plain `localeCompare` for text people read, `(a, b) => a - b` for numbers, and `compareCodeUnits` (`src/utils/layout/sort`, code-unit order) for order that is only compared or used as a key (change detection, form-state equality, arrays), because `localeCompare(b, 'en')` treats some distinct strings as equal and reorders arbitrary input. Generated files use `localeCompare(b, 'en')` only where every key is `[a-z0-9]`, otherwise a code-unit comparator.
+- `Number.parseFloat`, `Number.parseInt` and `Number.isNaN`, not the globals (S7773), and `replaceAll` with a string pattern for a literal global replace (S7781); a regex-literal site may keep `replace` with its regex.
+- An inline `svg` is `aria-hidden` when it is decoration, or `role="img"` with an `aria-label` when it carries information (S1077).
+- The `Dockerfile` installs with `npm ci --ignore-scripts` (S6505) and copies the build and `nginx.conf` without `--chown`, so they stay root-owned and read-only for nginx (S6504). Only the paths nginx writes at runtime belong to it.
 
 ## Verification & done criteria
 
@@ -242,17 +237,16 @@ Verify each step against its success criterion before moving on. Strong success 
 - When a change alters something `README.md` states (scripts, main areas, services or ports, conventions), update it in the same change.
 
 Done means:
-- The change follows the naming and structure of the surrounding files.
-- No string or config value is defined outside `constants/`.
-- No new `any` and no `console.*`.
+
+- The change follows the naming and structure of the surrounding files, and no string or config value is defined outside `constants/`.
+- No new `any`, no `console.*`, and no dead code, commented-out blocks, unused imports or TODOs left behind.
 - Every new or modified function has a cognitive complexity of 12 or less (no lint rule enforces this; judge it while reading).
-- No dead code, commented-out blocks, unused imports or TODOs are left behind.
 - The repo has no test runner or test files today. If you add or touch tests and one asserted wrong behavior, flag it explicitly instead of silently changing it.
 - `npm run check-all-and-build` passes with zero errors.
 
 ## Skills index
 
-Claude Code loads these automatically; other agents can open the file and follow it.
+Claude Code loads these automatically.
 
 | Skill | Use when | Path |
 |---|---|---|
