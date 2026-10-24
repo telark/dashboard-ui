@@ -1,6 +1,7 @@
+import { pluralize } from '../../../utils/helpers/format';
+
 export const BOOTSTRAP_CONSTANTS = {
-  // The exporter's rule, never a setting: 72 hours with no sign-in by the bootstrap account complete a request.
-  REQUEST_WAIT_MS: 72 * 60 * 60 * 1000,
+  HOUR_MS: 60 * 60 * 1000,
   // break-glass prints /break-glass#request=<id>&kind=<recover|replace>. Older links carry no kind.
   FRAGMENT_REQUEST: 'request',
   FRAGMENT_KIND: 'kind',
@@ -30,7 +31,7 @@ export const BOOTSTRAP_TEXTS = {
   PAGE_WARNING:
     'Approve only if you asked for this. Approving lets whoever ran break-glass complete the replacement by running it again, which makes the account they named the bootstrap account. A recovery can only be denied.',
   PAGE_WARNING_RECOVER:
-    "Deny it if you did not ask for this. A recovery can't be approved: it completes 72 hours after it opened unless the bootstrap account signs in or denies it. Then running break-glass again prints an enrollment link, and removes the account's other passkeys and sessions only once a new passkey is enrolled from it.",
+    "Deny it if you did not ask for this. A recovery can't be approved: it completes when its waiting period ends unless the bootstrap account signs in or denies it. Then running break-glass again prints an enrollment link, and removes the account's other passkeys and sessions only once a new passkey is enrolled from it.",
   APPROVE_RECOVERY: 'A recovery can only be denied',
   PAGE_APPROVED:
     'Approved. Whoever ran break-glass can now run it again to complete the replacement.',
@@ -44,8 +45,9 @@ export const BOOTSTRAP_TEXTS = {
   APPROVED_MESSAGE: 'Request approved',
   DENIED_MESSAGE: 'Request denied',
   CARD_TITLE: 'Bootstrap account',
-  CARD_DESCRIPTION:
-    'Break-glass recovers this account. Once it is pinned, a break-glass run opens a request. A recovery completes 72 hours after it opened unless the account signs in or denies it. A replacement can also complete sooner, once the account approves it with a passkey.',
+  // Until the status loads, no wait is known: the chart sets it.
+  CARD_DESCRIPTION: (waitHours?: number) =>
+    `Break-glass recovers this account. Once it is pinned, a break-glass run opens a request. A recovery completes ${waitHours ? `${pluralize(waitHours, 'hour')} after it opened` : 'when its waiting period ends'} unless the account signs in or denies it. A replacement can also complete sooner, once the account approves it with a passkey.`,
   PINNED_LABEL: 'Pinned account',
   // The exporter sends the email only to the bootstrap account itself.
   PINNED: (email: string | undefined, since: string) =>

@@ -28,10 +28,10 @@ const hintStyle: React.CSSProperties = {
 };
 
 // Each time the request reached, in order, and why a canceled one ended.
-const requestLines = (request: BootstrapRequest): string[] => {
+const requestLines = (request: BootstrapRequest, waitHours: number): string[] => {
   const lines = [T.OPENED(formatDateTime(request.openedAt))];
   if (request.state === C.STATE.PENDING) {
-    const completes = new Date(Date.parse(request.openedAt) + C.REQUEST_WAIT_MS);
+    const completes = new Date(Date.parse(request.openedAt) + waitHours * C.HOUR_MS);
     lines.push(T.COMPLETES(formatDateTime(completes)));
   }
   if (request.approvedAt) lines.push(T.APPROVED_AT(formatDateTime(request.approvedAt)));
@@ -41,10 +41,11 @@ const requestLines = (request: BootstrapRequest): string[] => {
   return lines;
 };
 
-const RequestRow: React.FC<{ request: BootstrapRequest; decide?: React.ReactNode }> = ({
-  request,
-  decide,
-}) => (
+const RequestRow: React.FC<{
+  request: BootstrapRequest;
+  waitHours: number;
+  decide?: React.ReactNode;
+}> = ({ request, waitHours, decide }) => (
   <div style={{ display: 'flex', flexDirection: 'column', gap: C.LAYOUT.LINE_GAP }}>
     <div
       style={{ display: 'flex', alignItems: 'center', gap: C.LAYOUT.BUTTON_GAP, flexWrap: 'wrap' }}
@@ -56,7 +57,7 @@ const RequestRow: React.FC<{ request: BootstrapRequest; decide?: React.ReactNode
         {T.STATE[request.state]}
       </Tag>
     </div>
-    <div style={hintStyle}>{requestLines(request).join(T.LINE_SEPARATOR)}</div>
+    <div style={hintStyle}>{requestLines(request, waitHours).join(T.LINE_SEPARATOR)}</div>
     {decide}
   </div>
 );
@@ -117,7 +118,7 @@ const BootstrapAccountSection: React.FC = memo(() => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: C.LAYOUT.ROW_GAP }}>
             {requests.length === 0 && <div style={hintStyle}>{T.NO_REQUESTS}</div>}
             {requests.map((request) => (
-              <RequestRow key={request.id} request={request} />
+              <RequestRow key={request.id} request={request} waitHours={status.waitHours} />
             ))}
           </div>
         )}
@@ -130,7 +131,7 @@ const BootstrapAccountSection: React.FC = memo(() => {
   const newest = requests[0];
   const open = newest?.state === C.STATE.PENDING || newest?.state === C.STATE.APPROVED;
   return (
-    <SettingsCard title={T.CARD_TITLE} description={T.CARD_DESCRIPTION}>
+    <SettingsCard title={T.CARD_TITLE} description={T.CARD_DESCRIPTION(status?.waitHours)}>
       {failed && <div style={hintStyle}>{T.LOAD_FAILED}</div>}
       {status && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: C.LAYOUT.ROW_GAP }}>
@@ -149,6 +150,7 @@ const BootstrapAccountSection: React.FC = memo(() => {
             <RequestRow
               key={request.id}
               request={request}
+              waitHours={status.waitHours}
               decide={
                 open && request === newest ? (
                   <DecideButtons
