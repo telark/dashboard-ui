@@ -10,7 +10,7 @@ import { isInsightReason } from '../constants/insights';
 import type { Insight, TriageAction } from '../models';
 
 export const formatTemplate = (template: string, params: Record<string, string>): string =>
-  template.replace(/\{(\w+)\}/g, (_, key: string) => params[key] || EMPTY_VALUE);
+  template.replaceAll(/\{(\w+)\}/g, (_, key: string) => params[key] || EMPTY_VALUE);
 
 export const isRecommendation = (insight: { category?: string }): boolean =>
   insight.category === 'recommendation';
@@ -47,7 +47,8 @@ export const triageActions = (
 };
 
 // A `field.path: value` a step asks to set, e.g. securityContext.runAsNonRoot: true.
-const FIELD_SETTING = /\b([a-z]+(?:[A-Z][a-zA-Z]*|\.[a-zA-Z]+)+): ([\w%/-]+)/;
+// Each segment starts at a capital or a dot, so a key splits one way only (no backtracking blowup).
+const FIELD_SETTING = /\b([a-z]+(?:[A-Z][a-z]*|\.[a-zA-Z][a-z]*)+): ([\w%/-]+)/;
 
 export const copyableSetting = (step: string): string | null => {
   const match = FIELD_SETTING.exec(step);

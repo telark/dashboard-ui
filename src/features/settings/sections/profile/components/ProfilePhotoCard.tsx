@@ -1,6 +1,14 @@
 import React, { memo, useCallback, useState } from 'react';
 import { CameraOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS, EMPTY_VALUE, withAlpha } from '../../../../../constants';
+import {
+  DEFAULT_COLORS,
+  EMPTY_VALUE,
+  UNSTYLED_BUTTON,
+  withAlpha,
+  FONT_SIZE,
+  FONT_WEIGHT,
+  MOTION,
+} from '../../../../../constants';
 import UserAvatar from '../../../../../components/display/avatars/UserAvatar';
 import AvatarPicker from '../../../../../components/display/avatars/AvatarPicker';
 import { avatarRingStyle } from '../../../../../components/display/avatars/avatarRing';
@@ -51,8 +59,8 @@ const ProfilePhotoCard: React.FC<ProfilePhotoCardProps> = memo(({ user, onAvatar
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: 18,
-            fontWeight: 600,
+            fontSize: FONT_SIZE.XL,
+            fontWeight: FONT_WEIGHT.SEMIBOLD,
             color: DEFAULT_COLORS.TEXT_MUTED,
           }}
         >
@@ -77,11 +85,8 @@ const ProfilePhotoCard: React.FC<ProfilePhotoCardProps> = memo(({ user, onAvatar
             onMouseLeave={() => setIsHovered(false)}
             aria-label="Change profile photo"
             style={{
-              cursor: 'pointer',
+              ...UNSTYLED_BUTTON,
               position: 'relative',
-              padding: 0,
-              border: 'none',
-              background: 'none',
               borderRadius: '50%',
               outline: 'none',
             }}
@@ -98,10 +103,10 @@ const ProfilePhotoCard: React.FC<ProfilePhotoCardProps> = memo(({ user, onAvatar
                 justifyContent: 'center',
                 pointerEvents: 'none',
                 opacity: isHovered ? 1 : 0,
-                transition: 'opacity 0.2s ease',
+                transition: `opacity ${MOTION.BASE_MS}ms ${MOTION.EASE}`,
               }}
             >
-              <CameraOutlined style={{ fontSize: 20, color: CAMERA_ICON_COLOR }} />
+              <CameraOutlined style={{ fontSize: FONT_SIZE.XXL, color: CAMERA_ICON_COLOR }} />
             </div>
           </button>
         )}

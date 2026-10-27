@@ -4,9 +4,8 @@ import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import store, { persistor } from './store';
 import App from './App';
-import FullPageLoader from './components/display/views/FullPageLoader';
-import { AppearanceProvider } from './features/settings/sections/appearance';
 import { dropForeignPermissions } from './features/auth/hooks';
+import { dropLegacySessionToken } from './features/auth/utils';
 import { registerHealthInterceptors, selectServiceHealth } from './api';
 import { applyColorVariables, applyLayoutVariables } from './constants';
 import './styles/index.css';
@@ -14,6 +13,7 @@ import './styles/antd.css';
 
 applyColorVariables();
 applyLayoutVariables();
+dropLegacySessionToken();
 
 registerHealthInterceptors({
   getServiceHealth: (name) => selectServiceHealth(store.getState(), name),
@@ -27,16 +27,13 @@ startTransition(() => {
     <StrictMode>
       <Provider store={store}>
         <PersistGate
-          // No label: this and the route-level Suspense fallback are the same
-          // two-stage boot sequence, and must render pixel-identical or the
-          // switch between them reads as two different spinners flashing.
-          loading={<FullPageLoader minHeight="100vh" />}
+          // Nothing while the store rehydrates: a spinner here sits at the viewport center,
+          // then jumps to the content pane's when the shell mounts.
+          loading={null}
           persistor={persistor}
           onBeforeLift={dropForeignPermissions}
         >
-          <AppearanceProvider>
-            <App />
-          </AppearanceProvider>
+          <App />
         </PersistGate>
       </Provider>
     </StrictMode>,

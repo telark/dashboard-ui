@@ -12,7 +12,7 @@ const NoProtectionPlansState: React.FC = () => (
     image={<ProtectionPlansIcon size={32} />}
     description={
       <>
-        <Typography.Title level={3}>{PPC.LABELS.NO_MATCH.TITLE}</Typography.Title>
+        <Typography.Title level={2}>{PPC.LABELS.NO_MATCH.TITLE}</Typography.Title>
         <Typography.Text>{PPC.LABELS.NO_MATCH.DESCRIPTION}</Typography.Text>
       </>
     }

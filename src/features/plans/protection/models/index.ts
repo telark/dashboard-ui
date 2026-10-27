@@ -2,12 +2,13 @@ export type PlanPhase =
   'active' | 'scheduled' | 'failed' | 'terminated' | 'canceled' | 'draft' | 'pending_approval';
 export type ScopeType = 'applications' | 'namespaces';
 export type PlanMode = 'audit' | 'enforce';
-export type PlanTimeMode = 'permanent' | 'time_range';
+export type PlanTimeMode = 'permanent' | 'time_range' | 'repeating';
 export type PlanHealth = 'unknown' | 'healthy' | 'drifted' | 'degraded';
-export type PlanViewMode = 'plans' | 'environments' | 'tags';
+export type PlanViewMode = 'plans' | 'kinds' | 'environments' | 'tags';
 export type ViolationResult = 'pass' | 'fail' | 'warn' | 'error' | 'skip';
 export type PlanReportFormat = 'html' | 'md' | 'json' | 'csv';
-export type PlanReportTrigger = 'end' | 'cancel' | 'manual';
+export type PlanReportTrigger = 'end' | 'cancel' | 'manual' | 'window';
+export type PlanRepeatDay = 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat' | 'sun';
 export type PlansPageTab = 'plans' | 'reports';
 export type PlanApprovalMode = 'automatic' | 'required';
 export type PlanApprovalState = 'pending' | 'approved' | 'rejected';
@@ -73,6 +74,8 @@ export interface PlanViolation {
   result: ViolationResult;
   message: string;
   timestamp: string;
+  // The Kubernetes username of the admission request; absent on Events from before 0.2.0.
+  requestedBy?: string;
 }
 
 export interface PlanViolationsResponse {
@@ -80,6 +83,10 @@ export interface PlanViolationsResponse {
   total: number;
   retentionWindow: string;
   violations: PlanViolation[];
+  // Only on the run list once the plan has started: the run's start (a repeating plan's window).
+  since?: string;
+  // The run ledger dropped its oldest rows at its cap.
+  truncated?: boolean;
 }
 
 export interface PlanReportMeta {
@@ -90,6 +97,13 @@ export interface PlanReportMeta {
   generatedBy: string;
   violationsTotal: number;
   truncated: boolean;
+}
+
+// A deleted plan's reports that its delete kept; planName is empty when the server lost it.
+export interface KeptPlanReports {
+  planId: string;
+  planName: string;
+  reports: PlanReportMeta[];
 }
 
 export interface PlanExcludedResource {
@@ -120,6 +134,14 @@ export interface PlanTimeRange {
   endAt: string;
 }
 
+// Weekly windows on the wall clock of timeZone (HH:MM, 24-hour); an end before the start ends the next day.
+export interface PlanRepeat {
+  days: PlanRepeatDay[];
+  startTime: string;
+  endTime: string;
+  timeZone: string;
+}
+
 export interface ProtectionPlan {
   id: string;
   name: string;
@@ -131,6 +153,9 @@ export interface ProtectionPlan {
   mode: PlanMode;
   timeMode: PlanTimeMode;
   timeRange?: PlanTimeRange;
+  repeat?: PlanRepeat;
+  // The open window (phase active) or the next one, computed by the server: read it through liveWindow.
+  window?: PlanTimeRange;
   phase: PlanPhase;
   reason?: string;
   renderedPolicies?: string[];
@@ -143,6 +168,7 @@ export interface ProtectionPlan {
   terminatedAt?: string;
   terminatedBy?: string;
   participantRefs?: string[];
+  kindRef?: string;
   environmentRef?: string;
   tagRefs?: string[];
   health?: PlanHealth;
@@ -175,6 +201,9 @@ export interface PlanTemplate {
 }
 
 export type PlanPhaseQuickFilter = PlanPhase | 'all';
+
+// What Create leads to: waiting for an approver, a later start, or auditing or enforcing at once.
+export type CreateOutcome = 'approval' | 'schedule' | 'audit' | 'enforce';
 
 export interface ProtectionPlansState {
   plans: ProtectionPlan[];

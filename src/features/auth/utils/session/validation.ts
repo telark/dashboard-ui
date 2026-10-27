@@ -1,11 +1,11 @@
-import { getSessionToken } from './token';
+import { isSignedIn } from './token';
 import { getCurrentSession } from '../../clients';
 import { isDevelopment } from '../../../../utils/helpers/env';
 import logger from '../../../../logging';
 import { AUTH_CONSTANTS } from '../../constants/messages';
-import { HTTP_STATUS } from '../../../../constants';
+import { AUTH_REFUSAL_CODES, HTTP_STATUS } from '../../../../constants';
 import { parseDate } from '../../../../utils/shared/time';
-import type { AxiosError } from 'axios';
+import type { ExtendedAxiosError } from '../../../../api/client/normalize';
 import type { SessionValidationResult } from '../../models/session';
 
 export const isSessionExpired = (expiresTimestamp: string): boolean => {
@@ -22,12 +22,11 @@ export const isSessionExpired = (expiresTimestamp: string): boolean => {
 
 export const validateSession = async (): Promise<SessionValidationResult> => {
   try {
-    const sessionToken = getSessionToken();
-    if (!sessionToken) {
+    if (!isSignedIn()) {
       return {
         isValid: false,
         isExpired: false,
-        error: AUTH_CONSTANTS.SESSION.VALIDATION.NO_TOKEN_ERROR,
+        error: AUTH_CONSTANTS.SESSION.VALIDATION.NOT_SIGNED_IN_ERROR,
       };
     }
 
@@ -49,7 +48,7 @@ export const validateSession = async (): Promise<SessionValidationResult> => {
       sessionDetails: response.data,
     };
   } catch (error) {
-    const axiosError = error as AxiosError & { normalized?: { status: number; message: string } };
+    const axiosError = error as ExtendedAxiosError;
 
     const unknownError = error as { status?: number; message?: string };
     const status =
@@ -70,6 +69,9 @@ export const validateSession = async (): Promise<SessionValidationResult> => {
         isValid: false,
         isExpired: true,
         error: AUTH_CONSTANTS.SESSION.VALIDATION.FETCH_ERROR,
+        // A second telark_session cookie (a sibling subdomain can plant one): signing in again won't help.
+        duplicateCookie:
+          axiosError.normalized?.code === AUTH_REFUSAL_CODES.SESSION_COOKIE_DUPLICATE,
       };
     }
 

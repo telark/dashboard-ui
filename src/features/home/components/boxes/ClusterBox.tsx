@@ -1,56 +1,34 @@
 import React, { memo } from 'react';
-import { DEFAULT_COLORS } from '../../../../constants';
+import { DEFAULT_COLORS, SPACING } from '../../../../constants';
 import {
   HOME_BOX_ICONS,
-  HOME_DASHBOARD_LAYOUT as L,
   HOME_DASHBOARD_STYLES as S,
   HOME_DASHBOARD_TEXTS as T,
 } from '../../constants/dashboard';
 import type { BoxState, ClusterVersionInfo } from '../../models';
-import DashboardBox from '../box/DashboardBox';
+import SummaryBox from './SummaryBox';
 
 const C = T.CLUSTER;
-
-const Field: React.FC<{ label: string; value: string; grow?: boolean }> = ({
-  label,
-  value,
-  grow,
-}) => (
-  <div
-    style={{
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 2,
-      minWidth: 0,
-      flex: grow ? 1 : 'none',
-    }}
-  >
-    <span style={{ ...S.MUTED_TEXT, ...S.ELLIPSIS }}>{label}</span>
-    <span
-      style={{
-        ...S.ELLIPSIS,
-        fontSize: L.ROW_TITLE_FONT_SIZE_PX,
-        fontWeight: 600,
-        color: DEFAULT_COLORS.TEXT_PRIMARY,
-      }}
-    >
-      {value}
-    </span>
-  </div>
-);
 
 interface ClusterBoxProps extends BoxState {
   cluster: ClusterVersionInfo;
 }
 
 const ClusterBox: React.FC<ClusterBoxProps> = memo(({ cluster, ...boxProps }) => (
-  <DashboardBox title={C.TITLE} icon={HOME_BOX_ICONS.CLUSTER} {...boxProps}>
-    <div style={{ display: 'flex', gap: L.BREAKDOWN_GAP_PX }}>
-      <Field label={C.VERSION_LABEL} value={cluster.version} />
-      <Field label={C.DISTRIBUTION_LABEL} value={cluster.distribution} />
-      <Field label={C.FULL_LABEL} value={cluster.full} grow />
+  <SummaryBox
+    title={C.TITLE}
+    icon={HOME_BOX_ICONS.CLUSTER}
+    value={cluster.version}
+    caption={cluster.distribution}
+    {...boxProps}
+  >
+    <div style={{ ...S.MUTED_TEXT, display: 'flex', gap: SPACING.S6, minWidth: 0 }}>
+      <span style={{ flexShrink: 0 }}>{C.FULL_LABEL}</span>
+      <span title={cluster.full} style={{ ...S.ELLIPSIS, color: DEFAULT_COLORS.TEXT_SECONDARY }}>
+        {cluster.full}
+      </span>
     </div>
-  </DashboardBox>
+  </SummaryBox>
 ));
 
 ClusterBox.displayName = 'ClusterBox';

@@ -21,9 +21,9 @@ export const parseClusterVersion = (gitVersion?: string): ClusterVersionInfo => 
   if (!gitVersion) {
     return { version: EMPTY_VALUE, distribution: EMPTY_VALUE, full: EMPTY_VALUE };
   }
-  const match = gitVersion.match(/^(v?\d+\.\d+\.\d+)(.*)$/);
-  if (!match) return { version: gitVersion, distribution: T.CLUSTER.VANILLA, full: gitVersion };
-  const [, version, suffix] = match;
+  const version = /^v?\d+\.\d+\.\d+/.exec(gitVersion)?.[0];
+  if (!version) return { version: gitVersion, distribution: T.CLUSTER.VANILLA, full: gitVersion };
+  const suffix = gitVersion.slice(version.length);
   if (!suffix) return { version, distribution: T.CLUSTER.VANILLA, full: gitVersion };
   const marker = DISTRIBUTION_MARKERS.find(([pattern]) => pattern.test(suffix));
   return {

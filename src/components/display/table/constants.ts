@@ -8,8 +8,6 @@ export const TABLE_DEFAULTS = {
   SORT_ACTIVE: DEFAULT_COLORS.SUCCESS,
   SORT_INACTIVE: DEFAULT_COLORS.ICON_SECONDARY,
   HEADER_ALIGN_DEFAULT: 'center' as const,
-  SELECT_COLUMN_WIDTH: 48,
-  SCROLL_X: 1200,
 } as const;
 
 // Global so the accent applies wherever a list mounts its pagination.

@@ -6,14 +6,14 @@ import { APP_ROUTES } from '../../../constants';
 import { clearPermissions } from '../store/slices/permissionsSlice';
 import { stopPermissionsPolling } from './permissions/useInitializePermissions';
 
-// A logout in another tab removes the shared token; without this, this tab keeps showing data until its next poll.
+// A logout in another tab removes the stored user; without this, this tab keeps showing data until its next poll.
 export const useCrossTabLogout = (): void => {
   const navigate = useNavigate();
 
   useEffect(() => {
     const onStorage = (event: StorageEvent): void => {
-      const tokenRemoved = event.key === null || event.key === STORAGE_KEYS.SESSION_TOKEN;
-      if (!tokenRemoved || event.newValue !== null) return;
+      const userRemoved = event.key === null || event.key === STORAGE_KEYS.CURRENT_USER;
+      if (!userRemoved || event.newValue !== null) return;
       stopPermissionsPolling();
       store.dispatch(clearPermissions());
       navigate(APP_ROUTES.LOGIN, { replace: true });

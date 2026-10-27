@@ -1,7 +1,13 @@
 import React from 'react';
 import { Button, Tooltip } from 'antd';
 import { ApiOutlined, CloudServerOutlined, ReloadOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS } from '../../../constants';
+import {
+  DEFAULT_COLORS,
+  SECTION_LAYOUT,
+  FONT_WEIGHT,
+  LINE_HEIGHT,
+  SPACING,
+} from '../../../constants';
 import { CONNECTIVITY_BANNER as CB } from './connectivityBanner.constants';
 
 export type ConnectivityKind = 'service' | 'network';
@@ -40,7 +46,7 @@ const ConnectivityBanner: React.FC<ConnectivityBannerProps> = ({ kind, serviceNa
         alignItems: 'flex-start',
         gap: CB.LAYOUT.GAP,
         background: DEFAULT_COLORS.SURFACE_ELEVATED,
-        border: `1px solid ${DEFAULT_COLORS.BORDER_ELEVATED}`,
+        border: SECTION_LAYOUT.SUBTLE_DIVIDER,
         borderRadius: CB.LAYOUT.RADIUS,
         padding: CB.LAYOUT.PADDING,
         boxSizing: 'border-box',
@@ -69,12 +75,13 @@ const ConnectivityBanner: React.FC<ConnectivityBannerProps> = ({ kind, serviceNa
       <div style={{ position: 'relative', flex: 1, minWidth: 0 }}>
         <div
           style={{
+            // Off scale, kept exact: lineHeight 1.4 (SNUG to BASE).
             display: 'flex',
             alignItems: 'center',
-            gap: 8,
+            gap: SPACING.SM,
             color: DEFAULT_COLORS.TEXT_PRIMARY,
             fontSize: CB.LAYOUT.TITLE_FONT_SIZE,
-            fontWeight: 600,
+            fontWeight: FONT_WEIGHT.SEMIBOLD,
             lineHeight: 1.4,
           }}
         >
@@ -95,7 +102,7 @@ const ConnectivityBanner: React.FC<ConnectivityBannerProps> = ({ kind, serviceNa
           style={{
             color: DEFAULT_COLORS.TEXT_MUTED,
             fontSize: CB.LAYOUT.MESSAGE_FONT_SIZE,
-            lineHeight: 1.5,
+            lineHeight: LINE_HEIGHT.BASE,
             maxWidth: CB.LAYOUT.MAX_MESSAGE_WIDTH,
           }}
         >

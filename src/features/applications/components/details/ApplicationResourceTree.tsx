@@ -1,5 +1,5 @@
 import React, { memo, useState } from 'react';
-import { DEFAULT_COLORS } from '../../../../constants';
+import { DEFAULT_COLORS, FONT_WEIGHT, MOTION } from '../../../../constants';
 import { APPLICATION_RESOURCE_TREE } from '../../constants/sectionLayout';
 import { getResourceKindVisual } from '../../utils/resourceKindVisual';
 import type { ApplicationResourceRef } from '../../models';
@@ -57,7 +57,7 @@ const ResourceLeaf: React.FC<{ resource: ApplicationResourceRef; isLast: boolean
           padding: T.NODE_PADDING,
           borderRadius: T.ICON_RADIUS_PX,
           background: hovered ? DEFAULT_COLORS.SURFACE_ELEVATED_HOVER : 'transparent',
-          transition: 'background 150ms ease',
+          transition: `background ${MOTION.FAST_MS}ms ${MOTION.EASE}`,
           minWidth: 0,
         }}
       >
@@ -114,18 +114,18 @@ const KindNode: React.FC<{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            background: DEFAULT_COLORS.SUCCESS,
+            background: DEFAULT_COLORS.CHIP_CUSTOM_BG,
             flexShrink: 0,
           }}
         >
           <KindIcon
-            style={{ fontSize: T.ICON_GLYPH_SIZE_PX, color: DEFAULT_COLORS.TEXT_ON_SURFACE }}
+            style={{ fontSize: T.ICON_GLYPH_SIZE_PX, color: DEFAULT_COLORS.TEXT_SECONDARY }}
           />
         </span>
         <span
           style={{
             fontSize: T.KIND_FONT_SIZE_PX,
-            fontWeight: 700,
+            fontWeight: FONT_WEIGHT.BOLD,
             color: DEFAULT_COLORS.TEXT_PRIMARY,
           }}
         >
@@ -161,7 +161,7 @@ const ApplicationResourceTree: React.FC<ApplicationResourceTreeProps> = memo(
         <span
           style={{
             fontSize: T.ROOT_FONT_SIZE_PX,
-            fontWeight: 700,
+            fontWeight: FONT_WEIGHT.BOLD,
             color: DEFAULT_COLORS.TEXT_PRIMARY,
           }}
         >

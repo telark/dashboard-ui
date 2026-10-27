@@ -7,6 +7,7 @@ import {
   HistoryOutlined,
   SyncOutlined,
 } from '@ant-design/icons';
+import { Tooltip } from 'antd';
 import Toolbar from '../../../../components/display/toolbar/Toolbar';
 import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 import { Icons, MENU_LABELS } from '../../../../constants';
@@ -18,6 +19,18 @@ import {
 
 const TOOLBAR_LABELS = APPLICATIONS_UI.SECTIONS.DETAILS_TOOLBAR;
 const RESET_MENU_KEY = 'reset';
+const SNAPSHOTS_MENU_KEY = 'snapshots';
+const ROLLBACKS_MENU_KEY = 'rollbacks';
+
+// A disabled menu item says why on hover, like the card's menu.
+const labelWithTooltip = (text: string, tooltip: string | undefined) =>
+  tooltip ? (
+    <Tooltip title={tooltip}>
+      <span>{text}</span>
+    </Tooltip>
+  ) : (
+    text
+  );
 
 interface ApplicationDetailsToolbarProps {
   onForceSync: () => void;
@@ -72,18 +85,20 @@ const ApplicationDetailsToolbar: React.FC<ApplicationDetailsToolbarProps> = ({
   const handleMenuClick = useCallback(
     (key: string) => {
       if (key === RESET_MENU_KEY) onReset();
+      if (key === SNAPSHOTS_MENU_KEY) onManageSnapshots();
+      if (key === ROLLBACKS_MENU_KEY) onManageRollbacks();
     },
-    [onReset],
+    [onReset, onManageSnapshots, onManageRollbacks],
   );
 
   const toolbarConfig: ToolbarConfig = useMemo(() => {
     const buttons: ToolbarConfig['buttons'] = [
-      // Primary action first: force sync is the verb people come here for.
+      // First, outlined: the verb people come here for, without a filled primary.
       {
         key: 'forceSync',
         label: APPLICATIONS_UI.CARD.ACTIONS.FORCE_SYNC,
         icon: <SyncOutlined />,
-        variant: 'primary',
+        variant: 'default',
         onClick: onForceSync,
         disabled: !canForceSync || syncDisabled,
         tooltip: !canForceSync
@@ -105,29 +120,6 @@ const ApplicationDetailsToolbar: React.FC<ApplicationDetailsToolbarProps> = ({
             ? APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP
             : undefined,
       },
-      // These open panels rather than acting on the app, so they stay quiet.
-      {
-        key: 'snapshots',
-        label: APPLICATIONS_UI.CARD.ACTIONS.MANAGE_SNAPSHOTS,
-        icon: <DatabaseOutlined />,
-        variant: 'ghost',
-        onClick: onManageSnapshots,
-        disabled: !canViewSnapshots,
-        tooltip: !canViewSnapshots
-          ? APPLICATIONS_UI.CARD.ACTIONS.VIEW_SNAPSHOTS_PERMISSION_DENIED_TOOLTIP
-          : undefined,
-      },
-      {
-        key: 'rollbacks',
-        label: APPLICATIONS_UI.CARD.ACTIONS.MANAGE_ROLLBACKS,
-        icon: <HistoryOutlined />,
-        variant: 'ghost',
-        onClick: onManageRollbacks,
-        disabled: !canViewRollbacks,
-        tooltip: !canViewRollbacks
-          ? APPLICATIONS_UI.CARD.ACTIONS.VIEW_ROLLBACKS_PERMISSION_DENIED_TOOLTIP
-          : undefined,
-      },
       ...(onOpenInsights && canViewInsights
         ? [
             {
@@ -139,8 +131,7 @@ const ApplicationDetailsToolbar: React.FC<ApplicationDetailsToolbarProps> = ({
             },
           ]
         : []),
-      // Reset lives behind the overflow: it is irreversible and was one slip
-      // away from "Manage rollbacks" when it sat inline.
+      // The panels open from the overflow. Reset sits there too, apart from them: it is irreversible.
       {
         key: 'more',
         label: TOOLBAR_LABELS.MORE_LABEL,
@@ -148,6 +139,29 @@ const ApplicationDetailsToolbar: React.FC<ApplicationDetailsToolbarProps> = ({
         variant: 'ghost',
         dropdown: {
           items: [
+            {
+              key: SNAPSHOTS_MENU_KEY,
+              icon: <DatabaseOutlined />,
+              label: labelWithTooltip(
+                APPLICATIONS_UI.CARD.ACTIONS.MANAGE_SNAPSHOTS,
+                canViewSnapshots
+                  ? undefined
+                  : APPLICATIONS_UI.CARD.ACTIONS.VIEW_SNAPSHOTS_PERMISSION_DENIED_TOOLTIP,
+              ),
+              disabled: !canViewSnapshots,
+            },
+            {
+              key: ROLLBACKS_MENU_KEY,
+              icon: <HistoryOutlined />,
+              label: labelWithTooltip(
+                APPLICATIONS_UI.CARD.ACTIONS.MANAGE_ROLLBACKS,
+                canViewRollbacks
+                  ? undefined
+                  : APPLICATIONS_UI.CARD.ACTIONS.VIEW_ROLLBACKS_PERMISSION_DENIED_TOOLTIP,
+              ),
+              disabled: !canViewRollbacks,
+            },
+            { type: 'divider' as const },
             {
               key: RESET_MENU_KEY,
               danger: true,
@@ -166,8 +180,6 @@ const ApplicationDetailsToolbar: React.FC<ApplicationDetailsToolbarProps> = ({
     syncDisabled,
     onEdit,
     onForceSync,
-    onManageRollbacks,
-    onManageSnapshots,
     onOpenInsights,
     canEdit,
     canForceSync,

@@ -1,16 +1,22 @@
 import React, { useMemo } from 'react';
 import { Tag } from 'antd';
 import { VIEW } from '../../../../../../constants/layout/panels';
-import { DEFAULT_COLORS, TAG_CLASS } from '../../../../../../constants';
+import {
+  DEFAULT_COLORS,
+  TAG_CLASS,
+  FONT_SIZE,
+  FONT_WEIGHT,
+  SPACING,
+} from '../../../../../../constants';
 import { ROLES_CONSTANTS as RC } from '../../../constants';
 import type { Role } from '../../../models';
 
 const SECTION_TITLE_STYLE: React.CSSProperties = {
-  fontSize: 13,
-  fontWeight: 700,
+  fontSize: FONT_SIZE.MD,
+  fontWeight: FONT_WEIGHT.BOLD,
   color: DEFAULT_COLORS.TEXT_ON_SURFACE,
   letterSpacing: 0.2,
-  marginBottom: 4,
+  marginBottom: SPACING.XS,
   display: 'block',
 };
 

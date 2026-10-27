@@ -6,6 +6,11 @@ import {
   CONTROL_RADIUS,
   DEFAULT_COLORS,
   TOOLBAR_CONTROL,
+  FONT_SIZE,
+  FONT_WEIGHT,
+  LINE_HEIGHT,
+  MOTION,
+  SPACING,
 } from '../../../constants';
 
 // Same size as the label, so both share one baseline.
@@ -45,14 +50,14 @@ const ToggleButton: React.FC<ToggleButtonProps> = ({
     cursor: 'pointer',
     display: 'flex',
     alignItems: 'center',
-    gap: 6,
+    gap: SPACING.S6,
     height: TOOLBAR_CONTROL.HEIGHT,
     padding: TOOLBAR_CONTROL.PADDING,
     lineHeight: TOOLBAR_CONTROL.LINE_HEIGHT,
     borderRadius: CONTROL_RADIUS,
     fontSize: CONTROL_FONT_SIZE,
-    fontWeight: active ? BUTTON_CONFIGS.PRIMARY_BUTTON.FONT_WEIGHT : 500,
-    transition: 'all 0.2s',
+    fontWeight: active ? BUTTON_CONFIGS.PRIMARY_BUTTON.FONT_WEIGHT : FONT_WEIGHT.MEDIUM,
+    transition: `all ${MOTION.BASE_MS}ms`,
     backgroundColor: active ? PALETTE.activeBg : 'transparent',
     color: active ? PALETTE.activeColor : PALETTE.inactiveColor,
     border: active ? `1px solid ${PALETTE.activeBorder}` : '1px solid transparent',
@@ -80,7 +85,9 @@ const ToggleButton: React.FC<ToggleButtonProps> = ({
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        {icon && <span style={{ fontSize: 14, lineHeight: 1 }}>{icon}</span>}
+        {icon && (
+          <span style={{ fontSize: FONT_SIZE.BASE, lineHeight: LINE_HEIGHT.NONE }}>{icon}</span>
+        )}
         <span>{label}</span>
         {count !== undefined && <span style={COUNT_STYLE}>{count}</span>}
       </button>

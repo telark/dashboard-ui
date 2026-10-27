@@ -4,6 +4,7 @@ import Section from '../../../../../../../components/display/sections/Section';
 import { Switch } from '../../../../../../../components/display/inputs';
 import { ROLES_CONSTANTS as RPC } from '../../../../constants';
 import { useProtectionFields } from '../../../../hooks';
+import { SPACING } from '../../../../../../../constants';
 
 const ProtectionSection: React.FC = () => {
   const { updateProtectionFields, getPreventScopeChanges } = useProtectionFields();
@@ -44,8 +45,10 @@ const ProtectionSection: React.FC = () => {
             };
 
             return (
-              <div style={{ display: 'flex', gap: 24 }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 0, flex: 1 }}>
+              <div style={{ display: 'flex', gap: SPACING.XXL }}>
+                <div
+                  style={{ display: 'flex', flexDirection: 'column', gap: SPACING.NONE, flex: 1 }}
+                >
                   <Switch
                     checked={preventDeletion}
                     onChange={(checked) => {
@@ -56,7 +59,7 @@ const ProtectionSection: React.FC = () => {
                     }}
                     label={RPC.PROTECTION.PREVENT_DELETION_LABEL}
                     labelStyle={{ minWidth: 200 }}
-                    containerStyle={{ marginBottom: 12 }}
+                    containerStyle={{ marginBottom: SPACING.MD }}
                   />
                   <Switch
                     checked={preventModification}
@@ -65,7 +68,7 @@ const ProtectionSection: React.FC = () => {
                     }
                     label={RPC.PROTECTION.PREVENT_MODIFICATION_LABEL}
                     labelStyle={{ minWidth: 200 }}
-                    containerStyle={{ marginBottom: 12 }}
+                    containerStyle={{ marginBottom: SPACING.MD }}
                   />
                   <Switch
                     checked={preventScopeChanges}
@@ -74,23 +77,25 @@ const ProtectionSection: React.FC = () => {
                     }
                     label={RPC.PROTECTION.PREVENT_SCOPE_CHANGES_LABEL}
                     labelStyle={{ minWidth: 200 }}
-                    containerStyle={{ marginBottom: 0 }}
+                    containerStyle={{ marginBottom: SPACING.NONE }}
                   />
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 0, flex: 1 }}>
+                <div
+                  style={{ display: 'flex', flexDirection: 'column', gap: SPACING.NONE, flex: 1 }}
+                >
                   <Switch
                     checked={lockName}
                     onChange={(checked) => handleUpdateProtectionFields({ lockName: checked })}
                     label={RPC.PROTECTION.LOCK_NAME_LABEL}
                     labelStyle={{ minWidth: 200 }}
-                    containerStyle={{ marginBottom: 12 }}
+                    containerStyle={{ marginBottom: SPACING.MD }}
                   />
                   <Switch
                     checked={lockCategory}
                     onChange={(checked) => handleUpdateProtectionFields({ lockCategory: checked })}
                     label={RPC.PROTECTION.LOCK_CATEGORY_LABEL}
                     labelStyle={{ minWidth: 200 }}
-                    containerStyle={{ marginBottom: 12 }}
+                    containerStyle={{ marginBottom: SPACING.MD }}
                   />
                   <Switch
                     checked={softDelete}
@@ -101,7 +106,7 @@ const ProtectionSection: React.FC = () => {
                     }}
                     label={RPC.PROTECTION.SOFT_DELETE_LABEL}
                     labelStyle={{ minWidth: 200 }}
-                    containerStyle={{ marginBottom: 0 }}
+                    containerStyle={{ marginBottom: SPACING.NONE }}
                     disabled={isSoftDeleteDisabled}
                     tooltip={
                       isSoftDeleteDisabled ? RPC.PROTECTION.SOFT_DELETE_DISABLED_NOTE : undefined

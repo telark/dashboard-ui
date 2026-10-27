@@ -1,26 +1,24 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import {
-  CheckCircleOutlined,
-  DownOutlined,
-  HistoryOutlined,
-  RightOutlined,
-  StopOutlined,
-} from '@ant-design/icons';
+import { CheckCircleOutlined, HistoryOutlined, StopOutlined } from '@ant-design/icons';
 import { App as AntdApp, Button, Empty, Tag, Tooltip, Typography } from 'antd';
 import { useDispatch } from 'react-redux';
 import { SlideOutPanel, ExpandPanelButton } from '../../../../components/display/panels/slide-out';
 import {
   DEFAULT_COLORS,
   EMPTY_CLASS,
-  MONOSPACE_CLASS,
-  SLIDE_OUT,
+  HAIRLINE,
   STATUS_COLORS,
   TAG_CLASS,
   getPillColor,
+  SPACING,
+  FONT_WEIGHT,
+  FONT_SIZE,
 } from '../../../../constants';
 import { ActionConfirmModal } from '../../../../components/display/modal';
 import type { Application, ApplicationRollbackEntry } from '../../models';
 import { APPLICATIONS_UI } from '../../constants/texts';
+import { ADMISSION_DENIED_MARKER } from '../../constants/applications';
+import TechnicalDetails from '../snapshots/TechnicalDetails';
 import TimeAgo from '../../../../components/display/time/TimeAgo';
 import { APPLICATION_SNAPSHOT_ROW } from '../../constants/sectionLayout';
 import { FancySpinner } from '../../../../components/animation';
@@ -115,7 +113,9 @@ const ManageRollbacksPanel: React.FC<ManageRollbacksPanelProps> = ({
           <ExpandPanelButton expanded={expanded} onToggle={() => setExpanded((p) => !p)} />
         }
         formContent={
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, height: '100%' }}>
+          <div
+            style={{ display: 'flex', flexDirection: 'column', gap: SPACING.MD, height: '100%' }}
+          >
             {rollbacks.length === 0 ? (
               <Empty
                 className={EMPTY_CLASS.PANEL}
@@ -128,7 +128,10 @@ const ManageRollbacksPanel: React.FC<ManageRollbacksPanelProps> = ({
                 }
               />
             ) : (
-              <div style={{ display: 'grid', rowGap: 10 }}>
+              <div
+                // 10: the row gap sits between SM and MD.
+                style={{ display: 'grid', rowGap: 10 }}
+              >
                 {rollbacks
                   .slice()
                   .sort((a, b) => String(b.triggeredAt).localeCompare(String(a.triggeredAt)))
@@ -196,7 +199,7 @@ function RollbackRow(props: {
       style={{
         // As a grid item the row would otherwise grow to fit long text and widen the panel.
         minWidth: 0,
-        border: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
+        border: HAIRLINE.SURFACE_BORDER_LIGHT,
         borderRadius: R.RADIUS_PX,
         padding: R.PADDING,
         background: hovered ? DEFAULT_COLORS.SURFACE_HOVER : DEFAULT_COLORS.SURFACE_WHITE,
@@ -208,10 +211,18 @@ function RollbackRow(props: {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          gap: 12,
+          gap: SPACING.MD,
         }}
       >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 0, flex: 1 }}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: SPACING.XS,
+            minWidth: 0,
+            flex: 1,
+          }}
+        >
           <div
             style={{
               display: 'flex',
@@ -225,7 +236,7 @@ function RollbackRow(props: {
             <span
               style={{
                 fontSize: R.TITLE_FONT_SIZE_PX,
-                fontWeight: 700,
+                fontWeight: FONT_WEIGHT.BOLD,
                 color: DEFAULT_COLORS.TEXT_ON_SURFACE,
                 whiteSpace: 'nowrap',
               }}
@@ -239,17 +250,14 @@ function RollbackRow(props: {
             </Tag>
           </div>
           <RollbackMeta entry={entry} triggeredByName={triggeredByName} />
-          {/* The raw engine error is long and only matters when digging in, so the
-              row states that it failed and lets the user ask for the detail. */}
-          {entry.error ? <RollbackErrorDetail error={entry.error} /> : null}
+          {entry.error ? <RollbackError error={entry.error} /> : null}
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: SPACING.SM, flexShrink: 0 }}>
           {isPending ? (
             <Tooltip
               title={canAbort ? ui.ABORT_ROLLBACK_TOOLTIP : ui.ABORT_PERMISSION_DENIED_TOOLTIP}
             >
               <Button
-                size="small"
                 type="text"
                 danger
                 icon={<StopOutlined />}
@@ -268,10 +276,12 @@ function RollbackRow(props: {
           >
             {statusState === 'inProgress' || statusState === 'pending' ? (
               <span style={{ display: 'inline-flex', alignItems: 'center' }}>
-                <FancySpinner size={14} ringThickness={2} color={DEFAULT_COLORS.PILL_TEXT} />
+                <FancySpinner size={14} ringThickness={2} color="currentColor" />
               </span>
             ) : null}
-            {statusState === 'success' ? <CheckCircleOutlined style={{ fontSize: 12 }} /> : null}
+            {statusState === 'success' ? (
+              <CheckCircleOutlined style={{ fontSize: FONT_SIZE.SM }} />
+            ) : null}
             <span>{statusLabel}</span>
           </Tag>
         </div>
@@ -338,50 +348,25 @@ function RollbackMeta(props: {
   );
 }
 
-function RollbackErrorDetail(props: { error: string }): React.ReactElement {
+// A refusal by an admission policy reads as a plain sentence; the raw error stays one click away.
+function RollbackError(props: { error: string }): React.ReactElement {
   const { error } = props;
-  const [errorOpen, setErrorOpen] = useState(false);
   const ui = APPLICATIONS_UI.SECTIONS.SNAPSHOTS;
 
   return (
-    <div style={{ display: 'grid', rowGap: 4, minWidth: 0 }}>
-      <button
-        type="button"
-        onClick={() => setErrorOpen((prev) => !prev)}
-        aria-expanded={errorOpen}
-        className={SLIDE_OUT.HEADER_BUTTON_CLASS}
-        style={{
-          all: 'unset',
-          cursor: 'pointer',
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: 4,
-          alignSelf: 'start',
-          fontSize: R.META_FONT_SIZE_PX,
-          fontWeight: 600,
-          color: DEFAULT_COLORS.DANGER,
-        }}
-      >
-        {errorOpen ? <DownOutlined /> : <RightOutlined />}
-        <span>{errorOpen ? ui.HIDE_ERROR : ui.SHOW_ERROR}</span>
-      </button>
-      {errorOpen ? (
-        <div
-          className={MONOSPACE_CLASS}
+    <div style={{ display: 'grid', rowGap: SPACING.XS, minWidth: 0 }}>
+      {error.includes(ADMISSION_DENIED_MARKER) ? (
+        <span
           style={{
-            padding: R.ERROR_PADDING,
-            borderRadius: R.ERROR_RADIUS_PX,
-            background: DEFAULT_COLORS.CHIP_ON_SURFACE_BG,
-            color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
-            fontSize: R.ERROR_FONT_SIZE_PX,
-            maxHeight: R.ERROR_MAX_HEIGHT_PX,
-            overflow: 'auto',
-            overflowWrap: 'anywhere',
+            fontSize: R.META_FONT_SIZE_PX,
+            fontWeight: FONT_WEIGHT.SEMIBOLD,
+            color: DEFAULT_COLORS.DANGER,
           }}
         >
-          {error}
-        </div>
+          {ui.ROLLBACK_ADMISSION_BLOCKED}
+        </span>
       ) : null}
+      <TechnicalDetails detail={error} />
     </div>
   );
 }

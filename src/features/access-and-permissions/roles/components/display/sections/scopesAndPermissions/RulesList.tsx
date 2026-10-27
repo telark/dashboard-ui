@@ -1,6 +1,7 @@
 import React from 'react';
 import RulesItem from './RulesItem';
 import type { RulesListProps } from '../../../../models';
+import { SPACING } from '../../../../../../../constants';
 
 const RulesList: React.FC<RulesListProps> = ({
   rules,
@@ -12,7 +13,7 @@ const RulesList: React.FC<RulesListProps> = ({
   return (
     <div
       className="role-list-container"
-      style={{ display: 'flex', flexDirection: 'column', gap: 12 }}
+      style={{ display: 'flex', flexDirection: 'column', gap: SPACING.MD }}
     >
       {rules.map((rule) => {
         const formattedKey = formatRuleKey(scopeKey, rule.key);

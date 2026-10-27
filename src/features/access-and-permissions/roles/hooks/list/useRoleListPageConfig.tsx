@@ -31,6 +31,7 @@ const rowKey = (record: Role | Category) => record.id;
 const emptyState = (description: string) => (
   <Empty
     description={description}
+    // Off scale, kept exact: marginTop 22 (XL to XXL).
     image={<RoleIcon size={64} style={{ color: DEFAULT_COLORS.ICON_MUTED, marginTop: 22 }} />}
   />
 );

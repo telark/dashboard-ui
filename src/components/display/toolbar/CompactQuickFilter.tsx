@@ -1,7 +1,14 @@
 import React from 'react';
 import { DownOutlined } from '@ant-design/icons';
 import { Dropdown, Tooltip } from 'antd';
-import { LIST_TOOLBAR, TOOLBAR_CONTROL, getQuickFilterPillColors } from '../../../constants';
+import {
+  LIST_TOOLBAR,
+  STATUS_DOT,
+  TOOLBAR_CONTROL,
+  getQuickFilterPillColors,
+  FONT_SIZE,
+  SPACING,
+} from '../../../constants';
 
 export interface CompactQuickFilterOption<K extends string> {
   key: K;
@@ -40,13 +47,10 @@ const CompactQuickFilter = <K extends string>({
           icon: (
             <span
               style={{
+                ...STATUS_DOT,
                 display: 'inline-block',
-                width: 8,
-                height: 8,
                 // The menu's icon slot would otherwise stretch the dot into an oval.
                 minWidth: 8,
-                flexShrink: 0,
-                borderRadius: '50%',
                 background: option.accent,
               }}
             />
@@ -63,6 +67,7 @@ const CompactQuickFilter = <K extends string>({
           type="button"
           aria-label={fullTitle}
           style={{
+            // Off scale, kept exact: gap 5 (XS to S6).
             all: 'unset',
             cursor: 'pointer',
             display: 'inline-flex',
@@ -71,13 +76,18 @@ const CompactQuickFilter = <K extends string>({
             gap: 5,
             height: TOOLBAR_CONTROL.HEIGHT,
             boxSizing: 'border-box',
-            padding: '0 8px',
+            padding: `0 ${SPACING.SM}px`,
             borderRadius: LIST_TOOLBAR.PILL_RADIUS_PX,
             ...getQuickFilterPillColors(activeAccent, true),
           }}
         >
-          <span style={{ fontSize: 13, display: 'inline-flex' }}>{icon}</span>
-          <DownOutlined style={{ fontSize: 9 }} />
+          <span style={{ fontSize: FONT_SIZE.MD, display: 'inline-flex' }}>{icon}</span>
+          <DownOutlined
+            style={{
+              // Off scale, kept exact: fontSize 9 (below XXS).
+              fontSize: 9,
+            }}
+          />
         </button>
       </Tooltip>
     </Dropdown>

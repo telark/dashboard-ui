@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import { Toolbar } from '../../../../components/display/toolbar';
 import { PasskeyPanel, PasskeyCard, InsecureContextAlert } from '../../components';
 import { isWebAuthnSupported } from '../../utils/webauthn/core';
-import { DEFAULT_COLORS } from '../../../../constants';
+import { DEFAULT_COLORS, SPACING, FONT_SIZE } from '../../../../constants';
 import type { PasskeyListPageConfig } from '../../hooks/passkeys/usePasskeyListPageConfig';
 import type { Passkey } from '../../models/passkeys';
 import type { FormInstance } from 'antd';
@@ -11,8 +11,8 @@ import type { PasskeyPanelFormValues } from '../../hooks/passkeys/passkeyPanelSt
 const CONTAINER_STYLE: React.CSSProperties = {
   background: 'transparent',
   minHeight: 'auto',
-  padding: 0,
-  marginTop: 0,
+  padding: SPACING.NONE,
+  marginTop: SPACING.NONE,
   width: '100%',
   boxSizing: 'border-box',
 };
@@ -28,15 +28,16 @@ const TOOLBAR_ROW_STYLE: React.CSSProperties = {
 const CARD_GRID_STYLE: React.CSSProperties = {
   display: 'grid',
   gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-  gap: 24,
+  gap: SPACING.XXL,
 };
 
+// 48: the empty message's padding sits above XXXL.
 const EMPTY_MESSAGE_STYLE: React.CSSProperties = {
   gridColumn: '1 / -1',
   padding: 48,
   textAlign: 'center',
   color: DEFAULT_COLORS.TEXT_MUTED,
-  fontSize: 14,
+  fontSize: FONT_SIZE.BASE,
 };
 
 export interface PasskeysListPageProps {
@@ -81,7 +82,7 @@ const PasskeysListPage: React.FC<PasskeysListPageProps> = memo(
       <div>
         <div style={CONTAINER_STYLE}>
           {!isWebAuthnSupported() && <InsecureContextAlert />}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.XXXL }}>
             <div style={TOOLBAR_ROW_STYLE}>
               <div />
               <Toolbar config={pageConfig.toolbarConfig} />

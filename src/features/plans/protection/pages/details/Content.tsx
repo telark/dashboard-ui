@@ -1,84 +1,300 @@
-import React, { memo, useCallback, useMemo } from 'react';
-import { Button, Tag, Tooltip } from 'antd';
-import { CloseOutlined, EyeOutlined, InfoCircleOutlined, ReloadOutlined } from '@ant-design/icons';
-import { useSelector } from 'react-redux';
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Button, Select, Tooltip } from 'antd';
+import { InfoCircleOutlined, ReloadOutlined } from '@ant-design/icons';
+import { useDispatch, useSelector } from 'react-redux';
 import {
+  APP_CONFIGS,
+  CONTROL_HEIGHT,
   DEFAULT_COLORS,
-  EMPTY_VALUE,
-  SECTION_LAYOUT,
-  STATUS_COLORS,
-  TAG_CLASS,
+  FONT_SIZE,
+  FONT_WEIGHT,
+  HEADER_LAYOUT,
+  LIST_TOOLBAR,
+  MOTION,
+  SIDEBAR_LAYOUT,
+  SPACING,
   TIME_FORMATS,
-  TRUNCATE_STYLE,
-  withAlpha,
 } from '../../../../../constants';
-import { formatDateTime } from '../../../../../utils/shared/time';
+import { LIST_PAGE } from '../../../../../constants/shared/pages';
 import SettingsCard from '../../../../settings/components/SettingsCard';
-import KeyValueGrid from '../../../../applications/components/details/KeyValueGrid';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
-import TimeRemaining from '../../../../../components/display/time/TimeRemaining';
-import UserAvatar from '../../../../../components/display/avatars/UserAvatar';
-import { avatarRingStyle } from '../../../../../components/display/avatars/avatarRing';
-import type { UserAvatar as UserAvatarModel } from '../../../../access-and-permissions/users/models';
-import { ColumnShell } from '../../../../applications/pages/details/contentBlocks';
-import HealthBadge from '../../components/shared/HealthBadge';
+import PlanHealthStatus from '../../components/shared/PlanHealthStatus';
 import HealthSection from '../../components/details/HealthSection';
-import ViolationsSection from '../../components/details/ViolationsSection';
+import PlanSummarySection from '../../components/details/PlanSummarySection';
+import ViolationsSection, { resultLabel } from '../../components/details/ViolationsSection';
+import { emptyCopy, windowNote } from '../../components/details/violationsCopy';
+import { healthRows, isInForce } from '../../components/details/policyHealth';
 import ReportsSection from '../../components/details/ReportsSection';
+import PlanStatusBand from '../../components/layout/PlanStatusBand';
 import ProtectionPlanDetailsToolbar from '../../components/layout/ProtectionPlanDetailsToolbar';
-import { usePlanHealth } from '../../hooks/usePlanHealth';
-import { usePlanViolations } from '../../hooks/usePlanViolations';
-import { usePlanReports } from '../../hooks/usePlanReports';
+import { usePlanHealth, type UsePlanHealthResult } from '../../hooks/usePlanHealth';
+import { usePlanViolations, type UsePlanViolationsResult } from '../../hooks/usePlanViolations';
+import { usePlanReports, type UsePlanReportsResult } from '../../hooks/usePlanReports';
 import { usePermission, ACTION_PERMISSIONS } from '../../../../auth/hooks';
 import { NoPermissionCard } from '../../../../../components/shared';
 import type { ViolationsResultFilter } from '../../hooks/usePlanViolations';
-import { Select } from 'antd';
-import type { RootState } from '../../../../../store';
-import {
-  POLICY_CHIP_LABEL,
-  PROTECTION_PLANS_CONSTANTS as PPC,
-} from '../../constants/protectionPlans';
-import type { ProtectionPlan } from '../../models';
-import { usePlanTaxonomies } from '../../hooks/usePlanTaxonomies';
-import { useUsernamesByIds } from '../../../../../hooks/useUsernamesByIds';
-import { planPhaseLabel } from '../../utils/phaseRules';
-import { encodeResourceKey } from '../../utils/planFormValues';
-import { getCategoryName } from '../../../../access-and-permissions/categories/utils/helpers';
+import type { AppDispatch, RootState } from '../../../../../store';
+import { fetchProtectionPlanTemplatesThunk, selectProtectionPlanTemplates } from '../../store';
+import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
+import type { PlanHealth, ProtectionPlan } from '../../models';
 
-const AvatarRing: React.FC<{
-  avatar?: UserAvatarModel;
-  username?: string;
-  size: number;
-}> = ({ avatar, username, size }) => (
-  <span style={avatarRingStyle(size)}>
-    <UserAvatar avatar={avatar} username={username} size={size} style={{ border: 'none' }} />
-  </span>
-);
+const CARD_GAP_PX = LIST_PAGE.DETAILS_SECTIONS_STYLE.gap;
 
-const policyIconStyle = (accent: string): React.CSSProperties => ({
-  width: 20,
-  height: 20,
-  flexShrink: 0,
-  display: 'inline-flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  borderRadius: 6,
-  fontSize: 10,
-  color: accent,
-  background: withAlpha(accent, 0.14),
-});
-
+// 10 and 120ms: the refresh button's corner and hover fade sit between the RADIUS and MOTION steps.
 const COMPACT_REFRESH_BUTTON_STYLE: React.CSSProperties = {
   color: DEFAULT_COLORS.ICON_SECONDARY,
   flexShrink: 0,
-  width: 30,
-  height: 30,
+  width: CONTROL_HEIGHT,
+  height: CONTROL_HEIGHT,
   display: 'inline-flex',
   alignItems: 'center',
   justifyContent: 'center',
   borderRadius: 10,
   background: 'transparent',
-  transition: 'background 120ms ease, color 120ms ease',
+  transition: `background 120ms ${MOTION.EASE}, color 120ms ${MOTION.EASE}`,
+};
+
+// One line: the status gives way first. Only a row too narrow for the phase, mode and actions
+// (four or five buttons on a phone) wraps, and then the actions go under, right-aligned.
+const ROW_STYLE: React.CSSProperties = {
+  display: 'flex',
+  flexWrap: 'wrap',
+  alignItems: 'center',
+  justifyContent: 'flex-end',
+  rowGap: SPACING.S6,
+  minHeight: LIST_TOOLBAR.ROW_HEIGHT_PX,
+};
+
+// The status spaces its own items, so only this gap stands between the phase and the actions.
+const ACTIONS_STYLE: React.CSSProperties = { marginLeft: SPACING.SM };
+
+// The status's place in the row: the row wraps on the status alone, the name only takes room left.
+const STATUS_GROUP_STYLE: React.CSSProperties = {
+  flex: '1 1 0%',
+  display: 'flex',
+  alignItems: 'center',
+};
+
+// Gives way before the status, so it never grows the row: its 0 min track adds no min-content.
+const NAME_STYLE: React.CSSProperties = {
+  display: 'grid',
+  gridTemplateColumns: 'minmax(0, max-content)',
+  flex: '0 100000 auto',
+  overflow: 'hidden',
+};
+
+const NAME_TEXT_STYLE: React.CSSProperties = {
+  paddingRight: SPACING.MD,
+  fontSize: FONT_SIZE.MD,
+  fontWeight: FONT_WEIGHT.BOLD,
+  color: DEFAULT_COLORS.TEXT_PRIMARY,
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
+};
+
+const RefreshButton: React.FC<{ label: string; onClick: () => void }> = ({ label, onClick }) => (
+  <Tooltip title={label}>
+    <Button
+      type="text"
+      shape="circle"
+      icon={<ReloadOutlined />}
+      onClick={onClick}
+      style={COMPACT_REFRESH_BUTTON_STYLE}
+      aria-label={label}
+    />
+  </Tooltip>
+);
+
+// The capture rule is detail: the card says what reports hold, the icon when they are taken.
+const reportsCopy = (plan: ProtectionPlan): { description: string; info: string } => {
+  const { SECTIONS } = PPC.LABELS.DETAIL_PAGE;
+  return plan.timeMode === 'repeating'
+    ? {
+        description: SECTIONS.REPORTS_DESCRIPTION_SERIES,
+        info: SECTIONS.REPORTS_CAPTURE_INFO_SERIES,
+      }
+    : { description: SECTIONS.REPORTS_DESCRIPTION, info: SECTIONS.REPORTS_CAPTURE_INFO };
+};
+
+// The card top-aligns a title badge: 6 centers the 11px icon on the title's 24px line.
+const ReportsInfo: React.FC<{ info: string }> = ({ info }) => (
+  <Tooltip title={info}>
+    <InfoCircleOutlined
+      tabIndex={0}
+      aria-label={info}
+      style={{ fontSize: FONT_SIZE.XS, color: DEFAULT_COLORS.TEXT_MUTED, marginTop: SPACING.S6 }}
+    />
+  </Tooltip>
+);
+
+interface HealthCardProps {
+  plan: ProtectionPlan;
+  healthState?: PlanHealth;
+  checkedAt?: string;
+  health: UsePlanHealthResult;
+  cardRef: React.Ref<HTMLDivElement>;
+}
+
+// Focusable so the status line's jump leaves keyboard focus here.
+const HealthCard: React.FC<HealthCardProps> = ({
+  plan,
+  healthState,
+  checkedAt,
+  health,
+  cardRef,
+}) => (
+  <div ref={cardRef} tabIndex={-1}>
+    <SettingsCard
+      title={PPC.LABELS.DETAIL_PAGE.SECTIONS.HEALTH_TITLE}
+      description={PPC.LABELS.DETAIL_PAGE.SECTIONS.HEALTH_DESCRIPTION}
+      headerAction={
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: SPACING.MD,
+            flexWrap: 'wrap',
+          }}
+        >
+          {healthState && <PlanHealthStatus health={healthState} />}
+          {checkedAt && (
+            <span style={{ fontSize: FONT_SIZE.SM, color: DEFAULT_COLORS.TEXT_MUTED }}>
+              {PPC.LABELS.HEALTH_DETAIL.CHECKED_AT}{' '}
+              <TimeAgo date={checkedAt} short formatString={TIME_FORMATS.DATE_TIME} />
+            </span>
+          )}
+          <RefreshButton label={PPC.LABELS.HEALTH_DETAIL.REFRESH_BUTTON} onClick={health.refresh} />
+        </div>
+      }
+    >
+      <HealthSection
+        plan={plan}
+        status={health.status}
+        loading={health.loading}
+        error={health.error}
+      />
+    </SettingsCard>
+  </div>
+);
+
+const { viewViolations, viewReports } = ACTION_PERMISSIONS.protectionPlans;
+
+// Which decisions the list holds, in the refresh button's box so the two icons pair up.
+const WindowInfo: React.FC<{ note: string }> = ({ note }) => (
+  <span style={COMPACT_REFRESH_BUTTON_STYLE}>
+    <Tooltip title={note}>
+      <InfoCircleOutlined tabIndex={0} aria-label={note} />
+    </Tooltip>
+  </span>
+);
+
+interface ViolationsCardProps {
+  plan: ProtectionPlan;
+  canView: boolean;
+  violations: UsePlanViolationsResult;
+}
+
+const ViolationsCard: React.FC<ViolationsCardProps> = ({ plan, canView, violations }) => {
+  const filterOptions: Array<{ value: ViolationsResultFilter; label: string }> = [
+    { value: 'all', label: PPC.LABELS.VIOLATIONS.FILTER_ALL },
+    ...(['fail', 'pass', 'warn', 'error', 'skip'] as const).map((value) => ({
+      value,
+      label: resultLabel(value, plan.mode),
+    })),
+  ];
+  return (
+    <SettingsCard
+      title={PPC.LABELS.DETAIL_PAGE.SECTIONS.VIOLATIONS_TITLE}
+      description={PPC.LABELS.DETAIL_PAGE.SECTIONS.VIOLATIONS_DESCRIPTION}
+      headerAction={
+        canView ? (
+          <div style={{ display: 'flex', alignItems: 'center', gap: SPACING.SM }}>
+            <Select
+              value={violations.resultFilter}
+              onChange={(v) => violations.setResultFilter(v)}
+              options={filterOptions}
+              size="small"
+              style={{ width: 140 }}
+              placeholder={PPC.LABELS.VIOLATIONS.FILTER_PLACEHOLDER}
+            />
+            <WindowInfo note={windowNote(plan, violations.data)} />
+            <RefreshButton label={PPC.LABELS.VIOLATIONS.REFRESH} onClick={violations.refresh} />
+          </div>
+        ) : undefined
+      }
+    >
+      {canView ? (
+        <ViolationsSection
+          data={violations.data}
+          loading={violations.loading}
+          error={violations.error}
+          planId={plan.id}
+          mode={plan.mode}
+          empty={emptyCopy(plan, violations.data)}
+        />
+      ) : (
+        <NoPermissionCard
+          featureName={PPC.LABELS.DETAIL_PAGE.SECTIONS.VIOLATIONS_TITLE}
+          permission={viewViolations}
+          emptyState
+        />
+      )}
+    </SettingsCard>
+  );
+};
+
+interface ReportsCardProps {
+  plan: ProtectionPlan;
+  reports: UsePlanReportsResult;
+  users: RootState['users']['users'];
+  canView: boolean;
+  canDownload: boolean;
+}
+
+const ReportsCard: React.FC<ReportsCardProps> = ({
+  plan,
+  reports,
+  users,
+  canView,
+  canDownload,
+}) => {
+  const reportsText = reportsCopy(plan);
+  return (
+    <SettingsCard
+      title={PPC.LABELS.DETAIL_PAGE.SECTIONS.REPORTS_TITLE}
+      titleBadge={<ReportsInfo info={reportsText.info} />}
+      description={reportsText.description}
+      headerAction={
+        canView ? (
+          <RefreshButton label={PPC.LABELS.REPORTS.REFRESH} onClick={reports.refresh} />
+        ) : undefined
+      }
+    >
+      {canView ? (
+        <ReportsSection
+          data={reports.reports}
+          loading={reports.loading}
+          error={reports.error}
+          downloading={reports.downloading}
+          phase={plan.phase}
+          repeating={plan.timeMode === 'repeating'}
+          planName={plan.name}
+          users={users}
+          canDownload={canDownload}
+          onDownload={reports.download}
+          onDeleted={reports.refresh}
+        />
+      ) : (
+        <NoPermissionCard
+          featureName={PPC.LABELS.DETAIL_PAGE.SECTIONS.REPORTS_TITLE}
+          permission={viewReports}
+          emptyState
+        />
+      )}
+    </SettingsCard>
+  );
 };
 
 interface ProtectionPlanDetailsContentProps {
@@ -90,7 +306,6 @@ interface ProtectionPlanDetailsContentProps {
   approving: boolean;
   rejecting: boolean;
   deleting: boolean;
-  refreshingHealth: boolean;
   onDuplicate: () => void;
   onEdit: () => void;
   onCancel: () => void;
@@ -98,11 +313,7 @@ interface ProtectionPlanDetailsContentProps {
   onApprove: () => void;
   onReject: () => void;
   onDelete: () => void;
-  onRefreshHealth: () => void;
 }
-
-const { viewViolations, viewReports } = ACTION_PERMISSIONS.protectionPlans;
-const { FORM } = PPC.CREATE_PAGE;
 
 const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> = memo(
   ({
@@ -114,7 +325,6 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
     approving,
     rejecting,
     deleting,
-    refreshingHealth,
     onDuplicate,
     onEdit,
     onCancel,
@@ -122,10 +332,7 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
     onApprove,
     onReject,
     onDelete,
-    onRefreshHealth,
   }) => {
-    const phaseLabel = planPhaseLabel(plan);
-    const dotColor = STATUS_COLORS.PLAN_PHASE[plan.phase] ?? STATUS_COLORS.PLAN_PHASE.draft;
     const revision = `${plan.phase}:${plan.lastUpdatedAt ?? ''}`;
     const health = usePlanHealth(plan.id, revision);
     const canViewViolations = usePermission(
@@ -145,630 +352,132 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
     const handleGenerateReport = useCallback(() => {
       void generateReport();
     }, [generateReport]);
-    const violationsFilterOptions: Array<{ value: ViolationsResultFilter; label: string }> = [
-      { value: 'all', label: PPC.LABELS.VIOLATIONS.FILTER_ALL },
-      { value: 'fail', label: PPC.LABELS.VIOLATION_RESULT_LABELS.fail },
-      { value: 'pass', label: PPC.LABELS.VIOLATION_RESULT_LABELS.pass },
-      { value: 'warn', label: PPC.LABELS.VIOLATION_RESULT_LABELS.warn },
-      { value: 'error', label: PPC.LABELS.VIOLATION_RESULT_LABELS.error },
-      { value: 'skip', label: PPC.LABELS.VIOLATION_RESULT_LABELS.skip },
-    ];
+    const dispatch: AppDispatch = useDispatch();
+    const templates = useSelector(selectProtectionPlanTemplates);
+    // Template codes map rendered policy names to operation labels in Health and the decisions.
+    useEffect(() => {
+      if (templates.length === 0) void dispatch(fetchProtectionPlanTemplatesThunk());
+    }, [templates.length, dispatch]);
+
+    const notInForce =
+      plan.phase === 'active'
+        ? healthRows(plan, health.status).filter((row) => !isInForce(row, plan.mode)).length
+        : 0;
+    const healthState = health.status?.health ?? plan.health;
+    const barRef = useRef<HTMLDivElement>(null);
+    const healthRef = useRef<HTMLDivElement>(null);
+    // The pane scrolls, not the window, and the bar, stuck at the pane's top, would cover the card.
+    const scrollToHealth = useCallback(() => {
+      const pane = document.getElementById(APP_CONFIGS.LAYOUT.CONTENT_ID);
+      const target = healthRef.current;
+      if (!pane || !target) return;
+      const stuckBarBottom = pane.getBoundingClientRect().top + (barRef.current?.offsetHeight ?? 0);
+      pane.scrollBy({
+        top: target.getBoundingClientRect().top - stuckBarBottom - CARD_GAP_PX,
+        behavior: globalThis.matchMedia(SIDEBAR_LAYOUT.REDUCED_MOTION_QUERY).matches
+          ? 'auto'
+          : 'smooth',
+      });
+      target.focus({ preventScroll: true });
+    }, []);
     const users = useSelector((s: RootState) => s.users.users);
-    const taxonomies = usePlanTaxonomies();
-    // Participants too: the users list is empty when the page is opened directly.
-    const actorIds = useMemo(
-      () =>
-        [
-          plan.createdBy,
-          plan.lastUpdatedBy,
-          plan.approval?.requestedBy,
-          plan.approval?.decidedBy,
-          ...(plan.participantRefs ?? []),
-        ].filter((id): id is string => Boolean(id)),
-      [plan],
-    );
-    const usernamesById = useUsernamesByIds(actorIds, true);
-
-    const participants = useMemo(
-      () =>
-        (plan.participantRefs ?? []).map((id) => {
-          const user = users.find((u) => u.id === id);
-          return { id, user, username: user?.username ?? usernamesById[id] ?? id };
-        }),
-      [plan.participantRefs, users, usernamesById],
-    );
-
-    const renderUserAndTime = useCallback(
-      (userId: string | undefined, when: string | undefined): React.ReactNode => {
-        const user = userId ? users.find((u) => u.id === userId) : undefined;
-        const display = user?.username ?? (userId ? usernamesById[userId] : undefined);
-        const timeNode = when ? <TimeAgo date={when} /> : EMPTY_VALUE;
-        if (!userId || !display) return timeNode;
-        return (
-          // One line, so every row is the same height: the time gives way first, then the name.
-          <span style={{ display: 'flex', alignItems: 'center', gap: 4, minWidth: 0 }}>
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, minWidth: 0 }}>
-              <AvatarRing avatar={user?.avatar} username={display} size={20} />
-              <span
-                title={userId}
-                style={{ ...TRUNCATE_STYLE, fontSize: 13, color: DEFAULT_COLORS.TEXT_PRIMARY }}
-              >
-                {display}
-              </span>
-            </span>
-            {when && (
-              <>
-                <span style={{ color: DEFAULT_COLORS.TEXT_MUTED, margin: '0 2px', flexShrink: 0 }}>
-                  ·
-                </span>
-                <span style={{ ...TRUNCATE_STYLE, flexShrink: 100000 }}>{timeNode}</span>
-              </>
-            )}
-          </span>
-        );
-      },
-      [users, usernamesById],
-    );
-
-    const overviewRows = useMemo(() => {
-      const tags = (plan.tagRefs ?? [])
-        .map((id) => ({ id, name: taxonomies.tags.find((c) => c.id === id)?.name }))
-        .filter((t): t is { id: string; name: string } => Boolean(t.name));
-      const approval = plan.approval;
-      return [
-        { k: 'name', label: PPC.LABELS.DETAIL_PAGE.FIELDS.NAME, value: plan.name },
+    const nameSentinelRef = useRef<HTMLDivElement>(null);
+    const [nameVisible, setNameVisible] = useState(false);
+    useEffect(() => {
+      const sentinel = nameSentinelRef.current;
+      if (!sentinel) return;
+      const observer = new IntersectionObserver(
+        ([entry]) => setNameVisible(!entry.isIntersecting),
         {
-          k: 'description',
-          label: PPC.LABELS.DETAIL_PAGE.FIELDS.DESCRIPTION,
-          value: plan.description || EMPTY_VALUE,
+          rootMargin: `-${HEADER_LAYOUT.HEIGHT_PX + LIST_PAGE.DETAILS_NAME_REVEAL_OFFSET_PX}px 0px 0px 0px`,
         },
-        {
-          k: 'severity',
-          label: PPC.LABELS.DETAIL_PAGE.FIELDS.SEVERITY,
-          value: plan.severity || EMPTY_VALUE,
-        },
-        {
-          k: 'priority',
-          label: PPC.LABELS.DETAIL_PAGE.FIELDS.PRIORITY,
-          value: plan.priority ?? EMPTY_VALUE,
-        },
-        {
-          k: 'environment',
-          label: FORM.ENVIRONMENT_LABEL,
-          value: getCategoryName(plan.environmentRef ?? '', taxonomies.environments),
-        },
-        {
-          k: 'tags',
-          label: FORM.TAGS_LABEL,
-          value:
-            tags.length === 0 ? (
-              EMPTY_VALUE
-            ) : (
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                {tags.map(({ id, name }) => (
-                  <Tag key={id} className={`${TAG_CLASS.XSMALL} ${TAG_CLASS.AS_IS}`}>
-                    {name}
-                  </Tag>
-                ))}
-              </div>
-            ),
-        },
-        {
-          k: 'execution',
-          label: PPC.LABELS.DETAIL_PAGE.FIELDS.EXECUTION,
-          value: PPC.LABELS.EXECUTION_LABELS[plan.approvalMode ?? 'automatic'],
-        },
-        ...(approval
-          ? [
-              {
-                k: 'requested',
-                label: PPC.LABELS.DETAIL_PAGE.FIELDS.REQUESTED_BY,
-                value: renderUserAndTime(approval.requestedBy, approval.requestedAt),
-              },
-            ]
-          : []),
-        ...(approval?.decidedBy
-          ? [
-              {
-                k: 'decided',
-                label:
-                  approval.state === 'rejected'
-                    ? PPC.LABELS.DETAIL_PAGE.FIELDS.REJECTED_BY
-                    : PPC.LABELS.DETAIL_PAGE.FIELDS.APPROVED_BY,
-                value: renderUserAndTime(approval.decidedBy, approval.decidedAt),
-              },
-            ]
-          : []),
-        ...(approval?.comment
-          ? [
-              {
-                k: 'decisionComment',
-                label: PPC.LABELS.DETAIL_PAGE.FIELDS.DECISION_COMMENT,
-                value: approval.comment,
-              },
-            ]
-          : []),
-        { k: 'mode', label: PPC.LABELS.DETAIL_PAGE.FIELDS.MODE, value: plan.mode },
-        {
-          k: 'timeMode',
-          label: PPC.LABELS.DETAIL_PAGE.FIELDS.TIME_MODE,
-          value:
-            plan.timeMode === 'time_range' && plan.timeRange ? (
-              <span>
-                {formatDateTime(plan.timeRange.startAt, TIME_FORMATS.DATE_TIME_12H)} →{' '}
-                {formatDateTime(plan.timeRange.endAt, TIME_FORMATS.DATE_TIME_12H)}
-              </span>
-            ) : (
-              PPC.LABELS.DETAIL_PAGE.FIELDS.PERMANENT
-            ),
-        },
-        ...(plan.reason && (plan.phase === 'failed' || plan.phase === 'canceled')
-          ? [
-              {
-                k: 'reason',
-                label: PPC.LABELS.DETAIL_PAGE.FIELDS.REASON,
-                value: plan.reason,
-              },
-            ]
-          : []),
-      ];
-    }, [plan, renderUserAndTime, taxonomies.environments, taxonomies.tags]);
-
-    // Who made and moved the plan, and who takes part in it: the Overview's right half.
-    const activityRows = useMemo(
-      () => [
-        {
-          k: 'created',
-          label: PPC.LABELS.DETAIL_PAGE.FIELDS.CREATED,
-          value: renderUserAndTime(plan.createdBy, plan.createdAt),
-        },
-        ...(plan.startedAt
-          ? [
-              {
-                k: 'started',
-                label: PPC.LABELS.DETAIL_PAGE.FIELDS.STARTED,
-                value: renderUserAndTime(plan.startedBy, plan.startedAt),
-              },
-            ]
-          : []),
-        {
-          k: 'updated',
-          label: PPC.LABELS.DETAIL_PAGE.FIELDS.UPDATED,
-          value: renderUserAndTime(plan.lastUpdatedBy, plan.lastUpdatedAt),
-        },
-        ...(plan.terminatedAt
-          ? [
-              {
-                k: 'terminated',
-                label: PPC.LABELS.DETAIL_PAGE.FIELDS.TERMINATED,
-                value: renderUserAndTime(plan.terminatedBy, plan.terminatedAt),
-              },
-            ]
-          : []),
-        {
-          k: 'participants',
-          label: PPC.LABELS.DETAIL_PAGE.FIELDS.PARTICIPANTS,
-          value:
-            participants.length === 0 ? (
-              EMPTY_VALUE
-            ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                {participants.map(({ id, user, username }) => (
-                  <div key={id} style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-                    <AvatarRing avatar={user?.avatar} username={username} size={20} />
-                    <span title={id} style={{ fontSize: 13, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
-                      {username}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            ),
-        },
-      ],
-      [plan, renderUserAndTime, participants],
-    );
-
-    const scopeItems =
-      (plan.scope.type === 'applications' ? plan.scope.applicationRefs : plan.scope.namespaces) ??
-      [];
-    const policies = plan.policies ?? [];
-    const excludedKinds = plan.scope.exclusions?.kinds ?? [];
-    const excludedResources = plan.scope.exclusions?.resources ?? [];
-    const renderChips = (chips: { key: string; text: string }[]) => (
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-        {chips.map((chip) => (
-          <Tag key={chip.key} className={TAG_CLASS.AS_IS}>
-            {chip.text}
-          </Tag>
-        ))}
-      </div>
-    );
+      );
+      observer.observe(sentinel);
+      return () => observer.disconnect();
+    }, []);
 
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-        <div
-          style={{
-            position: 'sticky',
-            top: 0,
-            zIndex: 5,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: 12,
-            padding: '8px 0',
-            background: DEFAULT_COLORS.PAGE_BG,
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-              <span
-                aria-hidden
-                style={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: '50%',
-                  background: dotColor,
-                  boxShadow: `0 0 0 3px ${DEFAULT_COLORS.CHIP_CUSTOM_BG}`,
-                }}
+      <div>
+        <div ref={nameSentinelRef} />
+        <div ref={barRef} style={LIST_PAGE.DETAILS_STICKY_ROW_STYLE}>
+          <div style={ROW_STYLE}>
+            <div style={STATUS_GROUP_STYLE}>
+              <AnimatePresence initial={false}>
+                {nameVisible ? (
+                  <motion.div
+                    key="name"
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    transition={{
+                      duration: LIST_PAGE.DETAILS_NAME_REVEAL_DURATION_S,
+                      ease: 'easeOut',
+                    }}
+                    style={NAME_STYLE}
+                  >
+                    <span title={plan.name} style={NAME_TEXT_STYLE}>
+                      {plan.name}
+                    </span>
+                  </motion.div>
+                ) : null}
+              </AnimatePresence>
+              <PlanStatusBand
+                plan={plan}
+                health={healthState}
+                notInForce={notInForce}
+                onJumpToHealth={scrollToHealth}
               />
-              <span
-                style={{
-                  fontSize: 12,
-                  fontWeight: 600,
-                  color: DEFAULT_COLORS.TEXT_MUTED,
-                  textTransform: 'capitalize',
-                }}
-              >
-                {phaseLabel}
-              </span>
-            </span>
-            {plan.phase === 'scheduled' && plan.timeRange && (
-              <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
-                {PPC.LABELS.PHASE_INFO.STARTS_PREFIX} <TimeAgo date={plan.timeRange.startAt} />
-                {plan.timeMode === 'time_range' && plan.timeRange.endAt && (
-                  <>
-                    {' · '}
-                    {PPC.LABELS.PHASE_INFO.ENDS_PREFIX} <TimeAgo date={plan.timeRange.endAt} />
-                  </>
-                )}
-              </span>
-            )}
-            {plan.phase === 'pending_approval' && plan.approval && (
-              <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
-                {PPC.LABELS.PHASE_INFO.AWAITING_APPROVAL_PREFIX}{' '}
-                <TimeAgo date={plan.approval.requestedAt} />
-              </span>
-            )}
-            {plan.phase === 'active' && plan.health && <HealthBadge health={plan.health} />}
-            {plan.phase === 'active' && plan.timeMode === 'time_range' && plan.timeRange?.endAt && (
-              <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
-                <TimeRemaining
-                  date={plan.timeRange.endAt}
-                  prefix={PPC.LABELS.PHASE_INFO.ENDS_IN_PREFIX}
-                />
-              </span>
-            )}
-            {plan.phase === 'terminated' && plan.terminatedAt && (
-              <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
-                {PPC.LABELS.PHASE_INFO.TERMINATED_PREFIX} <TimeAgo date={plan.terminatedAt} />
-              </span>
-            )}
+            </div>
+            <div style={ACTIONS_STYLE}>
+              <ProtectionPlanDetailsToolbar
+                plan={plan}
+                duplicating={duplicating}
+                editing={editing}
+                canceling={canceling}
+                reactivating={reactivating}
+                approving={approving}
+                rejecting={rejecting}
+                deleting={deleting}
+                onDuplicate={onDuplicate}
+                onEdit={onEdit}
+                onCancel={onCancel}
+                onReactivate={onReactivate}
+                onApprove={onApprove}
+                onReject={onReject}
+                onDelete={onDelete}
+                generatingReport={reports.generating}
+                onGenerateReport={handleGenerateReport}
+              />
+            </div>
           </div>
-          <ProtectionPlanDetailsToolbar
-            plan={plan}
-            duplicating={duplicating}
-            editing={editing}
-            canceling={canceling}
-            reactivating={reactivating}
-            approving={approving}
-            rejecting={rejecting}
-            deleting={deleting}
-            refreshingHealth={refreshingHealth}
-            onDuplicate={onDuplicate}
-            onEdit={onEdit}
-            onCancel={onCancel}
-            onReactivate={onReactivate}
-            onApprove={onApprove}
-            onReject={onReject}
-            onDelete={onDelete}
-            onRefreshHealth={onRefreshHealth}
-            generatingReport={reports.generating}
-            onGenerateReport={handleGenerateReport}
-          />
         </div>
 
-        <SettingsCard
-          title={PPC.LABELS.DETAIL_PAGE.SECTIONS.OVERVIEW_TITLE}
-          description={PPC.LABELS.DETAIL_PAGE.SECTIONS.OVERVIEW_DESCRIPTION}
-        >
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))',
-              gap: 12,
-              alignItems: 'start',
-            }}
-          >
-            <ColumnShell title={PPC.LABELS.DETAIL_PAGE.SECTIONS.OVERVIEW_COLUMN_PRIMARY}>
-              <KeyValueGrid rows={overviewRows} />
-            </ColumnShell>
-            <ColumnShell title={PPC.LABELS.DETAIL_PAGE.SECTIONS.OVERVIEW_COLUMN_ACTIVITY}>
-              <KeyValueGrid rows={activityRows} />
-            </ColumnShell>
-          </div>
-        </SettingsCard>
-
-        <SettingsCard
-          title={PPC.LABELS.DETAIL_PAGE.SECTIONS.SCOPE_TITLE}
-          description={PPC.LABELS.DETAIL_PAGE.SECTIONS.SCOPE_DESCRIPTION}
-        >
-          <KeyValueGrid
-            rows={[
-              {
-                k: 'scopeType',
-                label: PPC.LABELS.DETAIL_PAGE.FIELDS.SCOPE_TYPE,
-                value:
-                  plan.scope.type === 'applications'
-                    ? PPC.LABELS.DETAIL_PAGE.FIELDS.APPLICATIONS
-                    : PPC.LABELS.DETAIL_PAGE.FIELDS.NAMESPACES,
-              },
-              {
-                k: 'scopeItems',
-                label:
-                  plan.scope.type === 'applications'
-                    ? PPC.LABELS.DETAIL_PAGE.FIELDS.APPLICATIONS
-                    : PPC.LABELS.DETAIL_PAGE.FIELDS.NAMESPACES,
-                value:
-                  scopeItems.length === 0 ? (
-                    EMPTY_VALUE
-                  ) : (
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                      {scopeItems.map((item) => (
-                        <Tag key={item} className={TAG_CLASS.AS_IS}>
-                          {item.toLowerCase()}
-                        </Tag>
-                      ))}
-                    </div>
-                  ),
-              },
-              ...(excludedKinds.length > 0
-                ? [
-                    {
-                      k: 'excludedKinds',
-                      label: PPC.LABELS.DETAIL_PAGE.FIELDS.EXCLUDED_KINDS,
-                      value: renderChips(
-                        excludedKinds.map((kind) => ({ key: kind, text: kind.toLowerCase() })),
-                      ),
-                    },
-                  ]
-                : []),
-              ...(excludedResources.length > 0
-                ? [
-                    {
-                      k: 'excludedResources',
-                      label: PPC.LABELS.DETAIL_PAGE.FIELDS.EXCLUDED_RESOURCES,
-                      value: renderChips(
-                        excludedResources.map((r) => ({
-                          key: encodeResourceKey(r),
-                          text: `${r.kind.toLowerCase()} \u00b7 ${r.name}`,
-                        })),
-                      ),
-                    },
-                  ]
-                : []),
-            ]}
+        <div style={LIST_PAGE.DETAILS_SECTIONS_STYLE}>
+          <PlanSummarySection
+            plan={plan}
+            health={healthState}
+            notInForce={notInForce}
+            onJumpToHealth={scrollToHealth}
           />
-        </SettingsCard>
 
-        <SettingsCard
-          title={PPC.LABELS.DETAIL_PAGE.SECTIONS.POLICIES_TITLE}
-          description={
-            PPC.LABELS.CARD.BLOCKED_LABEL[plan.mode][
-              plan.timeMode === 'permanent' ? 'permanent' : 'window'
-            ]
-          }
-        >
-          {policies.length === 0 ? (
-            <div style={{ fontSize: 13, color: DEFAULT_COLORS.TEXT_MUTED }}>{EMPTY_VALUE}</div>
-          ) : (
-            <div>
-              {policies.map((p, idx) => (
-                <div
-                  key={`${p.templateID}-${idx}`}
-                  style={{
-                    padding: '10px 0',
-                    borderBottom: SECTION_LAYOUT.SUBTLE_DIVIDER,
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    gap: 8,
-                  }}
-                >
-                  {/* What the policy refuses, in the card's words, over its template id. */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
-                    <span aria-hidden style={policyIconStyle(STATUS_COLORS.PLAN_MODE[plan.mode])}>
-                      {plan.mode === 'audit' ? <EyeOutlined /> : <CloseOutlined />}
-                    </span>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 0, minWidth: 0 }}>
-                      <span
-                        style={{
-                          fontSize: 13,
-                          fontWeight: 600,
-                          lineHeight: 1.3,
-                          color: DEFAULT_COLORS.TEXT_PRIMARY,
-                        }}
-                      >
-                        {POLICY_CHIP_LABEL[p.templateID] ?? p.templateID}
-                      </span>
-                      {POLICY_CHIP_LABEL[p.templateID] ? (
-                        <span
-                          style={{
-                            fontSize: 12,
-                            lineHeight: 1.3,
-                            color: DEFAULT_COLORS.TEXT_MUTED,
-                          }}
-                        >
-                          {p.templateID}
-                        </span>
-                      ) : null}
-                    </div>
-                  </div>
-                  {p.params && Object.keys(p.params).length > 0 && (
-                    <div
-                      style={{
-                        display: 'flex',
-                        flexWrap: 'wrap',
-                        alignItems: 'center',
-                        gap: 6,
-                        justifyContent: 'flex-end',
-                      }}
-                    >
-                      {Object.entries(p.params).map(([key, value]) => (
-                        <Tag key={key} className={TAG_CLASS.AS_IS}>
-                          {`${key}: ${Array.isArray(value) ? value.join(', ') : String(value)}`}
-                        </Tag>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-        </SettingsCard>
-
-        {plan.phase === 'active' && (
-          <SettingsCard
-            title={PPC.LABELS.DETAIL_PAGE.SECTIONS.HEALTH_TITLE}
-            description={PPC.LABELS.DETAIL_PAGE.SECTIONS.HEALTH_DESCRIPTION}
-            headerAction={
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-                <HealthBadge health={health.status?.health ?? plan.health} />
-                {plan.healthCheckedAt && (
-                  <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
-                    {PPC.LABELS.HEALTH_DETAIL.CHECKED_AT}: <TimeAgo date={plan.healthCheckedAt} />
-                  </span>
-                )}
-                <Tooltip title={PPC.LABELS.HEALTH_DETAIL.REFRESH_BUTTON}>
-                  <Button
-                    type="text"
-                    shape="circle"
-                    size="small"
-                    icon={<ReloadOutlined />}
-                    onClick={health.refresh}
-                    style={COMPACT_REFRESH_BUTTON_STYLE}
-                    aria-label={PPC.LABELS.HEALTH_DETAIL.REFRESH_BUTTON}
-                  />
-                </Tooltip>
-              </div>
-            }
-          >
-            <HealthSection
+          {plan.phase === 'active' && (
+            <HealthCard
               plan={plan}
-              status={health.status}
-              loading={health.loading}
-              error={health.error}
-            />
-          </SettingsCard>
-        )}
-
-        <SettingsCard
-          title={PPC.LABELS.DETAIL_PAGE.SECTIONS.VIOLATIONS_TITLE}
-          description={PPC.LABELS.DETAIL_PAGE.SECTIONS.VIOLATIONS_DESCRIPTION}
-          headerAction={
-            canViewViolations ? (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <Select
-                  value={violations.resultFilter}
-                  onChange={(v) => violations.setResultFilter(v)}
-                  options={violationsFilterOptions}
-                  size="small"
-                  style={{ width: 140 }}
-                  placeholder={PPC.LABELS.VIOLATIONS.FILTER_PLACEHOLDER}
-                />
-                <Tooltip title={PPC.LABELS.VIOLATIONS.REFRESH}>
-                  <Button
-                    type="text"
-                    shape="circle"
-                    size="small"
-                    icon={<ReloadOutlined />}
-                    onClick={violations.refresh}
-                    style={COMPACT_REFRESH_BUTTON_STYLE}
-                    aria-label={PPC.LABELS.VIOLATIONS.REFRESH}
-                  />
-                </Tooltip>
-                {violations.data?.retentionWindow ? (
-                  <Tooltip
-                    title={PPC.LABELS.VIOLATIONS.RETENTION_NOTE(violations.data.retentionWindow)}
-                  >
-                    <InfoCircleOutlined
-                      tabIndex={0}
-                      aria-label={PPC.LABELS.VIOLATIONS.RETENTION_NOTE(
-                        violations.data.retentionWindow,
-                      )}
-                      style={{ color: DEFAULT_COLORS.ICON_SECONDARY }}
-                    />
-                  </Tooltip>
-                ) : null}
-              </div>
-            ) : undefined
-          }
-        >
-          {canViewViolations ? (
-            <ViolationsSection
-              data={violations.data}
-              loading={violations.loading}
-              error={violations.error}
-              mode={plan.mode}
-            />
-          ) : (
-            <NoPermissionCard
-              featureName={PPC.LABELS.DETAIL_PAGE.SECTIONS.VIOLATIONS_TITLE}
-              permission={viewViolations}
-              emptyState
+              healthState={healthState}
+              checkedAt={health.checkedAt ?? plan.healthCheckedAt}
+              health={health}
+              cardRef={healthRef}
             />
           )}
-        </SettingsCard>
-
-        <SettingsCard
-          title={PPC.LABELS.DETAIL_PAGE.SECTIONS.REPORTS_TITLE}
-          description={PPC.LABELS.DETAIL_PAGE.SECTIONS.REPORTS_DESCRIPTION}
-          headerAction={
-            canViewReports ? (
-              <Tooltip title={PPC.LABELS.REPORTS.REFRESH}>
-                <Button
-                  type="text"
-                  shape="circle"
-                  size="small"
-                  icon={<ReloadOutlined />}
-                  onClick={reports.refresh}
-                  style={COMPACT_REFRESH_BUTTON_STYLE}
-                  aria-label={PPC.LABELS.REPORTS.REFRESH}
-                />
-              </Tooltip>
-            ) : undefined
-          }
-        >
-          {canViewReports ? (
-            <ReportsSection
-              data={reports.reports}
-              loading={reports.loading}
-              error={reports.error}
-              downloading={reports.downloading}
-              phase={plan.phase}
-              planName={plan.name}
-              users={users}
-              canDownload={canDownloadReport}
-              onDownload={reports.download}
-            />
-          ) : (
-            <NoPermissionCard
-              featureName={PPC.LABELS.DETAIL_PAGE.SECTIONS.REPORTS_TITLE}
-              permission={viewReports}
-              emptyState
-            />
-          )}
-        </SettingsCard>
+          <ViolationsCard plan={plan} canView={canViewViolations} violations={violations} />
+          <ReportsCard
+            plan={plan}
+            reports={reports}
+            users={users}
+            canView={canViewReports}
+            canDownload={canDownloadReport}
+          />
+        </div>
       </div>
     );
   },

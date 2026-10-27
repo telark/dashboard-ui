@@ -29,8 +29,8 @@ const FALLBACK: ResourceKindVisual = {
 const KIND_VISUAL: Record<string, ResourceKindVisual> = {
   Deployment: {
     Icon: DeploymentUnitOutlined,
-    background: DEFAULT_COLORS.INFO_BG,
-    color: DEFAULT_COLORS.INFO,
+    background: DEFAULT_COLORS.CHIP_CUSTOM_BG,
+    color: DEFAULT_COLORS.TEXT_SECONDARY,
   },
   StatefulSet: {
     Icon: CloudServerOutlined,
@@ -54,8 +54,8 @@ const KIND_VISUAL: Record<string, ResourceKindVisual> = {
   },
   Service: {
     Icon: ApiOutlined,
-    background: DEFAULT_COLORS.INFO_BG,
-    color: DEFAULT_COLORS.INFO,
+    background: DEFAULT_COLORS.CHIP_CUSTOM_BG,
+    color: DEFAULT_COLORS.TEXT_SECONDARY,
   },
   Ingress: {
     Icon: GlobalOutlined,

@@ -1,267 +1,51 @@
-import React, { memo, useMemo, useRef, useState } from 'react';
-import { Empty, Tag, Tooltip, Typography } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
+import React, { memo, useCallback, useMemo, useState } from 'react';
+import { Empty, Typography } from 'antd';
 import {
   DEFAULT_COLORS,
   EMPTY_CLASS,
-  MONOSPACE_CLASS,
   SECTION_LAYOUT,
-  TAG_CLASS,
-  getPillColor,
+  TIME_FORMATS,
+  LINE_HEIGHT,
+  FONT_SIZE,
+  FONT_WEIGHT,
+  SPACING,
 } from '../../../../constants';
 import { formatDateKey, toDateKey } from '../../../../utils/shared/time';
 import SettingsCard from '../../../settings/components/SettingsCard';
-import TimeAgo from '../../../../components/display/time/TimeAgo';
 import TablePagination from '../../../../components/display/table/TablePagination';
-import { APPLICATION_CHANGE_CLASS, APPLICATIONS_UI } from '../../constants';
-import {
-  APPLICATION_CHANGE_LOG_PAGE_SIZE,
-  APPLICATION_TRACKING_ANNOTATION_PREFIX,
-} from '../../constants/applications';
-import { getChangeLogDotColor } from '../../pages/details/contentBlocks';
+import { APPLICATIONS_UI } from '../../constants';
+import { APPLICATION_CHANGE_LOG_PAGE_SIZE } from '../../constants/applications';
 import { useUsernamesByIds } from '../../../../hooks/useUsernamesByIds';
 import type { Application, ApplicationChangeLogEntry } from '../../models';
+import ChangeRow from './changelog/ChangeRow';
+import ChangeEntryPanel from './changelog/ChangeEntryPanel';
+import type { RollbackDisabledReason } from '../snapshots/ApplicationSnapshotRow';
+import { ACTION_PERMISSIONS, usePermission } from '../../../auth/hooks';
 
-// The tracking annotations the policy engine stamps on every write are the
-// source of "last modified"; as change rows they are noise.
-const visibleChanges = (entry: ApplicationChangeLogEntry) =>
-  (entry.changes ?? []).filter((c) => !c.field.includes(APPLICATION_TRACKING_ANNOTATION_PREFIX));
+const { rollback } = ACTION_PERMISSIONS.applications;
+const SNAPSHOT_UI = APPLICATIONS_UI.SECTIONS.SNAPSHOTS;
 
-const CHANGE_LIST_VISIBLE_ROWS = 5;
-const CHANGE_ROW_HEIGHT_PX = 26;
-const SCROLL_HIDDEN_CLASS = 'tk-scroll-hidden';
-
-// Shows five changes; the rest scroll under an invisible scrollbar, with a
-// "more" affordance until the reader reaches the end.
-const ChangeList: React.FC<{ count: number; children: React.ReactNode }> = ({
-  count,
-  children,
-}) => {
-  const ref = useRef<HTMLDivElement>(null);
-  const [atEnd, setAtEnd] = useState(false);
-  const scrollable = count > CHANGE_LIST_VISIBLE_ROWS;
-  const maxHeight = CHANGE_LIST_VISIBLE_ROWS * CHANGE_ROW_HEIGHT_PX;
-  const onScroll = () => {
-    const el = ref.current;
-    if (!el) return;
-    setAtEnd(el.scrollTop + el.clientHeight >= el.scrollHeight - 1);
-  };
-  return (
-    <div>
-      <div
-        ref={ref}
-        onScroll={onScroll}
-        className={scrollable ? SCROLL_HIDDEN_CLASS : undefined}
-        style={{ maxHeight: scrollable ? maxHeight : undefined }}
-      >
-        {children}
-      </div>
-      {scrollable && !atEnd ? (
-        <Tooltip title={APPLICATIONS_UI.SECTIONS.CHANGE_LOG.SCROLL_FOR_MORE_TOOLTIP}>
-          <button
-            type="button"
-            onClick={() => ref.current?.scrollBy({ top: maxHeight, behavior: 'smooth' })}
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 6,
-              marginTop: 4,
-              padding: 0,
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              fontSize: 12,
-              color: DEFAULT_COLORS.TEXT_MUTED,
-            }}
-          >
-            <DownOutlined />
-            {count - CHANGE_LIST_VISIBLE_ROWS} {APPLICATIONS_UI.SECTIONS.CHANGE_LOG.MORE_CHANGES}
-          </button>
-        </Tooltip>
-      ) : null}
-    </div>
-  );
+// The snapshot row's reasons, so "Roll back to this" is blocked exactly when the panel's button is.
+const rollbackBlockedReason = (
+  canRollback: boolean,
+  reason: RollbackDisabledReason,
+): string | undefined => {
+  if (!canRollback) return SNAPSHOT_UI.ROLLBACK_PERMISSION_DENIED_TOOLTIP;
+  if (reason === 'activeRollback') return SNAPSHOT_UI.ROLLBACK_IN_PROGRESS_TOOLTIP;
+  if (reason === 'sync') return APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP;
+  return undefined;
 };
 
-const ChangeRow: React.FC<{
-  entry: ApplicationChangeLogEntry;
-  usernamesById: Record<string, string>;
-  hasSnapshot: boolean;
-}> = ({ entry, usernamesById, hasSnapshot }) => {
-  const dotColor = getChangeLogDotColor(entry);
-  const actorId = entry.changedBy || '';
-  const actorName = actorId ? usernamesById[actorId] : '';
-  const suffixParts: string[] = [];
-  if (entry.isIncident) suffixParts.push('Incident');
-  if (entry.isRecovery) suffixParts.push('Recovery');
-  if (entry.isLastOne) suffixParts.push('Latest');
-  const suffix = suffixParts.length > 0 ? ` · ${suffixParts.join(' · ')}` : '';
+interface ApplicationChangeLogSectionProps {
+  application: Application;
+  rollbackDisabledReason: RollbackDisabledReason;
+  onRollbackTo: (generation: number) => void;
+}
 
-  return (
-    <div style={{ padding: '10px 0', borderBottom: SECTION_LAYOUT.SUBTLE_DIVIDER }}>
-      <div
-        style={{
-          display: 'flex',
-          gap: 12,
-          alignItems: 'flex-start',
-          justifyContent: 'space-between',
-        }}
-      >
-        <div
-          style={{
-            width: 8,
-            height: 8,
-            borderRadius: '50%',
-            marginTop: 5,
-            flexShrink: 0,
-            background: dotColor,
-          }}
-        />
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 6 }}>
-            <Tag>{`${APPLICATIONS_UI.SECTIONS.CHANGE_LOG.GEN}: ${entry.generation}`}</Tag>
-            <Tag>{entry.changeClass}</Tag>
-            <Tag>{`${APPLICATIONS_UI.SECTIONS.CHANGE_LOG.SEVERITY}: ${entry.severity}`}</Tag>
-            <Tooltip
-              title={
-                hasSnapshot
-                  ? APPLICATIONS_UI.SECTIONS.CHANGE_LOG.SNAPSHOT_AVAILABLE_TOOLTIP
-                  : APPLICATIONS_UI.SECTIONS.CHANGE_LOG.SNAPSHOT_MISSING_TOOLTIP
-              }
-            >
-              <span>
-                <Tag color={getPillColor(hasSnapshot ? DEFAULT_COLORS.SUCCESS : undefined)}>
-                  {hasSnapshot
-                    ? APPLICATIONS_UI.SECTIONS.CHANGE_LOG.SNAPSHOT_AVAILABLE
-                    : APPLICATIONS_UI.SECTIONS.CHANGE_LOG.SNAPSHOT_MISSING}
-                </Tag>
-              </span>
-            </Tooltip>
-            {suffix ? (
-              <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
-                {suffix.trim()}
-              </span>
-            ) : null}
-            {/* In the chip row, not a column of its own: on a narrow card it wraps under the chips. */}
-            <span
-              style={{
-                marginLeft: 'auto',
-                fontSize: 12,
-                color: DEFAULT_COLORS.TEXT_MUTED,
-                whiteSpace: 'nowrap',
-                lineHeight: 1.35,
-              }}
-            >
-              <TimeAgo date={entry.detectedAt} />
-            </span>
-          </div>
-
-          {actorId || entry.fingerprint ? (
-            <div
-              style={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                gap: 6,
-                marginTop: 6,
-                alignItems: 'center',
-              }}
-            >
-              {actorName ? (
-                <Tag className={`${TAG_CLASS.AS_IS} ${TAG_CLASS.TRUNCATE}`} title={actorId}>
-                  {`${APPLICATIONS_UI.SECTIONS.CHANGE_LOG.BY_PREFIX} ${actorName}`}
-                </Tag>
-              ) : null}
-              {entry.fingerprint ? (
-                <code
-                  className={MONOSPACE_CLASS}
-                  style={{
-                    fontSize: 11,
-                    color: DEFAULT_COLORS.TEXT_PRIMARY,
-                    background: DEFAULT_COLORS.SURFACE_ELEVATED_HOVER,
-                    border: `1px solid ${DEFAULT_COLORS.BORDER_ELEVATED}`,
-                    borderRadius: 6,
-                    padding: '2px 6px',
-                  }}
-                >
-                  {entry.fingerprint}
-                </code>
-              ) : null}
-            </div>
-          ) : null}
-
-          {visibleChanges(entry).length ? (
-            <div style={{ marginTop: 8 }}>
-              <ChangeList count={visibleChanges(entry).length}>
-                {visibleChanges(entry).map((c, idx) => {
-                  const hasOldValue = c.oldValue != null && String(c.oldValue).length > 0;
-                  const hasNewValue = c.newValue != null && String(c.newValue).length > 0;
-                  // A rollback has no old value to diff against, so the generic
-                  // "field: value" form renders as "snapshot: snap-3415eeaa" and drops
-                  // the generation it restored. The description already states both.
-                  const preferDescription =
-                    c.changeType === APPLICATION_CHANGE_CLASS.ROLLBACK && Boolean(c.description);
-                  const rollbackText =
-                    preferDescription && hasNewValue
-                      ? c.description.replace(
-                          `${APPLICATIONS_UI.SECTIONS.CHANGE_LOG.ROLLBACK_SNAPSHOT_JOINER}${String(c.newValue)}`,
-                          '',
-                        )
-                      : c.description;
-                  return (
-                    <div
-                      key={`${entry.fingerprint}:${idx}`}
-                      style={{
-                        fontSize: 12,
-                        color: DEFAULT_COLORS.TEXT_PRIMARY,
-                        lineHeight: 1.5,
-                        marginTop: idx === 0 ? 0 : 6,
-                      }}
-                    >
-                      {preferDescription ? (
-                        rollbackText
-                      ) : (
-                        <>
-                          <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>{c.changeType}</span>{' '}
-                          <span style={{ fontWeight: 700 }}>{c.field}</span>
-                          {': '}
-                          {hasOldValue ? (
-                            <span
-                              style={{
-                                color: DEFAULT_COLORS.TEXT_MUTED,
-                                textDecoration: 'line-through',
-                              }}
-                            >
-                              {String(c.oldValue)}
-                            </span>
-                          ) : null}
-                          {hasOldValue && hasNewValue ? (
-                            <span style={{ margin: '0 6px', color: DEFAULT_COLORS.TEXT_MUTED }}>
-                              {APPLICATIONS_UI.SECTIONS.CHANGE_LOG.DIFF_ARROW}
-                            </span>
-                          ) : null}
-                          {hasNewValue ? (
-                            <span style={{ fontWeight: 700 }}>{String(c.newValue)}</span>
-                          ) : !hasOldValue ? (
-                            <span style={{ color: DEFAULT_COLORS.TEXT_PRIMARY }}>
-                              {c.description}
-                            </span>
-                          ) : null}
-                        </>
-                      )}
-                    </div>
-                  );
-                })}
-              </ChangeList>
-            </div>
-          ) : null}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const ApplicationChangeLogSection: React.FC<{ application: Application }> = memo(
-  ({ application }) => {
+const ApplicationChangeLogSection: React.FC<ApplicationChangeLogSectionProps> = memo(
+  ({ application, rollbackDisabledReason, onRollbackTo }) => {
+    const canRollback = usePermission(rollback.scope, rollback.level, rollback.deny);
+    const blockedReason = rollbackBlockedReason(canRollback, rollbackDisabledReason);
     // Newest first: the CR appends, so the interesting entries sit at the end.
     const changeLog = useMemo(
       () => [...(application.history?.changeLog || [])].reverse(),
@@ -296,10 +80,13 @@ const ApplicationChangeLogSection: React.FC<{ application: Application }> = memo
       [changeLog],
     );
     const usernamesById = useUsernamesByIds(actorIds, true);
+    const [openEntry, setOpenEntry] = useState<ApplicationChangeLogEntry | null>(null);
+    const closePanel = useCallback(() => setOpenEntry(null), []);
+    const actorNameOf = (entry: ApplicationChangeLogEntry | null) =>
+      entry?.changedBy ? usernamesById[entry.changedBy] : '';
 
     return (
       <SettingsCard
-        collapsible
         title={APPLICATIONS_UI.SECTIONS.CHANGE_LOG.TITLE}
         description={APPLICATIONS_UI.SECTIONS.CHANGE_LOG.DESCRIPTION}
       >
@@ -308,7 +95,7 @@ const ApplicationChangeLogSection: React.FC<{ application: Application }> = memo
             className={EMPTY_CLASS.SECTION}
             image={false}
             description={
-              <Typography.Text style={{ lineHeight: 1.5 }}>
+              <Typography.Text style={{ lineHeight: LINE_HEIGHT.BASE }}>
                 {APPLICATIONS_UI.SECTIONS.CHANGE_LOG.EMPTY_DESCRIPTION}
               </Typography.Text>
             }
@@ -319,31 +106,32 @@ const ApplicationChangeLogSection: React.FC<{ application: Application }> = memo
               <div key={group.dayKey}>
                 <div
                   style={{
-                    fontSize: 11,
-                    fontWeight: 700,
+                    fontSize: FONT_SIZE.SM,
+                    fontWeight: FONT_WEIGHT.BOLD,
                     color: DEFAULT_COLORS.TEXT_MUTED,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.04em',
-                    marginTop: groupIdx === 0 ? 0 : 12,
-                    marginBottom: 8,
-                    paddingBottom: 6,
+                    marginTop: groupIdx === 0 ? SPACING.NONE : SPACING.MD,
+                    marginBottom: SPACING.SM,
+                    paddingBottom: SPACING.S6,
                     borderBottom: SECTION_LAYOUT.SUBTLE_DIVIDER,
                   }}
                 >
-                  {formatDateKey(group.dayKey)}
+                  {formatDateKey(group.dayKey, TIME_FORMATS.SHORT)}
                 </div>
                 {group.entries.map((entry) => (
                   <ChangeRow
                     key={`${entry.generation}:${entry.fingerprint}`}
                     entry={entry}
-                    usernamesById={usernamesById}
+                    actorName={actorNameOf(entry)}
                     hasSnapshot={snapshotGenerations.has(entry.generation)}
+                    onOpen={setOpenEntry}
+                    rollbackBlockedReason={blockedReason}
+                    onRollbackTo={onRollbackTo}
                   />
                 ))}
               </div>
             ))}
             {changeLog.length > APPLICATION_CHANGE_LOG_PAGE_SIZE ? (
-              <div style={{ paddingTop: 12 }}>
+              <div style={{ paddingTop: SPACING.MD }}>
                 <TablePagination
                   config={{
                     currentPage,
@@ -356,6 +144,11 @@ const ApplicationChangeLogSection: React.FC<{ application: Application }> = memo
             ) : null}
           </div>
         )}
+        <ChangeEntryPanel
+          entry={openEntry}
+          actorName={actorNameOf(openEntry)}
+          onClose={closePanel}
+        />
       </SettingsCard>
     );
   },

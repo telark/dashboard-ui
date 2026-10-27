@@ -8,7 +8,7 @@ import {
 import { SearchInput } from '../../../../../../components/display/inputs';
 import { ToggleButton } from '../../../../../../components/display/buttons';
 import { ActionConfirmModal } from '../../../../../../components/display/modal';
-import { SLIDE_OUT } from '../../../../../../constants';
+import { SLIDE_OUT, SPACING } from '../../../../../../constants';
 import { USERS_CONSTANTS as UC } from '../../../constants';
 import { useManageUserGroupPanel } from '../../../hooks/panels/group/useManageUserGroupPanel';
 import { useDeassignUserGroup } from '../../../hooks/panels/group/useDeassignUserGroup';
@@ -22,6 +22,7 @@ import { CapitalizeFirstLetter } from '../../../../../../utils/helpers/format';
 import { filterBySearchTerm } from '../../../utils/search/filter';
 import { ATTACHED_ROLES_CONSTANTS as ARC } from '../../../../groups/constants';
 import { useHasRoleAboveCaller } from '../../../../roles/hooks';
+import { useGrantConfirm } from '../../../../shared';
 import type { User } from '../../../models';
 
 interface ManageUserGroupPanelProps {
@@ -115,9 +116,23 @@ const ManageUserGroupPanel: React.FC<ManageUserGroupPanelProps> = ({ open, onClo
     setShowAssignedOnly((prev) => !prev);
   };
 
+  const panelWidth = expanded ? PANEL_WIDTH_EXPANDED : PANEL_WIDTH;
+  const { confirmGrant, modal: grantConfirmModal } = useGrantConfirm(panelWidth);
+
   if (!user) return null;
 
-  const panelWidth = expanded ? PANEL_WIDTH_EXPANDED : PANEL_WIDTH;
+  // Joining a group grants every role it carries.
+  const submitGroups = (values: Record<string, unknown>) => {
+    const added = ((values.groupRefs as string[] | undefined) ?? []).filter(
+      (id) => !initialSelectedGroups.includes(id),
+    );
+    const roleIds = (groups ?? [])
+      .filter((g) => added.includes(g.id))
+      .flatMap((g) => g.roleRefs ?? []);
+    return confirmGrant(roleIds, CapitalizeFirstLetter(user.fullname || user.username), () =>
+      handleSubmit(values),
+    );
+  };
 
   return (
     <>
@@ -133,18 +148,18 @@ const ManageUserGroupPanel: React.FC<ManageUserGroupPanelProps> = ({ open, onClo
           <ExpandPanelButton expanded={expanded} onToggle={() => setExpanded((prev) => !prev)} />
         }
         formContent={
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.MD, width: '100%' }}>
             <div
               style={{
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 flexWrap: 'wrap',
-                gap: 12,
+                gap: SPACING.MD,
                 width: '100%',
                 boxSizing: 'border-box',
-                margin: 0,
-                padding: 0,
+                margin: SPACING.NONE,
+                padding: SPACING.NONE,
               }}
             >
               <SearchInput
@@ -161,7 +176,14 @@ const ManageUserGroupPanel: React.FC<ManageUserGroupPanelProps> = ({ open, onClo
                 tooltip={UC.LABELS.PANELS.MANAGE_GROUP.SHOW_ASSIGNED_TOOLTIP}
               />
             </div>
-            <div style={{ width: '100%', margin: 0, padding: 0, boxSizing: 'border-box' }}>
+            <div
+              style={{
+                width: '100%',
+                margin: SPACING.NONE,
+                padding: SPACING.NONE,
+                boxSizing: 'border-box',
+              }}
+            >
               {showAssignedOnly ? (
                 <UserAssignedGroupsView
                   assignedGroupIds={filteredAssignedGroupIds}
@@ -181,7 +203,7 @@ const ManageUserGroupPanel: React.FC<ManageUserGroupPanelProps> = ({ open, onClo
             </div>
           </div>
         }
-        onSubmit={handleSubmit as (values: Record<string, unknown>) => Promise<void>}
+        onSubmit={submitGroups}
         onCancel={onClose}
         submitButtonText={UC.LABELS.PANELS.MANAGE_GROUP.SUBMIT_BUTTON}
         loading={submitting}
@@ -202,6 +224,7 @@ const ManageUserGroupPanel: React.FC<ManageUserGroupPanelProps> = ({ open, onClo
         getContainer={() => document.body}
         offsetRight={panelWidth}
       />
+      {grantConfirmModal}
     </>
   );
 };

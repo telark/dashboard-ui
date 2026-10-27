@@ -5,7 +5,7 @@ import { SettingsField } from '../../components/SettingsFields';
 import Toolbar from '../../../../components/display/toolbar/Toolbar';
 import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 import { Client, discoveryApiClient, exporterApiClient } from '../../../../api';
-import { DEFAULT_COLORS, Endpoints } from '../../../../constants';
+import { DEFAULT_COLORS, Endpoints, FONT_WEIGHT, SPACING } from '../../../../constants';
 import type { ResourceDetailsResponse } from '../../../../interfaces/http';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchGlobalConfigThunk, selectGlobalConfigState } from '../../../globalconfig/store';
@@ -13,6 +13,7 @@ import type { AppDispatch, RootState } from '../../../../store';
 import { SETTINGS_CONSTANTS } from '../../constants';
 import { INSIGHTS_GOVERNANCE_CONSTANTS as C } from './constants';
 import { pluralize } from '../../../../utils/helpers/format';
+import { compareCodeUnits } from '../../../../utils/layout/sort';
 import {
   ACTION_PERMISSIONS,
   usePermission,
@@ -54,12 +55,12 @@ const DiscoveryBehaviorSection: React.FC = memo(() => {
     const cfg = globalConfig.data;
     const savedExcluded = Array.isArray(cfg?.excludedNamespaces) ? cfg.excludedNamespaces : [];
     setExcludedNamespaces(savedExcluded);
-    setInitialExcluded([...savedExcluded].sort());
+    setInitialExcluded([...savedExcluded].sort(compareCodeUnits));
   }, [globalConfig?.data]);
 
   const discoveryHasChanges = useMemo(() => {
     if (!initialExcluded) return false;
-    const current = [...(excludedNamespaces || [])].sort();
+    const current = [...(excludedNamespaces || [])].sort(compareCodeUnits);
     if (current.length !== initialExcluded.length) return true;
     for (let i = 0; i < current.length; i++) {
       if (current[i] !== initialExcluded[i]) return true;
@@ -93,7 +94,7 @@ const DiscoveryBehaviorSection: React.FC = memo(() => {
         data: { excludedNamespaces },
       });
       message.success(C.MESSAGES.SAVE_SUCCESS);
-      setInitialExcluded([...(excludedNamespaces || [])].sort());
+      setInitialExcluded([...(excludedNamespaces || [])].sort(compareCodeUnits));
       dispatch(fetchGlobalConfigThunk());
     } catch {
       message.error(C.MESSAGES.SAVE_FAILED);
@@ -185,7 +186,7 @@ const DiscoveryBehaviorSection: React.FC = memo(() => {
       title={C.LABELS.DISCOVERY_SCOPE_TITLE}
       description={C.LABELS.DISCOVERY_SCOPE_DESCRIPTION}
     >
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.MD }}>
         <SettingsField label={C.LABELS.NAMESPACES_TITLE}>
           <Select
             mode="multiple"
@@ -203,7 +204,7 @@ const DiscoveryBehaviorSection: React.FC = memo(() => {
           <div
             style={{
               fontSize: SETTINGS_CONSTANTS.CONTENT.HINT_FONT_SIZE,
-              fontWeight: 700,
+              fontWeight: FONT_WEIGHT.BOLD,
               color: DEFAULT_COLORS.TEXT_MUTED,
             }}
           >
@@ -214,7 +215,7 @@ const DiscoveryBehaviorSection: React.FC = memo(() => {
               </span>
             ) : null}
             {namespacesImpactPreview.hidden > 0 && namespacesImpactPreview.revealed > 0 ? (
-              <span style={{ fontWeight: 600 }}> · </span>
+              <span style={{ fontWeight: FONT_WEIGHT.SEMIBOLD }}> · </span>
             ) : null}
             {namespacesImpactPreview.revealed > 0 ? (
               <span>

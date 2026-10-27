@@ -5,11 +5,9 @@ export interface DataTableProps<T> {
   columns: TableColumnsType<T>;
   data: T[];
   rowKey: string | ((record: T) => string);
-  rowHeight?: number;
   className?: string;
   containerStyle?: React.CSSProperties;
   tableProps?: TableProps<T>;
-  onRowClick?: (record: T) => void;
   empty?: React.ReactNode;
 }
 
@@ -38,4 +36,6 @@ export interface TablePaginationConfig {
   onPageSizeChange?: (size: number) => void;
   pageSizeOptions?: number[];
   showRowsLabel?: string;
+  /** antd's compact pager (current / total), for narrow pages. */
+  simple?: boolean;
 }

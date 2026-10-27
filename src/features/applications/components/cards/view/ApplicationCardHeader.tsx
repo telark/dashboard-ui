@@ -1,12 +1,10 @@
 import React, { memo, useCallback, useState } from 'react';
-import { App as AntdApp, Button, Checkbox, Dropdown, Tag, Tooltip } from 'antd';
+import { App as AntdApp, Button, Checkbox, Dropdown, Tooltip } from 'antd';
 import {
-  CheckCircleOutlined,
   CloseCircleOutlined,
   ClearOutlined,
   EditOutlined,
   EyeOutlined,
-  HistoryOutlined,
   MoreOutlined,
   SyncOutlined,
 } from '@ant-design/icons';
@@ -18,18 +16,19 @@ import {
   CARD_IDENTITY_STYLE,
   CARD_LAYOUT,
   CARD_TAG_ROW_STYLE,
+  CARD_TEXTS,
   CARD_TITLE_COLUMN_STYLE,
   CARD_TITLE_STYLE,
   DEFAULT_COLORS,
-  MICRO_LABEL_STYLE,
-  STATUS_COLORS,
   TRUNCATE_STYLE,
   getCardMenuButtonStyle,
-  getPillColor,
+  FONT_SIZE,
 } from '../../../../../constants';
-import type { Application, SyncStatusValue } from '../../../models';
-import { APPLICATION_CARD, APPLICATIONS_UI, SYNC_STATUS_VALUE } from '../../../constants';
+import type { Application, ApplicationProtection, SyncStatusValue } from '../../../models';
+import { APPLICATIONS_UI, SYNC_STATUS_VALUE } from '../../../constants';
 import { CardTagList } from '../../../../../components/display/card';
+import ProtectionBadge from '../../protection/ProtectionBadge';
+import ApplicationHealthIndicator from '../../display/ApplicationHealthIndicator';
 import FancySpinner from '../../../../../components/animation/FancySpinner';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import { useDispatch, useSelector } from 'react-redux';
@@ -48,25 +47,35 @@ interface ApplicationCardHeaderProps {
   bulkMode?: boolean;
   selected?: boolean;
   onToggleSelect?: (name: string, checked: boolean) => void;
+  // null while the plans load; unset when the viewer can't read them.
+  protection?: ApplicationProtection | null;
 }
 
-const SYNC_TAG_CONFIG: Record<SyncStatusValue, { icon: React.ReactNode; label: string }> = {
-  syncing: {
-    icon: <FancySpinner size={14} />,
-    label: APPLICATIONS_UI.CARD.SYNC_STATUS.SYNCING,
-  },
-  success: {
-    icon: <CheckCircleOutlined style={{ fontSize: 14, color: DEFAULT_COLORS.SUCCESS }} />,
-    label: APPLICATIONS_UI.CARD.SYNC_STATUS.SUCCESS,
-  },
-  failed: {
-    icon: <CloseCircleOutlined style={{ fontSize: 14, color: DEFAULT_COLORS.DANGER }} />,
-    label: APPLICATIONS_UI.CARD.SYNC_STATUS.FAILED,
-  },
-};
+// A finished sync shows nothing: its status stays in the store, and a lasting check mark beside
+// the protection badge read as a second badge.
+const SYNC_TAG_CONFIG: Partial<Record<SyncStatusValue, { icon: React.ReactNode; label: string }>> =
+  {
+    syncing: {
+      icon: <FancySpinner size={14} />,
+      label: APPLICATIONS_UI.CARD.SYNC_STATUS.SYNCING,
+    },
+    failed: {
+      icon: (
+        <CloseCircleOutlined style={{ fontSize: FONT_SIZE.BASE, color: DEFAULT_COLORS.DANGER }} />
+      ),
+      label: APPLICATIONS_UI.CARD.SYNC_STATUS.FAILED,
+    },
+  };
 
 const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
-  ({ application, onEditApplication, bulkMode = false, selected = false, onToggleSelect }) => {
+  ({
+    application,
+    onEditApplication,
+    bulkMode = false,
+    selected = false,
+    onToggleSelect,
+    protection,
+  }) => {
     const navigate = useNavigate();
     const dispatch: AppDispatch = useDispatch();
     const { message } = AntdApp.useApp();
@@ -78,6 +87,7 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
         s.applications.syncStatus?.[application.name] as SyncStatusValue | undefined,
     );
     const isSyncing = syncingFlag || syncStatus === SYNC_STATUS_VALUE.SYNCING;
+    const syncTag = syncStatus && SYNC_TAG_CONFIG[syncStatus];
     const syncCompletedAt = useSelector(
       (s: RootState) => s.applications.syncCompletedAt?.[application.name],
     );
@@ -104,11 +114,6 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
       ACTION_PERMISSIONS.applications.delete.deny,
     );
 
-    const accent =
-      STATUS_COLORS.APPLICATION_HEALTH[(application.health?.status ?? '').toLowerCase()] ??
-      DEFAULT_COLORS.NEUTRAL;
-    const statusText = application.health?.status || APPLICATIONS_UI.FALLBACKS.UNKNOWN;
-
     const detailsPath = APP_ROUTES.APPLICATION_DETAILS.replace(':name', application.name);
 
     const handleMenuClick = useCallback(
@@ -134,10 +139,6 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
           void forceSyncApplication(application.name).then((err) => {
             if (err) message.error(err);
           });
-          return;
-        }
-        if (info.key === 'rollbacks') {
-          navigate(detailsPath);
           return;
         }
         if (info.key === 'reset') {
@@ -205,22 +206,19 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
                   {descriptionText}
                 </span>
               )}
-              <span style={CARD_TAG_ROW_STYLE}>
-                {namespaceNames.length > 0 && (
-                  <span style={{ ...MICRO_LABEL_STYLE, alignSelf: 'center' }}>
-                    {APPLICATION_CARD.NAMESPACES_LABEL(namespaceNames.length)}
-                  </span>
-                )}
-                <CardTagList tags={namespaceNames} />
-              </span>
+              {namespaceNames.length > 0 && (
+                <span style={CARD_TAG_ROW_STYLE}>
+                  <CardTagList tags={namespaceNames} />
+                </span>
+              )}
             </span>
           </div>
-          <div style={CARD_ASIDE_STYLE}>
-            {syncStatus ? (
+          <div style={{ ...CARD_ASIDE_STYLE, marginTop: CARD_LAYOUT.CORNER_OFFSET_PX }}>
+            {syncTag ? (
               <Tooltip
                 title={
                   <>
-                    {SYNC_TAG_CONFIG[syncStatus].label}
+                    {syncTag.label}
                     {!isSyncing && syncCompletedAt ? (
                       <>
                         {' · '}
@@ -232,14 +230,15 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
                 }
               >
                 <span
-                  aria-label={SYNC_TAG_CONFIG[syncStatus].label}
+                  aria-label={syncTag.label}
                   style={{ display: 'inline-flex', alignItems: 'center' }}
                 >
-                  {SYNC_TAG_CONFIG[syncStatus].icon}
+                  {syncTag.icon}
                 </span>
               </Tooltip>
             ) : null}
-            <Tag color={getPillColor(accent)}>{statusText}</Tag>
+            {protection && <ProtectionBadge protection={protection} />}
+            <ApplicationHealthIndicator status={application.health?.status} />
             <Dropdown
               trigger={['click']}
               placement="bottomRight"
@@ -274,11 +273,6 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
                     icon: <EditOutlined />,
                     disabled: !canEdit || isSyncing,
                   },
-                  {
-                    key: 'rollbacks',
-                    label: APPLICATIONS_UI.CARD.ACTIONS.MANAGE_ROLLBACKS,
-                    icon: <HistoryOutlined />,
-                  },
                   { type: 'divider' as const },
                   {
                     key: 'reset',
@@ -302,7 +296,7 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
                 type="text"
                 shape="circle"
                 icon={<MoreOutlined rotate={90} />}
-                size="small"
+                aria-label={CARD_TEXTS.ACTIONS_LABEL(title)}
                 onClick={(e) => {
                   e.stopPropagation();
                 }}

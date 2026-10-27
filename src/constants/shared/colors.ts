@@ -2,20 +2,19 @@
 export const DEFAULT_COLORS = {
   // Status accents; SUCCESS is also the brand primary.
   SUCCESS: '#20C997',
-  DANGER: '#E05252',
-  WARNING: '#E2A336',
+  DANGER: '#DA3633',
+  WARNING: '#FAAD14',
   INFO: '#bfdbfe',
   INFO_STRONG: '#2563eb', // info blue that reads on white (5.17:1)
-  NEUTRAL: '#999',
+  NEUTRAL: '#98a2b3',
   // Brand primary interaction states.
   SUCCESS_HOVER: '#1db584',
   SUCCESS_ACTIVE: '#1aa572',
-  // Status tints (accent at low alpha) and the primary focus ring.
+  // Status tints (accent at low alpha).
   SUCCESS_TINT: 'rgba(32, 201, 151, 0.12)',
-  DANGER_TINT: 'rgba(224, 82, 82, 0.12)',
-  WARNING_TINT: 'rgba(226, 163, 54, 0.12)',
+  DANGER_TINT: 'rgba(218, 54, 51, 0.12)',
+  WARNING_TINT: 'rgba(250, 173, 20, 0.12)',
   NEUTRAL_TINT: 'rgba(153, 153, 153, 0.12)',
-  SUCCESS_RING: 'rgba(32, 201, 151, 0.2)',
   // Dark surfaces: the page, then elevated cards one step above it so they read as raised
   // without shadows and still sit below CHIP_CUSTOM_BG used inside them.
   PAGE_BG: '#111827',
@@ -36,14 +35,13 @@ export const DEFAULT_COLORS = {
   ICON_MUTED: '#4b5563',
   ICON_SECONDARY: '#6b7280',
   // Chips on dark surfaces; CHIP_ON_SURFACE_* is the light counterpart.
-  INFO_BG: '#1e3a8a',
   CHIP_CUSTOM_BG: '#1f2937',
   // Light surfaces: panels, modals, dropdowns, popovers.
   SURFACE_WHITE: '#ffffff',
   SURFACE_SUBTLE: '#f8fafc',
   SURFACE_HOVER: '#f1f5f9',
-  SURFACE_BORDER: '#d9d9d9',
-  SURFACE_BORDER_LIGHT: '#f0f0f0',
+  SURFACE_BORDER: '#cbd5e1',
+  SURFACE_BORDER_LIGHT: '#e2e8f0',
   TEXT_ON_SURFACE: '#111827',
   TEXT_ON_SURFACE_MUTED: '#64748b',
   TEXT_ON_SURFACE_DISABLED: '#94a3b8',
@@ -62,9 +60,6 @@ export const DEFAULT_COLORS = {
   AUTH_LIGHT_TEXT: '#0b1f33',
   AUTH_LIGHT_TEXT_MUTED: '#64748b',
   AUTH_LIGHT_DIVIDER: '#f1f5f9',
-  AUTH_DARK_BG: '#020617',
-  AUTH_DARK_CARD_BG: '#0f172a',
-  AUTH_DARK_BORDER: '#1e293b',
   AUTH_DARK_TEXT: '#f8fafc',
   AUTH_DARK_TEXT_MUTED: '#94a3b8',
   // YAML syntax highlighting in the manifest viewer (VS Code Dark+).
@@ -96,7 +91,7 @@ const rgbChannels = (color: string): string => {
     color.length === HEX_SHORT_LENGTH
       ? [...color.slice(1)].map((c) => c + c).join('')
       : color.slice(1, 7);
-  return [0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16)).join(', ');
+  return [0, 2, 4].map((i) => Number.parseInt(hex.slice(i, i + 2), 16)).join(', ');
 };
 
 /** A token at another opacity, so alpha variants never become new literals. */
@@ -106,7 +101,7 @@ export const withAlpha = (color: string, alpha: number): string =>
 /** CSS can't import this file: every token is exposed as `--color-<kebab-key>` on :root. */
 export const applyColorVariables = (root: HTMLElement = document.documentElement): void => {
   Object.entries(DEFAULT_COLORS).forEach(([key, value]) =>
-    root.style.setProperty(`--color-${key.toLowerCase().replace(/_/g, '-')}`, value),
+    root.style.setProperty(`--color-${key.toLowerCase().replaceAll('_', '-')}`, value),
   );
 };
 
@@ -115,9 +110,17 @@ interface PillSurface {
   color: string;
 }
 
-// A pill is the declared case color itself with white text (user decision, 2026-10-01).
+// A pill is the declared case color itself (user decision, 2026-10-01).
 // INFO is too light for a solid fill, so its pill uses the declared INFO_STRONG.
 const PILL_NEUTRAL = '#374151';
+
+// White fails AA on these light fills, so their text is dark (user decision, 2026-10-16).
+const PILL_DARK_TEXT_FILLS: ReadonlySet<string> = new Set([
+  DEFAULT_COLORS.SUCCESS,
+  DEFAULT_COLORS.WARNING,
+  DEFAULT_COLORS.TEXT_MUTED,
+  DEFAULT_COLORS.NEUTRAL,
+]);
 
 const PILL_CASES: Record<string, string> = {
   [DEFAULT_COLORS.SUCCESS]: DEFAULT_COLORS.SUCCESS,
@@ -132,17 +135,39 @@ const PILL_CASES: Record<string, string> = {
 export const getPillColor = (accent?: string): string =>
   (accent && PILL_CASES[accent]) || PILL_NEUTRAL;
 
-/** Pill background and text color for a case accent; no accent means a neutral pill. */
-export const getPillSurface = (accent?: string): PillSurface => ({
-  background: getPillColor(accent),
-  color: DEFAULT_COLORS.PILL_TEXT,
-});
+/** Text color on a pill fill (a `getPillColor` result): dark on the light fills, else white. */
+export const getPillTextColor = (fill?: string): string =>
+  fill && PILL_DARK_TEXT_FILLS.has(fill)
+    ? DEFAULT_COLORS.TEXT_ON_SURFACE
+    : DEFAULT_COLORS.PILL_TEXT;
 
-/** Quick-filter pill: selected = the accent's pill, idle = neutral. */
+/** Pill background and text color for a case accent; no accent means a neutral pill. */
+export const getPillSurface = (accent?: string): PillSurface => {
+  const background = getPillColor(accent);
+  return { background, color: getPillTextColor(background) };
+};
+
+// Only risk accents fill a selected quick filter; every other selection is the neutral fill,
+// so a selected filter never reads as a status (never teal).
+const QUICK_FILTER_FILL_ACCENTS: ReadonlySet<string> = new Set([
+  DEFAULT_COLORS.DANGER,
+  DEFAULT_COLORS.WARNING,
+]);
+
+/** Quick-filter pill: selected = a filled pill, idle = an outline, so the two never read alike. */
 export const getQuickFilterPillColors = (
   accent: string,
   active: boolean,
-): PillSurface & { border: string } => ({
-  ...getPillSurface(active ? accent : undefined),
-  border: '1px solid transparent',
-});
+): PillSurface & { border: string } =>
+  active
+    ? {
+        ...getPillSurface(
+          QUICK_FILTER_FILL_ACCENTS.has(accent) ? accent : DEFAULT_COLORS.TEXT_MUTED,
+        ),
+        border: '1px solid transparent',
+      }
+    : {
+        background: 'transparent',
+        color: DEFAULT_COLORS.TEXT_SECONDARY,
+        border: `1px solid ${DEFAULT_COLORS.BORDER_HOVER}`,
+      };

@@ -1,7 +1,10 @@
-import { DEFAULT_COLORS } from '../shared/colors';
-import { CONTROL_HEIGHT } from './controls';
+import { DEFAULT_COLORS, withAlpha } from '../shared/colors';
+import { UNSTYLED_BUTTON } from './buttons';
+import { CONTROL_FONT_SIZE, CONTROL_HEIGHT } from './controls';
 import { HEADER_LAYOUT } from './header';
+import { HAIRLINE } from './sections';
 import { SIDEBAR_LAYOUT } from './sidebar';
+import { Z_INDEX } from './zIndex';
 
 // Panels keep the light surface they had before the dark theme; these tokens
 // re-light the antd controls rendered inside them.
@@ -19,6 +22,9 @@ export const PANEL_THEME_TOKENS = {
   // antd draws every keyboard focus ring in this color, and its light mint fades on white
   // (1.3:1). The muted ink (4.8:1) is also what inputs and selects show on focus here.
   colorPrimaryBorder: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+  // Warning Alerts: dark text on white with the amber icon and frame, not antd's gold tint.
+  colorWarningBg: DEFAULT_COLORS.SURFACE_WHITE,
+  colorWarningBorder: DEFAULT_COLORS.WARNING,
 } as const;
 
 // PanelThemePrewarm (idle timing and its offscreen box) and the panel theme's fixed css-var key.
@@ -66,6 +72,25 @@ export const PANEL_TABS_THEME = {
   horizontalMargin: '0 0 14px 0',
 } as const;
 
+// Date and time pickers and their popups. Selection keeps the brand green of colorPrimary (user
+// decision, 2026-10-22), and hover and range take a 10% tint of it.
+export const DATE_PICKER_THEME = {
+  cellHoverBg: withAlpha(DEFAULT_COLORS.SUCCESS, 0.1),
+  cellActiveWithRangeBg: withAlpha(DEFAULT_COLORS.SUCCESS, 0.1),
+  // fontSize would also shrink the field's own text (inputFontSize derives from it).
+  fontSize: 12,
+  inputFontSize: CONTROL_FONT_SIZE,
+  cellHeight: 28,
+  cellWidth: 37,
+  textHeight: 54,
+  timeColumnWidth: 60,
+  // antd pads the day grid by padding + 2 on each side: 8px.
+  padding: 6,
+} as const;
+
+// Every picker popup carries it, for the few rules the tokens can't reach (datePicker.css).
+export const DATE_PICKER_POPUP_CLASS = 'custom-date-picker-popup';
+
 // Expanded panels stop at a fully opened sidebar's edge so navigation stays reachable;
 // small screens keep the panel's own width up to the viewport.
 export const PANEL_MAX_WIDTH = `max(calc(100vw - ${SIDEBAR_LAYOUT.WIDTH_MAX}px), min(100vw, 480px))`;
@@ -86,7 +111,7 @@ export const SLIDE_OUT = {
     right: 0,
     bottom: 0,
     background: DEFAULT_COLORS.OVERLAY_BACKDROP,
-    zIndex: 1000,
+    zIndex: Z_INDEX.PANEL_BACKDROP,
     animation: `fadeIn ${PANEL_ENTER_MS}ms ease-out`,
   },
   PANEL: {
@@ -95,7 +120,7 @@ export const SLIDE_OUT = {
     right: 0,
     bottom: 0,
     background: DEFAULT_COLORS.SURFACE_WHITE,
-    zIndex: 1001,
+    zIndex: Z_INDEX.PANEL,
     display: 'flex' as const,
     flexDirection: 'column' as const,
     borderRight: `0.5px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
@@ -112,13 +137,15 @@ export const SLIDE_OUT = {
     BACKDROP: { opacity: 0 },
     TIMING: { duration: PANEL_EXIT_MS, easing: PANEL_EXIT_EASING, fill: 'forwards' as const },
   },
+  // View → edit: the edit panel starts sliding in just before the view panel's exit ends.
+  HANDOFF_DELAY_MS: 150,
   // Exactly as tall as the app header (and follows it): the panel's top bar lines up with it.
   HEADER: {
     height: HEADER_LAYOUT.HEIGHT_PX,
     flexShrink: 0,
     boxSizing: 'border-box' as const,
     padding: '0 24px',
-    borderBottom: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
+    borderBottom: HAIRLINE.SURFACE_BORDER_LIGHT,
     display: 'flex' as const,
     flexDirection: 'column' as const,
     justifyContent: 'center' as const,
@@ -134,9 +161,7 @@ export const SLIDE_OUT = {
     gap: 8,
   },
   TOOLBAR_BUTTON: {
-    background: 'none',
-    border: 'none',
-    cursor: 'pointer' as const,
+    ...UNSTYLED_BUTTON,
     padding: 4,
     display: 'flex' as const,
     alignItems: 'center' as const,
@@ -173,9 +198,7 @@ export const SLIDE_OUT = {
   },
   ENTITY_TITLE: (title: string, name: string) => `${title} · ${name}`,
   CLOSE_BUTTON: {
-    background: 'none',
-    border: 'none',
-    cursor: 'pointer' as const,
+    ...UNSTYLED_BUTTON,
     padding: 4,
     display: 'flex' as const,
     alignItems: 'center' as const,
@@ -237,7 +260,7 @@ export const PANEL_FOOTER = {
     flexShrink: 0,
     boxSizing: 'border-box' as const,
     padding: '0 24px',
-    borderTop: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
+    borderTop: HAIRLINE.SURFACE_BORDER_LIGHT,
     display: 'flex' as const,
     alignItems: 'center' as const,
     justifyContent: 'flex-end' as const,
@@ -297,10 +320,11 @@ export const FILTER_PANEL = {
     fontWeight: 600,
     border: `1px solid ${DEFAULT_COLORS.SUCCESS}`,
     backgroundColor: DEFAULT_COLORS.SUCCESS,
-    color: DEFAULT_COLORS.PILL_TEXT,
+    // White on SUCCESS is 2.1:1, so dark text as on the SUCCESS pill (user decision, 2026-10-17).
+    color: DEFAULT_COLORS.TEXT_ON_SURFACE,
   },
   BUTTON_INACTIVE: {
-    border: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER}`,
+    border: HAIRLINE.SURFACE_BORDER,
     backgroundColor: DEFAULT_COLORS.SURFACE_WHITE,
     color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
   },

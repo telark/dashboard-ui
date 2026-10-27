@@ -1,14 +1,13 @@
 import React from 'react';
-import { ConfigProvider, Modal, theme } from 'antd';
+import { ConfigProvider, Modal } from 'antd';
 import type { BaseModalProps } from '../../../../interfaces/layout/modal';
 import { useOpenedOnce } from '../../../../hooks/layout/useOpenedOnce';
 import {
-  CONTROL_HEIGHT,
   MODAL_CHROME,
+  OVERLAY_THEME,
   PANEL_FOOTER,
   PANEL_SURFACE_CLASS,
-  PANEL_THEME_TOKENS,
-  SELECT_THEME,
+  SPACING,
 } from '../../../../constants';
 import { ActionTitle } from '../../text';
 
@@ -32,13 +31,7 @@ const BaseModal: React.FC<BaseModalProps> = ({
   // A modal would take the theme of whatever declares it (dark page, panel, auth page),
   // so it sets the light surface itself, like the panels do.
   return (
-    <ConfigProvider
-      theme={{
-        algorithm: theme.defaultAlgorithm,
-        token: { ...PANEL_THEME_TOKENS, controlHeight: CONTROL_HEIGHT },
-        components: { Select: SELECT_THEME },
-      }}
-    >
+    <ConfigProvider theme={OVERLAY_THEME}>
       <Modal
         open={open}
         onCancel={onCancel}
@@ -54,7 +47,11 @@ const BaseModal: React.FC<BaseModalProps> = ({
         getContainer={getContainer}
         className={`${FRAME.CLASS_NAME} ${PANEL_SURFACE_CLASS}`}
         styles={{
-          container: { padding: 0, borderRadius: FRAME.BORDER_RADIUS, overflow: 'hidden' },
+          container: {
+            padding: SPACING.NONE,
+            borderRadius: FRAME.BORDER_RADIUS,
+            overflow: 'hidden',
+          },
           body: { padding: FRAME.PADDING },
           close: MODAL_CHROME.CLOSE,
           wrapper: offsetRight ? { paddingRight: offsetRight } : undefined,

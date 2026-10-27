@@ -6,6 +6,7 @@ import type { AnimationWrapperProps, PanelFooterProps } from '../../../../interf
 import { useScrollLock } from '../../../../hooks/panel';
 import { useMediaQuery } from '../../../../hooks/layout';
 import {
+  DATE_PICKER_THEME,
   PANEL_SURFACE_CLASS,
   PANEL_MAX_WIDTH,
   PANEL_PREWARM,
@@ -23,7 +24,7 @@ import { PanelFooter, PanelHeader } from '../shared';
 export const PANEL_THEME: ThemeConfig = {
   algorithm: theme.defaultAlgorithm,
   token: PANEL_THEME_TOKENS,
-  components: { Select: SELECT_THEME, Tabs: PANEL_TABS_THEME },
+  components: { Select: SELECT_THEME, Tabs: PANEL_TABS_THEME, DatePicker: DATE_PICKER_THEME },
   cssVar: { key: PANEL_PREWARM.CSS_VAR_KEY },
 };
 

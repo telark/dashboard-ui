@@ -87,9 +87,9 @@ const NumberInput: React.FC<NumberInputProps> = ({
       onKeyDown={handleKeyDown}
       parser={(displayValue) => {
         if (!displayValue) return 0;
-        const cleaned = displayValue.toString().replace(/[^\d.-]/g, '');
-        const parsed = parseFloat(cleaned);
-        return isNaN(parsed) ? 0 : parsed;
+        const cleaned = displayValue.toString().replaceAll(/[^\d.-]/g, '');
+        const parsed = Number.parseFloat(cleaned);
+        return Number.isNaN(parsed) ? 0 : parsed;
       }}
       formatter={(value) => {
         if (value === undefined || value === null) return '';

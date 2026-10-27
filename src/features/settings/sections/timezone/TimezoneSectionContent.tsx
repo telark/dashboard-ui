@@ -8,23 +8,17 @@ import { updateUser } from '../../../access-and-permissions/users/clients';
 import { fetchCurrentUserDetails } from '../../../access-and-permissions/users/utils';
 import { getCurrentUser, setCurrentUser } from '../../../auth/utils/session/user';
 import {
-  formatTimeZoneOffset,
+  buildTimeZoneOptions,
   getBrowserRegion,
   getBrowserTimeZone,
-  getSupportedTimeZones,
   isValidTimeZone,
 } from '../../../../utils/shared/time';
 import type { User, UserSettings } from '../../../access-and-permissions/users/models';
 import { SETTINGS_CONSTANTS } from '../../constants';
 import { TIMEZONE_SECTION_CONSTANTS } from './constants';
+import { SPACING } from '../../../../constants';
 
 const { LABELS, REGION_CODES, DISPLAY_LOCALE } = TIMEZONE_SECTION_CONSTANTS;
-
-const buildTimeZoneOptions = () =>
-  getSupportedTimeZones().map((zone) => ({
-    value: zone,
-    label: `${zone} (${formatTimeZoneOffset(zone)})`,
-  }));
 
 const buildRegionOptions = () => {
   const names = new Intl.DisplayNames([DISPLAY_LOCALE], { type: 'region' });
@@ -109,7 +103,7 @@ const TimezoneSectionContent: React.FC = memo(() => {
 
   return (
     <SettingsCard title={LABELS.CARD_TITLE} description={LABELS.CARD_DESCRIPTION}>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.MD }}>
         <SettingsField label={LABELS.TIMEZONE_LABEL}>
           <Select
             showSearch

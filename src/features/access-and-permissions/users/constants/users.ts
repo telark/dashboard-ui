@@ -22,10 +22,13 @@ export const USERS_CONSTANTS = {
       NO_ASSIGNED_GROUPS: 'No groups assigned yet',
       NO_USERS_TITLE: 'No members yet',
       NO_USERS_DESCRIPTION: 'Create your first member to get started.',
+      ONLY_SELF_TITLE: 'No other members to show',
+      ONLY_SELF_DESCRIPTION:
+        'You can see only your own account. Ask an admin for access to other members.',
       NO_ROLES_AVAILABLE: 'No roles available',
       NO_GROUPS_AVAILABLE: 'No groups available',
       NO_GROUP_ROLES: 'No roles inherited from groups',
-      ROLE_INHERITED_FROM_GROUP: (groupNames: string) => `Already granted via group: ${groupNames}`,
+      ROLE_INHERITED_FROM_GROUP: (groupNames: string) => `Inherited from ${groupNames}`,
       LOADING_ROLES: 'Loading roles...',
       LOADING_GROUPS: 'Loading groups...',
     },
@@ -195,7 +198,7 @@ export const USERS_CONSTANTS = {
       },
       CREATE: {
         BUTTON_LABEL: 'Create Member',
-        DISABLED_TOOLTIP: 'You do not have permission to create users',
+        DISABLED_TOOLTIP: 'You do not have permission to create members',
       },
       MANAGE: {
         BUTTON_LABEL: 'Manage',

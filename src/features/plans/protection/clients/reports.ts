@@ -8,7 +8,7 @@ import {
   REPORT_GENERATE_TIMEOUT_MS,
   REPORTS_LIST,
 } from '../constants/protectionPlans';
-import type { PlanReportFormat, PlanReportMeta } from '../models';
+import type { KeptPlanReports, PlanReportFormat, PlanReportMeta } from '../models';
 import type { ApiResponse } from './shared';
 
 export const fetchPlanReports = async (planId: string): Promise<PlanReportMeta[]> => {
@@ -29,6 +29,25 @@ export const fetchAllPlanReports = async (): Promise<PlanReportMeta[]> => {
     { method: 'GET' },
   );
   return res.data;
+};
+
+export const fetchKeptPlanReports = async (): Promise<KeptPlanReports[]> => {
+  const res = await Client<ApiResponse<KeptPlanReports[]>>(
+    exporterApiClient,
+    Endpoints.REPORTS.LIST_KEPT.path,
+    { method: 'GET' },
+  );
+  return res.data;
+};
+
+// Works for a live plan's report and for a kept one.
+export const deletePlanReport = async (report: PlanReportMeta): Promise<void> => {
+  const qs = new URLSearchParams({ report: report.id }).toString();
+  await Client<ApiResponse<null>>(
+    exporterApiClient,
+    `${Endpoints.REPORTS.PLANS.DELETE(report.planId).path}?${qs}`,
+    { method: 'DELETE' },
+  );
 };
 
 export const generatePlanReport = async (planId: string): Promise<PlanReportMeta> => {

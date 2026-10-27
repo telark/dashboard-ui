@@ -1,7 +1,7 @@
 import React, { useMemo, useRef, useState, useCallback } from 'react';
 import { Form, Input } from 'antd';
 import { SlideOutPanel } from '../../../../../components/display/panels/slide-out';
-import { BUTTON_TEXTS } from '../../../../../constants';
+import { BUTTON_TEXTS, SPACING } from '../../../../../constants';
 import { PASSKEYS_CONSTANTS as PPC } from '../../../constants/passkeys';
 import { createDeviceNameValidator } from '../../../utils';
 import DeviceNameSuggestions from '../shared/DeviceNameSuggestions';
@@ -85,11 +85,11 @@ const PasskeyPanel: React.FC<PasskeyPanelProps> = ({
   };
 
   const formContent = (
-    <div style={{ marginTop: -4, width: '100%' }}>
+    <div style={{ marginTop: -SPACING.XS, width: '100%' }}>
       <Form.Item
         name="deviceName"
         label={PPC.FORM.DEVICE_NAME_LABEL}
-        style={{ marginBottom: 0 }}
+        style={{ marginBottom: SPACING.NONE }}
         rules={[
           { required: true, message: PPC.FORM.DEVICE_NAME_REQUIRED },
           {

@@ -1,4 +1,9 @@
-import { DEFAULT_COLORS, getPillSurface } from '../../../../constants';
+import {
+  DEFAULT_COLORS,
+  DISABLED_CONTENT_OPACITY,
+  getPillSurface,
+  HAIRLINE,
+} from '../../../../constants';
 
 export const ATTACHED_ROLES_CONSTANTS = {
   LIST: {
@@ -22,7 +27,7 @@ export const ATTACHED_ROLES_CONSTANTS = {
         alignItems: 'flex-start' as const,
         padding: '5px 14px',
         background: DEFAULT_COLORS.SURFACE_WHITE,
-        border: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
+        border: HAIRLINE.SURFACE_BORDER_LIGHT,
         borderRadius: 8,
         transition: 'all 0.2s ease',
         cursor: 'pointer' as const,
@@ -34,10 +39,11 @@ export const ATTACHED_ROLES_CONSTANTS = {
       HOVER: {
         background: DEFAULT_COLORS.SURFACE_HOVER,
       },
+      // The content dims (DIMMED), not the card, so the reason on it stays readable.
       DISABLED: {
-        opacity: 0.55,
         cursor: 'not-allowed' as const,
       },
+      DIMMED: { opacity: DISABLED_CONTENT_OPACITY },
     },
     ROLE_NAME: {
       fontSize: 14,
@@ -64,7 +70,6 @@ export const ATTACHED_ROLES_CONSTANTS = {
       justifyContent: 'space-between',
       gap: 8,
     },
-    ROLE_FLAG: { display: 'flex', flexShrink: 0 },
     ROLE_SOURCE: {
       display: 'block',
       marginTop: 6,
@@ -91,6 +96,9 @@ export const ATTACHED_ROLES_CONSTANTS = {
   SEARCH_MIN_WIDTH: 276,
   LABELS: {
     FROM_GROUPS: (groupNames: string) => `Via ${groupNames}`,
+    LOCKED_ROLE: 'Locked role',
+    // On a role card the user can't pick; the full sentence stays on the remove button.
+    EXCEEDS_OWN_ACCESS: 'Grants more access than you have',
   },
   TOOLTIPS: {
     PROTECTED_ROLE: 'This role is protected from deletion and modification',

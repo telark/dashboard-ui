@@ -20,7 +20,6 @@ export const CONNECTIVITY_CONSTANTS = {
     ATTEMPT_COUNT: 'Attempt {current} of {max}',
     NEXT_RETRY: 'Next retry in {seconds} seconds...',
     CANCEL: 'Cancel',
-    REFRESH: 'Refresh',
     CONNECTION_PROBLEM: 'Connection Problem',
   },
   LAYOUT: {

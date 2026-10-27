@@ -5,6 +5,7 @@ import type { User } from '../../../../access-and-permissions/users/models';
 import { UserOptionRow } from '../../../../../components/display/users';
 import Section from '../../../../../components/display/sections/Section';
 import { FORM_ITEM_CLASS } from './types';
+import { SPACING } from '../../../../../constants';
 
 const { SECTIONS, FORM } = PPC.CREATE_PAGE;
 
@@ -26,7 +27,7 @@ const ParticipantsSection: React.FC<ParticipantsSectionProps> = ({
       <Form.Item
         name="participantRefs"
         label={FORM.PARTICIPANTS_LABEL}
-        style={{ marginBottom: 0 }}
+        style={{ marginBottom: SPACING.NONE }}
         className={FORM_ITEM_CLASS}
       >
         <Select

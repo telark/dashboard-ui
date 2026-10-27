@@ -12,7 +12,7 @@ const renderMemberContent = (user: User): React.ReactNode => (
     </div>
     <div style={AMC.LIST.MEMBER_INFO}>
       <div style={AMC.LIST.MEMBER_NAME}>{CapitalizeFirstLetter(user.username)}</div>
-      {user.email && <div style={AMC.LIST.MEMBER_EMAIL}>{CapitalizeFirstLetter(user.email)}</div>}
+      {user.email && <div style={AMC.LIST.MEMBER_EMAIL}>{user.email}</div>}
     </div>
   </div>
 );

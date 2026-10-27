@@ -1,7 +1,12 @@
 import React, { memo } from 'react';
 import { Button, Empty, Typography } from 'antd';
 import { PASSKEYS_CONSTANTS as PPC } from '../../constants/passkeys';
-import { EMPTY_ACTION_STYLE, EMPTY_CLASS, Icons } from '../../../../constants';
+import {
+  EMPTY_ACTION_DISABLED_STYLE,
+  EMPTY_ACTION_STYLE,
+  EMPTY_CLASS,
+  Icons,
+} from '../../../../constants';
 import { InsecureContextAlert } from '../../components';
 import { isWebAuthnSupported } from '../../utils/webauthn/core';
 
@@ -22,7 +27,7 @@ const PasskeysEmptyPage: React.FC<PasskeysEmptyPageProps> = memo(({ onCreatePass
         image={<PasskeyIcon size={32} />}
         description={
           <>
-            <Typography.Title level={3}>{PPC.LABELS.EMPTY.TITLE}</Typography.Title>
+            <Typography.Title level={2}>{PPC.LABELS.EMPTY.TITLE}</Typography.Title>
             <Typography.Text>{PPC.LABELS.EMPTY.DESCRIPTION}</Typography.Text>
           </>
         }
@@ -32,7 +37,7 @@ const PasskeysEmptyPage: React.FC<PasskeysEmptyPageProps> = memo(({ onCreatePass
           icon={<PasskeyIcon size={16} />}
           onClick={onCreatePasskeyClick}
           disabled={!passkeysAvailable}
-          style={EMPTY_ACTION_STYLE}
+          style={passkeysAvailable ? EMPTY_ACTION_STYLE : EMPTY_ACTION_DISABLED_STYLE}
         >
           {PPC.LABELS.EMPTY.BUTTON}
         </Button>

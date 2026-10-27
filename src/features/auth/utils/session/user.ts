@@ -20,17 +20,19 @@ export const getCurrentUser = (): User | null => {
 
 export const CURRENT_USER_UPDATED_EVENT = 'currentUserUpdated';
 
-export const setCurrentUser = (user: User): void => {
+// False when the browser refused to store it: a sign-in then fails, since the stored user is what "signed in" means.
+export const setCurrentUser = (user: User): boolean => {
   try {
     globalThis.localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(user));
     if (typeof globalThis.dispatchEvent === 'function') {
       globalThis.dispatchEvent(new CustomEvent(CURRENT_USER_UPDATED_EVENT, { detail: user }));
     }
+    return true;
   } catch (error) {
     if (isDevelopment()) {
       logger.error(USER_ERROR_MESSAGES.LOGS.SET_CURRENT_USER_ERROR, error);
     }
-    // Don't throw - allow login to continue even if storage fails
+    return false;
   }
 };
 

@@ -5,16 +5,21 @@ import {
   BUTTON_COLORS,
   BUTTON_CONFIGS,
   DEFAULT_COLORS,
+  DISABLED_OPACITY,
   TOOLBAR_CONTROL,
   TOOLBAR_ITEM_GAP,
+  FONT_SIZE,
+  FONT_WEIGHT,
+  LINE_HEIGHT,
+  MOTION,
+  RADIUS,
+  SPACING,
 } from '../../../constants';
 import type { ToolbarConfig } from '../../../interfaces/layout/toolbar';
 import { SearchButton } from '../buttons';
 import { FancySpinner } from '../../animation';
 import { SearchInput } from '../inputs';
 import { useMediaQuery } from '../../../hooks/layout';
-
-const DISABLED_OPACITY = 0.6;
 
 interface ToolbarProps {
   config: ToolbarConfig | undefined;
@@ -58,12 +63,13 @@ const Toolbar: React.FC<ToolbarProps> = ({ config, compact }) => {
       {search && (
         <div
           style={{
-            overflow: 'hidden',
+            // Clipped for the slide-open, with room for the input's keyboard focus ring.
+            overflow: 'clip',
+            overflowClipMargin: 4,
             maxWidth: showSearch ? 300 : 0,
             opacity: showSearch ? 1 : 0,
-            marginRight: showSearch ? TOOLBAR_ITEM_GAP : 0,
-            transition:
-              'max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            marginRight: showSearch ? TOOLBAR_ITEM_GAP : SPACING.NONE,
+            transition: `max-width ${MOTION.SLOW_MS}ms ${MOTION.EASE_STANDARD}, opacity ${MOTION.SLOW_MS}ms ${MOTION.EASE_STANDARD}`,
             width: showSearch ? 'auto' : 0,
           }}
         >
@@ -137,19 +143,21 @@ const Toolbar: React.FC<ToolbarProps> = ({ config, compact }) => {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: iconOnly ? 'center' : undefined,
-                    gap: iconOnly ? 0 : 6,
+                    gap: iconOnly ? SPACING.NONE : SPACING.S6,
                     height: TOOLBAR_CONTROL.HEIGHT,
                     width: iconOnly ? TOOLBAR_CONTROL.HEIGHT : undefined,
                     boxSizing: 'border-box',
-                    padding: iconOnly ? 0 : TOOLBAR_CONTROL.PADDING,
+                    padding: iconOnly ? SPACING.NONE : TOOLBAR_CONTROL.PADDING,
                     lineHeight: TOOLBAR_CONTROL.LINE_HEIGHT,
-                    borderRadius: 6,
-                    fontSize: 13,
-                    fontWeight: isPrimary ? BUTTON_CONFIGS.PRIMARY_BUTTON.FONT_WEIGHT : 500,
+                    borderRadius: RADIUS.SM,
+                    fontSize: FONT_SIZE.MD,
+                    fontWeight: isPrimary
+                      ? BUTTON_CONFIGS.PRIMARY_BUTTON.FONT_WEIGHT
+                      : FONT_WEIGHT.MEDIUM,
                     border: isGhost
                       ? 'none'
                       : `1px solid ${
-                          isDisabled && isDanger
+                          isDisabled && (isDanger || isPrimary)
                             ? BUTTON_COLORS.TOOLBAR_BORDER
                             : isPrimary
                               ? DEFAULT_COLORS.SUCCESS
@@ -158,7 +166,9 @@ const Toolbar: React.FC<ToolbarProps> = ({ config, compact }) => {
                                 : BUTTON_COLORS.TOOLBAR_BORDER
                         }`,
                     backgroundColor: isPrimary
-                      ? DEFAULT_COLORS.SUCCESS
+                      ? isDisabled
+                        ? BUTTON_COLORS.TOOLBAR_BORDER
+                        : DEFAULT_COLORS.SUCCESS
                       : button.active
                         ? DEFAULT_COLORS.SURFACE_WHITE
                         : 'transparent',
@@ -172,7 +182,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ config, compact }) => {
                             ? DEFAULT_COLORS.TEXT_ON_SURFACE
                             : BUTTON_COLORS.TOOLBAR_TEXT,
                     opacity: isDisabled ? DISABLED_OPACITY : 1,
-                    transition: 'all 0.2s',
+                    transition: `all ${MOTION.BASE_MS}ms`,
                   }}
                   onClick={isDisabled ? undefined : handleButtonClick}
                   onMouseEnter={(e) => {
@@ -214,7 +224,12 @@ const Toolbar: React.FC<ToolbarProps> = ({ config, compact }) => {
                 >
                   {button.icon && (
                     <span
-                      style={{ fontSize: 14, display: 'flex', alignItems: 'center', lineHeight: 1 }}
+                      style={{
+                        fontSize: FONT_SIZE.BASE,
+                        display: 'flex',
+                        alignItems: 'center',
+                        lineHeight: LINE_HEIGHT.NONE,
+                      }}
                     >
                       {button.icon}
                     </span>
@@ -222,7 +237,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ config, compact }) => {
                   {!iconOnly && (
                     <>
                       <span>{buttonLabel}</span>
-                      <DownOutlined style={{ fontSize: 10 }} />
+                      <DownOutlined style={{ fontSize: FONT_SIZE.XXS }} />
                     </>
                   )}
                 </button>
@@ -237,7 +252,9 @@ const Toolbar: React.FC<ToolbarProps> = ({ config, compact }) => {
 
           const buttonNode = (
             <button
-              key={button.key}
+              // A fresh node when it disables itself on click: the hover paint would stay (Chrome sends a
+              // disabled button no mouseleave) under the disabled label, white on white.
+              key={`${button.key}:${isDisabled}`}
               onClick={handleButtonClick}
               disabled={isDisabled}
               aria-label={iconOnly ? buttonLabel : undefined}
@@ -247,19 +264,21 @@ const Toolbar: React.FC<ToolbarProps> = ({ config, compact }) => {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: iconOnly ? 'center' : undefined,
-                gap: iconOnly ? 0 : 6,
+                gap: iconOnly ? SPACING.NONE : SPACING.S6,
                 height: TOOLBAR_CONTROL.HEIGHT,
                 width: iconOnly ? TOOLBAR_CONTROL.HEIGHT : undefined,
                 boxSizing: 'border-box',
-                padding: iconOnly ? 0 : TOOLBAR_CONTROL.PADDING,
+                padding: iconOnly ? SPACING.NONE : TOOLBAR_CONTROL.PADDING,
                 lineHeight: TOOLBAR_CONTROL.LINE_HEIGHT,
-                borderRadius: 6,
-                fontSize: 13,
-                fontWeight: isPrimary ? BUTTON_CONFIGS.PRIMARY_BUTTON.FONT_WEIGHT : 500,
+                borderRadius: RADIUS.SM,
+                fontSize: FONT_SIZE.MD,
+                fontWeight: isPrimary
+                  ? BUTTON_CONFIGS.PRIMARY_BUTTON.FONT_WEIGHT
+                  : FONT_WEIGHT.MEDIUM,
                 border: isGhost
                   ? 'none'
                   : `1px solid ${
-                      isDisabled && isDanger
+                      isDisabled && (isDanger || isPrimary)
                         ? BUTTON_COLORS.TOOLBAR_BORDER
                         : isPrimary
                           ? DEFAULT_COLORS.SUCCESS
@@ -270,7 +289,9 @@ const Toolbar: React.FC<ToolbarProps> = ({ config, compact }) => {
                               : BUTTON_COLORS.TOOLBAR_BORDER
                     }`,
                 backgroundColor: isPrimary
-                  ? DEFAULT_COLORS.SUCCESS
+                  ? isDisabled
+                    ? BUTTON_COLORS.TOOLBAR_BORDER
+                    : DEFAULT_COLORS.SUCCESS
                   : button.active
                     ? DEFAULT_COLORS.SURFACE_WHITE
                     : 'transparent',
@@ -284,7 +305,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ config, compact }) => {
                         ? DEFAULT_COLORS.TEXT_ON_SURFACE
                         : BUTTON_COLORS.TOOLBAR_TEXT,
                 opacity: isDisabled ? DISABLED_OPACITY : 1,
-                transition: 'all 0.2s',
+                transition: `all ${MOTION.BASE_MS}ms`,
               }}
               onMouseEnter={(e) => {
                 if (isDisabled) return;
@@ -329,7 +350,12 @@ const Toolbar: React.FC<ToolbarProps> = ({ config, compact }) => {
               ) : (
                 button.icon && (
                   <span
-                    style={{ fontSize: 14, display: 'flex', alignItems: 'center', lineHeight: 1 }}
+                    style={{
+                      fontSize: FONT_SIZE.BASE,
+                      display: 'flex',
+                      alignItems: 'center',
+                      lineHeight: LINE_HEIGHT.NONE,
+                    }}
                   >
                     {button.icon}
                   </span>

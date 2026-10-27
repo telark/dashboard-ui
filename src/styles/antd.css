@@ -7,10 +7,6 @@
   border-inline-end: 0 !important;
   border-right: 0 !important;
 }
-.app-table .ant-table-thead > tr > th::before,
-.app-table .ant-table-cell::before {
-  display: none !important;
-}
 /* The pinned row-actions cell lays the selection tint over the page color: a see-through
    tint would show the columns scrolling under it. */
 .app-table
@@ -22,7 +18,7 @@
   > tr.ant-table-row.ant-table-row-selected:hover
   > td.ant-table-cell.ant-table-cell-fix {
   background:
-    linear-gradient(var(--color-success-tint), var(--color-success-tint)), var(--color-page-bg);
+    linear-gradient(var(--color-neutral-tint), var(--color-neutral-tint)), var(--color-page-bg);
 }
 
 /* Clickable rows take focus (PageLayout). Their ring goes in the cells: the table clips the row's
@@ -32,59 +28,34 @@
 }
 .app-table .ant-table-tbody > tr.ant-table-row:focus-visible > td {
   box-shadow:
-    inset 0 2px var(--color-info),
-    inset 0 -2px var(--color-info);
+    inset 0 2px var(--color-text-secondary),
+    inset 0 -2px var(--color-text-secondary);
 }
 .app-table .ant-table-tbody > tr.ant-table-row:focus-visible > td:first-child {
   box-shadow:
-    inset 2px 2px var(--color-info),
-    inset 0 -2px var(--color-info);
+    inset 2px 2px var(--color-text-secondary),
+    inset 0 -2px var(--color-text-secondary);
 }
 .app-table .ant-table-tbody > tr.ant-table-row:focus-visible > td:last-child {
   box-shadow:
-    inset -2px 2px var(--color-info),
-    inset 0 -2px var(--color-info);
+    inset -2px 2px var(--color-text-secondary),
+    inset 0 -2px var(--color-text-secondary);
 }
 .app-table .ant-table-tbody > tr.ant-table-row:focus-visible > td:only-child {
-  box-shadow: inset 0 0 0 2px var(--color-info);
+  box-shadow: inset 0 0 0 2px var(--color-text-secondary);
 }
 
-/* Reduce spacing between selection column and first data column - Fixed width to prevent shifting */
-.app-table table colgroup col.ant-table-selection-col,
-.app-table colgroup col.ant-table-selection-col,
-.app-table .ant-table-selection-col {
-  width: 23px !important;
-  min-width: 23px !important;
-  max-width: 23px !important;
+/* One keyboard ring on the dark page, antd's colorPrimaryBorder (App.tsx). !important beats the
+   inline resets (all: unset, outline: none); panels and table rows keep their own rings. */
+#root :focus-visible:not(.app-panel-surface, .app-panel-surface *, tr) {
+  outline: 2px solid var(--color-text-secondary) !important;
+  outline-offset: 2px !important;
 }
 
-.app-table .ant-table-selection-column {
-  width: 23px !important;
-  min-width: 23px !important;
-  max-width: 23px !important;
-  padding-right: 0 !important;
-  padding-left: 0 !important;
-  padding-top: 4px !important;
-  padding-bottom: 4px !important;
-  box-sizing: border-box !important;
-}
-
-.app-table .ant-table-cell.ant-table-selection-column {
-  width: 23px !important;
-  min-width: 23px !important;
-  max-width: 23px !important;
-  padding-right: 0 !important;
-  padding-left: 0 !important;
-  padding-top: 4px !important;
-  padding-bottom: 4px !important;
-  box-sizing: border-box !important;
-}
-
+/* Reduce spacing between selection column and first data column (its width is
+   components.Table.selectionColumnWidth in App.tsx) */
 .app-table .ant-table-tbody > tr > td.ant-table-selection-column,
 .app-table .ant-table-thead > tr > th.ant-table-selection-column {
-  width: 23px !important;
-  min-width: 23px !important;
-  max-width: 23px !important;
   padding-right: 0 !important;
   padding-left: 0 !important;
   padding-top: 4px !important;
@@ -106,74 +77,6 @@
   margin: 0 !important;
   margin-left: 0 !important;
   padding: 0 !important;
-}
-
-/* Style checkboxes with success color */
-.app-table .ant-checkbox-checked .ant-checkbox-inner {
-  background-color: var(--color-success) !important;
-  border-color: var(--color-success) !important;
-}
-
-.app-table .ant-checkbox-wrapper:hover .ant-checkbox-inner {
-  border-color: var(--color-success) !important;
-}
-
-.app-table .ant-checkbox-input:focus + .ant-checkbox-inner {
-  border-color: var(--color-success) !important;
-}
-
-.app-table .ant-checkbox-indeterminate .ant-checkbox-inner {
-  background-color: var(--color-success) !important;
-  border-color: var(--color-success) !important;
-}
-
-.app-table .ant-checkbox-indeterminate .ant-checkbox-inner::after {
-  background-color: var(--color-pill-text) !important;
-}
-
-/* Style checkboxes with success color for role list */
-.role-list-container .ant-checkbox-checked .ant-checkbox-inner {
-  background-color: var(--color-success) !important;
-  border-color: var(--color-success) !important;
-}
-
-.role-list-container .ant-checkbox-wrapper:hover .ant-checkbox-inner {
-  border-color: var(--color-success) !important;
-}
-
-.role-list-container .ant-checkbox-input:focus + .ant-checkbox-inner {
-  border-color: var(--color-success) !important;
-}
-
-.role-list-container .ant-checkbox-indeterminate .ant-checkbox-inner {
-  background-color: var(--color-success) !important;
-  border-color: var(--color-success) !important;
-}
-
-.role-list-container .ant-checkbox-indeterminate .ant-checkbox-inner::after {
-  background-color: var(--color-pill-text) !important;
-}
-
-.app-bulk-select .ant-checkbox-checked .ant-checkbox-inner {
-  background-color: var(--color-success) !important;
-  border-color: var(--color-success) !important;
-}
-
-.app-bulk-select .ant-checkbox-wrapper:hover .ant-checkbox-inner {
-  border-color: var(--color-success) !important;
-}
-
-.app-bulk-select .ant-checkbox-input:focus + .ant-checkbox-inner {
-  border-color: var(--color-success) !important;
-}
-
-.app-bulk-select .ant-checkbox-indeterminate .ant-checkbox-inner {
-  background-color: var(--color-success) !important;
-  border-color: var(--color-success) !important;
-}
-
-.app-bulk-select .ant-checkbox-indeterminate .ant-checkbox-inner::after {
-  background-color: var(--color-pill-text) !important;
 }
 
 .role-list-container .ant-checkbox-wrapper {
@@ -217,29 +120,15 @@
   line-height: 1.3 !important;
 }
 
-/* Breadcrumb font to match global pages */
-.ant-breadcrumb,
-.ant-breadcrumb * {
-  font-weight: 500 !important;
-}
-
-/* Form label typography to match pages */
+/* Form labels take their size, color and gap from components.Form in App.tsx; antd has no
+   token for their line height. */
+.ant-form-item-label,
 .ant-form-item-label > label {
-  font-weight: 400 !important;
-  color: var(--color-text-primary) !important;
-  font-size: 13px !important;
-  line-height: 1.5 !important;
-}
-
-/* More space between label and input */
-.ant-form-item-label {
-  margin-bottom: 4px !important;
-  padding-bottom: 0 !important;
   line-height: 1.5 !important;
 }
 
 .app-section .ant-form-vertical .ant-form-item .ant-form-item-label {
-  margin-bottom: 4px !important;
+  margin-bottom: var(--form-label-gap) !important;
   padding-bottom: 0 !important;
 }
 .app-section .ant-form-vertical .ant-form-item .ant-form-item-control {
@@ -274,17 +163,16 @@
   margin-top: 8px !important; /* Distance from subtitle to content */
 }
 
-/* Ant Design modals are rendered in a portal outside #root, so they need explicit targeting */
-.ant-modal,
-.ant-modal * {
-  font-family: 'Geist', sans-serif !important;
-}
-
 /* Every solid primary or danger CTA is semibold, like BUTTON_CONFIGS.PRIMARY_BUTTON.FONT_WEIGHT;
    antd has no primary-only weight token. */
 .ant-btn-variant-solid.ant-btn-color-primary,
 .ant-btn-variant-solid.ant-btn-color-dangerous {
   font-weight: 600;
+}
+
+/* White fails on the teal track (2.1:1): the checked label takes the primary button's dark text. */
+.ant-switch.ant-switch-checked .ant-switch-inner .ant-switch-inner-checked {
+  color: var(--color-text-on-surface);
 }
 
 /* The footer Cancel (ActionButtons, PANEL_FOOTER.CANCEL_CLASS) is muted text that inverts on
@@ -324,57 +212,6 @@
   vertical-align: middle !important;
 }
 
-/* Role Assignment Select Styles */
-.role-assignment-select .ant-select-selector {
-  border-color: var(--color-border-default) !important;
-}
-
-.role-assignment-select.ant-select-focused .ant-select-selector {
-  border-color: var(--color-success) !important;
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-success) 10%, transparent) !important;
-}
-
-.role-assignment-select .ant-select-selection-item {
-  background-color: transparent !important;
-  border-color: var(--color-border-default) !important;
-  color: var(--color-text-primary) !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  line-height: 1.5 !important;
-}
-
-.role-assignment-select .ant-select-selection-item-content {
-  display: inline-flex !important;
-  align-items: center !important;
-  line-height: 1.5 !important;
-}
-
-.role-assignment-select .ant-select-selection-item-remove {
-  color: var(--color-text-primary) !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  line-height: 1.5 !important;
-}
-
-.role-assignment-select .ant-select-selection-item-remove:hover {
-  color: var(--color-success) !important;
-}
-
-/* Remove default indentation and set consistent padding */
-.role-assignment-select .ant-select-item-group {
-  padding-left: 12px !important;
-  padding-right: 12px !important;
-}
-
-.role-assignment-select .ant-select-item-option {
-  padding-left: 12px !important;
-  padding-right: 12px !important;
-}
-
-.role-assignment-select .rc-virtual-list-holder-inner > div > div {
-  padding-left: 0 !important;
-}
-
 .plan-date-range {
   position: relative;
   padding-bottom: 22px;
@@ -391,22 +228,11 @@
   min-height: 0;
 }
 
-/* Pagination accent, shared by every list and the workload metrics
-   section. Global so it does not depend on which page mounted it. */
-.app-pagination .ant-pagination-item-active {
-  border-color: var(--color-success);
-}
-.app-pagination .ant-pagination-item-active a {
-  color: var(--color-success);
-}
-.app-pagination .ant-pagination-item:hover,
-.app-pagination .ant-pagination-prev:hover .ant-pagination-item-link,
-.app-pagination .ant-pagination-next:hover .ant-pagination-item-link {
-  border-color: var(--color-success);
-  color: var(--color-success);
-}
-.app-pagination .ant-pagination-item:hover a {
-  color: var(--color-success);
+/* The current page's fill and text are components.Pagination in App.tsx. antd draws its border in
+   colorPrimary, which also colors the jump arrows and the page input, so it is set here alone. */
+.app-pagination .ant-pagination-item-active,
+.app-pagination .ant-pagination-item-active:hover {
+  border-color: var(--color-text-muted);
 }
 
 /* Side panels keep the light surface they had before the dark theme, so the
@@ -470,12 +296,7 @@
   color: var(--color-text-on-surface) !important;
 }
 
-.app-panel-surface .ant-input::placeholder,
-.app-panel-surface .ant-picker-input > input::placeholder,
-.app-panel-surface .ant-select-selection-placeholder {
-  color: var(--color-text-on-surface-muted) !important;
-}
-
+/* PANEL_THEME_TOKENS set these colors too, but antd would tint a disabled field gray. */
 .app-panel-surface .ant-select-selector,
 .app-panel-surface .ant-input,
 .app-panel-surface .ant-input-affix-wrapper,
@@ -487,8 +308,7 @@
 
 /* That pin also hid antd's hover, focus and error borders. A hovered or focused field takes the
    muted ink, like App.tsx's hoverBorderColor and activeBorderColor (selects already do), and an
-   invalid field keeps the error red. The shared DatePicker's green hover and focus
-   (datePicker.css, 2.1:1 on white) give way here too; a disabled field doesn't react. */
+   invalid field keeps the error red. A disabled field doesn't react. */
 .app-panel-surface .ant-input:focus,
 .app-panel-surface .ant-input:hover:where(:not(.ant-input-disabled)),
 .app-panel-surface .ant-input-affix-wrapper-focused,
@@ -570,6 +390,13 @@
   white-space: nowrap;
 }
 
+/* OUTLINE: a quiet status pill. The 1px border takes 1px of padding, so it is as tall as a filled one. */
+.ant-tag.tk-pill.tk-pill-outline {
+  padding: 1px 9px;
+  background: transparent;
+  border: 1px solid currentColor;
+}
+
 /* antd spaces an icon from the label with a margin; ICON pills use their gap. */
 .ant-tag.tk-pill-icon > .anticon + span {
   margin-inline-start: 0;
@@ -626,6 +453,39 @@
   padding-inline: var(--ant-margin-lg);
 }
 
+/* In a page (PageContainer, which spans the pane) it sits at the page's exact center, whatever
+   title, toolbar or status row is above it. Not when content follows it (Applications' help card),
+   and a no-access card keeps its own place. */
+.tk-page .ant-empty.tk-empty-page:last-child:not(.tk-empty-no-access) {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  height: auto;
+  transform: translateY(-50%);
+}
+
+/* Where anchors work, it also stays a margin below the list toolbar (LIST_TOOLBAR.ANCHOR_NAME):
+   centered in a band that keeps that margin on both sides, or right under it on a short page. */
+@supports (top: anchor(--tk-any bottom)) {
+  .tk-page .ant-empty.tk-empty-page:last-child:not(.tk-empty-no-access) {
+    top: calc(anchor(--tk-list-toolbar bottom, 0px) + var(--ant-margin-lg));
+    bottom: calc(100% - anchor(--tk-list-toolbar bottom, 100%) + var(--ant-margin-lg));
+    align-self: safe center;
+    transform: none;
+  }
+}
+
+/* Without anchors, ListToolbar sets that bottom on the page box (LIST_TOOLBAR.BOTTOM_VAR) for the
+   same band, which the empty state fills and centers its content in. */
+@supports not (top: anchor(--tk-any bottom)) {
+  .tk-page .ant-empty.tk-empty-page:last-child:not(.tk-empty-no-access) {
+    top: calc(var(--tk-list-toolbar-bottom, 0px) + var(--ant-margin-lg));
+    bottom: calc(var(--tk-list-toolbar-bottom, 0px) + var(--ant-margin-lg));
+    justify-content: safe center;
+    transform: none;
+  }
+}
+
 .tk-empty-page .ant-empty-image {
   margin-bottom: var(--ant-margin-lg);
   color: var(--ant-color-text-secondary);
@@ -635,9 +495,12 @@
   max-width: 400px;
 }
 
-.tk-empty-page .ant-empty-description h3.ant-typography {
+/* An h2 in the page outline, at the h3 size. */
+.tk-empty-page .ant-empty-description h2.ant-typography {
   margin-bottom: var(--ant-margin-xs);
+  font-size: var(--ant-font-size-heading-3);
   font-weight: 700;
+  line-height: var(--ant-line-height-heading-3);
   color: var(--ant-color-text-heading);
 }
 
@@ -660,7 +523,7 @@
   margin-bottom: var(--ant-margin-sm);
 }
 
-.tk-empty-no-access .ant-empty-description h3.ant-typography {
+.tk-empty-no-access .ant-empty-description h2.ant-typography {
   margin-bottom: 0;
 }
 
@@ -685,13 +548,13 @@
 }
 
 .tk-empty-panel .ant-empty-description {
-  gap: 6px;
+  gap: 2px;
 }
 
 .tk-empty-panel .ant-empty-description h5.ant-typography {
   font-size: 14px;
   font-weight: 800;
-  line-height: inherit;
+  line-height: 1.35;
   color: var(--color-text-on-surface);
 }
 
@@ -717,7 +580,7 @@
   color: var(--color-icon-muted);
 }
 
-.tk-empty-section .ant-empty-description h4.ant-typography {
+.tk-empty-section .ant-empty-description h3.ant-typography {
   margin-bottom: 0;
   font-size: 15px;
   font-weight: 600;

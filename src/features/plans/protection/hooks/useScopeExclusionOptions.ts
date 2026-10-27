@@ -85,14 +85,14 @@ export const useScopeExclusionOptions = ({
             .map(([kind]) => kind),
         ),
     );
-    return [...kinds].sort().map(toOption);
+    return [...kinds].sort((a, b) => a.localeCompare(b)).map(toOption);
   }, [isApplications, applications, selected]);
 
   const resourceOptions = useMemo<SelectOptionGroup[]>(() => {
     if (!isApplications) return [];
     const refs = selected.flatMap((name) => cached.get(name) ?? []);
     const unique = [...new Map(refs.map((ref) => [encodeResourceKey(ref), ref])).values()];
-    const kinds = [...new Set(unique.map((ref) => ref.kind))].sort();
+    const kinds = [...new Set(unique.map((ref) => ref.kind))].sort((a, b) => a.localeCompare(b));
     return kinds.map((kind) => ({
       label: kind,
       options: unique

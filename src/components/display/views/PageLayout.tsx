@@ -1,5 +1,5 @@
 import React, { memo, useDeferredValue, useMemo } from 'react';
-import { HEADER_LAYOUT } from '../../../constants';
+import { HEADER_LAYOUT, SPACING } from '../../../constants';
 import { LIST_PAGE } from '../../../constants/shared/pages';
 import DataTable from '../table/DataTable';
 import { ListToolbar } from '../toolbar';
@@ -22,7 +22,6 @@ const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfi
     pagination,
     rowSelection,
     onRowClick,
-    rowHeight,
     empty,
     loading = false,
     fullPageLoading = false,
@@ -42,7 +41,6 @@ const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfi
         data={data}
         rowKey={rowKey}
         className="app-table"
-        rowHeight={rowHeight}
         empty={empty}
         tableProps={{
           // Columns keep their widths and the table scrolls sideways once the
@@ -69,10 +67,11 @@ const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfi
               })
             : undefined,
         }}
-        containerStyle={{ background: 'transparent', borderRadius: 0, padding: 0 }}
+        // Off scale, kept exact: borderRadius 0 (square corners, RADIUS has no zero).
+        containerStyle={{ background: 'transparent', borderRadius: 0, padding: SPACING.NONE }}
       />
     ),
-    [columns, data, rowKey, rowHeight, empty, rowSelection, onRowClick],
+    [columns, data, rowKey, empty, rowSelection, onRowClick],
   );
 
   if (fullPageLoading && dataState.phase === 'loading') {

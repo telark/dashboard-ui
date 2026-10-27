@@ -12,7 +12,8 @@ import type {
   RecommendationKind,
   LastRun,
 } from '../models';
-import { APP_ROUTES } from '../../../constants';
+import { APP_ROUTE_PARAMS, APP_ROUTES, SIDEBAR_LAYOUT } from '../../../constants';
+import { PAGE_CONTENT_LAYOUT } from '../../../constants/shared/pages';
 import { INSIGHTS_ERROR_MESSAGES } from './errors';
 import { INSIGHTS_UI } from './texts';
 
@@ -22,7 +23,6 @@ export const INSIGHTS_STALE_MS = 24 * 60 * 60 * 1000;
 export const RUNNING_TIMEOUT_MS = 540_000;
 // Matches the worker's 30-min stale drop of a queued job.
 export const QUEUED_TIMEOUT_MS = 1_800_000;
-export const SSE_BACKOFF_MS = { min: 1000, max: 30000 } as const;
 
 export const INSIGHT_EVENTS = {
   ANALYSIS_QUEUED: 'analysis.queued',
@@ -38,17 +38,16 @@ export const INSIGHT_EVENTS = {
   RESYNC: 'resync',
 } as const satisfies Record<string, InsightEvent['name']>;
 
-export const RUN_STATUS_LABELS: Record<LastRun['status'], string> = {
-  queued: T.RUN_STATUS.QUEUED,
-  running: T.RUN_STATUS.RUNNING,
-  done: T.RUN_STATUS.DONE,
-  failed: T.RUN_STATUS.FAILED,
-};
-
 export const RUN_TRIGGER_LABELS: Record<LastRun['trigger'], string> = {
   manual: T.TRIGGER.MANUAL,
   incident: T.TRIGGER.INCIDENT,
   recovery: T.TRIGGER.RECOVERY,
+};
+
+export const RUN_STARTED_BY: Record<LastRun['trigger'], string> = {
+  manual: T.RUN_STARTED_BY.MANUAL,
+  incident: T.RUN_STARTED_BY.INCIDENT,
+  recovery: T.RUN_STARTED_BY.RECOVERY,
 };
 
 export const INSIGHT_SEVERITY_LABELS: Record<InsightSeverity, string> = {
@@ -357,6 +356,10 @@ export const CLUSTER_INSIGHTS = {
   // ?app= adds its filter chip (≈170 for a typical name) and the setup-review note (≈220).
   TOOLBAR_COMPACT_WIDTH_APP: { DEFAULT: 1000, BULK: 1240, QUICK_FILTER: 1500 },
   TITLE_MIN_PX: 200,
+  // The content width at a 576px phone viewport (the rail and both gutters off it): below it
+  // Severity leads, pinned, and the pager goes simple.
+  PHONE_WIDTH_PX:
+    576 - SIDEBAR_LAYOUT.WIDTH_COLLAPSED - 2 * PAGE_CONTENT_LAYOUT.PADDING_HORIZONTAL_AND_BOTTOM_PX,
   COLUMN_WIDTHS: {
     SEVERITY: 110,
     TITLE: 300,
@@ -372,8 +375,7 @@ export const CLUSTER_INSIGHTS = {
   TAB_PARAM: 'tab',
   // /insights?app=<namespace>/<name> filters the list to that application.
   APP_PARAM: 'app',
-  // /insights?insight=<id> opens that insight's details panel.
-  INSIGHT_PARAM: 'insight',
+  INSIGHT_PARAM: APP_ROUTE_PARAMS.INSIGHT,
   PANEL_WIDTH: 560,
   PANEL_WIDTH_EXPANDED: 900,
   // Per-viewer convenience only: the remembered Group by.

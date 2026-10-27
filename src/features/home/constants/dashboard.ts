@@ -1,8 +1,14 @@
 import type React from 'react';
 import { DatabaseOutlined } from '@ant-design/icons';
-import { AiOutlineHistory, AiOutlineLineChart, AiOutlineWarning } from 'react-icons/ai';
+import {
+  AiOutlineHistory,
+  AiOutlineLineChart,
+  AiOutlineRocket,
+  AiOutlineWarning,
+} from 'react-icons/ai';
 import { SiKubernetes } from 'react-icons/si';
-import { DEFAULT_COLORS, Icons } from '../../../constants';
+import { CARD_LAYOUT, DEFAULT_COLORS, Icons } from '../../../constants';
+import { ALL_EXCLUDED, DISCOVERY_LABELS } from '../../applications';
 import type { PlanEventKey, SeverityKey } from '../models';
 
 export const HOME_DASHBOARD_TEXTS = {
@@ -13,9 +19,7 @@ export const HOME_DASHBOARD_TEXTS = {
   META_SEPARATOR: ' · ',
   CLUSTER: {
     TITLE: 'Cluster',
-    VERSION_LABEL: 'Version',
-    DISTRIBUTION_LABEL: 'Distribution',
-    FULL_LABEL: 'Full Version',
+    FULL_LABEL: 'Full version',
     VANILLA: 'Vanilla',
   },
   APPLICATIONS: {
@@ -35,18 +39,49 @@ export const HOME_DASHBOARD_TEXTS = {
     FAILED: 'Failed',
   },
   STORAGE: {
-    TITLE: 'Snapshot Storage',
+    TITLE: 'Snapshot storage',
     USED: 'used',
     SNAPSHOTS: 'snapshots',
     OF: 'of',
     MB: 'MB',
   },
   PLANS_ATTENTION: {
-    TITLE: 'Plans Needing Attention',
+    TITLE: 'Plans with issues',
     EMPTY: 'No failed, degraded, or drifted plans.',
+    NO_PLANS: 'No protection plans yet. Nothing is protected.',
+  },
+  NEEDS_ATTENTION: {
+    TITLE: 'Needs attention',
+    CRITICAL_OPEN: (count: number) =>
+      `${count} critical ${count === 1 ? 'incident' : 'incidents'} open`,
+    OPEN: (count: number) => `${count} ${count === 1 ? 'incident' : 'incidents'} open`,
+    ALL_CLEAR: 'All clear',
+    // Without settings read the automatic-analysis switch is unknown, so "All clear" can't be claimed.
+    NONE_OPEN: 'No open incidents',
+    CHECKED: 'checked',
+  },
+  GET_STARTED: {
+    TITLE: 'Get started',
+    DISCOVER: {
+      TITLE: 'Discover applications',
+      SCANNING: (count: number) =>
+        `Scanning your cluster. ${count} ${count === 1 ? 'application' : 'applications'} found so far.`,
+      FOUND: (count: number) => `${count} ${count === 1 ? 'application' : 'applications'} found.`,
+      NONE: `No applications found yet. Telark groups workloads by the label ${DISCOVERY_LABELS}.`,
+      ALL_EXCLUDED,
+    },
+    CREATE_PLAN: {
+      TITLE: 'Create your first protection plan',
+      HELPER: 'New plans start in Audit mode, so nothing is blocked until you switch to Enforce.',
+      BUTTON: 'Create a plan',
+    },
+    WATCH: {
+      TITLE: 'Watch what changes',
+      HELPER: 'Telark records every change to a protected application, field by field.',
+    },
   },
   RECENT_CHANGES: {
-    TITLE: 'Recently Changed',
+    TITLE: 'Recently changed',
     EMPTY: 'No changes detected yet.',
     CHANGE: 'change',
     CHANGES: 'changes',
@@ -57,8 +92,9 @@ export const HOME_DASHBOARD_TEXTS = {
 
 export const HOME_CHART_TEXTS = {
   AXIS_DATE_FORMAT: 'MMM d',
+  RANGE: 'Last 30 days',
   PLAN_ACTIVITY: {
-    TITLE: 'Plan Activity · Last 30 Days',
+    TITLE: 'Plan activity',
     EMPTY: 'No plans created, started, or terminated in the last 30 days.',
     EVENTS: {
       created: 'Created',
@@ -67,7 +103,7 @@ export const HOME_CHART_TEXTS = {
     } as Record<PlanEventKey, string>,
   },
   CHANGE_ACTIVITY: {
-    TITLE: 'Change Activity · Last 30 Days',
+    TITLE: 'Change activity',
     EMPTY: 'No changes in the last 30 days.',
     SEVERITIES: {
       critical: 'Critical',
@@ -79,33 +115,37 @@ export const HOME_CHART_TEXTS = {
   },
 } as const;
 
-// Applications and Protection plans reuse the sidebar icons, Storage the snapshot icon.
+// Applications, Protection plans and Needs attention reuse the sidebar icons, Storage the snapshot icon.
 export const HOME_BOX_ICONS = {
   CLUSTER: SiKubernetes,
   APPLICATIONS: Icons.Application,
   PLANS: Icons.ProtectionPlans,
+  NEEDS_ATTENTION: Icons.Insights,
   STORAGE: DatabaseOutlined,
   PLANS_ATTENTION: AiOutlineWarning,
   RECENT_CHANGES: AiOutlineHistory,
   ACTIVITY: AiOutlineLineChart,
+  GET_STARTED: AiOutlineRocket,
 } as const;
 
 export const HOME_DASHBOARD_LAYOUT = {
-  GRID_GAP_PX: 16,
-  // Every box shares one track width and one row height so the grid reads as even rows.
+  GRID_GAP_PX: CARD_LAYOUT.GRID_GAP_PX,
+  // Every box in a row shares one track width and the row's height, set by its tallest box.
   BOX_MIN_WIDTH_PX: 250,
-  BOX_HEIGHT_PX: 156,
-  BOX_PADDING_PX: 12,
-  BOX_RADIUS_PX: 8,
-  BOX_HEADER_GAP_PX: 8,
-  BOX_TITLE_FONT_SIZE_PX: 15,
+  // About a loaded body (a breakdown, a short list, an empty state), so a box barely moves when it loads.
+  BOX_BODY_MIN_HEIGHT_PX: 64,
+  // Smaller than the SECTION empty state's 32px: a box is a small surface.
+  EMPTY_ICON_SIZE_PX: 24,
+  // The View all link's line (14px at antd's 1.5714), so titles sit level with or without it.
+  BOX_HEADER_MIN_HEIGHT_PX: 22,
   BOX_ICON_SIZE_PX: 16,
   BOX_ICON_GAP_PX: 6,
   BIG_VALUE_FONT_SIZE_PX: 28,
   BIG_VALUE_CAPTION_GAP_PX: 6,
   BREAKDOWN_GAP_PX: 12,
-  DOT_SIZE_PX: 8,
   ROW_PADDING: '4px 6px',
+  // The hover runs into the box padding while the dot sits under the header icon.
+  ROW_BLEED_PX: -6,
   ROW_RADIUS_PX: 8,
   ROW_GAP_PX: 10,
   ROW_TITLE_FONT_SIZE_PX: 13,
@@ -113,6 +153,8 @@ export const HOME_DASHBOARD_LAYOUT = {
   SECTION_GAP_PX: 8,
   SPINNER_SIZE_PX: 24,
   LIST_LIMIT: 2,
+  STEP_NUMBER_SIZE_PX: 20,
+  STEP_SPINNER_SIZE_PX: 12,
 } as const;
 
 export const HOME_CHART_LAYOUT = {

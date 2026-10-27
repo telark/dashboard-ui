@@ -9,6 +9,9 @@ import {
   TAG_CLASS,
   VIEW,
   getPillColor,
+  FONT_SIZE,
+  FONT_WEIGHT,
+  SPACING,
 } from '../../../../../constants';
 import { USERS_CONSTANTS as UC } from '../../constants';
 import ViewPanel from '../../../../../components/display/panels/view/ViewPanel';
@@ -81,8 +84,14 @@ const ViewUserPanel: React.FC<ViewUserPanelProps> = ({
       {
         label: UC.LABELS.VIEW_LABELS.USERNAME,
         value: (
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ fontSize: 14, fontWeight: 500, color: DEFAULT_COLORS.TEXT_ON_SURFACE }}>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: SPACING.SM }}>
+            <span
+              style={{
+                fontSize: FONT_SIZE.BASE,
+                fontWeight: FONT_WEIGHT.MEDIUM,
+                color: DEFAULT_COLORS.TEXT_ON_SURFACE,
+              }}
+            >
               {user.username}
             </span>
             {user.bootstrap && <BootstrapPill />}
@@ -103,7 +112,13 @@ const ViewUserPanel: React.FC<ViewUserPanelProps> = ({
       {
         label: UC.LABELS.VIEW_LABELS.CREATION_DATE,
         value: (
-          <span style={{ fontSize: 14, fontWeight: 500, color: DEFAULT_COLORS.TEXT_ON_SURFACE }}>
+          <span
+            style={{
+              fontSize: FONT_SIZE.BASE,
+              fontWeight: FONT_WEIGHT.MEDIUM,
+              color: DEFAULT_COLORS.TEXT_ON_SURFACE,
+            }}
+          >
             {user.creationDate ? <TimeAgo date={user.creationDate} /> : EMPTY_VALUE}
           </span>
         ),

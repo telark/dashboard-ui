@@ -5,7 +5,16 @@ import SettingsMenuItems from './SettingsMenuItems';
 import SidebarResizeHandle from './SidebarResizeHandle';
 import { UserAvatarDropdown } from '../../../features/access-and-permissions/users/components';
 import { useMediaQuery, useSidebarCollapse } from '../../../hooks/layout';
-import { DEFAULT_COLORS, HEADER_LAYOUT, SIDEBAR_LAYOUT, APP_ROUTES } from '../../../constants';
+import {
+  DEFAULT_COLORS,
+  HAIRLINE,
+  HEADER_LAYOUT,
+  SIDEBAR_LAYOUT,
+  APP_ROUTES,
+  Z_INDEX,
+  MOTION,
+  SPACING,
+} from '../../../constants';
 
 const Sidebar = memo(() => {
   const location = useLocation();
@@ -31,8 +40,8 @@ const Sidebar = memo(() => {
         width: isCollapsed ? SIDEBAR_LAYOUT.WIDTH_COLLAPSED : width,
         height: `calc(100vh - ${HEADER_LAYOUT.HEIGHT_PX}px)`,
         backgroundColor: DEFAULT_COLORS.PAGE_BG,
-        borderRight: `1px solid ${DEFAULT_COLORS.BORDER_SUBTLE}`,
-        zIndex: 1,
+        borderRight: HAIRLINE.BORDER_SUBTLE,
+        zIndex: Z_INDEX.SIDEBAR,
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
@@ -48,7 +57,7 @@ const Sidebar = memo(() => {
             overflowY: 'auto',
             paddingTop: SIDEBAR_LAYOUT.CONTENT_TOP_PADDING,
             opacity: isSettingsRoute ? 0 : 1,
-            transition: 'opacity 150ms ease',
+            transition: `opacity ${MOTION.FAST_MS}ms ${MOTION.EASE}`,
             pointerEvents: isSettingsRoute ? 'none' : 'auto',
           }}
         >
@@ -61,7 +70,7 @@ const Sidebar = memo(() => {
             overflowY: 'auto',
             paddingTop: SIDEBAR_LAYOUT.CONTENT_TOP_PADDING,
             opacity: isSettingsRoute ? 1 : 0,
-            transition: 'opacity 150ms ease',
+            transition: `opacity ${MOTION.FAST_MS}ms ${MOTION.EASE}`,
             pointerEvents: isSettingsRoute ? 'auto' : 'none',
           }}
         >
@@ -71,8 +80,8 @@ const Sidebar = memo(() => {
 
       <div
         style={{
-          borderTop: `1px solid ${DEFAULT_COLORS.BORDER_SUBTLE}`,
-          padding: '6px 0',
+          borderTop: HAIRLINE.BORDER_SUBTLE,
+          padding: `${SPACING.S6}px 0`,
           flexShrink: 0,
           display: 'flex',
           flexDirection: 'column',

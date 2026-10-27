@@ -1,7 +1,16 @@
 import React, { memo } from 'react';
 import { Tag } from 'antd';
 import { DownOutlined, RightOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS, Icons, STATUS_COLORS, TAG_CLASS, getPillColor } from '../../../constants';
+import {
+  DEFAULT_COLORS,
+  Icons,
+  STATUS_COLORS,
+  TAG_CLASS,
+  getPillColor,
+  FONT_SIZE,
+  FONT_WEIGHT,
+  SPACING,
+} from '../../../constants';
 import { INSIGHTS_UI as T } from '../constants/texts';
 import { INSIGHT_KIND_LABELS, INSIGHT_SEVERITY_LABELS } from '../constants/insights';
 import type {
@@ -15,11 +24,14 @@ import type {
 const SEVERITIES_DESC: InsightSeverity[] = ['critical', 'warning', 'info'];
 
 const nameStyle: React.CSSProperties = {
-  fontSize: 13,
-  fontWeight: 700,
+  fontSize: FONT_SIZE.MD,
+  fontWeight: FONT_WEIGHT.BOLD,
   color: DEFAULT_COLORS.TEXT_PRIMARY,
 };
-const mutedStyle: React.CSSProperties = { fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED };
+const mutedStyle: React.CSSProperties = {
+  fontSize: FONT_SIZE.SM,
+  color: DEFAULT_COLORS.TEXT_MUTED,
+};
 // Gives way first and ellipsizes, so many namespaces never push the counts or widen the table.
 const namespacesStyle: React.CSSProperties = {
   ...mutedStyle,
@@ -30,10 +42,11 @@ const namespacesStyle: React.CSSProperties = {
   whiteSpace: 'nowrap',
 };
 // react-icons SVGs sit on the text baseline unless their box is a line-height-0 flex item.
+// Off scale, kept exact: lineHeight 0 (below NONE).
 const iconStyle: React.CSSProperties = {
   display: 'inline-flex',
   lineHeight: 0,
-  fontSize: 13,
+  fontSize: FONT_SIZE.MD,
   color: DEFAULT_COLORS.TEXT_MUTED,
 };
 
@@ -47,7 +60,9 @@ const GroupName: React.FC<{ groupBy: InsightGroupBy; group: InsightGroup }> = ({
     );
   }
   if (groupBy !== 'app') return <span style={nameStyle}>{group.key}</span>;
-  const namespaces = [...group.namespaces].sort().join(T.PAGE.GROUP_NAMESPACES_SEPARATOR);
+  const namespaces = [...group.namespaces]
+    .sort((a, b) => a.localeCompare(b))
+    .join(T.PAGE.GROUP_NAMESPACES_SEPARATOR);
   return (
     <>
       <span style={iconStyle}>
@@ -73,16 +88,16 @@ const GroupHeader: React.FC<Props> = memo(({ item, groupBy }) => (
     style={{
       display: 'flex',
       alignItems: 'center',
-      gap: 8,
-      padding: '4px 0',
+      gap: SPACING.SM,
+      padding: `${SPACING.XS}px 0`,
       width: 0,
       minWidth: '100%',
     }}
   >
     {item.collapsed ? (
-      <RightOutlined style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 11 }} />
+      <RightOutlined style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: FONT_SIZE.XS }} />
     ) : (
-      <DownOutlined style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 11 }} />
+      <DownOutlined style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: FONT_SIZE.XS }} />
     )}
     <GroupName groupBy={groupBy} group={item.group} />
     <span style={mutedStyle}>

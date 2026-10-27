@@ -5,6 +5,7 @@ import { useNotifications } from '../hooks';
 import { NOTIFICATIONS_TEXTS } from '../constants';
 import { pluralize } from '../../../utils/helpers/format';
 import NotificationPanel from './NotificationPanel';
+import { FONT_SIZE } from '../../../constants';
 
 const NotificationBell: React.FC = () => {
   const feed = useNotifications();
@@ -20,7 +21,7 @@ const NotificationBell: React.FC = () => {
         <Button
           type="text"
           shape="circle"
-          icon={<BellOutlined style={{ fontSize: 18 }} />}
+          icon={<BellOutlined style={{ fontSize: FONT_SIZE.XL }} />}
           onClick={handleOpen}
           aria-label={pluralize(unreadCount, NOTIFICATIONS_TEXTS.BELL_UNREAD_NOUN)}
         />

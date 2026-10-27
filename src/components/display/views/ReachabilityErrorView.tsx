@@ -2,6 +2,7 @@ import React from 'react';
 import { Button } from 'antd';
 import { FancySpinner } from '../../animation';
 import { CONNECTIVITY_CONSTANTS } from '../../../constants/pages/connectivity';
+import { FONT_SIZE, FONT_WEIGHT, LINE_HEIGHT, SPACING } from '../../../constants';
 
 interface ReachabilityErrorViewProps {
   retryCount: number;
@@ -18,10 +19,10 @@ const ReachabilityErrorView: React.FC<ReachabilityErrorViewProps> = React.memo(
         <div style={CONNECTIVITY_CONSTANTS.LAYOUT.ERROR_CONTENT}>
           <div
             style={{
-              fontSize: 24,
-              fontWeight: 600,
+              fontSize: FONT_SIZE.H2,
+              fontWeight: FONT_WEIGHT.SEMIBOLD,
               color: CONNECTIVITY_CONSTANTS.COLORS.TEXT_PRIMARY,
-              marginBottom: 16,
+              marginBottom: SPACING.LG,
             }}
           >
             {CONNECTIVITY_CONSTANTS.MESSAGES.CONNECTION_PROBLEM}
@@ -29,10 +30,10 @@ const ReachabilityErrorView: React.FC<ReachabilityErrorViewProps> = React.memo(
 
           <div
             style={{
-              fontSize: 16,
+              fontSize: FONT_SIZE.LG,
               color: CONNECTIVITY_CONSTANTS.COLORS.TEXT_SECONDARY,
-              marginBottom: 32,
-              lineHeight: 1.6,
+              marginBottom: SPACING.XXXL,
+              lineHeight: LINE_HEIGHT.LOOSE,
             }}
           >
             {CONNECTIVITY_CONSTANTS.MESSAGES.ERROR_RETRYING}
@@ -42,9 +43,9 @@ const ReachabilityErrorView: React.FC<ReachabilityErrorViewProps> = React.memo(
             <FancySpinner label={CONNECTIVITY_CONSTANTS.MESSAGES.RETRYING} showLabel={true} />
             <div
               style={{
-                marginTop: 12,
+                marginTop: SPACING.MD,
                 color: CONNECTIVITY_CONSTANTS.COLORS.TEXT_MUTED,
-                fontSize: 14,
+                fontSize: FONT_SIZE.BASE,
               }}
             >
               {CONNECTIVITY_CONSTANTS.MESSAGES.ATTEMPT_COUNT.replace(
@@ -61,7 +62,7 @@ const ReachabilityErrorView: React.FC<ReachabilityErrorViewProps> = React.memo(
               )}
             </div>
 
-            <Button type="text" onClick={onCancel} style={{ marginTop: 8 }}>
+            <Button type="text" onClick={onCancel} style={{ marginTop: SPACING.SM }}>
               {CONNECTIVITY_CONSTANTS.MESSAGES.CANCEL}
             </Button>
           </div>

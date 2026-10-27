@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import { DEFAULT_COLORS } from '../shared/colors';
+import { DISABLED_OPACITY } from './controls';
 
 /** antd Empty classes in src/styles/antd.css, one per surface an empty state sits on. */
 export const EMPTY_CLASS = {
@@ -24,4 +25,11 @@ export const EMPTY_ACTION_STYLE: CSSProperties = {
   justifyContent: 'center',
   gap: 8,
   boxShadow: 'none',
+};
+
+/** Disabled: dims like a toolbar button, since the colors above override antd's disabled look. */
+export const EMPTY_ACTION_DISABLED_STYLE: CSSProperties = {
+  ...EMPTY_ACTION_STYLE,
+  color: DEFAULT_COLORS.TEXT_DISABLED,
+  opacity: DISABLED_OPACITY,
 };

@@ -7,6 +7,7 @@ interface AuthCardProps {
 
 export const AuthCard: React.FC<AuthCardProps> = ({ children }) => (
   <div
+    // 22, 28, 14: the auth card's padding and corner sit off the SPACING and RADIUS steps.
     style={{
       background: `var(--auth-card-bg, ${DEFAULT_COLORS.AUTH_LIGHT_CARD_BG})`,
       padding: '22px 28px 14px',

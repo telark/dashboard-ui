@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FancySpinner } from '../../../components/animation';
 import { Button, Empty, Tooltip, Typography } from 'antd';
-import { BellOutlined, CheckOutlined, DeleteOutlined } from '@ant-design/icons';
+import { CheckCircleFilled, CheckOutlined, DeleteOutlined } from '@ant-design/icons';
 import { SlideOutPanel } from '../../../components/display/panels/slide-out';
-import { DEFAULT_COLORS, EMPTY_CLASS, ROW_ICON_BUTTON_SIZE } from '../../../constants';
+import { DEFAULT_COLORS, EMPTY_CLASS, ROW_ICON_BUTTON_SIZE, SPACING } from '../../../constants';
 import type { UseNotificationsResult } from '../hooks';
 import { NOTIFICATIONS_PANEL_WIDTH, NOTIFICATIONS_TEXTS } from '../constants';
 import NotificationItem from './NotificationItem';
@@ -26,16 +26,32 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ open, onClose, fe
 
   const hasNotifications = notifications.length > 0;
 
+  // The shared frame has no Escape key; a read-only panel loses nothing to it.
+  useEffect(() => {
+    if (!open) return undefined;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [open, onClose]);
+
   const content = (
     <div
-      style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%', height: '100%' }}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: SPACING.MD,
+        width: '100%',
+        height: '100%',
+      }}
     >
       {hasNotifications && (
         <div
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: 4,
+            gap: SPACING.XS,
             flexShrink: 0,
             justifyContent: 'flex-end',
           }}
@@ -65,7 +81,7 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ open, onClose, fe
       {!isLoading && !hasNotifications ? (
         <Empty
           className={EMPTY_CLASS.PANEL}
-          image={<BellOutlined />}
+          image={<CheckCircleFilled style={{ color: DEFAULT_COLORS.SUCCESS }} />}
           description={
             <>
               <Typography.Title level={5}>{NOTIFICATIONS_TEXTS.EMPTY_TITLE}</Typography.Title>
@@ -80,12 +96,12 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ open, onClose, fe
             display: 'flex',
             flexDirection: 'column',
             flex: 1,
-            padding: '4px 0',
-            margin: '0 -24px',
+            padding: `${SPACING.XS}px 0`,
+            margin: `0 -${SPACING.XXL}px`,
           }}
         >
           {isLoading && !hasNotifications ? (
-            <div style={{ padding: 32, display: 'flex', justifyContent: 'center' }}>
+            <div style={{ padding: SPACING.XXXL, display: 'flex', justifyContent: 'center' }}>
               <FancySpinner />
             </div>
           ) : (

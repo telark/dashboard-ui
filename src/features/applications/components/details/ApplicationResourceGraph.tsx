@@ -1,6 +1,6 @@
 import React, { memo, useMemo, useState } from 'react';
 import { Tooltip } from 'antd';
-import { DEFAULT_COLORS } from '../../../../constants';
+import { DEFAULT_COLORS, FONT_WEIGHT, MOTION } from '../../../../constants';
 import { APPLICATION_RESOURCE_GRAPH } from '../../constants/sectionLayout';
 import { getResourceKindVisual } from '../../utils/resourceKindVisual';
 import type { ApplicationResourceRef } from '../../models';
@@ -86,7 +86,12 @@ const ApplicationResourceGraph: React.FC<ApplicationResourceGraphProps> = memo(
     return (
       <div style={{ width: '100%', overflowX: 'auto' }}>
         <div style={{ position: 'relative', width, height, margin: '0 auto' }}>
-          <svg width={width} height={height} style={{ position: 'absolute', inset: 0 }}>
+          <svg
+            width={width}
+            height={height}
+            style={{ position: 'absolute', inset: 0 }}
+            aria-hidden="true"
+          >
             {kinds.map((node) => (
               <g key={node.kind} opacity={isDimmed(node.kind) ? G.DIM_OPACITY : 1}>
                 <line
@@ -124,7 +129,7 @@ const ApplicationResourceGraph: React.FC<ApplicationResourceGraphProps> = memo(
               <span
                 style={{
                   fontSize: G.CENTER_FONT_SIZE_PX,
-                  fontWeight: 700,
+                  fontWeight: FONT_WEIGHT.BOLD,
                   lineHeight: G.CENTER_LINE_HEIGHT,
                   color: DEFAULT_COLORS.TEXT_PRIMARY,
                   textAlign: 'center',
@@ -168,7 +173,7 @@ const ApplicationResourceGraph: React.FC<ApplicationResourceGraphProps> = memo(
                     border: `${G.EDGE_WIDTH_PX}px solid ${DEFAULT_COLORS.BORDER_ELEVATED}`,
                     cursor: 'default',
                     opacity: isDimmed(node.kind) ? G.DIM_OPACITY : 1,
-                    transition: 'opacity 150ms ease',
+                    transition: `opacity ${MOTION.FAST_MS}ms ${MOTION.EASE}`,
                     whiteSpace: 'nowrap',
                   }}
                 >
@@ -180,21 +185,21 @@ const ApplicationResourceGraph: React.FC<ApplicationResourceGraphProps> = memo(
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      background: DEFAULT_COLORS.SUCCESS,
+                      background: DEFAULT_COLORS.CHIP_CUSTOM_BG,
                       flexShrink: 0,
                     }}
                   >
                     <KindIcon
                       style={{
                         fontSize: G.KIND_GLYPH_SIZE_PX,
-                        color: DEFAULT_COLORS.TEXT_ON_SURFACE,
+                        color: DEFAULT_COLORS.TEXT_SECONDARY,
                       }}
                     />
                   </span>
                   <span
                     style={{
                       fontSize: G.KIND_FONT_SIZE_PX,
-                      fontWeight: 700,
+                      fontWeight: FONT_WEIGHT.BOLD,
                       color: DEFAULT_COLORS.TEXT_PRIMARY,
                     }}
                   >
@@ -227,7 +232,7 @@ const ApplicationResourceGraph: React.FC<ApplicationResourceGraphProps> = memo(
                 borderRadius: '50%',
                 background: DEFAULT_COLORS.ICON_SECONDARY,
                 opacity: isDimmed(node.kind) ? G.DIM_OPACITY : 1,
-                transition: 'opacity 150ms ease',
+                transition: `opacity ${MOTION.FAST_MS}ms ${MOTION.EASE}`,
                 pointerEvents: 'none',
               }}
             />

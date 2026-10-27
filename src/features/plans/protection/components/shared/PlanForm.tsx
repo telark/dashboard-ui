@@ -14,10 +14,12 @@ import type { FormValues, PolicyEntry } from '../create';
 import type { PlanTemplate, ProtectionPlan } from '../../models';
 import type { User } from '../../../../access-and-permissions/users/models';
 import { scopeItemsChanged } from '../../utils/planFormValues';
-import { isMaterialEditLocked } from '../../utils/phaseRules';
+import { isMaterialEditLocked, liveWindow } from '../../utils/phaseRules';
+import { formatDateTime, getTimeZone } from '../../../../../utils/shared/time';
 import { useScopeExclusionOptions } from '../../hooks/useScopeExclusionOptions';
 import PlanTaxonomyFields from './PlanTaxonomyFields';
 import PlanApprovalModeField from './PlanApprovalModeField';
+import { SPACING, TIME_FORMATS } from '../../../../../constants';
 
 export interface PlanFormProps {
   form: FormInstance<FormValues>;
@@ -37,6 +39,7 @@ export interface PlanFormProps {
   userOptions: { value: string; label: string }[];
   userMap: Map<string, User>;
   usersLoading: boolean;
+  planKindOptions: { value: string; label: string }[];
   environmentOptions: { value: string; label: string }[];
   tagOptions: { value: string; label: string }[];
   submitError?: string | null;
@@ -63,6 +66,7 @@ const PlanForm: React.FC<PlanFormProps> = ({
   userOptions,
   userMap,
   usersLoading,
+  planKindOptions,
   environmentOptions,
   tagOptions,
   submitError,
@@ -72,6 +76,20 @@ const PlanForm: React.FC<PlanFormProps> = ({
 }) => {
   const isEditMode = mode === 'edit';
   const materialLocked = isEditMode && plan !== undefined && isMaterialEditLocked(plan);
+  const openWindow = plan?.phase === 'active' ? liveWindow(plan) : undefined;
+  const lockedAlert = openWindow
+    ? PPC.PANELS.EDIT.WINDOW_OPEN_ALERT(
+        PPC.LABELS.PHASE_INFO.IN_TIME_ZONE(
+          formatDateTime(openWindow.endAt, TIME_FORMATS.SHORT_DATE_TIME),
+          getTimeZone(),
+        ),
+      )
+    : PPC.PANELS.EDIT.APPROVED_LOCKED_ALERT;
+  const asksApprovalAgain =
+    isEditMode &&
+    plan?.approvalMode === 'required' &&
+    plan.phase === 'scheduled' &&
+    plan.timeMode === 'repeating';
   const scopeType = Form.useWatch('scopeType', form) ?? initialValues.scopeType;
   const timeMode = Form.useWatch('timeMode', form) ?? initialValues.timeMode;
   const applicationRefs = Form.useWatch('applicationRefs', form) ?? [];
@@ -104,7 +122,7 @@ const PlanForm: React.FC<PlanFormProps> = ({
       onFinish={onSubmit}
       initialValues={initialValues}
       validateTrigger={validateTrigger}
-      style={{ display: 'flex', flexDirection: 'column', gap: 0 }}
+      style={{ display: 'flex', flexDirection: 'column', gap: SPACING.NONE }}
     >
       <div
         style={{
@@ -119,6 +137,7 @@ const PlanForm: React.FC<PlanFormProps> = ({
           subtitle={PPC.CREATE_PAGE.SECTIONS.CLASSIFICATION_DESCRIPTION}
           content={
             <PlanTaxonomyFields
+              planKindOptions={planKindOptions}
               environmentOptions={environmentOptions}
               tagOptions={tagOptions}
               editMode={isEditMode}
@@ -166,11 +185,15 @@ const PlanForm: React.FC<PlanFormProps> = ({
       </div>
 
       {materialLocked && (
+        <Alert type="warning" showIcon title={lockedAlert} style={{ marginTop: SPACING.LG }} />
+      )}
+
+      {asksApprovalAgain && (
         <Alert
           type="warning"
           showIcon
-          title={PPC.PANELS.EDIT.APPROVED_LOCKED_ALERT}
-          style={{ marginTop: 16 }}
+          title={PPC.PANELS.EDIT.REAPPROVAL_ALERT}
+          style={{ marginTop: SPACING.LG }}
         />
       )}
 
@@ -179,7 +202,7 @@ const PlanForm: React.FC<PlanFormProps> = ({
           type="warning"
           showIcon
           title={PPC.PANELS.EDIT.ACTIVE_SCOPE_WARNING}
-          style={{ marginTop: 16 }}
+          style={{ marginTop: SPACING.LG }}
         />
       )}
 
@@ -187,7 +210,7 @@ const PlanForm: React.FC<PlanFormProps> = ({
         <Alert
           type="error"
           title={submitError}
-          style={{ marginTop: 16 }}
+          style={{ marginTop: SPACING.LG }}
           showIcon
           closable={Boolean(onSubmitErrorClose)}
           onClose={onSubmitErrorClose}

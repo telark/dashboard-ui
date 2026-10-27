@@ -7,13 +7,12 @@ import {
   SearchOutlined,
   SyncOutlined,
 } from '@ant-design/icons';
+import { DEFAULT_COLORS } from '../../../../constants';
 import {
-  DEFAULT_COLORS,
-  LIST_TOOLBAR,
-  TOOLBAR_CONTROL,
-  getQuickFilterPillColors,
-} from '../../../../constants';
-import { CompactQuickFilter, ListToolbar } from '../../../../components/display/toolbar';
+  CompactQuickFilter,
+  ListToolbar,
+  QuickFilterPills,
+} from '../../../../components/display/toolbar';
 import type { FilterChip, ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 import { APPLICATIONS_UI } from '../../constants';
 import { ACTION_PERMISSIONS, usePermission } from '../../../auth/hooks';
@@ -22,13 +21,12 @@ const MORE_MENU_KEYS = {
   BULK: 'bulk',
 } as const;
 
-type HealthQuickFilter = 'all' | 'healthy' | 'degraded' | 'unhealthy';
+type HealthQuickFilter = 'all' | 'healthy' | 'degraded' | 'unhealthy' | 'unknown';
 
 interface ApplicationsToolbarProps {
   searchValue: string;
   onSearchChange: (value: string) => void;
   onOpenFilters: () => void;
-  totalCount: number;
   filterChips: FilterChip[];
   overflowCount: number;
   onRemoveFilterChip: (key: string, value: string) => void;
@@ -44,6 +42,7 @@ interface ApplicationsToolbarProps {
   onBulkReset: () => void;
   bulkForceSyncDisabled: boolean;
   healthQuickFilter: HealthQuickFilter;
+  healthCounts: Record<HealthQuickFilter, number>;
   onHealthQuickFilterChange: (next: HealthQuickFilter) => void;
 }
 
@@ -52,26 +51,33 @@ const HEALTH_PILLS = [
   { key: 'healthy', label: APPLICATIONS_UI.TOOLBAR_HEALTH_OPTIONS.HEALTHY },
   { key: 'degraded', label: APPLICATIONS_UI.TOOLBAR_HEALTH_OPTIONS.DEGRADED },
   { key: 'unhealthy', label: APPLICATIONS_UI.TOOLBAR_HEALTH_OPTIONS.UNHEALTHY },
+  { key: 'unknown', label: APPLICATIONS_UI.TOOLBAR_HEALTH_OPTIONS.UNKNOWN },
 ] as const;
 
 const getPillAccent = (key: string): string => {
   if (key === 'healthy') return DEFAULT_COLORS.SUCCESS;
   if (key === 'degraded') return DEFAULT_COLORS.WARNING;
   if (key === 'unhealthy') return DEFAULT_COLORS.DANGER;
+  if (key === 'unknown') return DEFAULT_COLORS.NEUTRAL;
   return DEFAULT_COLORS.TEXT_MUTED;
 };
 
 interface HealthPillsProps {
   active: HealthQuickFilter;
+  counts: Record<HealthQuickFilter, number>;
   compact: boolean;
   onChange: (next: HealthQuickFilter) => void;
 }
 
-const HealthPills: React.FC<HealthPillsProps> = ({ active, compact, onChange }) => {
+const HealthPills: React.FC<HealthPillsProps> = ({ active, counts, compact, onChange }) => {
   if (compact) {
     return (
       <CompactQuickFilter
-        options={HEALTH_PILLS.map((pill) => ({ ...pill, accent: getPillAccent(pill.key) }))}
+        options={HEALTH_PILLS.map((pill) => ({
+          key: pill.key,
+          label: `${pill.label} · ${counts[pill.key]}`,
+          accent: getPillAccent(pill.key),
+        }))}
         active={active}
         title={APPLICATIONS_UI.TOOLBAR_HEALTH_FILTER}
         icon={<HeartOutlined />}
@@ -80,36 +86,16 @@ const HealthPills: React.FC<HealthPillsProps> = ({ active, compact, onChange }) 
     );
   }
   return (
-    <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, height: '100%' }}>
-      {HEALTH_PILLS.map((pill) => {
-        const isActive = active === pill.key;
-        const accent = getPillAccent(pill.key);
-        return (
-          <button
-            key={pill.key}
-            type="button"
-            onClick={() => onChange(pill.key)}
-            style={{
-              all: 'unset',
-              cursor: 'pointer',
-              display: 'inline-flex',
-              alignItems: 'center',
-              height: TOOLBAR_CONTROL.HEIGHT,
-              boxSizing: 'border-box',
-              padding: TOOLBAR_CONTROL.PADDING,
-              borderRadius: LIST_TOOLBAR.PILL_RADIUS_PX,
-              ...getQuickFilterPillColors(accent, isActive),
-              fontSize: 12,
-              fontWeight: 700,
-              lineHeight: TOOLBAR_CONTROL.LINE_HEIGHT,
-              userSelect: 'none',
-            }}
-          >
-            {pill.label}
-          </button>
-        );
-      })}
-    </div>
+    <QuickFilterPills
+      options={HEALTH_PILLS.map((pill) => ({
+        key: pill.key,
+        label: pill.label,
+        accent: getPillAccent(pill.key),
+        count: counts[pill.key],
+      }))}
+      active={active}
+      onChange={onChange}
+    />
   );
 };
 
@@ -117,7 +103,6 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
   searchValue,
   onSearchChange,
   onOpenFilters,
-  totalCount,
   filterChips,
   overflowCount,
   onRemoveFilterChip,
@@ -133,6 +118,7 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
   onBulkReset,
   bulkForceSyncDisabled,
   healthQuickFilter,
+  healthCounts,
   onHealthQuickFilterChange,
 }) => {
   const { forceSync, delete: reset } = ACTION_PERMISSIONS.applications;
@@ -239,7 +225,6 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
 
   return (
     <ListToolbar
-      totalCount={totalCount}
       countSuffix={APPLICATIONS_UI.TOOLBAR_COUNT_SUFFIX}
       compactWidth={APPLICATIONS_UI.TOOLBAR_COMPACT_WIDTH}
       filterChips={filterChips}
@@ -260,6 +245,7 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
       quickFilter={(compact) => (
         <HealthPills
           active={healthQuickFilter || 'all'}
+          counts={healthCounts}
           compact={compact}
           onChange={onHealthQuickFilterChange}
         />

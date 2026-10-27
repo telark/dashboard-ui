@@ -5,13 +5,14 @@ import logger from '../../../../logging';
 import {
   downloadPlanReport,
   fetchAllPlanReports,
+  fetchKeptPlanReports,
   fetchPlanReports,
   generatePlanReport,
   isReportBusy,
   isReportFileMissing,
 } from '../clients';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../constants/protectionPlans';
-import type { PlanReportFormat, PlanReportMeta } from '../models';
+import type { KeptPlanReports, PlanReportFormat, PlanReportMeta } from '../models';
 
 export interface UsePlanReportsResult {
   reports: PlanReportMeta[];
@@ -125,21 +126,25 @@ export function usePlanReports(
   return { reports, loading, error, generating, downloading, generate, download, refresh };
 }
 
-export type UseAllPlanReportsResult = Omit<UsePlanReportsResult, 'generating' | 'generate'>;
+export type UseAllPlanReportsResult = Omit<UsePlanReportsResult, 'generating' | 'generate'> & {
+  kept: KeptPlanReports[];
+};
 
 export function useAllPlanReports(enabled: boolean): UseAllPlanReportsResult {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [reports, setReports] = useState<PlanReportMeta[]>([]);
+  const [kept, setKept] = useState<KeptPlanReports[]>([]);
   const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     if (!enabled) return;
     let canceled = false;
-    fetchAllPlanReports()
-      .then((data) => {
+    Promise.all([fetchAllPlanReports(), fetchKeptPlanReports()])
+      .then(([data, keptData]) => {
         if (canceled) return;
         setReports(data);
+        setKept(keptData);
         setError(null);
       })
       .catch(() => {
@@ -160,5 +165,5 @@ export function useAllPlanReports(enabled: boolean): UseAllPlanReportsResult {
   }, []);
   const { downloading, download } = usePlanReportDownload(refresh);
 
-  return { reports, loading, error, downloading, download, refresh };
+  return { reports, kept, loading, error, downloading, download, refresh };
 }

@@ -5,8 +5,6 @@ export const AUTH_CONFIG = {
     VALIDATION: {
       INTERVAL_SECONDS: 60,
     },
-    NAME_PREFIX: 'session-',
-    NAME_DIGEST_ALGORITHM: 'SHA-256',
   },
 } as const;
 

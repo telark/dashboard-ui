@@ -4,7 +4,14 @@ import { KeyOutlined } from '@ant-design/icons';
 import { AUTH_ERROR_MESSAGES } from '../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/login';
 import { AuthForm } from '../shared/AuthForm';
-import { BUTTON_CONFIGS, DEFAULT_COLORS } from '../../../../constants';
+import {
+  BUTTON_CONFIGS,
+  DEFAULT_COLORS,
+  SPACING,
+  FONT_WEIGHT,
+  FONT_SIZE,
+  RADIUS,
+} from '../../../../constants';
 
 interface LoginFormProps {
   form: FormInstance;
@@ -28,7 +35,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
         { required: true, message: AUTH_ERROR_MESSAGES.MISSING_EMAIL },
         { type: 'email', message: 'Please enter a valid email address' },
       ]}
-      style={{ marginBottom: '12px' }}
+      style={{ marginBottom: SPACING.MD }}
     >
       <Input
         type="email"
@@ -42,21 +49,21 @@ export const LoginForm: React.FC<LoginFormProps> = ({
       />
     </Form.Item>
 
-    <Form.Item style={{ marginBottom: 0 }}>
+    <Form.Item style={{ marginBottom: SPACING.NONE }}>
       <Button
         type="primary"
         htmlType="submit"
         loading={loading}
         block
         style={{
-          fontWeight: 600,
+          fontWeight: FONT_WEIGHT.SEMIBOLD,
           background: DEFAULT_COLORS.SUCCESS,
           borderColor: DEFAULT_COLORS.SUCCESS,
           color: BUTTON_CONFIGS.PRIMARY_BUTTON.TEXT_COLOR,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          gap: '8px',
+          gap: SPACING.SM,
         }}
         icon={!loading ? <KeyOutlined /> : undefined}
       >
@@ -68,9 +75,9 @@ export const LoginForm: React.FC<LoginFormProps> = ({
       <p
         style={{
           textAlign: 'center',
-          fontSize: '12px',
+          fontSize: FONT_SIZE.SM,
           color: `var(--auth-text-muted, ${DEFAULT_COLORS.AUTH_LIGHT_TEXT_MUTED})`,
-          margin: '8px 0 0',
+          margin: `${SPACING.SM}px 0 0`,
         }}
       >
         Waiting for your authenticator…
@@ -83,11 +90,12 @@ export const LoginForm: React.FC<LoginFormProps> = ({
         type="error"
         showIcon
         closable={{ onClose: onClearError }}
+        // 10: the alert's top margin and side padding sit between SM and MD.
         style={{
           marginTop: '10px',
-          borderRadius: '8px',
-          padding: '6px 10px',
-          fontSize: '13px',
+          borderRadius: RADIUS.MD,
+          padding: `${SPACING.S6}px 10px`,
+          fontSize: FONT_SIZE.MD,
         }}
       />
     )}

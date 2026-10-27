@@ -4,7 +4,7 @@ import { registerPasskey } from '../webauthn/core';
 import { AUTH_SUCCESS_MESSAGES } from '../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/login';
 import { REGISTER_CONSTANTS } from '../../constants/register';
-import { APP_ROUTES } from '../../../../constants';
+import { APP_CONFIGS, APP_ROUTES } from '../../../../constants';
 import { isDevelopment } from '../../../../utils/helpers/env';
 import logger from '../../../../logging';
 import type {
@@ -16,8 +16,17 @@ import type {
 import type { MessageInstance } from 'antd/lib/message/interface';
 import type { ExtendedAxiosError } from '../../../../api/client/normalize';
 
+// The token rides in the fragment, which no server or access log sees; older links carry it in the query.
+const enrollLinkParams = (search: string, hash: string): URLSearchParams => {
+  const query = new URLSearchParams(search);
+  return query.has(REGISTER_CONSTANTS.QUERY.ENROLL) ? query : new URLSearchParams(hash.slice(1));
+};
+
 // The page strips the link from the address bar; the tab keeps it so a reload still enrolls.
-export const resolveEnrollLink = (token: string | null, email: string | null): EnrollLink => {
+export const resolveEnrollLink = (search: string, hash: string): EnrollLink => {
+  const params = enrollLinkParams(search, hash);
+  const token = params.get(REGISTER_CONSTANTS.QUERY.ENROLL);
+  const email = params.get(REGISTER_CONSTANTS.QUERY.EMAIL);
   const fromLink: EnrollLink = token === null ? {} : { token, email: email || undefined };
   try {
     if (token === null) {
@@ -44,17 +53,17 @@ export const isEnrollLinkRefused = (error: unknown): boolean => {
 };
 
 // A signed-in browser keeps the register page for an enrollment link instead of leaving with its token.
-export const isEnrollLink = (pathname: string, search: string): boolean =>
+export const isEnrollLink = (pathname: string, search: string, hash: string): boolean =>
   pathname === APP_ROUTES.REGISTER &&
-  new URLSearchParams(search).has(REGISTER_CONSTANTS.QUERY.ENROLL);
+  enrollLinkParams(search, hash).has(REGISTER_CONSTANTS.QUERY.ENROLL);
 
 // The email only fills in the register form; the server still checks it against the link's account.
 export const buildEnrollUrl = (token: string, email?: string): string => {
-  const query = new URLSearchParams({ [REGISTER_CONSTANTS.QUERY.ENROLL]: token });
+  const params = new URLSearchParams({ [REGISTER_CONSTANTS.QUERY.ENROLL]: token });
   if (email) {
-    query.set(REGISTER_CONSTANTS.QUERY.EMAIL, email);
+    params.set(REGISTER_CONSTANTS.QUERY.EMAIL, email);
   }
-  return `${globalThis.location.origin}${APP_ROUTES.REGISTER}?${query.toString()}`;
+  return `${globalThis.location.origin}${APP_ROUTES.REGISTER}#${params.toString()}`;
 };
 
 export const clearEnrollToken = (): void => {
@@ -141,7 +150,7 @@ export const performRegister = async (
   messageApi.open({
     type: 'success',
     content: AUTH_SUCCESS_MESSAGES.REGISTER_SUCCESS,
-    duration: 2,
+    duration: APP_CONFIGS.MESSAGE.AUTH_SUCCESS_DURATION_S,
   });
 
   if (onSuccess) {

@@ -3,7 +3,7 @@ import { Form, Input } from 'antd';
 import type { FormInstance } from 'antd';
 import { SlideOutPanel } from '../../../../components/display/panels/slide-out';
 import LabeledInput from '../../../../components/display/inputs/LabeledInput';
-import { BUTTON_TEXTS } from '../../../../constants';
+import { BUTTON_TEXTS, SPACING } from '../../../../constants';
 import { textChanged } from '../../../shared';
 import { APPLICATIONS_UI } from '../../constants/texts';
 import { APPLICATION_EDIT_LIMITS } from '../../constants/applications';
@@ -44,7 +44,7 @@ const EditApplicationPanel: React.FC<EditApplicationPanelProps> = ({
           <Form.Item
             name="name"
             label={APPLICATIONS_UI.EDIT_PAGE.NAME_LABEL}
-            style={{ marginBottom: 12 }}
+            style={{ marginBottom: SPACING.MD }}
           >
             <Input disabled />
           </Form.Item>

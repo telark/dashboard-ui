@@ -1,20 +1,29 @@
-import React, { useMemo, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useProtectionPlans } from '../hooks/useProtectionPlans';
 import { usePlanPanelState } from '../hooks/usePlanPanelState';
 import CreatePlanPanel from '../components/panels/CreatePlanPanel';
 import ProtectionPlansTabs, { readPlansPageTab } from '../components/layout/ProtectionPlansTabs';
 import { CATEGORIES_CONSTANTS as CC } from '../../../access-and-permissions/categories/constants';
+import type { CategoryScope } from '../../../access-and-permissions/categories/constants';
 import { usePermission, ACTION_PERMISSIONS } from '../../../auth/hooks';
 import { NoPermissionCard, PageContainer } from '../../../../components/shared';
 import { LIST_PAGE } from '../../../../constants/shared/pages';
+import type { CreatePlanRouteState } from '../../../../interfaces/shared';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../constants/protectionPlans';
+import { applicationPlanValues } from '../utils/planFormValues';
 import type { PlansPageTab, PlanViewMode } from '../models';
 import ProtectionPlansListPage from './ProtectionPlansListPage';
 import ProtectionPlanReportsPage from './ProtectionPlanReportsPage';
 import PlanTaxonomyPage from './PlanTaxonomyPage';
 
 const { viewReports } = ACTION_PERMISSIONS.protectionPlans;
+
+const TAXONOMY_SCOPES: Record<Exclude<PlanViewMode, 'plans'>, CategoryScope> = {
+  kinds: CC.SCOPES.PLAN_KINDS,
+  environments: CC.SCOPES.PLAN_ENVIRONMENTS,
+  tags: CC.SCOPES.PLAN_TAGS,
+};
 
 const MainPage: React.FC = () => {
   const { plans, loaded, error, refetch } = useProtectionPlans();
@@ -33,13 +42,26 @@ const MainPage: React.FC = () => {
   }
   const tabs = useMemo(() => <ProtectionPlansTabs />, []);
 
+  // One-shot: open the create panel (prefilled for an application) once, then drop the state so
+  // a reload or a return to this entry doesn't open it again.
+  const location = useLocation();
+  const navigate = useNavigate();
+  const createRequest = (location.state as CreatePlanRouteState | null)?.createPlan;
+  useEffect(() => {
+    if (!createRequest) return;
+    const { application } = createRequest;
+    if (application) {
+      const takenNames = plans.map((plan) => plan.name);
+      createForm.setFieldsValue(applicationPlanValues(application, takenNames));
+    }
+    openCreatePanel();
+    navigate(location, { replace: true, state: null });
+  }, [createRequest, createForm, plans, openCreatePanel, navigate, location]);
+
   let page: React.ReactNode;
   if (viewMode !== 'plans') {
     page = (
-      <PlanTaxonomyPage
-        scope={viewMode === 'environments' ? CC.SCOPES.PLAN_ENVIRONMENTS : CC.SCOPES.PLAN_TAGS}
-        onBack={() => setViewMode('plans')}
-      />
+      <PlanTaxonomyPage scope={TAXONOMY_SCOPES[viewMode]} onBack={() => setViewMode('plans')} />
     );
   } else {
     page = (

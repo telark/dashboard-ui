@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { hasSessionToken } from '../../utils';
+import { isSignedIn } from '../../utils';
 import {
   selectPermissionsError,
   selectPermissionsLoading,
@@ -34,7 +34,7 @@ const buildMessage = (error: string | null, timedOut: boolean): string => {
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const location = useLocation();
   const dispatch: AppDispatch = useDispatch();
-  const isAuthenticated = hasSessionToken();
+  const isAuthenticated = isSignedIn();
   const permissionsReady = useSelector(selectPermissionsReady);
   const permissionsLoading = useSelector(selectPermissionsLoading);
   const permissionsError = useSelector(selectPermissionsError);

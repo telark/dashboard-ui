@@ -18,6 +18,8 @@ export const IDENTITY_PROVIDER_CONSTANTS = {
     SAVE_BUTTON: 'Save',
     PERMISSION_DENIED: 'You do not have permission to change sign-in settings',
     BOOTSTRAP_ONLY: 'Only the bootstrap account can change how people sign in',
+    BOOTSTRAP_ONLY_NOTICE:
+      'Only the bootstrap account can change how people sign in. You can view these settings.',
     SELF_REGISTRATION_TITLE: 'Self-registration',
     SELF_REGISTRATION_LABEL: 'Allow self-registration',
     SELF_REGISTRATION_HINT:

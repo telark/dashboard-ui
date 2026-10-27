@@ -1,6 +1,6 @@
 import React from 'react';
 import { Space } from 'antd';
-import { FILTER_PANEL, SLIDE_OUT } from '../../../../constants';
+import { FILTER_PANEL, SLIDE_OUT, SPACING } from '../../../../constants';
 import type { FilterButtonOption } from './FilterPanel';
 
 export interface FilterButtonGroupProps {
@@ -14,7 +14,7 @@ const FilterButtonGroup: React.FC<FilterButtonGroupProps> = React.memo(
     const selectedValue = value || options[0]?.key || '';
 
     return (
-      <Space wrap size={[8, 8]}>
+      <Space wrap size={SPACING.SM}>
         {options.map((option) => {
           const isActive = selectedValue === option.key;
           return (

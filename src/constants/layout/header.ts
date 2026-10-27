@@ -14,6 +14,7 @@ export const HEADER_LAYOUT = {
     LEFT_PX: 20,
     TOGGLE_GAP: 16,
   },
+  DOCS_LABEL: 'Documentation',
 } as const;
 
 export const HEADER_CONSTANTS = {
@@ -45,10 +46,6 @@ export const HEADER_CONSTANTS = {
     },
     MENU_ITEM: {
       GAP: '8px',
-    },
-    WARNINGS: {
-      MISSING_USER_DATA:
-        'Session token exists but user data is missing from localStorage. User may need to log in again.',
     },
   },
 } as const;

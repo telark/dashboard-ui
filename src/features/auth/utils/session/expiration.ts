@@ -3,12 +3,12 @@ import { validateSession } from './validation';
 import { isDevelopment } from '../../../../utils/helpers/env';
 import logger from '../../../../logging';
 import { AUTH_CONFIG } from '../../constants/config';
-import { ACCOUNT_SUSPENDED_EVENT, HTTP_STATUS } from '../../../../constants';
+import { ACCOUNT_SUSPENDED_EVENT, HTTP_STATUS, SESSION_CHECK_EVENT } from '../../../../constants';
 
 export interface UseSessionExpirationCheckOptions {
   isAuthenticated: boolean;
   isAuthRoute: boolean;
-  onSessionExpired: () => void;
+  onSessionExpired: (duplicateCookie: boolean) => void;
   onAccountSuspended: () => void;
 }
 
@@ -34,7 +34,7 @@ export const useSessionExpirationCheck = ({
       try {
         const validationResult = await validateSession();
         if (validationResult.isExpired) {
-          onSessionExpired();
+          onSessionExpired(validationResult.duplicateCookie === true);
         }
         lastErrorSignatureRef.current = null;
       } catch (error) {
@@ -61,10 +61,16 @@ export const useSessionExpirationCheck = ({
 
     // The check's own request goes through the API client, so it raises this event too.
     globalThis.addEventListener(ACCOUNT_SUSPENDED_EVENT, onAccountSuspended);
+    // A refused event stream asks for the check now.
+    const onSessionCheck = (): void => {
+      void checkSessionExpiration();
+    };
+    globalThis.addEventListener(SESSION_CHECK_EVENT, onSessionCheck);
 
     return () => {
       globalThis.clearInterval(intervalId);
       globalThis.removeEventListener(ACCOUNT_SUSPENDED_EVENT, onAccountSuspended);
+      globalThis.removeEventListener(SESSION_CHECK_EVENT, onSessionCheck);
     };
   }, [isAuthenticated, isAuthRoute, onSessionExpired, onAccountSuspended]);
 };

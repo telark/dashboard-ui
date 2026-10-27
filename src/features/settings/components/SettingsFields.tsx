@@ -1,7 +1,14 @@
 import React from 'react';
 import { Tooltip } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS, FORM_LABEL_GAP } from '../../../constants';
+import {
+  DEFAULT_COLORS,
+  FORM_LABEL_GAP,
+  SECTION_LAYOUT,
+  FONT_WEIGHT,
+  LINE_HEIGHT,
+  SPACING,
+} from '../../../constants';
 import { SETTINGS_CONSTANTS } from '../constants';
 
 const { CONTENT } = SETTINGS_CONSTANTS;
@@ -17,7 +24,9 @@ interface SettingsFieldLabelProps {
 }
 
 export const SettingsFieldLabel: React.FC<SettingsFieldLabelProps> = ({ label, info }) => (
-  <div style={{ fontWeight: 700, display: 'flex', alignItems: 'center', gap: 6 }}>
+  <div
+    style={{ fontWeight: FONT_WEIGHT.BOLD, display: 'flex', alignItems: 'center', gap: SPACING.S6 }}
+  >
     {label}
     {info ? (
       <Tooltip title={info}>
@@ -56,29 +65,29 @@ interface SettingsSubsectionHeaderProps {
   description?: React.ReactNode;
 }
 
-// The card header's own title and description metrics, one level down.
+// The card header's own title and description metrics, one level down (h3 under the card's h2).
 export const SettingsSubsectionHeader: React.FC<SettingsSubsectionHeaderProps> = ({
   title,
   description,
 }) => (
   <div>
-    <h4
+    <h3
       style={{
-        margin: 0,
+        margin: SPACING.NONE,
         fontSize: CONTENT.CARD_TITLE_FONT_SIZE,
-        fontWeight: 600,
+        fontWeight: FONT_WEIGHT.SEMIBOLD,
         color: DEFAULT_COLORS.TEXT_PRIMARY,
       }}
     >
       {title}
-    </h4>
+    </h3>
     {description ? (
       <p
         style={{
           margin: `${CONTENT.CARD_TITLE_TO_DESCRIPTION_GAP_PX}px 0 0`,
           fontSize: CONTENT.CARD_DESCRIPTION_FONT_SIZE,
           color: DEFAULT_COLORS.TEXT_MUTED,
-          lineHeight: 1.5,
+          lineHeight: LINE_HEIGHT.BASE,
         }}
       >
         {description}
@@ -107,5 +116,5 @@ export const SettingsDetails: React.FC<{ items: SettingsDetail[] }> = ({ items }
 );
 
 export const SettingsDivider: React.FC = () => (
-  <div style={{ borderTop: `1px solid ${DEFAULT_COLORS.BORDER_ELEVATED}` }} />
+  <div style={{ borderTop: SECTION_LAYOUT.SUBTLE_DIVIDER }} />
 );

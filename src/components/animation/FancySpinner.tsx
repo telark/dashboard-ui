@@ -1,5 +1,5 @@
 import React from 'react';
-import { DEFAULT_COLORS, withAlpha } from '../../constants';
+import { DEFAULT_COLORS, withAlpha, FONT_SIZE, SPACING } from '../../constants';
 
 interface FancySpinnerProps {
   label?: string;
@@ -23,7 +23,7 @@ const FancySpinner: React.FC<FancySpinnerProps> = React.memo(
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          gap: showLabel ? 12 : 0,
+          gap: showLabel ? SPACING.MD : SPACING.NONE,
         }}
       >
         <div
@@ -44,7 +44,9 @@ const FancySpinner: React.FC<FancySpinnerProps> = React.memo(
             }}
           />
         </div>
-        {showLabel && <div style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 13 }}>{label}</div>}
+        {showLabel && (
+          <div style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: FONT_SIZE.MD }}>{label}</div>
+        )}
         <style>{`
         @keyframes fancy-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
       `}</style>

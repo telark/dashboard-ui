@@ -1,15 +1,14 @@
 import React, { memo, useEffect, useMemo, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import LoadingDetailsView from '../../../../components/display/views/LoadingDetailsView';
-import ErrorView from '../../../../components/display/views/ErrorView';
+import FullPageLoader from '../../../../components/display/views/FullPageLoader';
 import { APPLICATION_DETAILS_CONSTANTS, SYNC_STATUS_VALUE } from '../../constants';
 import { useApplicationDetails } from '../../hooks';
-import ApplicationsDetailsEmpty from './Empty';
 import ApplicationDetailsContent from './Content';
-import { PageContainer } from '../../../../components/shared';
+import { DataViewError, PageContainer } from '../../../../components/shared';
 import { APPLICATIONS_UI } from '../../constants/texts';
-import { APP_ROUTES } from '../../../../constants';
+import { APP_ROUTES, HEADER_LAYOUT } from '../../../../constants';
+import { LIST_PAGE } from '../../../../constants/shared/pages';
 import { useDispatch } from 'react-redux';
 import type { AppDispatch, RootState } from '../../../../store';
 import { fetchApplicationSnapshotsThunk } from '../../store';
@@ -23,6 +22,7 @@ import { resetApplicationThunk } from '../../store';
 import { forceSyncApplication } from '../../utils/management/sync';
 import { hasActiveRollback } from '../../utils/rollbacks';
 import ApplicationResetModal from '../../components/reset/ApplicationResetModal';
+import ApplicationDetailsToolbar from '../../components/layout/ApplicationDetailsToolbar';
 import { CLUSTER_INSIGHTS, insightsAppKey } from '../../../insights';
 import { ACTION_PERMISSIONS, usePermission } from '../../../auth/hooks';
 
@@ -39,7 +39,9 @@ const ApplicationDetailsView: React.FC = memo(() => {
   const [snapshotsOpen, setSnapshotsOpen] = React.useState(false);
   const [resetModalOpen, setResetModalOpen] = React.useState(false);
   const [resetLoading, setResetLoading] = React.useState(false);
-  const { details, loading, error, refresh } = useApplicationDetails(name);
+  // A new object per click, so asking twice for the same generation still opens the confirm.
+  const [rollbackRequest, setRollbackRequest] = React.useState<{ generation: number } | null>(null);
+  const { details, error, refresh } = useApplicationDetails(name);
   const syncingFlag = useSelector((s: RootState) =>
     details?.name ? !!s.applications.syncing?.[details.name] : false,
   );
@@ -97,64 +99,84 @@ const ApplicationDetailsView: React.FC = memo(() => {
     }
   }, [details?.name, dispatch, message, navigate]);
 
-  if (loading) {
-    return <LoadingDetailsView />;
-  }
-
   if (error) {
     return (
-      <ErrorView error={error} errorMessagePrefix={APPLICATION_DETAILS_CONSTANTS.MESSAGES.ERROR} />
+      <div style={APPLICATION_DETAILS_CONSTANTS.STATES.ERROR_CONTAINER}>
+        <DataViewError
+          variant="fullPage"
+          title={APPLICATION_DETAILS_CONSTANTS.MESSAGES.ERROR}
+          message={error}
+          onRetry={refresh}
+        />
+      </div>
     );
   }
 
+  // Not loaded yet, the frame before the first fetch included: the route's spinner, in its place.
   if (!details) {
-    return <ApplicationsDetailsEmpty />;
+    return <FullPageLoader minHeight={HEADER_LAYOUT.MIN_HEIGHT} />;
   }
 
   // The analyzer keys an app's insights document by its first namespace.
   const insightsNamespace = details.namespaces?.items?.[0]?.name;
 
+  const actions = (
+    <ApplicationDetailsToolbar
+      syncDisabled={isSyncing}
+      onForceSync={() => {
+        void forceSyncApplication(details.name).then((err) => {
+          if (err) message.error(err);
+        });
+      }}
+      onEdit={() => {
+        editForm.setFieldsValue({
+          name: details.name,
+          displayName: details.displayName,
+          description: details.description ?? '',
+        });
+        setEditOpen(true);
+      }}
+      onManageRollbacks={() => {
+        setSnapshotsOpen(false);
+        setRollbacksOpen(true);
+      }}
+      onManageSnapshots={() => {
+        setRollbacksOpen(false);
+        setSnapshotsOpen(true);
+      }}
+      onOpenInsights={
+        insightsNamespace
+          ? () =>
+              navigate(
+                `${APP_ROUTES.INSIGHTS}?${CLUSTER_INSIGHTS.APP_PARAM}=${insightsAppKey(insightsNamespace, details.name)}`,
+              )
+          : undefined
+      }
+      onReset={() => {
+        setResetModalOpen(true);
+      }}
+    />
+  );
+
   return (
     <>
-      <PageContainer breadcrumbs={breadcrumbItems} subtitle={APPLICATIONS_UI.DETAIL_PAGE.SUBTITLE}>
-        <div style={{ marginTop: 24 }}>
-          <ApplicationDetailsContent
-            application={details}
-            syncDisabled={isSyncing}
-            onForceSync={() => {
-              void forceSyncApplication(details.name).then((err) => {
-                if (err) message.error(err);
-              });
-            }}
-            onEdit={() => {
-              editForm.setFieldsValue({
-                name: details.name,
-                displayName: details.displayName,
-                description: details.description ?? '',
-              });
-              setEditOpen(true);
-            }}
-            onManageRollbacks={() => {
-              setSnapshotsOpen(false);
-              setRollbacksOpen(true);
-            }}
-            onManageSnapshots={() => {
-              setRollbacksOpen(false);
-              setSnapshotsOpen(true);
-            }}
-            onOpenInsights={
-              insightsNamespace
-                ? () =>
-                    navigate(
-                      `${APP_ROUTES.INSIGHTS}?${CLUSTER_INSIGHTS.APP_PARAM}=${insightsAppKey(insightsNamespace, details.name)}`,
-                    )
-                : undefined
-            }
-            onReset={() => {
-              setResetModalOpen(true);
-            }}
-          />
-        </div>
+      <PageContainer
+        breadcrumbs={breadcrumbItems}
+        subtitle={APPLICATIONS_UI.DETAIL_PAGE.SUBTITLE}
+        gap={LIST_PAGE.CONTENT_GAP_PX}
+      >
+        {/* The list pages' subheader slot, empty here, so the toolbar lands where theirs does. */}
+        <div aria-hidden style={{ height: LIST_PAGE.SUBHEADER_ROW_HEIGHT_PX }} />
+        <ApplicationDetailsContent
+          application={details}
+          actions={actions}
+          rollbackDisabledReason={rollbackDisabledReason}
+          onRollbackTo={(generation) => {
+            setRollbacksOpen(false);
+            setRollbackRequest({ generation });
+            setSnapshotsOpen(true);
+          }}
+        />
       </PageContainer>
 
       <EditApplicationPanel
@@ -180,6 +202,7 @@ const ApplicationDetailsView: React.FC = memo(() => {
         detailSnapshots={details.snapshots}
         rollbackDisabled={rollbackDisabled}
         rollbackDisabledReason={rollbackDisabledReason}
+        rollbackRequest={rollbackRequest}
         onAfterRollback={refresh}
       />
       <ApplicationResetModal

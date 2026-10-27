@@ -12,6 +12,9 @@ import {
   BUTTON_CONFIGS,
   DEFAULT_COLORS,
   GOOGLE_BRAND_COLORS,
+  FONT_WEIGHT,
+  SPACING,
+  FONT_SIZE,
 } from '../../../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/login';
 import { GoogleIcon } from '../../../../components/display/icons/GoogleIcon';
@@ -147,14 +150,14 @@ const Login: React.FC = () => {
             onClick={() => setShowPasskeyForm(true)}
             disabled={isAnyLoading || !passkeysAvailable}
             style={{
-              fontWeight: 600,
+              fontWeight: FONT_WEIGHT.SEMIBOLD,
               background: DEFAULT_COLORS.SUCCESS,
               borderColor: DEFAULT_COLORS.SUCCESS,
               color: BUTTON_CONFIGS.PRIMARY_BUTTON.TEXT_COLOR,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '8px',
+              gap: SPACING.SM,
             }}
           >
             <KeyOutlined />
@@ -173,9 +176,10 @@ const Login: React.FC = () => {
         {googleClientID && (
           <Divider
             plain
+            // 14: the divider's vertical margin sits between MD and LG.
             style={{
               color: `var(--auth-text-muted, ${DEFAULT_COLORS.AUTH_LIGHT_TEXT_MUTED})`,
-              fontSize: '11px',
+              fontSize: FONT_SIZE.XS,
               margin: '14px 0',
               borderColor: `var(--auth-divider, ${DEFAULT_COLORS.AUTH_LIGHT_DIVIDER})`,
             }}
@@ -191,14 +195,14 @@ const Login: React.FC = () => {
             loading={googleLoading}
             disabled={loading}
             style={{
-              fontWeight: 500,
+              fontWeight: FONT_WEIGHT.MEDIUM,
               background: GOOGLE_BRAND_COLORS.BUTTON_BG,
               borderColor: GOOGLE_BRAND_COLORS.BUTTON_BORDER,
               color: GOOGLE_BRAND_COLORS.BUTTON_TEXT,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '8px',
+              gap: SPACING.SM,
             }}
             icon={!googleLoading ? <GoogleIcon /> : undefined}
           >

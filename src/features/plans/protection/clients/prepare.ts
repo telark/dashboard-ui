@@ -1,30 +1,9 @@
 import { Client, discoveryApiClient } from '../../../../api/index';
 import { Endpoints } from '../../../../constants';
-import type { PlanApprovalMode, PlanScopeExclusions, ProtectionPlan } from '../models';
-import type { ApiResponse } from './shared';
+import type { ProtectionPlan } from '../models';
+import type { ApiResponse, PlanPayload } from './shared';
 
-export interface PreparePlanPayload {
-  name: string;
-  description?: string;
-  severity?: string;
-  priority?: number;
-  scope: {
-    type: string;
-    applicationRefs: string[];
-    namespaces: string[];
-    exclusions: PlanScopeExclusions;
-  };
-  policies: { templateID: string; params: Record<string, string[]> }[];
-  mode: string;
-  timeMode: string;
-  timeRange?: { startAt: string; endAt: string };
-  participantRefs?: string[];
-  environmentRef?: string;
-  tagRefs?: string[];
-  approvalMode?: PlanApprovalMode;
-}
-
-export const preparePlan = async (payload: PreparePlanPayload): Promise<ProtectionPlan> => {
+export const preparePlan = async (payload: PlanPayload): Promise<ProtectionPlan> => {
   const res = await Client<ApiResponse<ProtectionPlan>>(
     discoveryApiClient,
     Endpoints.PROTECTION_PLANS.PREPARE.path,

@@ -6,15 +6,20 @@ import CountBreakdown from '../display/CountBreakdown';
 
 interface SummaryBoxProps extends Omit<DashboardBoxProps, 'children'> {
   value: React.ReactNode;
-  caption?: string;
   breakdown?: BreakdownItem[];
+  // Snapshot storage reads as value, then its bar, so the value stays under the title.
+  valueBelowTitle?: boolean;
   children?: React.ReactNode;
 }
 
 const SummaryBox: React.FC<SummaryBoxProps> = memo(
-  ({ value, caption, breakdown, children, ...boxProps }) => (
-    <DashboardBox {...boxProps}>
-      <BigValue value={value} caption={caption} />
+  ({ value, caption, breakdown, valueBelowTitle, children, ...boxProps }) => (
+    <DashboardBox
+      {...boxProps}
+      value={valueBelowTitle ? undefined : value}
+      caption={valueBelowTitle ? undefined : caption}
+    >
+      {valueBelowTitle ? <BigValue value={value} caption={caption} /> : null}
       {breakdown ? <CountBreakdown items={breakdown} /> : null}
       {children}
     </DashboardBox>

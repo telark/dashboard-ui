@@ -12,6 +12,7 @@ import { usePermission, ACTION_PERMISSIONS } from '../../../auth/hooks';
 import { useCategories } from '../../categories/hooks';
 import { CATEGORIES_CONSTANTS } from '../../categories/constants';
 import { applyGroupFilters, mapCategoriesToFilterOptions } from '../utils';
+import { SLIDE_OUT } from '../../../../constants';
 import { noop } from '../../../../utils/helpers/noop';
 import type { Group } from '../models';
 import type { Category } from '../../categories/models';
@@ -163,7 +164,7 @@ const MainPage: React.FC = () => {
       closeViewPanel();
       setTimeout(() => {
         openEditPanel(group);
-      }, 150);
+      }, SLIDE_OUT.HANDOFF_DELAY_MS);
     },
     [closeViewPanel, openEditPanel],
   );
@@ -226,7 +227,8 @@ const MainPage: React.FC = () => {
       <GroupsEmptyPage
         createPanelOpen={createPanelOpen}
         onCloseCreatePanel={closeCreatePanel}
-        onCreateGroupClick={canCreateGroup ? openCreatePanel : undefined}
+        onCreateGroupClick={openCreatePanel}
+        canCreate={canCreateGroup}
         createForm={createForm}
       />
     );

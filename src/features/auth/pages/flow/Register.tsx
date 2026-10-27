@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { Form, App as AntdApp, Alert, Button } from 'antd';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   clearEnrollToken,
+  isEnrollLink,
   isEnrollLinkRefused,
   performRegister,
   resolveEnrollLink,
 } from '../../utils/flow/register';
 import { handleUserLogout } from '../../utils/logout/logout';
-import { hasSessionToken } from '../../utils/session/token';
+import { isSignedIn } from '../../utils/session/token';
 import { handleAuthError } from '../../utils/shared/errors';
 import { isWebAuthnSupported } from '../../utils/webauthn/core';
-import { APP_ROUTES } from '../../../../constants';
+import { APP_ROUTES, SPACING, RADIUS, FONT_SIZE } from '../../../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/login';
 import { REGISTER_CONSTANTS } from '../../constants/register';
 import logger from '../../../../logging';
@@ -32,16 +33,13 @@ const Register: React.FC = () => {
   // An enrollment failure stays in the card: a refused link can't be retried, anything else can.
   const [enrollFailure, setEnrollFailure] = useState<'retry' | 'refused' | null>(null);
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
   // Read once and kept in state: the link leaves the address bar and history right away.
   const [{ token: enrollToken, email: enrollEmail }] = useState(() =>
-    resolveEnrollLink(
-      searchParams.get(REGISTER_CONSTANTS.QUERY.ENROLL),
-      searchParams.get(REGISTER_CONSTANTS.QUERY.EMAIL),
-    ),
+    resolveEnrollLink(location.search, location.hash),
   );
   const enrolling = enrollToken !== undefined;
-  const signedIn = hasSessionToken();
+  const signedIn = isSignedIn();
   const { message } = AntdApp.useApp();
   const dispatch = useDispatch<AppDispatch>();
   const selfRegEnabled = useSelector(selectSelfRegistrationEnabled);
@@ -53,10 +51,10 @@ const Register: React.FC = () => {
 
   // While signed in, the link stays in the address bar: the route keeps this page only for a link.
   useEffect(() => {
-    if (!signedIn && searchParams.has(REGISTER_CONSTANTS.QUERY.ENROLL)) {
-      setSearchParams({}, { replace: true });
+    if (!signedIn && isEnrollLink(location.pathname, location.search, location.hash)) {
+      navigate(APP_ROUTES.REGISTER, { replace: true });
     }
-  }, [signedIn, searchParams, setSearchParams]);
+  }, [signedIn, location, navigate]);
 
   // Auth lets a session win over the link, so the link's account can enroll only once it's gone.
   const signOut = () => {
@@ -96,7 +94,7 @@ const Register: React.FC = () => {
           title={REGISTER_CONSTANTS.UI.ENROLL_TITLE}
           subtitle={REGISTER_CONSTANTS.UI.ENROLL_SIGNED_IN}
         />
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.SM }}>
           <Button type="primary" block onClick={signOut}>
             {REGISTER_CONSTANTS.UI.SIGN_OUT}
           </Button>
@@ -145,11 +143,12 @@ const Register: React.FC = () => {
               }
               type={enrollFailure === 'refused' ? 'error' : 'warning'}
               showIcon
+              // 10: the alert's top margin and side padding sit between SM and MD.
               style={{
                 marginTop: '10px',
-                borderRadius: '8px',
-                padding: '6px 10px',
-                fontSize: '13px',
+                borderRadius: RADIUS.MD,
+                padding: `${SPACING.S6}px 10px`,
+                fontSize: FONT_SIZE.MD,
               }}
             />
           )}
