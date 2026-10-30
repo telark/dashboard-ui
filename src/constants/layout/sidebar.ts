@@ -1,15 +1,18 @@
+import type { CSSProperties } from 'react';
 import { DEFAULT_COLORS } from '../shared/colors';
 import { SPACING } from './controls';
 import { FONT_SIZE, FONT_WEIGHT } from './fonts';
 
-const TRANSITION_MS = 150;
+const TRANSITION_MS = 200;
 // Fast start, soft landing: most of the move shows in the first frames.
-const TRANSITION_EASING = 'cubic-bezier(0.2, 0, 0, 1)';
+const TRANSITION_EASING = 'cubic-bezier(0.16, 1, 0.3, 1)';
+const WIDTH_COLLAPSED = 52;
+const SECTION_RULE_WIDTH = 20;
 const FORCE_COLLAPSE_BELOW = 768;
 
 export const SIDEBAR_LAYOUT = {
   WIDTH_EXPANDED: 260,
-  WIDTH_COLLAPSED: 52,
+  WIDTH_COLLAPSED,
   WIDTH_MIN: 200,
   WIDTH_MAX: 330,
   // Dragging the edge narrower than this snaps the sidebar shut.
@@ -29,6 +32,13 @@ export const SIDEBAR_LAYOUT = {
   TRANSITION_MS,
   TRANSITION_EASING,
   WIDTH_TRANSITION: `width ${TRANSITION_MS}ms ${TRANSITION_EASING}`,
+  // Rows keep their icon in place across a toggle; only the inset settles with the edge.
+  PADDING_TRANSITION: `padding ${TRANSITION_MS}ms ${TRANSITION_EASING}`,
+  // Collapsed, a section label leaves this short rule centered in its place, so no icon moves.
+  SECTION_RULE: {
+    WIDTH: SECTION_RULE_WIDTH,
+    LEFT: (WIDTH_COLLAPSED - SECTION_RULE_WIDTH) / 2,
+  },
   REDUCED_MOTION_QUERY: '(prefers-reduced-motion: reduce)',
   // The uppercase eyebrow over each group of nav items.
   SECTION_LABEL: {
@@ -78,3 +88,9 @@ export const SIDEBAR_USER_MENU = {
   FALLBACK_USERNAME: 'User',
   ARIA_LABEL: 'Account menu',
 } as const;
+
+// Labels stay mounted: they fade out before the edge passes them and fade in once it has room.
+export const getSidebarLabelFade = (hidden: boolean): CSSProperties => ({
+  opacity: hidden ? 0 : 1,
+  transition: hidden ? 'opacity 50ms ease-out' : `opacity 160ms ease-out 60ms`,
+});

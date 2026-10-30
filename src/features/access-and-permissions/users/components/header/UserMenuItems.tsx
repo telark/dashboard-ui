@@ -1,67 +1,54 @@
 import type { MenuProps } from 'antd';
-import { LogoutOutlined } from '@ant-design/icons';
-import { HEADER_CONSTANTS } from '../../../../../constants';
-import type { User } from '../../models';
+import { LockOutlined, LogoutOutlined, SafetyOutlined, UserOutlined } from '@ant-design/icons';
+import { APP_ROUTES, HEADER_CONSTANTS } from '../../../../../constants';
 
 interface UserMenuItemsProps {
-  currentUser: User | null;
+  onNavigate: (route: string) => void;
   onLogout: () => void;
   loggingOut: boolean;
 }
 
+const { TEXTS } = HEADER_CONSTANTS.USER.MENU;
+const iconStyle = { color: HEADER_CONSTANTS.USER.MENU_ICON_COLOR };
+
+const SHORTCUTS = [
+  {
+    key: 'profile',
+    label: TEXTS.PROFILE,
+    icon: <UserOutlined style={iconStyle} />,
+    slug: 'profile',
+  },
+  {
+    key: 'security',
+    label: TEXTS.SECURITY,
+    icon: <SafetyOutlined style={iconStyle} />,
+    slug: 'security',
+  },
+  {
+    key: 'permissions',
+    label: TEXTS.MY_PERMISSIONS,
+    icon: <LockOutlined style={iconStyle} />,
+    slug: 'permissions',
+  },
+];
+
 export const createUserMenuItems = ({
-  currentUser,
+  onNavigate,
   onLogout,
   loggingOut,
-}: UserMenuItemsProps): MenuProps['items'] => {
-  return [
-    {
-      key: 'user-info',
-      label: (
-        <div style={{ padding: HEADER_CONSTANTS.USER.USER_INFO.PADDING }}>
-          <div
-            style={{
-              fontWeight: HEADER_CONSTANTS.USER.USER_INFO.USERNAME.FONT_WEIGHT,
-              fontSize: HEADER_CONSTANTS.USER.USER_INFO.USERNAME.FONT_SIZE,
-              color: HEADER_CONSTANTS.USER.USER_INFO.USERNAME.COLOR,
-            }}
-          >
-            {currentUser?.username || 'User'}
-          </div>
-          {currentUser?.email ? (
-            <div
-              style={{
-                fontSize: HEADER_CONSTANTS.USER.USER_INFO.EMAIL.FONT_SIZE,
-                color: HEADER_CONSTANTS.USER.USER_INFO.EMAIL.COLOR,
-                marginTop: HEADER_CONSTANTS.USER.USER_INFO.EMAIL.MARGIN_TOP,
-              }}
-            >
-              {currentUser?.email}
-            </div>
-          ) : null}
-        </div>
-      ),
-      disabled: true,
-    },
-    {
-      type: 'divider',
-    },
-    {
-      key: 'logout',
-      label: (
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: HEADER_CONSTANTS.USER.MENU_ITEM.GAP,
-          }}
-        >
-          <LogoutOutlined />
-          <span>Logout</span>
-        </div>
-      ),
-      onClick: onLogout,
-      disabled: loggingOut,
-    },
-  ];
-};
+}: UserMenuItemsProps): MenuProps['items'] => [
+  ...SHORTCUTS.map(({ key, label, icon, slug }) => ({
+    key,
+    label,
+    icon,
+    onClick: () => onNavigate(`${APP_ROUTES.SETTINGS}/${slug}`),
+  })),
+  { type: 'divider' },
+  {
+    key: 'logout',
+    label: TEXTS.LOGOUT,
+    icon: <LogoutOutlined style={iconStyle} />,
+    onClick: onLogout,
+    disabled: loggingOut,
+  },
+];

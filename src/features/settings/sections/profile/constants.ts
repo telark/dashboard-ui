@@ -1,8 +1,10 @@
+import { PROFILE_AVATAR_SIZE } from '../../../../constants';
+
 export const PROFILE_SECTION_CONSTANTS = {
   // The profile fields a 409 names in its message ("user with this email already exists").
   CONFLICT_FIELDS: ['email', 'username'] as const,
   LAYOUT: {
-    AVATAR_SIZE: 40,
+    AVATAR_SIZE: PROFILE_AVATAR_SIZE,
     ROW_GAP: 12,
   },
   LABELS: {
