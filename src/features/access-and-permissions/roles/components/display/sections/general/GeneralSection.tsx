@@ -67,6 +67,7 @@ const RolesGeneralSection: React.FC<RolesGeneralSectionProps> = memo(
               className="form-item-compact no-asterisk"
             >
               <Select
+                notFoundContent={RPC.GENERAL.CATEGORY_EMPTY}
                 placeholder={RPC.GENERAL.CATEGORY_PLACEHOLDER}
                 options={categoryOptions}
                 disabled={lockCategory || disabled}

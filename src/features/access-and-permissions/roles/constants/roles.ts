@@ -1,5 +1,5 @@
 import type { PermissionLevel, ValidityType } from '../models/types';
-import { DEFAULT_COLORS } from '../../../../constants';
+import { DEFAULT_COLORS, DROPDOWN_EMPTY } from '../../../../constants';
 import { pluralize } from '../../../../utils/helpers/format';
 
 export const PERMISSION_LEVELS = ['ReadOnly', 'Contributor', 'Owner', 'Admin'] as const;
@@ -170,6 +170,7 @@ export const ROLES_CONSTANTS = {
     DESCRIPTION_LABEL: 'Description',
     DESCRIPTION_PLACEHOLDER: 'Enter role description',
     CATEGORY_LABEL: 'Category',
+    CATEGORY_EMPTY: DROPDOWN_EMPTY.NONE_FOUND('categories'),
     CATEGORY_PLACEHOLDER: 'Select a category',
     LOCK_NAME_TOOLTIP: 'Name is locked for this role',
     LOCK_CATEGORY_TOOLTIP: 'Category is locked for this role',

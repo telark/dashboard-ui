@@ -47,7 +47,7 @@ export const BOOTSTRAP_TEXTS = {
   CARD_TITLE: 'Bootstrap account',
   // Until the status loads, no wait is known: the chart sets it.
   CARD_DESCRIPTION: (waitHours?: number) =>
-    `Break-glass recovers this account. Once it is pinned, a break-glass run opens a request. A recovery completes ${waitHours ? `${pluralize(waitHours, 'hour')} after it opened` : 'when its waiting period ends'} unless the account signs in or denies it. A replacement can also complete sooner, once the account approves it with a passkey.`,
+    `Break-glass recovers this account. Once pinned, each run opens a request that completes ${waitHours ? `after ${pluralize(waitHours, 'hour')}` : 'once its waiting period ends'} unless the account signs in or denies it. A passkey approval completes a replacement sooner.`,
   PINNED_LABEL: 'Pinned account',
   // The exporter sends the email only to the bootstrap account itself.
   PINNED: (email: string | undefined, since: string) =>
@@ -59,7 +59,7 @@ export const BOOTSTRAP_TEXTS = {
   NO_REQUESTS: 'No break-glass request yet.',
   ALERTS_LABEL: 'Alert administrators about break-glass requests',
   ALERTS_HINT:
-    'Every Admin on all scopes is always told when break-glass prints a recovery link or recovers the account. When on, they are also told when a request opens or is canceled, and can see the requests here. When off, only the bootstrap account is.',
+    'Admins on all scopes are always alerted when break-glass prints a recovery link or recovers the account. Turn this on to also alert them when a request opens or is canceled, and to list requests here.',
   ALERTS_SAVED: 'Break-glass alerts saved',
   ALERTS_SAVE_FAILED: 'Failed to save break-glass alerts',
   KIND_RECOVER: 'Recovery',

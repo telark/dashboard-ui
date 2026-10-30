@@ -43,7 +43,12 @@ const PlanTaxonomyFields: React.FC<PlanTaxonomyFieldsProps> = ({
         style={{ marginBottom: SPACING.NONE }}
         className={FORM_ITEM_CLASS}
       >
-        <Select allowClear placeholder={FORM.KIND_PLACEHOLDER} options={planKindOptions} />
+        <Select
+          allowClear
+          placeholder={FORM.KIND_PLACEHOLDER}
+          notFoundContent={FORM.KINDS_EMPTY}
+          options={planKindOptions}
+        />
       </Form.Item>
       <Form.Item
         name="environmentRef"
@@ -53,6 +58,7 @@ const PlanTaxonomyFields: React.FC<PlanTaxonomyFieldsProps> = ({
       >
         <Select
           allowClear
+          notFoundContent={FORM.ENVIRONMENTS_EMPTY}
           placeholder={FORM.ENVIRONMENT_PLACEHOLDER}
           options={environmentOptions}
           onChange={handleEnvironmentChange}
@@ -69,6 +75,7 @@ const PlanTaxonomyFields: React.FC<PlanTaxonomyFieldsProps> = ({
           allowClear
           optionFilterProp="label"
           maxCount={PLAN_TAXONOMY_LIMITS.MAX_TAGS}
+          notFoundContent={FORM.TAGS_EMPTY}
           placeholder={FORM.TAGS_PLACEHOLDER}
           options={tagOptions}
         />

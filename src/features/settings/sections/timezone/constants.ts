@@ -1,3 +1,5 @@
+import { DROPDOWN_EMPTY } from '../../../../constants';
+
 export const TIMEZONE_SECTION_CONSTANTS = {
   DISPLAY_LOCALE: 'en',
   LABELS: {
@@ -8,6 +10,8 @@ export const TIMEZONE_SECTION_CONSTANTS = {
     REGION_LABEL: 'Region',
     TIMEZONE_PLACEHOLDER: 'Search time zones',
     REGION_PLACEHOLDER: 'Search regions',
+    TIMEZONES_EMPTY: DROPDOWN_EMPTY.NONE_FOUND('time zones'),
+    REGIONS_EMPTY: DROPDOWN_EMPTY.NONE_FOUND('regions'),
     SAVE_BUTTON: 'Save',
     SAVE_SUCCESS: 'Preferences updated',
     SAVE_ERROR: 'Failed to update preferences',

@@ -1,6 +1,5 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { Alert, Input, Tooltip, Typography, App as AntdApp } from 'antd';
-import { CloseCircleFilled } from '@ant-design/icons';
+import { Alert, Input, Tooltip, App as AntdApp } from 'antd';
 import SettingsCard from '../../components/SettingsCard';
 import {
   SettingsDivider,
@@ -11,8 +10,8 @@ import {
 import Toolbar from '../../../../components/display/toolbar/Toolbar';
 import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 import { Client, authApiClient } from '../../../../api';
-import { DEFAULT_COLORS, Endpoints, FONT_WEIGHT, SPACING } from '../../../../constants';
-import { Switch } from '../../../../components/display/inputs';
+import { Endpoints, FONT_WEIGHT } from '../../../../constants';
+import { FieldError, Switch } from '../../../../components/display/inputs';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchGlobalConfigThunk, selectGlobalConfigState } from '../../../globalconfig/store';
 import type { AppDispatch } from '../../../../store';
@@ -67,23 +66,6 @@ function validate(form: OIDCForm, hasPinnedKeys: boolean): OIDCErrors {
   }
   return errors;
 }
-
-// Right under the field. Red can't be text on the dark card (3.6:1): the icon carries it.
-const FieldError: React.FC<{ message?: string }> = ({ message }) =>
-  message ? (
-    <Typography.Text
-      style={{
-        fontSize: SETTINGS_CONSTANTS.CONTENT.HINT_FONT_SIZE,
-        color: DEFAULT_COLORS.TEXT_PRIMARY,
-      }}
-    >
-      <CloseCircleFilled
-        aria-hidden
-        style={{ color: DEFAULT_COLORS.DANGER, marginRight: SPACING.S6 }}
-      />
-      {message}
-    </Typography.Text>
-  ) : null;
 
 const OIDCSection: React.FC = memo(() => {
   const dispatch = useDispatch<AppDispatch>();

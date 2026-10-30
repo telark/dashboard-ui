@@ -164,13 +164,7 @@ const Login: React.FC = () => {
             {LOGIN_CONSTANTS.UI.BUTTON_TEXT}
           </Button>
         ) : (
-          <LoginForm
-            form={form}
-            loading={loading}
-            onFinish={handleLogin}
-            error={passkeyError}
-            onClearError={() => setPasskeyError(null)}
-          />
+          <LoginForm form={form} loading={loading} onFinish={handleLogin} error={passkeyError} />
         )}
 
         {googleClientID && (

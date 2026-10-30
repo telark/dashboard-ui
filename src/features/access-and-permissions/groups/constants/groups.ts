@@ -1,3 +1,4 @@
+import { DROPDOWN_EMPTY } from '../../../../constants';
 import { pluralize } from '../../../../utils/helpers/format';
 
 export const GROUPS_CONSTANTS = {
@@ -82,6 +83,7 @@ export const GROUPS_CONSTANTS = {
         DESCRIPTION_LABEL: 'Description',
         DESCRIPTION_PLACEHOLDER: 'e.g. Group for development team members',
         CATEGORY_LABEL: 'Category',
+        CATEGORY_EMPTY: DROPDOWN_EMPTY.NONE_FOUND('categories'),
         CATEGORY_PLACEHOLDER: 'Select a category',
         NAME_VALIDATION: {
           MIN_LENGTH: 1,

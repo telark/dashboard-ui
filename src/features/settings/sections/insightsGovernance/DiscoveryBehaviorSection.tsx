@@ -193,6 +193,7 @@ const DiscoveryBehaviorSection: React.FC = memo(() => {
             value={excludedNamespaces}
             onChange={(vals) => setExcludedNamespaces(vals)}
             options={namespacesOptions.map((n) => ({ value: n, label: n }))}
+            notFoundContent={C.LABELS.NAMESPACES_EMPTY}
             placeholder={C.LABELS.NAMESPACES_SELECTOR_PLACEHOLDER}
             style={{ width: '100%' }}
             maxTagCount={5}

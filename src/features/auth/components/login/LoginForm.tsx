@@ -1,5 +1,6 @@
 import React from 'react';
-import { Form, Input, Button, Alert, FormInstance } from 'antd';
+import { Form, Input, Button, FormInstance } from 'antd';
+import { FieldError } from '../../../../components/display/inputs';
 import { KeyOutlined } from '@ant-design/icons';
 import { AUTH_ERROR_MESSAGES } from '../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/login';
@@ -10,7 +11,6 @@ import {
   SPACING,
   FONT_WEIGHT,
   FONT_SIZE,
-  RADIUS,
 } from '../../../../constants';
 
 interface LoginFormProps {
@@ -18,16 +18,9 @@ interface LoginFormProps {
   loading: boolean;
   onFinish: (values: { email: string }) => void;
   error?: string | null;
-  onClearError?: () => void;
 }
 
-export const LoginForm: React.FC<LoginFormProps> = ({
-  form,
-  loading,
-  onFinish,
-  error,
-  onClearError,
-}) => (
+export const LoginForm: React.FC<LoginFormProps> = ({ form, loading, onFinish, error }) => (
   <AuthForm form={form} onFinish={onFinish}>
     <Form.Item
       name="email"
@@ -85,19 +78,9 @@ export const LoginForm: React.FC<LoginFormProps> = ({
     )}
 
     {error && (
-      <Alert
-        title={error}
-        type="error"
-        showIcon
-        closable={{ onClose: onClearError }}
-        // 10: the alert's top margin and side padding sit between SM and MD.
-        style={{
-          marginTop: '10px',
-          borderRadius: RADIUS.MD,
-          padding: `${SPACING.S6}px 10px`,
-          fontSize: FONT_SIZE.MD,
-        }}
-      />
+      <div style={{ marginTop: SPACING.SM }}>
+        <FieldError message={error} />
+      </div>
     )}
   </AuthForm>
 );

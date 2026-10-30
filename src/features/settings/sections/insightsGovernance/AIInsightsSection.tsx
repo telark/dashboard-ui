@@ -410,6 +410,7 @@ const AIInsightsSection: React.FC = memo(() => {
           <SettingsField label={C.LABELS.MODEL_LABEL}>
             <Select
               value={form.model}
+              notFoundContent={C.LABELS.MODELS_EMPTY}
               options={modelOptions}
               onChange={onModelChange}
               allowClear={false}
