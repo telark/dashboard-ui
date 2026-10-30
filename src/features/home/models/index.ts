@@ -1,4 +1,3 @@
-import type { SnapshotStorageInfos } from '../../applications/models';
 import type { RequiredPermission } from '../../../interfaces/shared';
 
 export interface DashboardRowItem {
@@ -28,8 +27,8 @@ export interface NoAccess {
   permission: RequiredPermission;
 }
 
-export interface SnapshotStorageState {
-  infos: SnapshotStorageInfos | null;
+export interface StorageState<T> {
+  infos: T | null;
   failed: boolean;
 }
 
@@ -87,4 +86,5 @@ export interface DashboardAccess {
   canViewApplications: boolean;
   canViewPlans: boolean;
   canViewSnapshots: boolean;
+  canViewReports: boolean;
 }

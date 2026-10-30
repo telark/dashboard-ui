@@ -331,6 +331,7 @@ export const Endpoints = {
   REPORTS: {
     LIST_ALL: { path: API_PATHS.REPORTS, method: 'GET' },
     LIST_KEPT: { path: `${API_PATHS.REPORTS}/kept`, method: 'GET' },
+    STORAGE: { path: `${API_PATHS.REPORTS}/storage`, method: 'GET' },
     PLANS: {
       LIST: (id: string) => ({ path: planAction(id, PPA.REPORTS), method: 'GET' }),
       DOWNLOAD: (id: string) => ({ path: planAction(id, PPA.REPORTS_DOWNLOAD), method: 'GET' }),

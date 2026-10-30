@@ -1,3 +1,5 @@
+import { DROPDOWN_EMPTY } from '../../../../constants';
+
 export const INSIGHTS_GOVERNANCE_CONSTANTS = {
   LABELS: {
     AI_INSIGHTS_TITLE: 'Insights',
@@ -13,6 +15,7 @@ export const INSIGHTS_GOVERNANCE_CONSTANTS = {
     AUTO_ANALYZE_TOOLTIP:
       'When on, Telark analyzes an application by itself when an incident starts or the application recovers, by default at most once every 10 minutes per application. When off, an analysis runs only when someone selects Analyze.',
     MODEL_LABEL: 'Model',
+    MODELS_EMPTY: DROPDOWN_EMPTY.NONE_FOUND('models'),
     RUNTIME_SECTION_TITLE: 'Model runtime',
     MODEL_HINT: 'Pick a model, check it, then select Save. A change applies from the next run.',
     MODEL_HINT_DEEP:
@@ -51,6 +54,7 @@ export const INSIGHTS_GOVERNANCE_CONSTANTS = {
     DISCOVERY_SCOPE_DESCRIPTION: 'Scope discovery and insights by namespace.',
     NAMESPACES_TITLE: 'Excluded namespaces',
     NAMESPACES_SELECTOR_PLACEHOLDER: 'Select namespaces…',
+    NAMESPACES_EMPTY: DROPDOWN_EMPTY.NONE_FOUND('namespaces'),
     NAMESPACES_IMPACT_NOUN: 'application',
     NAMESPACES_IMPACT_HIDDEN: 'will be hidden',
     NAMESPACES_IMPACT_REVEALED: 'will be revealed',
@@ -76,6 +80,11 @@ export const INSIGHTS_GOVERNANCE_CONSTANTS = {
     SNAPSHOT_STORAGE_AVAILABLE: 'Available',
     SNAPSHOT_STORAGE_USAGE_LABEL: 'Usage',
     SNAPSHOT_STORAGE_TOTAL_SNAPSHOTS: 'Total snapshots',
+    REPORT_STORAGE_TITLE: 'Report storage',
+    REPORT_STORAGE_DESCRIPTION: 'Storage usage for protection plan reports.',
+    REPORT_STORAGE_LOADING: 'Loading report storage...',
+    REPORT_STORAGE_NO_ACCESS: 'You do not have permission to view report storage usage',
+    REPORT_STORAGE_TOTAL_REPORTS: 'Total reports',
   },
   MESSAGES: {
     MODEL_VALID: 'Model is ready.',
@@ -93,6 +102,7 @@ export const INSIGHTS_GOVERNANCE_CONSTANTS = {
     PLATFORM_SAVE_SNAPSHOTS_SUCCESS: 'Snapshots saved.',
     PLATFORM_SAVE_SNAPSHOTS_FAILED: 'Failed to save snapshots.',
     SNAPSHOT_STORAGE_LOAD_FAILED: 'Failed to load snapshot storage.',
+    REPORT_STORAGE_LOAD_FAILED: 'Failed to load report storage.',
   },
   // The "Custom" choice of the snapshots-per-app select, beside the numeric presets.
   SNAPSHOTS_CUSTOM_VALUE: 'custom',

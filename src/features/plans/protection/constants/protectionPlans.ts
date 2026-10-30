@@ -1,3 +1,4 @@
+import { DROPDOWN_EMPTY } from '../../../../constants';
 import {
   DEFAULT_NAME_VALIDATION_CONFIG,
   type NameValidationConfig,
@@ -58,10 +59,9 @@ export const PROTECTION_PLANS_CONSTANTS = {
       NOT_STARTED_HINT: 'Reports become available once the plan has started.',
       EMPTY_TITLE: 'No reports yet',
       EMPTY_DRAFT: 'Reports become available once the plan starts.',
-      EMPTY_ACTIVE: 'Generate one now, or wait for the final report when the plan ends.',
-      EMPTY_ACTIVE_SERIES:
-        'Generate one now, or wait for the report captured when this window ends.',
-      EMPTY_ENDED: 'No report was captured for this plan.',
+      EMPTY_ACTIVE: 'Generate one now. A final one is saved when the plan ends.',
+      EMPTY_ACTIVE_SERIES: 'Generate one now. Another is saved when this window ends.',
+      EMPTY_ENDED: 'No report was saved for this plan. Generate one now.',
       LOAD_ERROR: 'Could not load reports.',
       GENERATE_SUCCESS: 'Report generated.',
       GENERATE_ERROR: 'Could not generate the report.',
@@ -91,8 +91,9 @@ export const PROTECTION_PLANS_CONSTANTS = {
       DOWNLOAD: 'Download',
       DELETED_PLAN: 'Deleted plan',
       KEPT_PLAN: (name: string) => `${name} (deleted)`,
-      EMPTY:
-        'No reports yet. A report is captured when a plan ends or is canceled, and when each window of a repeating plan ends.',
+      EMPTY_TITLE: 'No reports yet',
+      EMPTY_DESCRIPTION:
+        'Generate one from any started plan. One is also saved when a plan ends or is canceled, and after each window.',
       NO_MATCH: 'No reports match the current search and filters.',
       TRUNCATED: (limit: number) => `Showing the newest ${limit} reports.`,
       COLUMNS: {
@@ -146,10 +147,11 @@ export const PROTECTION_PLANS_CONSTANTS = {
           'Recent admission decisions: what the plan blocked, audited or let through.',
         REPORTS_TITLE: 'Reports',
         REPORTS_DESCRIPTION: 'What happened in the cluster while this plan was in effect.',
-        REPORTS_CAPTURE_INFO: 'A final report is captured when the plan ends or is canceled.',
+        REPORTS_CAPTURE_INFO:
+          'Generate a report at any time. A final one is saved when the plan ends or is canceled.',
         REPORTS_DESCRIPTION_SERIES: 'What happened in the cluster during each window.',
         REPORTS_CAPTURE_INFO_SERIES:
-          'A report is captured when each window ends, and when the plan is canceled.',
+          'Generate a report at any time. One is also saved after each window and when the plan is canceled.',
       },
       FIELDS: {
         DESCRIPTION: 'Description',
@@ -442,6 +444,7 @@ export const PROTECTION_PLANS_CONSTANTS = {
       SEVERITY_LABEL: 'Severity',
       PRIORITY_LABEL: 'Priority',
       MODE_LABEL: 'When a change matches',
+      POLICIES_LABEL: 'Policies to apply',
       AUDIT_WARNING: 'Audit only records matching changes. Nothing is blocked.',
       SCOPE_TYPE_LABEL: 'Scope type',
       APPLICATIONS_LABEL: 'Applications',
@@ -459,6 +462,14 @@ export const PROTECTION_PLANS_CONSTANTS = {
       END_AT_LABEL: 'End',
       PARTICIPANTS_LABEL: 'Participants',
       PARTICIPANTS_PLACEHOLDER: 'Select participants',
+      PARTICIPANTS_EMPTY: DROPDOWN_EMPTY.NONE_FOUND('members'),
+      POLICIES_EMPTY: DROPDOWN_EMPTY.NONE_FOUND('policies'),
+      KINDS_EMPTY: DROPDOWN_EMPTY.NONE_FOUND('kinds'),
+      APPLICATIONS_EMPTY: DROPDOWN_EMPTY.NONE_FOUND('applications'),
+      RESOURCES_EMPTY: DROPDOWN_EMPTY.NONE_FOUND('resources'),
+      NAMESPACES_EMPTY: DROPDOWN_EMPTY.NONE_FOUND('namespaces'),
+      ENVIRONMENTS_EMPTY: DROPDOWN_EMPTY.NONE_FOUND('environments'),
+      TAGS_EMPTY: DROPDOWN_EMPTY.NONE_FOUND('tags'),
       ADD_POLICY_BUTTON: 'Add policy',
       POLICIES_REQUIRED_ERROR: 'Add at least one policy to continue.',
       PARAM_REQUIRED_ERROR: 'Enter at least one value.',

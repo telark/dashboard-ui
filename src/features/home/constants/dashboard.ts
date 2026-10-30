@@ -8,7 +8,7 @@ import {
 } from 'react-icons/ai';
 import { SiKubernetes } from 'react-icons/si';
 import { CARD_LAYOUT, DEFAULT_COLORS, Icons } from '../../../constants';
-import { ALL_EXCLUDED, DISCOVERY_LABELS } from '../../applications';
+import { ALL_EXCLUDED, DISCOVERY_LABELS_HINT } from '../../applications';
 import type { PlanEventKey, SeverityKey } from '../models';
 
 export const HOME_DASHBOARD_TEXTS = {
@@ -39,11 +39,13 @@ export const HOME_DASHBOARD_TEXTS = {
     FAILED: 'Failed',
   },
   STORAGE: {
-    TITLE: 'Snapshot storage',
-    USED: 'used',
-    SNAPSHOTS: 'snapshots',
-    OF: 'of',
+    TITLE: 'Storage',
+    SNAPSHOTS: 'Snapshots',
+    REPORTS: 'Reports',
+    SNAPSHOT_COUNT: (count: number) => `${count} ${count === 1 ? 'snapshot' : 'snapshots'}`,
+    REPORT_COUNT: (count: number) => `${count} ${count === 1 ? 'report' : 'reports'}`,
     MB: 'MB',
+    NO_ACCESS: 'You do not have permission to view this.',
   },
   PLANS_ATTENTION: {
     TITLE: 'Plans with issues',
@@ -65,19 +67,19 @@ export const HOME_DASHBOARD_TEXTS = {
     DISCOVER: {
       TITLE: 'Discover applications',
       SCANNING: (count: number) =>
-        `Scanning your cluster. ${count} ${count === 1 ? 'application' : 'applications'} found so far.`,
-      FOUND: (count: number) => `${count} ${count === 1 ? 'application' : 'applications'} found.`,
-      NONE: `No applications found yet. Telark groups workloads by the label ${DISCOVERY_LABELS}.`,
+        `Scanning, ${count} ${count === 1 ? 'application' : 'applications'} found so far`,
+      FOUND: (count: number) => `${count} ${count === 1 ? 'application' : 'applications'} found`,
+      NONE: 'No applications found yet',
+      LABELS_HINT: DISCOVERY_LABELS_HINT,
       ALL_EXCLUDED,
     },
     CREATE_PLAN: {
-      TITLE: 'Create your first protection plan',
-      HELPER: 'New plans start in Audit mode, so nothing is blocked until you switch to Enforce.',
-      BUTTON: 'Create a plan',
+      TITLE: 'Create a protection plan',
+      HELPER: 'Starts in Audit mode, so nothing is blocked.',
     },
     WATCH: {
       TITLE: 'Watch what changes',
-      HELPER: 'Telark records every change to a protected application, field by field.',
+      HELPER: 'Every change is recorded, field by field.',
     },
   },
   RECENT_CHANGES: {
@@ -153,7 +155,6 @@ export const HOME_DASHBOARD_LAYOUT = {
   SECTION_GAP_PX: 8,
   SPINNER_SIZE_PX: 24,
   LIST_LIMIT: 2,
-  STEP_NUMBER_SIZE_PX: 20,
   STEP_SPINNER_SIZE_PX: 12,
 } as const;
 

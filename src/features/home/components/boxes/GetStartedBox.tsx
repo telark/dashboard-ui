@@ -1,14 +1,12 @@
-import React, { memo } from 'react';
-import { Button, Typography } from 'antd';
+import React, { memo, useMemo } from 'react';
+import { Tooltip, Typography } from 'antd';
+import { InfoCircleOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import {
-  APP_ROUTES,
-  DEFAULT_COLORS,
-  DOCS_LINKS,
-  FONT_WEIGHT,
-  SPACING,
-} from '../../../../constants';
+import { APP_ROUTES, DEFAULT_COLORS, DOCS_LINKS, Icons, SPACING } from '../../../../constants';
 import { FancySpinner } from '../../../../components/animation';
+import { Step, StepList } from '../../../../components/display/steps';
+import { Toolbar } from '../../../../components/display/toolbar';
+import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 import type { CreatePlanRouteState } from '../../../../interfaces/shared';
 import { ACTION_PERMISSIONS, usePermission } from '../../../auth/hooks';
 import { useDiscoveryStatus } from '../../../applications';
@@ -25,52 +23,12 @@ const { create } = ACTION_PERMISSIONS.protectionPlans;
 const G = T.GET_STARTED;
 const OPEN_CREATE_PANEL: CreatePlanRouteState = { createPlan: {} };
 
-const Step: React.FC<{ number: number; title: string; children: React.ReactNode }> = ({
-  number,
-  title,
-  children,
-}) => (
-  <li style={{ display: 'flex', alignItems: 'flex-start', gap: L.ROW_GAP_PX, minWidth: 0 }}>
-    <span
-      aria-hidden
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexShrink: 0,
-        width: L.STEP_NUMBER_SIZE_PX,
-        height: L.STEP_NUMBER_SIZE_PX,
-        borderRadius: '50%',
-        background: DEFAULT_COLORS.CHIP_CUSTOM_BG,
-        color: DEFAULT_COLORS.TEXT_SECONDARY,
-        fontSize: L.TEXT_FONT_SIZE_PX,
-        fontWeight: FONT_WEIGHT.SEMIBOLD,
-      }}
-    >
-      {number}
-    </span>
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'flex-start',
-        gap: L.SECTION_GAP_PX,
-        minWidth: 0,
-      }}
-    >
-      <span
-        style={{
-          fontSize: L.ROW_TITLE_FONT_SIZE_PX,
-          fontWeight: FONT_WEIGHT.SEMIBOLD,
-          color: DEFAULT_COLORS.TEXT_PRIMARY,
-        }}
-      >
-        {title}
-      </span>
-      {children}
-    </div>
-  </li>
-);
+const helperStyle: React.CSSProperties = {
+  ...S.MUTED_TEXT,
+  display: 'flex',
+  alignItems: 'center',
+  gap: SPACING.S6,
+};
 
 interface GetStartedBoxProps {
   applicationCount: number;
@@ -90,27 +48,39 @@ const GetStartedBox: React.FC<GetStartedBoxProps> = memo(
     if (scanning) discovery = G.DISCOVER.SCANNING(applicationCount);
     else if (applicationCount > 0) discovery = G.DISCOVER.FOUND(applicationCount);
     else if (discoveredCount > 0) discovery = G.DISCOVER.ALL_EXCLUDED(discoveredCount);
+    const showLabelsHint = !scanning && applicationCount === 0 && discoveredCount === 0;
+    // The Protection plans page's own create button, so both read and behave the same.
+    const createPlan = useMemo<ToolbarConfig>(
+      () => ({
+        buttons: [
+          {
+            key: 'create-plan',
+            label: PPC.LABELS.CREATE_BUTTON,
+            icon: <Icons.ProtectionPlans size={14} />,
+            variant: 'primary',
+            onClick: () => navigate(APP_ROUTES.PROTECTION_PLANS, { state: OPEN_CREATE_PANEL }),
+            disabled: !canCreate,
+            tooltip: canCreate ? undefined : PPC.LABELS.PERMISSION_DENIED.CREATE,
+          },
+        ],
+      }),
+      [canCreate, navigate],
+    );
 
     return (
       <DashboardBox title={G.TITLE} icon={HOME_BOX_ICONS.GET_STARTED}>
-        <ol
-          style={{
-            listStyle: 'none',
-            margin: SPACING.NONE,
-            padding: SPACING.NONE,
-            display: 'grid',
-            gridTemplateColumns: `repeat(auto-fit, minmax(min(${L.BOX_MIN_WIDTH_PX}px, 100%), 1fr))`,
-            gap: L.GRID_GAP_PX,
-          }}
-        >
-          <Step number={1} title={G.DISCOVER.TITLE}>
-            <span
-              style={{ ...S.MUTED_TEXT, display: 'flex', alignItems: 'center', gap: SPACING.S6 }}
-            >
+        <StepList>
+          <Step number={1} title={G.DISCOVER.TITLE} done={applicationCount > 0}>
+            <span style={helperStyle}>
               {scanning ? (
                 <FancySpinner size={L.STEP_SPINNER_SIZE_PX} color={DEFAULT_COLORS.WARNING} />
               ) : null}
               {discovery}
+              {showLabelsHint ? (
+                <Tooltip title={G.DISCOVER.LABELS_HINT}>
+                  <InfoCircleOutlined tabIndex={0} aria-label={G.DISCOVER.LABELS_HINT} />
+                </Tooltip>
+              ) : null}
             </span>
             <Typography.Link
               href={DOCS_LINKS.DISCOVERY.HREF}
@@ -123,21 +93,12 @@ const GetStartedBox: React.FC<GetStartedBoxProps> = memo(
           </Step>
           <Step number={2} title={G.CREATE_PLAN.TITLE}>
             <span style={S.MUTED_TEXT}>{G.CREATE_PLAN.HELPER}</span>
-            <Button
-              type="primary"
-              disabled={!canCreate}
-              onClick={() => navigate(APP_ROUTES.PROTECTION_PLANS, { state: OPEN_CREATE_PANEL })}
-            >
-              {G.CREATE_PLAN.BUTTON}
-            </Button>
-            {canCreate ? null : (
-              <span style={S.MUTED_TEXT}>{PPC.LABELS.PERMISSION_DENIED.CREATE}</span>
-            )}
+            <Toolbar config={createPlan} />
           </Step>
-          <Step number={3} title={G.WATCH.TITLE}>
+          <Step number={3} title={G.WATCH.TITLE} last>
             <span style={S.MUTED_TEXT}>{G.WATCH.HELPER}</span>
           </Step>
-        </ol>
+        </StepList>
       </DashboardBox>
     );
   },
