@@ -1,5 +1,6 @@
 import { memo } from 'react';
-import { BUTTON_CONFIGS, MENU_LABELS, SIDEBAR_LAYOUT } from '../../../constants';
+import { BUTTON_CONFIGS, MENU_LABELS } from '../../../constants';
+import SidebarSectionLabel from './SidebarSectionLabel';
 import {
   HomeMenuButton,
   ApplicationsMenuButton,
@@ -26,11 +27,11 @@ const MenuItems = memo(({ isCollapsed = false }: MenuItemsProps) => {
       }}
     >
       <HomeMenuButton isCollapsed={isCollapsed} />
-      {!isCollapsed && <div style={SIDEBAR_LAYOUT.SECTION_LABEL}>{MENU_LABELS.OPERATIONS}</div>}
+      <SidebarSectionLabel label={MENU_LABELS.OPERATIONS} isCollapsed={isCollapsed} />
       <ApplicationsMenuButton isCollapsed={isCollapsed} />
       <ProtectionPlansMenuButton isCollapsed={isCollapsed} />
       <InsightsMenuButton isCollapsed={isCollapsed} />
-      {!isCollapsed && <div style={SIDEBAR_LAYOUT.SECTION_LABEL}>{MENU_LABELS.ADMINISTRATION}</div>}
+      <SidebarSectionLabel label={MENU_LABELS.ADMINISTRATION} isCollapsed={isCollapsed} />
       <UsersMenuButton isCollapsed={isCollapsed} />
       <GroupsMenuButton isCollapsed={isCollapsed} />
       <RolesMenuButton isCollapsed={isCollapsed} />

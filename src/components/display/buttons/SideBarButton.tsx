@@ -8,6 +8,7 @@ import {
   SIDEBAR_LAYOUT,
   FONT_SIZE,
   MOTION,
+  getSidebarLabelFade,
 } from '../../../constants';
 import { ButtonInterface } from '../../../interfaces/shared';
 import { useMediaQuery } from '../../../hooks/layout';
@@ -21,6 +22,8 @@ const NavButton: React.FC<React.ComponentProps<'button'> & { route: string }> = 
   const navigate = useNavigate();
   return <button type="button" {...props} onClick={() => navigate(route)} />;
 };
+
+const ICON_SIZE_PX = 16;
 
 // antd rings the count in the page color: the sidebar's count has no ring (user, 2026-10-20).
 const BADGE_STYLES = { indicator: { boxShadow: 'none' } };
@@ -41,7 +44,10 @@ const SidebarButton: React.FC<SidebarButtonProps> = memo(
     const forcedRail = useMediaQuery(SIDEBAR_LAYOUT.FORCE_COLLAPSE_QUERY);
     const labeled = isCollapsed && forcedRail && Boolean(railLabel);
     const collapsedMarginX = labeled ? SB.RAIL.MARGIN_X : SB.COLLAPSED_MARGIN_X;
-    const collapsedPadding = labeled ? SB.RAIL.PADDING : 0;
+    // Left-aligned in both states with the icon centered in the rail, so a toggle never moves it.
+    const collapsedPadding = labeled
+      ? SB.RAIL.PADDING
+      : `0 0 0 ${(SIDEBAR_LAYOUT.WIDTH_COLLAPSED - 2 * SB.COLLAPSED_MARGIN_X - ICON_SIZE_PX) / 2}px`;
 
     const isActive = Boolean(active);
     const isActiveOrHovered = isActive || isHovered;
@@ -54,8 +60,8 @@ const SidebarButton: React.FC<SidebarButtonProps> = memo(
           style: {
             color: iconColor,
             fontSize: FONT_SIZE.LG,
-            width: 16,
-            height: 16,
+            width: ICON_SIZE_PX,
+            height: ICON_SIZE_PX,
             flexShrink: 0,
             transition: `color ${MOTION.FAST_MS}ms ${MOTION.EASE}`,
           },
@@ -79,7 +85,7 @@ const SidebarButton: React.FC<SidebarButtonProps> = memo(
           display: 'flex',
           flexDirection: labeled ? 'column' : 'row',
           alignItems: 'center',
-          justifyContent: isCollapsed ? 'center' : 'flex-start',
+          justifyContent: labeled ? 'center' : 'flex-start',
           textAlign: 'left',
           gap: labeled ? SB.RAIL.GAP : SB.GAP,
           height: labeled ? 'auto' : SB.HEIGHT,
@@ -93,18 +99,24 @@ const SidebarButton: React.FC<SidebarButtonProps> = memo(
           fontWeight: SB.FONT_WEIGHT,
           fontSize: SB.FONT_SIZE,
           cursor: 'pointer',
-          transition: SB.TRANSITION,
+          transition: `${SB.TRANSITION}, ${SIDEBAR_LAYOUT.PADDING_TRANSITION}`,
           boxSizing: 'border-box',
         }}
       >
-        {badged && isCollapsed ? (
-          <Badge count={badge} size="small" overflowCount={9} styles={BADGE_STYLES}>
+        {/* Kept mounted: the count zooms onto the icon as the label's count fades out. */}
+        {badged ? (
+          <Badge
+            count={isCollapsed ? badge : 0}
+            size="small"
+            overflowCount={9}
+            styles={BADGE_STYLES}
+          >
             {coloredIcon}
           </Badge>
         ) : (
           coloredIcon
         )}
-        {!isCollapsed && (
+        {labeled ? null : (
           <span
             style={{
               overflow: 'hidden',
@@ -115,14 +127,19 @@ const SidebarButton: React.FC<SidebarButtonProps> = memo(
               fontWeight: SB.FONT_WEIGHT,
               fontSize: SB.FONT_SIZE,
               color: textColor,
-              transition: `color ${MOTION.FAST_MS}ms ${MOTION.EASE}`,
+              ...getSidebarLabelFade(isCollapsed),
+              transition: `color ${MOTION.FAST_MS}ms ${MOTION.EASE}, ${getSidebarLabelFade(isCollapsed).transition}`,
             }}
           >
             {text}
           </span>
         )}
-        {badged && !isCollapsed ? (
-          <Badge count={badge} overflowCount={99} styles={BADGE_STYLES} />
+        {badged && !labeled ? (
+          <span
+            style={{ display: 'inline-flex', flexShrink: 0, ...getSidebarLabelFade(isCollapsed) }}
+          >
+            <Badge count={badge} overflowCount={99} styles={BADGE_STYLES} />
+          </span>
         ) : null}
         {labeled ? (
           <span
