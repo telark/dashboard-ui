@@ -11,7 +11,9 @@ import {
   SPACING,
   FONT_WEIGHT,
   FONT_SIZE,
+  INPUT_LIMITS,
 } from '../../../../constants';
+import { inputGuard } from '../../../../utils/helpers/inputGuard';
 
 interface LoginFormProps {
   form: FormInstance;
@@ -20,17 +22,23 @@ interface LoginFormProps {
   error?: string | null;
 }
 
+const emailGuard = inputGuard(INPUT_LIMITS.EMAIL.MAX, {
+  required: AUTH_ERROR_MESSAGES.MISSING_EMAIL,
+});
+
 export const LoginForm: React.FC<LoginFormProps> = ({ form, loading, onFinish, error }) => (
   <AuthForm form={form} onFinish={onFinish}>
     <Form.Item
       name="email"
+      normalize={emailGuard.normalize}
       rules={[
-        { required: true, message: AUTH_ERROR_MESSAGES.MISSING_EMAIL },
+        ...emailGuard.rules,
         { type: 'email', message: 'Please enter a valid email address' },
       ]}
       style={{ marginBottom: SPACING.MD }}
     >
       <Input
+        {...emailGuard.input}
         type="email"
         placeholder={LOGIN_CONSTANTS.UI.EMAIL_PLACEHOLDER}
         autoFocus

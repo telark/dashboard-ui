@@ -1,4 +1,4 @@
-import { DROPDOWN_EMPTY } from '../../../../constants';
+import { DROPDOWN_EMPTY, INPUT_LIMITS } from '../../../../constants';
 import {
   DEFAULT_NAME_VALIDATION_CONFIG,
   type NameValidationConfig,
@@ -547,13 +547,10 @@ export const PROTECTION_PLANS_CONSTANTS = {
   },
 } as const;
 
-// The backend's priority range starts at -100.
-export const PLAN_PRIORITY_MIN = -100;
-
 // Same rules as the backend's plan name checks; the create form and Duplicate share them.
 export const PLAN_NAME_VALIDATION: NameValidationConfig = {
   ...DEFAULT_NAME_VALIDATION_CONFIG,
-  maxLength: 64,
+  maxLength: INPUT_LIMITS.PLAN_NAME.MAX,
   allowedPattern: /^[a-zA-Z0-9_\- ]+$/,
   duplicateErrorMessage: 'A plan with this name already exists',
   invalidCharsErrorMessage:
@@ -571,7 +568,6 @@ export const PLAN_LOUD_HEALTH: readonly PlanHealth[] = ['drifted', 'degraded'];
 // mirrors internal/data constants.CategoryIDEnvProduction
 export const PLAN_APPROVAL = {
   PRODUCTION_ENVIRONMENT_ID: 'cat-00002-0001-0001',
-  COMMENT_MAX: 500,
 } as const;
 
 export const REPORT_FORMATS: ReadonlyArray<{ key: PlanReportFormat; label: string }> = [
@@ -621,6 +617,12 @@ export { CARD_LAYOUT } from '../../../../constants';
  * Chip text per template: the card names the operation a plan refuses, so
  * "Storage" alone never leaves the reader guessing which change is blocked.
  */
+// Per policy param key: the backend's templates take image patterns and tags.
+export const POLICY_PARAM_LIMITS: Record<string, { MAX: number; ITEMS: number }> = {
+  imagePatterns: INPUT_LIMITS.IMAGE_PATTERN,
+  tags: INPUT_LIMITS.POLICY_TAG,
+};
+
 export const POLICY_CHIP_LABEL: Record<string, string> = {
   'block-create': 'Creating any resource',
   'block-update': 'Updating any resource',

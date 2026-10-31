@@ -5,7 +5,7 @@ import { LabeledInput } from '../../../../../../../components/display/inputs';
 import { ROLES_CONSTANTS as RPC } from '../../../../constants';
 import type { RolesGeneralSectionProps } from '../../../../models';
 import { useRoleCategories, useNameValidation } from '../../../../hooks';
-import { SPACING } from '../../../../../../../constants';
+import { INPUT_LIMITS, SPACING } from '../../../../../../../constants';
 
 const RolesGeneralSection: React.FC<RolesGeneralSectionProps> = memo(
   ({
@@ -36,6 +36,7 @@ const RolesGeneralSection: React.FC<RolesGeneralSectionProps> = memo(
             <LabeledInput
               name="name"
               label={RPC.GENERAL.NAME_LABEL}
+              maxLength={INPUT_LIMITS.ROLE_NAME.MAX}
               required
               normalize={normalizeName}
               rules={[{ validator: nameValidator }]}
@@ -48,6 +49,7 @@ const RolesGeneralSection: React.FC<RolesGeneralSectionProps> = memo(
             <LabeledInput
               name="description"
               label={RPC.GENERAL.DESCRIPTION_LABEL}
+              maxLength={INPUT_LIMITS.ROLE_DESCRIPTION.MAX}
               required
               placeholder={RPC.GENERAL.DESCRIPTION_PLACEHOLDER}
               marginBottom={12}

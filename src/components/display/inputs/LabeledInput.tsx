@@ -1,10 +1,12 @@
 import React from 'react';
 import { Form, Input, Tooltip } from 'antd';
 import type { LabeledInputProps } from '../../../interfaces/layout/inputs';
+import { inputGuard } from '../../../utils/helpers/inputGuard';
 
 const LabeledInput: React.FC<LabeledInputProps> = ({
   name,
   label,
+  maxLength,
   placeholder,
   required = false,
   rules = [],
@@ -16,22 +18,27 @@ const LabeledInput: React.FC<LabeledInputProps> = ({
   tooltip,
   disabled = false,
 }) => {
-  const combinedRules = required
-    ? [{ required: true, message: `Please enter ${label.toLowerCase()}` }, ...rules]
-    : rules;
+  const guard = inputGuard(maxLength, {
+    required: required ? `Please enter ${label.toLowerCase()}` : undefined,
+  });
 
   const field = (
     <Form.Item
       label={label}
       name={name}
-      rules={combinedRules}
+      rules={[...guard.rules, ...rules]}
       required={required}
       style={{ marginBottom }}
       className={`form-item-compact no-asterisk ${className || ''}`}
-      normalize={normalize}
+      normalize={normalize ? (value: string) => normalize(guard.normalize(value)) : guard.normalize}
       validateTrigger={validateTrigger}
     >
-      <Input placeholder={placeholder} allowClear={allowClear} disabled={disabled} />
+      <Input
+        {...guard.input}
+        placeholder={placeholder}
+        allowClear={allowClear}
+        disabled={disabled}
+      />
     </Form.Item>
   );
 

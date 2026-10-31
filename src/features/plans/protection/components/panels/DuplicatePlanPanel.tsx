@@ -8,9 +8,11 @@ import {
   APP_ROUTES,
   DEFAULT_COLORS,
   FILTER_PANEL,
+  INPUT_LIMITS,
   SPACING,
   FONT_SIZE,
 } from '../../../../../constants';
+import { inputGuard } from '../../../../../utils/helpers/inputGuard';
 import DatePicker from '../../../../../components/display/inputs/DatePicker';
 import { zonedNow } from '../../../../../utils/layout';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
@@ -28,6 +30,7 @@ import { repeatFormValues, repeatPayload } from '../../utils/planFormValues';
 import type { DuplicatePlanPayload } from '../../clients';
 
 const { FORM } = PPC.CREATE_PAGE;
+const nameGuard = inputGuard(INPUT_LIMITS.PLAN_NAME.MAX, { required: FORM.NAME_REQUIRED_ERROR });
 
 interface DuplicatePlanPanelProps {
   open: boolean;
@@ -89,7 +92,8 @@ const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, 
 
   const initialValues = useMemo<Record<string, unknown>>(() => {
     return {
-      name: plan ? `Copy of ${plan.name}` : '',
+      // Cut like the server's default copy name, so a long source name doesn't prefill past the limit.
+      name: plan ? `Copy of ${plan.name}`.slice(0, INPUT_LIMITS.PLAN_NAME.MAX).trim() : '',
       timeMode: plan?.timeMode ?? 'permanent',
       startAt: undefined,
       endAt: undefined,
@@ -146,13 +150,11 @@ const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, 
         name="name"
         label={FORM.NAME_LABEL}
         validateTrigger={['onChange', 'onBlur']}
-        rules={[
-          { required: true, message: FORM.NAME_REQUIRED_ERROR },
-          { validator: nameValidator },
-        ]}
+        normalize={nameGuard.normalize}
+        rules={[...nameGuard.rules, { validator: nameValidator }]}
         style={{ marginBottom: SPACING.NONE }}
       >
-        <Input placeholder={FORM.NAME_PLACEHOLDER} />
+        <Input {...nameGuard.input} placeholder={FORM.NAME_PLACEHOLDER} />
       </Form.Item>
 
       <Form.Item

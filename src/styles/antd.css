@@ -186,9 +186,9 @@
   font-weight: 500;
 }
 
-/* A TextArea's showCount counter hangs below the box, out of flow. In a dialog nothing else
-   reserves its line, so the box does, and the content and actions below stay clear of it. */
-.app-modal .ant-input-textarea-show-count {
+/* A TextArea's showCount counter hangs below the box, out of flow, and nothing else reserves
+   its line, so the box does, and the fields and actions below stay clear of it. */
+body .ant-input-textarea-show-count {
   margin-bottom: calc(var(--ant-font-size) * var(--ant-line-height));
 }
 

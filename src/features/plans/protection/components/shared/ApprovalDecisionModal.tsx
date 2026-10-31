@@ -1,9 +1,16 @@
 import React, { useState } from 'react';
 import { Input } from 'antd';
 import { ActionConfirmModal } from '../../../../../components/display/modal';
-import { DEFAULT_COLORS, SPACING, FONT_SIZE, TIME_FORMATS } from '../../../../../constants';
+import {
+  DEFAULT_COLORS,
+  INPUT_LIMITS,
+  SPACING,
+  FONT_SIZE,
+  TIME_FORMATS,
+} from '../../../../../constants';
+import { inputGuard } from '../../../../../utils/helpers/inputGuard';
 import { formatDateTime } from '../../../../../utils/shared/time';
-import { PLAN_APPROVAL, PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
+import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
 import { usePlanTaxonomyLists } from '../../hooks/usePlanTaxonomies';
 import type { PlanApprovalDecision, ProtectionPlan } from '../../models';
 import { formatRepeatRule } from '../../utils/repeatRule';
@@ -20,6 +27,7 @@ interface ApprovalDecisionModalProps {
 const RESOURCE_TYPE = 'protection plan';
 const ACTIONS = PPC.LABELS.DETAIL_PAGE.ACTIONS;
 const CARD_LABELS = PPC.LABELS.CARD;
+const commentGuard = inputGuard(INPUT_LIMITS.APPROVAL_COMMENT.MAX, { multiline: true });
 
 const buildSummary = (plan: ProtectionPlan, environmentName: string | undefined): string => {
   const targets =
@@ -90,9 +98,8 @@ const ApprovalDecisionModal: React.FC<ApprovalDecisionModalProps> = ({
           </span>
           <Input.TextArea
             value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            maxLength={PLAN_APPROVAL.COMMENT_MAX}
-            showCount
+            {...commentGuard.input}
+            onChange={(e) => setComment(commentGuard.normalize(e.target.value))}
             placeholder={ACTIONS.DECISION_COMMENT_PLACEHOLDER}
             aria-label={ACTIONS.DECISION_COMMENT_LABEL}
             autoSize={{ minRows: 3, maxRows: 6 }}

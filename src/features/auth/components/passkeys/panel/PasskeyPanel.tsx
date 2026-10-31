@@ -1,12 +1,17 @@
 import React, { useMemo, useRef, useState, useCallback } from 'react';
 import { Form, Input } from 'antd';
 import { SlideOutPanel } from '../../../../../components/display/panels/slide-out';
-import { BUTTON_TEXTS, SPACING } from '../../../../../constants';
+import { BUTTON_TEXTS, INPUT_LIMITS, SPACING } from '../../../../../constants';
+import { inputGuard } from '../../../../../utils/helpers/inputGuard';
 import { PASSKEYS_CONSTANTS as PPC } from '../../../constants/passkeys';
 import { createDeviceNameValidator } from '../../../utils';
 import DeviceNameSuggestions from '../shared/DeviceNameSuggestions';
 import type { Passkey } from '../../../models/passkeys';
 import type { FormInstance } from 'antd';
+
+const deviceNameGuard = inputGuard(INPUT_LIMITS.DEVICE_NAME.MAX, {
+  required: PPC.FORM.DEVICE_NAME_REQUIRED,
+});
 
 interface PasskeyPanelProps {
   open: boolean;
@@ -90,8 +95,9 @@ const PasskeyPanel: React.FC<PasskeyPanelProps> = ({
         name="deviceName"
         label={PPC.FORM.DEVICE_NAME_LABEL}
         style={{ marginBottom: SPACING.NONE }}
+        normalize={deviceNameGuard.normalize}
         rules={[
-          { required: true, message: PPC.FORM.DEVICE_NAME_REQUIRED },
+          ...deviceNameGuard.rules,
           {
             validator: createDeviceNameValidator(passkeys, isEditMode, selectedPasskey?.deviceName),
           },
@@ -99,6 +105,7 @@ const PasskeyPanel: React.FC<PasskeyPanelProps> = ({
         validateTrigger="onChange"
       >
         <Input
+          {...deviceNameGuard.input}
           ref={inputRef as React.Ref<React.ComponentRef<typeof Input>>}
           placeholder={PPC.FORM.DEVICE_NAME_PLACEHOLDER}
           style={{ width: '100%' }}

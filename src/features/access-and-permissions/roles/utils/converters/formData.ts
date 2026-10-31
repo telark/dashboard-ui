@@ -19,7 +19,7 @@ export const convertFormValuesToRoleFormData = (
 ): RoleFormData => {
   return {
     name: formValues.name,
-    description: formValues.description || '',
+    description: formValues.description?.trim() || '',
     type: (formValues.type as RoleType) || defaultType,
     categoryRef: formValues.categoryRef || '',
     status: (formValues.status as RoleStatus) || defaultStatus,

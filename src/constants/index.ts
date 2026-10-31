@@ -29,6 +29,7 @@ export * from './shared/common';
 export * from './shared/colors';
 export * from './shared/statusColors';
 export * from './shared/details';
+export * from './shared/inputLimits';
 export * from './shared/time';
 export * from './shared/utils';
 export * from './layout/modals';

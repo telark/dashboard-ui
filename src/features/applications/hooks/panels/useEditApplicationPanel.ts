@@ -29,10 +29,10 @@ export function useEditApplicationPanel({
       const v = values as { displayName: string; description?: string };
       const payload: ApplicationUpdatePayload = {
         displayName: textChanged(application.displayName, v.displayName)
-          ? v.displayName
+          ? v.displayName.trim()
           : undefined,
         description: textChanged(application.description, v.description)
-          ? v.description
+          ? v.description?.trim()
           : undefined,
       };
       setSubmitting(true);

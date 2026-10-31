@@ -1,9 +1,10 @@
 import React, { memo } from 'react';
 import { SlideOutPanel } from '../../../../../components/display/panels/slide-out';
-import { BUTTON_TEXTS } from '../../../../../constants';
+import { BUTTON_TEXTS, INPUT_LIMITS } from '../../../../../constants';
 import LabeledInput from '../../../../../components/display/inputs/LabeledInput';
 import { PROFILE_SECTION_CONSTANTS } from '../constants';
 import type { EditProfileFormValues } from '../hooks/useEditProfile';
+import { sanitizeUsername } from '../../../../access-and-permissions/users/utils';
 
 const { LABELS } = PROFILE_SECTION_CONSTANTS;
 const P = LABELS.EDIT_PROFILE_PANEL;
@@ -54,15 +55,18 @@ const EditProfilePanel: React.FC<EditProfilePanelProps> = memo(
           <LabeledInput
             name="username"
             label={P.USERNAME_LABEL}
+            maxLength={INPUT_LIMITS.USERNAME.MAX}
             placeholder={P.USERNAME_PLACEHOLDER}
             required
             rules={usernameRules}
+            normalize={sanitizeUsername}
             marginBottom={16}
             validateTrigger="onChange"
           />
           <LabeledInput
             name="fullname"
             label={P.FULLNAME_LABEL}
+            maxLength={INPUT_LIMITS.FULL_NAME.MAX}
             placeholder={P.FULLNAME_PLACEHOLDER}
             required
             rules={fullnameRules}
@@ -72,6 +76,7 @@ const EditProfilePanel: React.FC<EditProfilePanelProps> = memo(
           <LabeledInput
             name="email"
             label={P.EMAIL_LABEL}
+            maxLength={INPUT_LIMITS.EMAIL.MAX}
             placeholder={P.EMAIL_PLACEHOLDER}
             required
             rules={emailRules}

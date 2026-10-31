@@ -6,7 +6,7 @@ import Toolbar from '../../../../components/display/toolbar/Toolbar';
 import { ActionConfirmModal } from '../../../../components/display/modal';
 import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 import { Client, exporterApiClient } from '../../../../api';
-import { Endpoints } from '../../../../constants';
+import { Endpoints, INPUT_LIMITS } from '../../../../constants';
 import type { ResourceDetailsResponse } from '../../../../interfaces/http';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchGlobalConfigThunk, selectGlobalConfigState } from '../../../globalconfig/store';
@@ -208,13 +208,14 @@ const SnapshotStorageSection: React.FC = memo(() => {
           </SettingsField>
           {snapshotsMaxSelection === C.SNAPSHOTS_CUSTOM_VALUE ? (
             <InputNumber
-              min={1}
+              min={INPUT_LIMITS.SNAPSHOTS_MAX.MIN}
+              max={INPUT_LIMITS.SNAPSHOTS_MAX.MAX}
               precision={0}
               value={customSnapshotsMaxPerApp}
               disabled={!canEditSnapshotStorage}
               onChange={(v) => {
                 const n = Number(v);
-                if (!Number.isFinite(n) || n <= 0) return;
+                if (!Number.isFinite(n) || n <= 0 || n > INPUT_LIMITS.SNAPSHOTS_MAX.MAX) return;
                 const next = Math.floor(n);
                 setCustomSnapshotsMaxPerApp(next);
                 setSnapshotsMaxPerApp(next);

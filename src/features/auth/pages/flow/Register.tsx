@@ -67,8 +67,8 @@ const Register: React.FC = () => {
     setEnrollFailure(null);
     try {
       await performRegister(
-        values.email,
-        values.deviceName,
+        values.email.trim(),
+        values.deviceName.trim(),
         message,
         () => navigate(APP_ROUTES.LOGIN),
         enrollToken,

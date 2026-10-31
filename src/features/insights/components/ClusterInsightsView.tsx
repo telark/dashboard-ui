@@ -18,7 +18,7 @@ import {
   SearchOutlined,
   UndoOutlined,
 } from '@ant-design/icons';
-import { DEFAULT_COLORS, FONT_SIZE, SPACING } from '../../../constants';
+import { DEFAULT_COLORS, FONT_SIZE, INPUT_LIMITS, SPACING } from '../../../constants';
 import { PageLayout } from '../../../components/display/views';
 import { FilterPanel } from '../../../components/display/panels/filter';
 import type { FilterField } from '../../../components/display/panels/filter/FilterPanel';
@@ -771,7 +771,12 @@ const ClusterInsightsView: React.FC<Props> = memo(({ tab, active, tabs, appNote,
       ),
       toolbars: [
         {
-          search: { placeholder: P.SEARCH_PLACEHOLDER, value: search, onChange: setSearch },
+          search: {
+            placeholder: P.SEARCH_PLACEHOLDER,
+            value: search,
+            onChange: setSearch,
+            maxLength: INPUT_LIMITS.INSIGHTS_SEARCH.MAX,
+          },
           buttons: [
             { key: 'search', label: P.SEARCH_BUTTON, icon: <SearchOutlined />, variant: 'ghost' },
             {

@@ -1,4 +1,4 @@
-import { DROPDOWN_EMPTY } from '../../../../constants';
+import { DROPDOWN_EMPTY, INPUT_LIMITS } from '../../../../constants';
 import { pluralize } from '../../../../utils/helpers/format';
 
 export const GROUPS_CONSTANTS = {
@@ -79,15 +79,15 @@ export const GROUPS_CONSTANTS = {
       BUTTON_TEXT: 'Create Group',
       FIELDS: {
         NAME_LABEL: 'Group Name',
-        NAME_PLACEHOLDER: 'e.g. Development Team',
+        NAME_PLACEHOLDER: 'e.g. development-team',
         DESCRIPTION_LABEL: 'Description',
         DESCRIPTION_PLACEHOLDER: 'e.g. Group for development team members',
         CATEGORY_LABEL: 'Category',
         CATEGORY_EMPTY: DROPDOWN_EMPTY.NONE_FOUND('categories'),
         CATEGORY_PLACEHOLDER: 'Select a category',
         NAME_VALIDATION: {
-          MIN_LENGTH: 1,
-          MAX_LENGTH: 100,
+          MIN_LENGTH: INPUT_LIMITS.GROUP_NAME.MIN,
+          MAX_LENGTH: INPUT_LIMITS.GROUP_NAME.MAX,
           DUPLICATE_ERROR: 'A group with this name already exists',
           INVALID_CHARS_ERROR:
             'Group name can only contain letters, numbers, hyphens (-), and underscores (_)',

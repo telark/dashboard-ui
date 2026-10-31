@@ -1,5 +1,5 @@
 import type { PermissionLevel, ValidityType } from '../models/types';
-import { DEFAULT_COLORS, DROPDOWN_EMPTY } from '../../../../constants';
+import { DEFAULT_COLORS, DROPDOWN_EMPTY, INPUT_LIMITS } from '../../../../constants';
 import { pluralize } from '../../../../utils/helpers/format';
 
 export const PERMISSION_LEVELS = ['ReadOnly', 'Contributor', 'Owner', 'Admin'] as const;
@@ -166,7 +166,7 @@ export const ROLES_CONSTANTS = {
     TITLE: 'General',
     SUBTITLE: 'Provide the role details.',
     NAME_LABEL: 'Role Name',
-    NAME_PLACEHOLDER: 'e.g. Platform Admin',
+    NAME_PLACEHOLDER: 'e.g. platform-admin',
     DESCRIPTION_LABEL: 'Description',
     DESCRIPTION_PLACEHOLDER: 'Enter role description',
     CATEGORY_LABEL: 'Category',
@@ -175,8 +175,8 @@ export const ROLES_CONSTANTS = {
     LOCK_NAME_TOOLTIP: 'Name is locked for this role',
     LOCK_CATEGORY_TOOLTIP: 'Category is locked for this role',
     NAME_VALIDATION: {
-      MIN_LENGTH: 1,
-      MAX_LENGTH: 100,
+      MIN_LENGTH: INPUT_LIMITS.ROLE_NAME.MIN,
+      MAX_LENGTH: INPUT_LIMITS.ROLE_NAME.MAX,
       DUPLICATE_ERROR: 'A role with this name already exists',
       INVALID_CHARS_ERROR:
         'Role name can only contain letters, numbers, hyphens (-), and underscores (_)',

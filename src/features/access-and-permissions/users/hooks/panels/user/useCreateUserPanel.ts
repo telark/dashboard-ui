@@ -9,7 +9,13 @@ import { fetchMyPermissionsThunk } from '../../../../../auth/store/thunks/fetchT
 import type { CreateUserFormValues } from '../../../models';
 import { USERS_CONSTANTS as UC } from '../../../constants';
 import { rejectionMessage } from '../../../../../../utils/helpers/format';
-import { makeUsernameUniqueRule, makeEmailFormatRule, makeEmailUniqueRule } from '../../../utils';
+import {
+  makeUsernameUniqueRule,
+  makeUsernameFormatRule,
+  makeEmailFormatRule,
+  makeEmailUniqueRule,
+  fullnameFromUsername,
+} from '../../../utils';
 
 interface UseCreateUserPanelOptions {
   form: FormInstance<CreateUserFormValues>;
@@ -23,7 +29,10 @@ export const useCreateUserPanel = ({ form, onClose }: UseCreateUserPanelOptions)
   const [submitting, setSubmitting] = useState(false);
   const [hasFormErrors, setHasFormErrors] = useState(false);
 
-  const usernameRules = useMemo(() => [makeUsernameUniqueRule(existingUsers)], [existingUsers]);
+  const usernameRules = useMemo(
+    () => [makeUsernameFormatRule(), makeUsernameUniqueRule(existingUsers)],
+    [existingUsers],
+  );
 
   const emailRules = useMemo(
     () => [makeEmailFormatRule(), makeEmailUniqueRule(existingUsers)],
@@ -40,9 +49,9 @@ export const useCreateUserPanel = ({ form, onClose }: UseCreateUserPanelOptions)
       setSubmitting(true);
       try {
         const userData: CreateUserFormValues = {
-          username: values.username as string,
-          fullname: values.username as string,
-          email: values.email as string,
+          username: (values.username as string).trim(),
+          fullname: fullnameFromUsername((values.username as string).trim()),
+          email: (values.email as string).trim(),
           roleRefs: (values.roleRefs as string[] | undefined) ?? [],
           groupRefs: [],
         };

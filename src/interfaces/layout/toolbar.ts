@@ -26,6 +26,7 @@ export interface ToolbarSearchConfig {
   value: string;
   onChange: (value: string) => void;
   onSubmit?: () => void;
+  maxLength?: number;
 }
 
 export interface ToolbarConfig {

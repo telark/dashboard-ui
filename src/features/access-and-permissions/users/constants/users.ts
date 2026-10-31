@@ -34,6 +34,10 @@ export const USERS_CONSTANTS = {
     },
     VALIDATION: {
       USERNAME_TAKEN: 'Username is already taken',
+      USERNAME_INVALID_CHARS:
+        'Username can only contain letters, numbers, hyphens (-), and underscores (_)',
+      USERNAME_LENGTH: (min: number, max: number) =>
+        `Username must be between ${min} and ${max} characters`,
       INVALID_EMAIL: 'Please enter a valid email address',
       EMAIL_TAKEN: 'Email is already used by another member',
       FULLNAME_SPECIAL_CHARS: 'Full name must not contain special characters',
@@ -224,6 +228,8 @@ export const USERS_CONSTANTS = {
       CANCEL: 'Cancel',
     },
   },
+  // Matches the server's fallback for a derived name with no letters.
+  DEFAULTS: { FULLNAME: 'User' },
   KEYS: {
     USERNAME: 'username',
     FULLNAME: 'fullname',

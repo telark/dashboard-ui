@@ -9,11 +9,14 @@ import {
   FONT_SIZE,
   RADIUS,
   FONT_WEIGHT,
+  INPUT_LIMITS,
 } from '../../../../../constants';
 import {
   PROTECTION_PLANS_CONSTANTS as PPC,
   POLICY_CHIP_LABEL,
+  POLICY_PARAM_LIMITS,
 } from '../../constants/protectionPlans';
+import { inputGuard } from '../../../../../utils/helpers/inputGuard';
 import type { PlanTemplate } from '../../models';
 import Section from '../../../../../components/display/sections/Section';
 import { FieldError } from '../../../../../components/display/inputs';
@@ -161,6 +164,8 @@ const PoliciesSection: React.FC<PoliciesSectionProps> = ({
                   </span>
                   {(tpl.params ?? []).map((param) => {
                     const error = paramError(entry, param);
+                    const limit = POLICY_PARAM_LIMITS[param.key] ?? INPUT_LIMITS.IMAGE_PATTERN;
+                    const guard = inputGuard(limit.MAX);
                     return (
                       <div key={param.key} style={{ marginTop: SPACING.SM }}>
                         <Typography.Text
@@ -186,9 +191,14 @@ const PoliciesSection: React.FC<PoliciesSectionProps> = ({
                             onPolicyParamChange(
                               policyIndex,
                               param.key,
-                              vals.map((v) => v.trim()).filter(Boolean),
+                              // maxLength only stops typing: a pasted value becomes a tag uncut.
+                              vals
+                                .map((v) => guard.normalize(v).trim().slice(0, limit.MAX).trim())
+                                .filter(Boolean),
                             )
                           }
+                          maxLength={guard.input.maxLength}
+                          maxCount={limit.ITEMS}
                           style={{ width: '100%' }}
                           tokenSeparators={[',']}
                           disabled={disabled}

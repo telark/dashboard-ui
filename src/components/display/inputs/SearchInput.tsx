@@ -5,10 +5,12 @@ import {
   HAIRLINE,
   TOOLBAR_CONTROL,
   FONT_SIZE,
+  INPUT_LIMITS,
   MOTION,
   RADIUS,
   SPACING,
 } from '../../../constants';
+import { inputGuard } from '../../../utils/helpers/inputGuard';
 
 export interface SearchInputProps {
   value: string;
@@ -17,6 +19,7 @@ export interface SearchInputProps {
   onSubmit?: () => void;
   minWidth?: number;
   block?: boolean;
+  maxLength?: number;
 }
 
 const SearchInput: React.FC<SearchInputProps> = ({
@@ -26,7 +29,9 @@ const SearchInput: React.FC<SearchInputProps> = ({
   onSubmit,
   minWidth = 240,
   block = false,
+  maxLength = INPUT_LIMITS.SEARCH.MAX,
 }) => {
+  const guard = inputGuard(maxLength);
   return (
     <div style={{ position: 'relative', display: 'inline-block', flex: block ? 1 : undefined }}>
       <SearchOutlined
@@ -44,7 +49,8 @@ const SearchInput: React.FC<SearchInputProps> = ({
         type="search"
         placeholder={placeholder}
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        maxLength={guard.input.maxLength}
+        onChange={(e) => onChange(guard.normalize(e.target.value))}
         onKeyDown={(e) => {
           if (e.key === 'Enter') {
             onSubmit?.();
