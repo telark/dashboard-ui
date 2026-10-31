@@ -1,5 +1,4 @@
 import { memo, useCallback, useState } from 'react';
-import type { CSSProperties } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { HiChevronLeft } from 'react-icons/hi';
 import { LockOutlined } from '@ant-design/icons';
@@ -9,11 +8,13 @@ import {
   SafetyOutlined,
   RobotOutlined,
   DatabaseOutlined,
+  PartitionOutlined,
   KeyOutlined,
   InfoCircleOutlined,
   GlobalOutlined,
 } from '@ant-design/icons';
 import SidebarButton from '../../display/buttons/SideBarButton';
+import SidebarSectionLabel from './SidebarSectionLabel';
 import {
   BUTTON_CONFIGS,
   DEFAULT_COLORS,
@@ -24,7 +25,10 @@ import {
   FONT_WEIGHT,
   MOTION,
   SPACING,
+  getSidebarLabelFade,
 } from '../../../constants';
+
+const BACK_COLLAPSED_INSET = (SIDEBAR_LAYOUT.WIDTH_COLLAPSED - FONT_SIZE.LG) / 2;
 
 interface SettingsMenuItemsProps {
   isCollapsed: boolean;
@@ -38,7 +42,8 @@ const SETTINGS_ROUTES = {
   myPermissions: `${APP_ROUTES.SETTINGS}/permissions`,
   security: `${APP_ROUTES.SETTINGS}/security`,
   aiInsights: `${APP_ROUTES.SETTINGS}/insights`,
-  governance: `${APP_ROUTES.SETTINGS}/discovery`,
+  discovery: `${APP_ROUTES.SETTINGS}/discovery`,
+  storage: `${APP_ROUTES.SETTINGS}/storage`,
   identityProvider: APP_ROUTES.AUTHENTICATION,
   about: `${APP_ROUTES.SETTINGS}/about`,
 } as const;
@@ -52,14 +57,10 @@ const SETTINGS_ICONS = {
   timezone: <GlobalOutlined />,
   identityProvider: <KeyOutlined />,
   aiInsights: <RobotOutlined />,
-  governance: <DatabaseOutlined />,
+  discovery: <PartitionOutlined />,
+  storage: <DatabaseOutlined />,
   about: <InfoCircleOutlined />,
 } as const;
-
-const firstSectionLabelStyle: CSSProperties = {
-  ...SIDEBAR_LAYOUT.SECTION_LABEL,
-  marginTop: SPACING.NONE,
-};
 
 const BackButton = memo(
   ({ isCollapsed, onClick }: { isCollapsed: boolean; onClick: () => void }) => {
@@ -78,17 +79,19 @@ const BackButton = memo(
           display: 'flex',
           flexDirection: 'row',
           alignItems: 'center',
-          justifyContent: isCollapsed ? 'center' : 'flex-start',
-          gap: SPACING.S6,
+          // Home's row: the chevron and label line up with the main menu's icons and labels.
+          gap: BUTTON_CONFIGS.SIDEBAR_BUTTON.GAP,
           width: '100%',
           height: 36,
-          padding: isCollapsed ? SPACING.NONE : `0 10px 0 ${SPACING.XL}px`,
-          marginBottom: SPACING.MD,
+          // Collapsed, the chevron sits centered in the rail; the inset settles with the edge.
+          padding: isCollapsed ? `0 0 0 ${BACK_COLLAPSED_INSET}px` : `0 10px 0 ${SPACING.XL}px`,
           color: hovered ? DEFAULT_COLORS.TEXT_PRIMARY : DEFAULT_COLORS.TEXT_MUTED,
           fontSize: FONT_SIZE.MD,
           fontWeight: FONT_WEIGHT.MEDIUM,
-          transition: `color ${MOTION.FAST_MS}ms ${MOTION.EASE}`,
+          transition: `color ${MOTION.FAST_MS}ms ${MOTION.EASE}, ${SIDEBAR_LAYOUT.PADDING_TRANSITION}`,
           boxSizing: 'border-box',
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
         }}
       >
         <HiChevronLeft
@@ -98,9 +101,7 @@ const BackButton = memo(
             transition: `color ${MOTION.FAST_MS}ms ${MOTION.EASE}`,
           }}
         />
-        {!isCollapsed && (
-          <span style={{ transition: `color ${MOTION.FAST_MS}ms ${MOTION.EASE}` }}>Back</span>
-        )}
+        <span style={getSidebarLabelFade(isCollapsed)}>Back</span>
       </button>
     );
   },
@@ -128,7 +129,7 @@ const SettingsMenuItems = memo(({ isCollapsed, backPath }: SettingsMenuItemsProp
     >
       <BackButton isCollapsed={isCollapsed} onClick={handleBack} />
 
-      {!isCollapsed && <div style={firstSectionLabelStyle}>Personal</div>}
+      <SidebarSectionLabel label="Personal" isCollapsed={isCollapsed} />
       <SidebarButton
         text="Profile"
         icon={SETTINGS_ICONS.profile}
@@ -165,7 +166,7 @@ const SettingsMenuItems = memo(({ isCollapsed, backPath }: SettingsMenuItemsProp
         isCollapsed={isCollapsed}
       />
 
-      {!isCollapsed && <div style={SIDEBAR_LAYOUT.SECTION_LABEL}>Platform</div>}
+      <SidebarSectionLabel label="Platform" isCollapsed={isCollapsed} />
       <SidebarButton
         text="Authentication"
         icon={SETTINGS_ICONS.identityProvider}
@@ -181,10 +182,17 @@ const SettingsMenuItems = memo(({ isCollapsed, backPath }: SettingsMenuItemsProp
         isCollapsed={isCollapsed}
       />
       <SidebarButton
-        text="Discovery & Storage"
-        icon={SETTINGS_ICONS.governance}
-        active={pathname === SETTINGS_ROUTES.governance}
-        route={SETTINGS_ROUTES.governance}
+        text="Discovery"
+        icon={SETTINGS_ICONS.discovery}
+        active={pathname === SETTINGS_ROUTES.discovery}
+        route={SETTINGS_ROUTES.discovery}
+        isCollapsed={isCollapsed}
+      />
+      <SidebarButton
+        text="Storage"
+        icon={SETTINGS_ICONS.storage}
+        active={pathname === SETTINGS_ROUTES.storage}
+        route={SETTINGS_ROUTES.storage}
         isCollapsed={isCollapsed}
       />
       <SidebarButton

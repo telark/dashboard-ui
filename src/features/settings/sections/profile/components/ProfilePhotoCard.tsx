@@ -75,7 +75,6 @@ const ProfilePhotoCard: React.FC<ProfilePhotoCardProps> = memo(({ user, onAvatar
       <AvatarPicker
         value={user?.avatar}
         onChange={handleAvatarChange}
-        size={LAYOUT.AVATAR_SIZE}
         okText="Update"
         trigger={(openModal) => (
           <button

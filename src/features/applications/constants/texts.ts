@@ -68,7 +68,6 @@ export const APPLICATIONS_UI = {
     DISPLAY_NAME_LABEL: 'Display name',
     DESCRIPTION_LABEL: 'Description',
     ERROR_GENERIC: 'Could not save changes. Please try again.',
-    TOO_LONG: (max: number) => `Use at most ${max} characters.`,
   },
   FALLBACKS: {
     UNKNOWN: 'unknown',

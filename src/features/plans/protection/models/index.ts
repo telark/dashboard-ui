@@ -1,3 +1,5 @@
+import type { SnapshotStorageMetric } from '../../../applications/models';
+
 export type PlanPhase =
   'active' | 'scheduled' | 'failed' | 'terminated' | 'canceled' | 'draft' | 'pending_approval';
 export type ScopeType = 'applications' | 'namespaces';
@@ -218,4 +220,11 @@ export interface ProtectionPlansState {
   detailsError: string | null;
   phaseQuickFilter: PlanPhaseQuickFilter;
   appliedFilters: Record<string, unknown>;
+}
+
+export interface ReportStorageInfos {
+  totalPVCSpace: SnapshotStorageMetric;
+  consumedSpace: SnapshotStorageMetric;
+  availableSpace: SnapshotStorageMetric;
+  totalReports: number;
 }

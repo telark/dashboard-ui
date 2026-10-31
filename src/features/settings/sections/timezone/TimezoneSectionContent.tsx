@@ -109,6 +109,7 @@ const TimezoneSectionContent: React.FC = memo(() => {
             showSearch
             optionFilterProp="label"
             style={{ width: '100%' }}
+            notFoundContent={LABELS.TIMEZONES_EMPTY}
             placeholder={LABELS.TIMEZONE_PLACEHOLDER}
             value={draft.timezone}
             options={timeZoneOptions}
@@ -121,6 +122,7 @@ const TimezoneSectionContent: React.FC = memo(() => {
             showSearch
             optionFilterProp="label"
             style={{ width: '100%' }}
+            notFoundContent={LABELS.REGIONS_EMPTY}
             placeholder={LABELS.REGION_PLACEHOLDER}
             value={draft.region}
             options={regionOptions}

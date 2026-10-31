@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Form, App as AntdApp, Alert, Button } from 'antd';
+import { Form, App as AntdApp, Button } from 'antd';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -13,7 +13,8 @@ import { handleUserLogout } from '../../utils/logout/logout';
 import { isSignedIn } from '../../utils/session/token';
 import { handleAuthError } from '../../utils/shared/errors';
 import { isWebAuthnSupported } from '../../utils/webauthn/core';
-import { APP_ROUTES, SPACING, RADIUS, FONT_SIZE } from '../../../../constants';
+import { APP_ROUTES, SPACING } from '../../../../constants';
+import { FieldError } from '../../../../components/display/inputs';
 import { LOGIN_CONSTANTS } from '../../constants/login';
 import { REGISTER_CONSTANTS } from '../../constants/register';
 import logger from '../../../../logging';
@@ -66,8 +67,8 @@ const Register: React.FC = () => {
     setEnrollFailure(null);
     try {
       await performRegister(
-        values.email,
-        values.deviceName,
+        values.email.trim(),
+        values.deviceName.trim(),
         message,
         () => navigate(APP_ROUTES.LOGIN),
         enrollToken,
@@ -135,22 +136,16 @@ const Register: React.FC = () => {
             lockedEmail={enrollEmail}
           />
           {enrollFailure && (
-            <Alert
-              title={
-                enrollFailure === 'refused'
-                  ? REGISTER_CONSTANTS.UI.ENROLL_LINK_INVALID
-                  : REGISTER_CONSTANTS.UI.ENROLL_RETRY
-              }
-              type={enrollFailure === 'refused' ? 'error' : 'warning'}
-              showIcon
-              // 10: the alert's top margin and side padding sit between SM and MD.
-              style={{
-                marginTop: '10px',
-                borderRadius: RADIUS.MD,
-                padding: `${SPACING.S6}px 10px`,
-                fontSize: FONT_SIZE.MD,
-              }}
-            />
+            <div style={{ marginTop: SPACING.SM }}>
+              <FieldError
+                warning={enrollFailure !== 'refused'}
+                message={
+                  enrollFailure === 'refused'
+                    ? REGISTER_CONSTANTS.UI.ENROLL_LINK_INVALID
+                    : REGISTER_CONSTANTS.UI.ENROLL_RETRY
+                }
+              />
+            </div>
           )}
           <AuthFooter
             text={REGISTER_CONSTANTS.UI.FOOTER_TEXT}

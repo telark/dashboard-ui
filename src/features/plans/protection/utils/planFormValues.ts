@@ -167,8 +167,8 @@ interface BuildPreparePayloadInput {
 }
 
 export const buildPreparePayload = ({ values, policies }: BuildPreparePayloadInput) => ({
-  name: values.name,
-  description: values.description,
+  name: values.name.trim(),
+  description: values.description?.trim(),
   severity: values.severity,
   priority:
     values.priority !== undefined && values.priority !== null && (values.priority as unknown) !== ''

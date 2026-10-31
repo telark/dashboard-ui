@@ -1,10 +1,18 @@
 import React, { memo, useEffect, useMemo, useState } from 'react';
 import { Input, Typography } from 'antd';
 import SettingsCard from '../../../components/SettingsCard';
-import { DEFAULT_COLORS, HAIRLINE, FONT_SIZE, SPACING } from '../../../../../constants';
+import {
+  DEFAULT_COLORS,
+  HAIRLINE,
+  FONT_SIZE,
+  INPUT_LIMITS,
+  SPACING,
+} from '../../../../../constants';
+import { inputGuard } from '../../../../../utils/helpers/inputGuard';
 import { ABOUT_SECTION_CONSTANTS } from '../constants';
 
 const { LABELS, LICENSES_LIST } = ABOUT_SECTION_CONSTANTS;
+const searchGuard = inputGuard(INPUT_LIMITS.SEARCH.MAX);
 
 interface LicenseEntry {
   name: string;
@@ -72,10 +80,11 @@ const LicensesCard: React.FC = memo(() => {
       }
     >
       <Input
+        {...searchGuard.input}
         allowClear
         placeholder={LABELS.LICENSES_SEARCH_PLACEHOLDER}
         value={search}
-        onChange={(e) => setSearch(e.target.value)}
+        onChange={(e) => setSearch(searchGuard.normalize(e.target.value))}
         style={{ marginBottom: SPACING.MD }}
       />
       {loadFailed ? (

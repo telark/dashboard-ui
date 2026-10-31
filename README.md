@@ -12,7 +12,7 @@ This repository holds the dashboard SPA only. The services it calls, the Helm ch
 | Protection plans | Create, schedule, approve, cancel, and reactivate plans; see health, admission decisions, and reports (download or delete any report, and keep a plan's reports when deleting it); run them in repeating weekly windows; organize kinds, environments and tags |
 | Insights | Incident cards and setup recommendations, updated live |
 | Administration | Members, groups, and access roles |
-| Settings | Profile, appearance, security, authentication (Google SSO, self-registration and the bootstrap account's break-glass requests), Insights and the local AI runtime, discovery scope and snapshot storage |
+| Settings | Profile, appearance, security, authentication (Google SSO, self-registration and the bootstrap account's break-glass requests), Insights and the local AI runtime, discovery scope, and snapshot and report storage |
 | Break-glass approval | `/break-glass#request=<id>`, the link break-glass prints: the bootstrap account approves or denies a request with a passkey, without signing in |
 
 Every action is gated by the signed-in user's permissions, including deny rules. The backend enforces the same checks.

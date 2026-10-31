@@ -8,8 +8,11 @@ import { useCategories } from '../hooks';
 import { CATEGORIES_CONSTANTS, labelsFor } from '../constants';
 import type { CategoryScope } from '../constants';
 import type { AppDispatch } from '../../../../store';
+import { INPUT_LIMITS } from '../../../../constants';
+import { inputGuard } from '../../../../utils/helpers/inputGuard';
 
 const PANEL_WIDTH = 440;
+const nameGuard = inputGuard(INPUT_LIMITS.CATEGORY_NAME.MAX);
 
 interface AddCategoryPanelProps {
   open: boolean;
@@ -86,6 +89,7 @@ const AddCategoryPanel: React.FC<AddCategoryPanelProps> = ({ open, onClose, scop
         <Form.Item
           name="name"
           label={labels.NAME_LABEL}
+          normalize={nameGuard.normalize}
           rules={[
             { required: true, message: labels.NAME_REQUIRED_MESSAGE },
             { whitespace: true, message: labels.NAME_EMPTY_MESSAGE },
@@ -102,7 +106,7 @@ const AddCategoryPanel: React.FC<AddCategoryPanelProps> = ({ open, onClose, scop
             },
           ]}
         >
-          <Input placeholder={labels.NAME_PLACEHOLDER} allowClear />
+          <Input {...nameGuard.input} placeholder={labels.NAME_PLACEHOLDER} allowClear />
         </Form.Item>
       </Form>
     </AnimationWrapper>

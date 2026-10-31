@@ -14,6 +14,8 @@ import {
   DEFAULT_COLORS,
   SELECT_THEME,
   TAG_CLASS,
+  FIELD_ERROR,
+  DROPDOWN_EMPTY,
   TAG_STYLES,
   TAG_THEME,
   APP_CONFIGS,
@@ -141,6 +143,11 @@ const AppContent: React.FC = () => {
   );
 };
 
+// Every dropdown without its own empty text says this, not antd's "No data" box.
+const DROPDOWNS = new Set(['Select', 'TreeSelect', 'Cascader', 'AutoComplete']);
+const renderEmpty = (componentName?: string) =>
+  componentName && DROPDOWNS.has(componentName) ? DROPDOWN_EMPTY.DEFAULT : undefined;
+
 const App: React.FC = () => {
   return (
     <ErrorBoundary>
@@ -149,6 +156,11 @@ const App: React.FC = () => {
         button={{ loadingIcon: <FancySpinner size={CONTROL_FONT_SIZE} color="currentColor" /> }}
         select={{ loadingIcon: <FancySpinner size={SELECT_LOADING_ICON_SIZE} /> }}
         tag={{ variant: 'solid', className: TAG_CLASS.PILL, styles: TAG_STYLES }}
+        renderEmpty={renderEmpty}
+        form={{
+          classNames: { helpItem: FIELD_ERROR.CLASS },
+          styles: { helpItem: FIELD_ERROR.STYLE },
+        }}
         theme={{
           cssVar: { key: 'telark' },
           hashed: false,

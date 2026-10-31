@@ -1,18 +1,19 @@
-import React, { useMemo, useState, useEffect, useRef, useCallback, startTransition } from 'react';
+import React, { useState, useEffect, useRef, useCallback, startTransition } from 'react';
 import { createAvatar, type Style } from '@dicebear/core';
 import { Avatar, Grid } from 'antd';
 import {
   AVATAR_PICKER_TEXT,
+  PROFILE_AVATAR_SIZE,
   BUTTON_TEXTS,
   DEFAULT_COLORS,
   MODAL_CHROME,
   UNSTYLED_BUTTON,
-  withAlpha,
   MOTION,
   SPACING,
 } from '../../../constants';
 import { FancySpinner } from '../../animation';
 import { BaseModal } from '../modal';
+import { avatarRingStyle } from './avatarRing';
 import ActionButtons from '../buttons/ActionButtons';
 import type { UserAvatar } from '../../../features/access-and-permissions/users/models';
 import logger from '../../../logging';
@@ -22,9 +23,8 @@ const { useBreakpoint } = Grid;
 interface AvatarPickerProps {
   value?: UserAvatar;
   onChange?: (avatar: UserAvatar) => void;
-  size?: number;
-  /** When provided, renders this instead of the default button; receives openModal callback. */
-  trigger?: (openModal: () => void) => React.ReactNode;
+  /** Renders the control that opens the picker; receives the open callback. */
+  trigger: (openModal: () => void) => React.ReactNode;
   /** Modal confirm button label. Defaults to "Select". */
   okText?: string;
 }
@@ -77,7 +77,7 @@ const loadAvatarStyles = async (): Promise<AvatarStyle[]> => {
 };
 
 const GRID_COLUMNS = 5;
-const AVATAR_SIZE = 50;
+const AVATAR_SIZE = PROFILE_AVATAR_SIZE;
 const AVATAR_GAP = 12;
 
 interface AvatarOption {
@@ -133,7 +133,7 @@ const generatePreviewUrl = (
   }
   const avatar = createAvatar(styleModule, {
     seed: option.seed,
-    size: AVATAR_SIZE,
+    size: AVATAR_SIZE * 2,
   });
   const url = avatar.toDataUri();
   previewUrlsRef.current[option.key] = url;
@@ -183,22 +183,14 @@ const AvatarItem: React.FC<AvatarItemProps> = ({ option, isSelected, previewUrl,
     setIsHovered(false);
   };
 
-  let borderColor: string;
+  // The app's avatar ring: teal marks the pick, a neutral ring the rest (hover darkens it).
+  let ringColor: string;
   if (isSelected) {
-    borderColor = DEFAULT_COLORS.SUCCESS;
+    ringColor = DEFAULT_COLORS.SUCCESS;
   } else if (isHovered) {
-    borderColor = DEFAULT_COLORS.SUCCESS;
+    ringColor = DEFAULT_COLORS.SURFACE_BORDER;
   } else {
-    borderColor = DEFAULT_COLORS.SURFACE_BORDER;
-  }
-
-  let backgroundColor: string;
-  if (isSelected) {
-    backgroundColor = withAlpha(DEFAULT_COLORS.SUCCESS, 0.1);
-  } else if (isHovered) {
-    backgroundColor = withAlpha(DEFAULT_COLORS.SUCCESS, 0.05);
-  } else {
-    backgroundColor = 'transparent';
+    ringColor = DEFAULT_COLORS.SURFACE_BORDER_LIGHT;
   }
 
   return (
@@ -208,6 +200,7 @@ const AvatarItem: React.FC<AvatarItemProps> = ({ option, isSelected, previewUrl,
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       aria-label={`Select ${option.style} avatar style`}
+      aria-pressed={isSelected}
       style={{
         ...UNSTYLED_BUTTON,
         display: 'flex',
@@ -219,19 +212,15 @@ const AvatarItem: React.FC<AvatarItemProps> = ({ option, isSelected, previewUrl,
     >
       <div
         style={{
-          width: AVATAR_SIZE + 4,
-          height: AVATAR_SIZE + 4,
-          borderRadius: '50%',
-          border: `2px solid ${borderColor}`,
-          backgroundColor,
-          padding: SPACING.XXS,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          transition: `all ${MOTION.BASE_MS}ms`,
+          ...avatarRingStyle(AVATAR_SIZE, ringColor),
+          transition: `border-color ${MOTION.BASE_MS}ms`,
         }}
       >
-        <Avatar src={previewUrl || undefined} size={AVATAR_SIZE} style={{ border: 'none' }} />
+        <Avatar
+          src={previewUrl || undefined}
+          size={AVATAR_SIZE}
+          style={{ border: 'none', flexShrink: 0 }}
+        />
       </div>
     </button>
   );
@@ -240,8 +229,7 @@ const AvatarItem: React.FC<AvatarItemProps> = ({ option, isSelected, previewUrl,
 const AvatarPicker: React.FC<AvatarPickerProps> = ({
   value,
   onChange,
-  size = 40,
-  trigger: triggerRender,
+  trigger,
   okText = BUTTON_TEXTS.SELECT,
 }) => {
   const screens = useBreakpoint();
@@ -303,75 +291,11 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({
     }
   };
 
-  const previewAvatar = useMemo(() => {
-    if (value && avatarStyles.length > 0) {
-      const styleConfig = avatarStyles.find((s) => s.name === value.style);
-      if (styleConfig) {
-        const avatar = createAvatar(styleConfig.style, {
-          seed: value.seed,
-          size: size * 2,
-        });
-        return avatar.toDataUri();
-      }
-    }
-    return null;
-  }, [value, size, avatarStyles]);
-
   const columns = screens.xs ? 4 : GRID_COLUMNS;
 
   return (
     <>
-      {triggerRender != null ? (
-        triggerRender(openModal)
-      ) : (
-        <button
-          type="button"
-          onClick={openModal}
-          aria-label="Choose avatar"
-          style={{
-            // Off scale, kept exact: padding 3 (XXS to XS).
-            cursor: 'pointer',
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderRadius: '50%',
-            border: '2px solid transparent',
-            padding: 3,
-            transition: `all ${MOTION.SLOW_MS}ms ${MOTION.EASE_STANDARD}`,
-            background: `linear-gradient(135deg, ${withAlpha(DEFAULT_COLORS.SUCCESS, 0.1)} 0%, ${withAlpha(DEFAULT_COLORS.INFO_STRONG, 0.1)} 100%)`,
-            outline: 'none',
-            boxShadow: previewAvatar
-              ? `0 4px 12px ${withAlpha(DEFAULT_COLORS.SUCCESS, 0.15)}, inset 0 0 0 1px ${withAlpha(DEFAULT_COLORS.SURFACE_WHITE, 0.1)}`
-              : `0 2px 8px ${DEFAULT_COLORS.SHADOW}`,
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.boxShadow = previewAvatar
-              ? `0 6px 16px ${withAlpha(DEFAULT_COLORS.SUCCESS, 0.25)}, inset 0 0 0 1px ${withAlpha(DEFAULT_COLORS.SURFACE_WHITE, 0.2)}`
-              : `0 4px 12px ${withAlpha(DEFAULT_COLORS.SHADOW, 0.12)}`;
-            e.currentTarget.style.transform = 'scale(1.05)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.boxShadow = previewAvatar
-              ? `0 4px 12px ${withAlpha(DEFAULT_COLORS.SUCCESS, 0.15)}, inset 0 0 0 1px ${withAlpha(DEFAULT_COLORS.SURFACE_WHITE, 0.1)}`
-              : `0 2px 8px ${DEFAULT_COLORS.SHADOW}`;
-            e.currentTarget.style.transform = 'scale(1)';
-          }}
-        >
-          <Avatar
-            src={previewAvatar}
-            size={size}
-            style={{
-              border: 'none',
-              boxShadow: previewAvatar
-                ? `0 2px 8px ${withAlpha(DEFAULT_COLORS.SHADOW, 0.1)}, inset 0 0 20px ${withAlpha(DEFAULT_COLORS.SURFACE_WHITE, 0.3)}`
-                : 'none',
-              filter: previewAvatar
-                ? `drop-shadow(0 2px 4px ${withAlpha(DEFAULT_COLORS.SHADOW, 0.1)})`
-                : 'none',
-            }}
-          />
-        </button>
-      )}
+      {trigger(openModal)}
 
       <BaseModal
         open={isModalOpen}

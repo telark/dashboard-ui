@@ -5,6 +5,9 @@ export { getScopeLabel } from './role/scope';
 export { getTotalRoleCount, getEffectiveRoleRefs } from './role/count';
 export {
   makeUsernameUniqueRule,
+  makeUsernameFormatRule,
+  sanitizeUsername,
+  fullnameFromUsername,
   makeEmailFormatRule,
   makeEmailUniqueRule,
   makeFullnameCharsRule,

@@ -1,5 +1,6 @@
 import React from 'react';
-import { Alert, Form, Select, Typography } from 'antd';
+import { Form, Select, Typography } from 'antd';
+import { InfoCircleOutlined } from '@ant-design/icons';
 import {
   DEFAULT_COLORS,
   DOCS_LINKS,
@@ -8,13 +9,17 @@ import {
   FONT_SIZE,
   RADIUS,
   FONT_WEIGHT,
+  INPUT_LIMITS,
 } from '../../../../../constants';
 import {
   PROTECTION_PLANS_CONSTANTS as PPC,
   POLICY_CHIP_LABEL,
+  POLICY_PARAM_LIMITS,
 } from '../../constants/protectionPlans';
+import { inputGuard } from '../../../../../utils/helpers/inputGuard';
 import type { PlanTemplate } from '../../models';
 import Section from '../../../../../components/display/sections/Section';
+import { FieldError } from '../../../../../components/display/inputs';
 import { FancySpinner } from '../../../../../components/animation';
 import type { PolicyEntry } from './types';
 import { FORM_ITEM_CLASS } from './types';
@@ -34,6 +39,10 @@ interface PoliciesSectionProps {
   onPolicyParamChange: (index: number, key: string, values: string[]) => void;
   disabled?: boolean;
 }
+
+// Under the mode select, the line a field error takes, while Audit is picked.
+const AuditNote: React.FC = () =>
+  Form.useWatch('mode') === 'audit' ? <FieldError warning message={FORM.AUDIT_WARNING} /> : null;
 
 const PoliciesSection: React.FC<PoliciesSectionProps> = ({
   policies,
@@ -57,15 +66,21 @@ const PoliciesSection: React.FC<PoliciesSectionProps> = ({
             label={FORM.MODE_LABEL}
             style={{ marginBottom: SPACING.NONE }}
             className={FORM_ITEM_CLASS}
-            extra={
-              <Typography.Link
-                href={DOCS_LINKS.AUDIT_AND_ENFORCE.HREF}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {DOCS_LINKS.AUDIT_AND_ENFORCE.LABEL}
-              </Typography.Link>
-            }
+            tooltip={{
+              title: (
+                <Typography.Link
+                  href={DOCS_LINKS.AUDIT_AND_ENFORCE.HREF}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {DOCS_LINKS.AUDIT_AND_ENFORCE.LABEL}
+                </Typography.Link>
+              ),
+              icon: (
+                <InfoCircleOutlined tabIndex={0} aria-label={DOCS_LINKS.AUDIT_AND_ENFORCE.LABEL} />
+              ),
+            }}
+            extra={<AuditNote />}
           >
             <Select
               options={PPC.CREATE_PAGE.MODE_OPTIONS}
@@ -73,14 +88,8 @@ const PoliciesSection: React.FC<PoliciesSectionProps> = ({
               disabled={disabled}
             />
           </Form.Item>
-          <Form.Item noStyle dependencies={['mode']}>
-            {({ getFieldValue }) =>
-              getFieldValue('mode') === 'audit' && (
-                <Alert type="warning" showIcon title={FORM.AUDIT_WARNING} />
-              )
-            }
-          </Form.Item>
           <Form.Item
+            label={FORM.POLICIES_LABEL}
             style={{ marginBottom: SPACING.NONE }}
             className={FORM_ITEM_CLASS}
             validateStatus={policies.length === 0 ? 'error' : ''}
@@ -89,6 +98,7 @@ const PoliciesSection: React.FC<PoliciesSectionProps> = ({
           >
             <Select
               mode="multiple"
+              notFoundContent={FORM.POLICIES_EMPTY}
               placeholder={FORM.ADD_POLICY_BUTTON}
               style={{ width: '100%' }}
               value={policies.map((p) => p.templateID)}
@@ -154,6 +164,8 @@ const PoliciesSection: React.FC<PoliciesSectionProps> = ({
                   </span>
                   {(tpl.params ?? []).map((param) => {
                     const error = paramError(entry, param);
+                    const limit = POLICY_PARAM_LIMITS[param.key] ?? INPUT_LIMITS.IMAGE_PATTERN;
+                    const guard = inputGuard(limit.MAX);
                     return (
                       <div key={param.key} style={{ marginTop: SPACING.SM }}>
                         <Typography.Text
@@ -179,26 +191,20 @@ const PoliciesSection: React.FC<PoliciesSectionProps> = ({
                             onPolicyParamChange(
                               policyIndex,
                               param.key,
-                              vals.map((v) => v.trim()).filter(Boolean),
+                              // maxLength only stops typing: a pasted value becomes a tag uncut.
+                              vals
+                                .map((v) => guard.normalize(v).trim().slice(0, limit.MAX).trim())
+                                .filter(Boolean),
                             )
                           }
+                          maxLength={guard.input.maxLength}
+                          maxCount={limit.ITEMS}
                           style={{ width: '100%' }}
                           tokenSeparators={[',']}
                           disabled={disabled}
                           status={error ? 'error' : undefined}
                         />
-                        {error && (
-                          <Typography.Text
-                            type="danger"
-                            style={{
-                              fontSize: FONT_SIZE.XS,
-                              display: 'block',
-                              marginTop: SPACING.XXS,
-                            }}
-                          >
-                            {error}
-                          </Typography.Text>
-                        )}
+                        <FieldError message={error} />
                         {param.description && (
                           <Typography.Text
                             type="secondary"

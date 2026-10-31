@@ -13,7 +13,8 @@ const { editOidcConfig, controlAiInsights, viewGovernance } = ACTION_PERMISSIONS
 const SECTION_PERMISSIONS: Partial<Record<SettingsSectionKey, RequiredPermission>> = {
   identityProvider: { scope: editOidcConfig.scope, level: editOidcConfig.level },
   aiInsights: controlAiInsights,
-  insightsGovernance: viewGovernance,
+  discovery: viewGovernance,
+  storage: viewGovernance,
 };
 
 const SettingsPage: React.FC = () => {

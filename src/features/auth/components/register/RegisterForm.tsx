@@ -10,7 +10,9 @@ import {
   SPACING,
   FONT_WEIGHT,
   FONT_SIZE,
+  INPUT_LIMITS,
 } from '../../../../constants';
+import { inputGuard } from '../../../../utils/helpers/inputGuard';
 
 interface RegisterFormProps {
   form: FormInstance;
@@ -20,6 +22,13 @@ interface RegisterFormProps {
   // From an enroll link: shown read-only, since the link already names the account.
   lockedEmail?: string;
 }
+
+const emailGuard = inputGuard(INPUT_LIMITS.EMAIL.MAX, {
+  required: AUTH_ERROR_MESSAGES.MISSING_EMAIL,
+});
+const deviceNameGuard = inputGuard(INPUT_LIMITS.DEVICE_NAME.MAX, {
+  required: AUTH_ERROR_MESSAGES.MISSING_DEVICE_NAME,
+});
 
 const inputStyle: React.CSSProperties = {
   borderColor: `var(--auth-card-border, ${DEFAULT_COLORS.AUTH_LIGHT_BORDER})`,
@@ -68,14 +77,16 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
       // Nothing to fill in when the link sets it, so no required mark.
       required={lockedEmail === undefined}
       initialValue={lockedEmail}
+      normalize={emailGuard.normalize}
       rules={[
-        { required: true, message: AUTH_ERROR_MESSAGES.MISSING_EMAIL },
+        ...emailGuard.rules,
         { type: 'email', message: 'Please enter a valid email address' },
       ]}
       style={{ marginBottom: SPACING.MD }}
     >
       {lockedEmail === undefined ? (
         <Input
+          {...emailGuard.input}
           type="email"
           placeholder={REGISTER_CONSTANTS.UI.EMAIL_PLACEHOLDER}
           style={inputStyle}
@@ -88,10 +99,12 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
     <Form.Item
       name="deviceName"
       label={REGISTER_CONSTANTS.UI.DEVICE_NAME_LABEL}
-      rules={[{ required: true, message: AUTH_ERROR_MESSAGES.MISSING_DEVICE_NAME }]}
+      normalize={deviceNameGuard.normalize}
+      rules={deviceNameGuard.rules}
       style={{ marginBottom: SPACING.LG }}
     >
       <Input
+        {...deviceNameGuard.input}
         placeholder={REGISTER_CONSTANTS.UI.DEVICE_NAME_PLACEHOLDER}
         style={inputStyle}
         // With the email set by the link, the device name is the first thing to fill in.

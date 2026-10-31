@@ -5,7 +5,7 @@ import { AppearanceSectionContent } from '../sections/appearance';
 import { TimezoneSectionContent } from '../sections/timezone';
 import { SecuritySectionContent } from '../sections/security';
 import { AIInsightsSectionContent } from '../sections/aiInsights';
-import { InsightsGovernanceSectionContent } from '../sections/insightsGovernance';
+import { DiscoveryBehaviorSection, StorageSectionContent } from '../sections/insightsGovernance';
 import { IdentityProviderSectionContent } from '../sections/identityProvider';
 import { MyPermissionsSectionContent } from '../sections/myPermissions';
 import { AboutSectionContent } from '../sections/about';
@@ -36,8 +36,10 @@ const SectionContent: React.FC<SectionContentProps> = memo(
         );
       case 'aiInsights':
         return <AIInsightsSectionContent />;
-      case 'insightsGovernance':
-        return <InsightsGovernanceSectionContent />;
+      case 'discovery':
+        return <DiscoveryBehaviorSection />;
+      case 'storage':
+        return <StorageSectionContent />;
       case 'identityProvider':
         return <IdentityProviderSectionContent />;
       case 'myPermissions':

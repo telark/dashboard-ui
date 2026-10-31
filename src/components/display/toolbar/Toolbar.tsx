@@ -79,6 +79,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ config, compact }) => {
               onChange={search.onChange}
               placeholder={search.placeholder ?? 'Search'}
               onSubmit={search.onSubmit}
+              maxLength={search.maxLength}
             />
           </div>
         </div>

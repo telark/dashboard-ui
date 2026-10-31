@@ -2,7 +2,8 @@ import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { Form, Input, App as AntdApp } from 'antd';
 import { useDispatch } from 'react-redux';
 import AnimationWrapper from '../../../../components/display/panels/slide-out/AnimationWrapper';
-import { BUTTON_TEXTS } from '../../../../constants';
+import { BUTTON_TEXTS, INPUT_LIMITS } from '../../../../constants';
+import { inputGuard } from '../../../../utils/helpers/inputGuard';
 import { updateCategory } from '../clients';
 import { fetchCategoriesByScopeThunk } from '../store';
 import { useCategories } from '../hooks';
@@ -11,6 +12,7 @@ import type { AppDispatch } from '../../../../store';
 import type { Category } from '../models';
 
 const PANEL_WIDTH = 440;
+const nameGuard = inputGuard(INPUT_LIMITS.CATEGORY_NAME.MAX);
 
 interface EditCategoryPanelProps {
   open: boolean;
@@ -105,6 +107,7 @@ const EditCategoryPanel: React.FC<EditCategoryPanelProps> = ({
         <Form.Item
           name="name"
           label={labels.NAME_LABEL}
+          normalize={nameGuard.normalize}
           rules={[
             { required: true, message: labels.NAME_REQUIRED_MESSAGE },
             { whitespace: true, message: labels.NAME_EMPTY_MESSAGE },
@@ -121,7 +124,7 @@ const EditCategoryPanel: React.FC<EditCategoryPanelProps> = ({
             },
           ]}
         >
-          <Input placeholder={labels.NAME_PLACEHOLDER} allowClear />
+          <Input {...nameGuard.input} placeholder={labels.NAME_PLACEHOLDER} allowClear />
         </Form.Item>
       </Form>
     </AnimationWrapper>

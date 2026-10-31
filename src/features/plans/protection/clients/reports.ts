@@ -8,7 +8,12 @@ import {
   REPORT_GENERATE_TIMEOUT_MS,
   REPORTS_LIST,
 } from '../constants/protectionPlans';
-import type { KeptPlanReports, PlanReportFormat, PlanReportMeta } from '../models';
+import type {
+  KeptPlanReports,
+  PlanReportFormat,
+  PlanReportMeta,
+  ReportStorageInfos,
+} from '../models';
 import type { ApiResponse } from './shared';
 
 export const fetchPlanReports = async (planId: string): Promise<PlanReportMeta[]> => {
@@ -35,6 +40,15 @@ export const fetchKeptPlanReports = async (): Promise<KeptPlanReports[]> => {
   const res = await Client<ApiResponse<KeptPlanReports[]>>(
     exporterApiClient,
     Endpoints.REPORTS.LIST_KEPT.path,
+    { method: 'GET' },
+  );
+  return res.data;
+};
+
+export const fetchReportStorage = async (): Promise<ReportStorageInfos> => {
+  const res = await Client<ApiResponse<ReportStorageInfos>>(
+    exporterApiClient,
+    Endpoints.REPORTS.STORAGE.path,
     { method: 'GET' },
   );
   return res.data;

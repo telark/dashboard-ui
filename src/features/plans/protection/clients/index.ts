@@ -17,6 +17,7 @@ export {
   fetchPlanReports,
   fetchAllPlanReports,
   fetchKeptPlanReports,
+  fetchReportStorage,
   deletePlanReport,
   generatePlanReport,
   isReportBusy,

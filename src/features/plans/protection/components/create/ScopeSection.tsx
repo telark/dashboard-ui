@@ -47,6 +47,7 @@ const ScopeSection: React.FC<ScopeSectionProps> = ({
     <Select
       mode="multiple"
       allowClear
+      notFoundContent={FORM.KINDS_EMPTY}
       placeholder={FORM.EXCLUDED_KINDS_PLACEHOLDER}
       style={{ width: '100%' }}
       disabled={disabled}
@@ -86,6 +87,7 @@ const ScopeSection: React.FC<ScopeSectionProps> = ({
               >
                 <Select
                   mode="multiple"
+                  notFoundContent={FORM.APPLICATIONS_EMPTY}
                   placeholder={FORM.APPLICATIONS_PLACEHOLDER}
                   style={{ width: '100%' }}
                   loading={applicationsLoading}
@@ -111,6 +113,7 @@ const ScopeSection: React.FC<ScopeSectionProps> = ({
                 <Select
                   mode="multiple"
                   allowClear
+                  notFoundContent={FORM.RESOURCES_EMPTY}
                   placeholder={exclusionsHint ?? FORM.EXCLUDED_RESOURCES_PLACEHOLDER}
                   style={{ width: '100%' }}
                   loading={resourcesLoading}
@@ -133,6 +136,7 @@ const ScopeSection: React.FC<ScopeSectionProps> = ({
               >
                 <Select
                   mode="multiple"
+                  notFoundContent={FORM.NAMESPACES_EMPTY}
                   placeholder={FORM.NAMESPACES_PLACEHOLDER}
                   style={{ width: '100%' }}
                   loading={namespacesLoading}

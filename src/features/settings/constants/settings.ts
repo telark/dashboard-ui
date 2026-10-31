@@ -4,7 +4,8 @@ export type SettingsSectionKey =
   | 'timezone'
   | 'security'
   | 'aiInsights'
-  | 'insightsGovernance'
+  | 'discovery'
+  | 'storage'
   | 'identityProvider'
   | 'myPermissions'
   | 'about';
@@ -44,10 +45,15 @@ export const SETTINGS_CONSTANTS = {
       description: 'On by default. Choose the local model and when incident analysis runs.',
       badge: 'Experimental',
     },
-    AI_DATA: {
-      key: 'insightsGovernance' as const,
-      label: 'Discovery & Storage',
-      description: 'Choose the namespaces discovery skips and how many snapshots it keeps.',
+    DISCOVERY: {
+      key: 'discovery' as const,
+      label: 'Discovery',
+      description: 'Choose the namespaces discovery skips.',
+    },
+    STORAGE: {
+      key: 'storage' as const,
+      label: 'Storage',
+      description: 'Snapshot and report volume usage.',
     },
     IDENTITY_PROVIDER: {
       key: 'identityProvider' as const,
@@ -93,7 +99,8 @@ export const SETTINGS_SECTIONS_LIST: SettingsSectionConfig[] = [
   SETTINGS_CONSTANTS.SECTIONS.MY_PERMISSIONS,
   SETTINGS_CONSTANTS.SECTIONS.SECURITY,
   SETTINGS_CONSTANTS.SECTIONS.AI_INSIGHTS,
-  SETTINGS_CONSTANTS.SECTIONS.AI_DATA,
+  SETTINGS_CONSTANTS.SECTIONS.DISCOVERY,
+  SETTINGS_CONSTANTS.SECTIONS.STORAGE,
   SETTINGS_CONSTANTS.SECTIONS.IDENTITY_PROVIDER,
   SETTINGS_CONSTANTS.SECTIONS.ABOUT,
 ];

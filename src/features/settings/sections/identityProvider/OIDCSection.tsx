@@ -1,6 +1,5 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { Alert, Input, Tooltip, Typography, App as AntdApp } from 'antd';
-import { CloseCircleFilled } from '@ant-design/icons';
+import { Alert, Input, Tooltip, App as AntdApp } from 'antd';
 import SettingsCard from '../../components/SettingsCard';
 import {
   SettingsDivider,
@@ -11,8 +10,9 @@ import {
 import Toolbar from '../../../../components/display/toolbar/Toolbar';
 import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 import { Client, authApiClient } from '../../../../api';
-import { DEFAULT_COLORS, Endpoints, FONT_WEIGHT, SPACING } from '../../../../constants';
-import { Switch } from '../../../../components/display/inputs';
+import { Endpoints, FONT_WEIGHT, INPUT_LIMITS } from '../../../../constants';
+import { inputGuard } from '../../../../utils/helpers/inputGuard';
+import { FieldError, Switch } from '../../../../components/display/inputs';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchGlobalConfigThunk, selectGlobalConfigState } from '../../../globalconfig/store';
 import type { AppDispatch } from '../../../../store';
@@ -28,6 +28,9 @@ interface OIDCForm {
   egressAllowed: boolean;
   googleJwkJson: string;
 }
+
+const clientIdGuard = inputGuard(INPUT_LIMITS.GOOGLE_CLIENT_ID.MAX);
+const keySetGuard = inputGuard(INPUT_LIMITS.KEY_SET.MAX, { multiline: true });
 
 const EMPTY_FORM: OIDCForm = {
   enabled: false,
@@ -54,7 +57,10 @@ interface OIDCErrors {
 function validate(form: OIDCForm, hasPinnedKeys: boolean): OIDCErrors {
   if (!form.enabled) return {};
   const errors: OIDCErrors = {};
-  if (!form.googleClientID.trim()) errors.clientId = C.MESSAGES.CLIENT_ID_REQUIRED;
+  const clientId = form.googleClientID.trim();
+  if (!clientId) errors.clientId = C.MESSAGES.CLIENT_ID_REQUIRED;
+  else if (/\s/.test(clientId) || !clientId.endsWith(C.CLIENT_ID_SUFFIX))
+    errors.clientId = C.MESSAGES.CLIENT_ID_FORMAT;
   if (form.egressAllowed) return errors;
   if (!form.googleJwkJson.trim()) {
     if (!hasPinnedKeys) errors.keys = C.MESSAGES.TRUST_SOURCE_REQUIRED;
@@ -67,23 +73,6 @@ function validate(form: OIDCForm, hasPinnedKeys: boolean): OIDCErrors {
   }
   return errors;
 }
-
-// Right under the field. Red can't be text on the dark card (3.6:1): the icon carries it.
-const FieldError: React.FC<{ message?: string }> = ({ message }) =>
-  message ? (
-    <Typography.Text
-      style={{
-        fontSize: SETTINGS_CONSTANTS.CONTENT.HINT_FONT_SIZE,
-        color: DEFAULT_COLORS.TEXT_PRIMARY,
-      }}
-    >
-      <CloseCircleFilled
-        aria-hidden
-        style={{ color: DEFAULT_COLORS.DANGER, marginRight: SPACING.S6 }}
-      />
-      {message}
-    </Typography.Text>
-  ) : null;
 
 const OIDCSection: React.FC = memo(() => {
   const dispatch = useDispatch<AppDispatch>();
@@ -204,6 +193,7 @@ const OIDCSection: React.FC = memo(() => {
             <GoogleSetupHelp />
             <SettingsField label={C.LABELS.CLIENT_ID_LABEL}>
               <Input
+                {...clientIdGuard.input}
                 placeholder={C.LABELS.CLIENT_ID_PLACEHOLDER}
                 value={
                   canEdit || !form.googleClientID
@@ -212,7 +202,7 @@ const OIDCSection: React.FC = memo(() => {
                 }
                 disabled={!canEdit}
                 status={errors.clientId ? 'error' : undefined}
-                onChange={(e) => update('googleClientID', e.target.value)}
+                onChange={(e) => update('googleClientID', clientIdGuard.normalize(e.target.value))}
               />
               <FieldError message={errors.clientId} />
             </SettingsField>
@@ -251,12 +241,13 @@ const OIDCSection: React.FC = memo(() => {
                 }
               >
                 <Input.TextArea
+                  {...keySetGuard.input}
                   placeholder={C.LABELS.JWK_PLACEHOLDER}
                   value={form.googleJwkJson}
                   disabled={!canEdit}
                   rows={C.LAYOUT.JWK_ROWS}
                   status={errors.keys ? 'error' : undefined}
-                  onChange={(e) => update('googleJwkJson', e.target.value)}
+                  onChange={(e) => update('googleJwkJson', keySetGuard.normalize(e.target.value))}
                 />
                 <FieldError message={errors.keys} />
               </SettingsField>

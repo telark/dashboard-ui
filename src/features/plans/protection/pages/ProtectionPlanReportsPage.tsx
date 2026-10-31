@@ -1,12 +1,14 @@
 import React, { memo, useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Empty, Tag } from 'antd';
+import { Empty, Tag, Typography } from 'antd';
 import type { TableColumnType } from 'antd';
 import { ReloadOutlined, SearchOutlined } from '@ant-design/icons';
+import { AiOutlineFileText } from 'react-icons/ai';
 import {
   APP_ROUTES,
   DEFAULT_COLORS,
+  EMPTY_CLASS,
   STATUS_COLORS,
   TAG_CLASS,
   getPillColor,
@@ -14,6 +16,10 @@ import {
   SPACING,
 } from '../../../../constants';
 import { PageLayout } from '../../../../components/display/views';
+import { ListToolbar } from '../../../../components/display/toolbar';
+import { PageContainer } from '../../../../components/shared';
+import { LIST_PAGE } from '../../../../constants/shared/pages';
+import type { ToolbarButtonConfig } from '../../../../interfaces/layout/toolbar';
 import { FilterPanel } from '../../../../components/display/panels/filter';
 import type { FilterField } from '../../../../components/display/panels/filter/FilterPanel';
 import SortHeader from '../../../../components/display/table/Sort';
@@ -291,6 +297,25 @@ const ProtectionPlanReportsPage: React.FC<ProtectionPlanReportsPageProps> = memo
       ],
     );
 
+    // Set once the first load ends, so a refresh from the empty page keeps it instead of the table.
+    const [loadedOnce, setLoadedOnce] = useState(false);
+    if (!loading && !loadedOnce) setLoadedOnce(true);
+    const showEmptyPage =
+      loadedOnce &&
+      !error &&
+      !plansError &&
+      !(plansLoading && plans.length === 0) &&
+      rows.length === 0;
+    const refreshButton: ToolbarButtonConfig = {
+      key: 'refresh',
+      label: L.REFRESH,
+      icon: <ReloadOutlined />,
+      variant: 'default',
+      iconOnly: true,
+      loading,
+      onClick: refresh,
+    };
+
     const truncated = reports.length >= REPORTS_LIST.LIMIT;
     const config: PageLayoutConfig<PlanReportMeta> = {
       title: PPC.LABELS.HEADER_TITLE,
@@ -318,15 +343,7 @@ const ProtectionPlanReportsPage: React.FC<ProtectionPlanReportsPageProps> = memo
                 icon: <SearchOutlined />,
                 variant: 'ghost',
               },
-              {
-                key: 'refresh',
-                label: L.REFRESH,
-                icon: <ReloadOutlined />,
-                variant: 'default',
-                iconOnly: true,
-                loading,
-                onClick: refresh,
-              },
+              refreshButton,
             ],
           },
         ],
@@ -345,7 +362,7 @@ const ProtectionPlanReportsPage: React.FC<ProtectionPlanReportsPageProps> = memo
         },
         pageSizeOptions: [...REPORTS_LIST.PAGE_SIZE_OPTIONS],
       },
-      empty: <Empty description={rows.length === 0 ? L.EMPTY : L.NO_MATCH} />,
+      empty: <Empty description={L.NO_MATCH} />,
       loading: loading || (plansLoading && plans.length === 0),
       error: error ?? plansError,
       onRetry: () => {
@@ -353,6 +370,36 @@ const ProtectionPlanReportsPage: React.FC<ProtectionPlanReportsPageProps> = memo
         refresh();
       },
     };
+
+    // Like the Plans tab: with no report at all, an empty page under the tabs instead of the table.
+    if (showEmptyPage) {
+      return (
+        <PageContainer
+          title={PPC.LABELS.HEADER_TITLE}
+          subtitle={PPC.LABELS.HEADER_SUBTITLE}
+          gap={LIST_PAGE.CONTENT_GAP_PX}
+        >
+          {tabs}
+          <ListToolbar
+            countSuffix={L.COUNT_SUFFIX}
+            compactWidth={REPORTS_LIST.TOOLBAR_COMPACT_WIDTH}
+            toolbars={[{ buttons: [refreshButton] }]}
+          />
+          <div style={{ marginTop: LIST_PAGE.CONTENT_OFFSET_PX }}>
+            <Empty
+              className={EMPTY_CLASS.PAGE}
+              image={<AiOutlineFileText size={32} />}
+              description={
+                <>
+                  <Typography.Title level={2}>{L.EMPTY_TITLE}</Typography.Title>
+                  <Typography.Text>{L.EMPTY_DESCRIPTION}</Typography.Text>
+                </>
+              }
+            />
+          </div>
+        </PageContainer>
+      );
+    }
 
     return (
       <>

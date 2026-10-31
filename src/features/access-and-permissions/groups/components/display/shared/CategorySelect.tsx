@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 import { Select } from 'antd';
 import type { AssignmentSelectOption } from '../../../../roles/models';
+import { GROUPS_CONSTANTS as GC } from '../../../constants';
 
 interface CategorySelectProps {
   value?: string;
@@ -27,6 +28,7 @@ const CategorySelect: React.FC<CategorySelectProps> = memo(
     return (
       <Select
         placeholder={placeholder}
+        notFoundContent={GC.LABELS.FORM.FIELDS.CATEGORY_EMPTY}
         loading={loading}
         options={options}
         value={value}

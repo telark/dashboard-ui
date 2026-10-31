@@ -64,7 +64,7 @@ const ROW_STYLE: React.CSSProperties = {
 };
 
 const { view: viewApplications, viewSnapshots } = ACTION_PERMISSIONS.applications;
-const { view: viewPlans } = ACTION_PERMISSIONS.protectionPlans;
+const { view: viewPlans, viewReports } = ACTION_PERMISSIONS.protectionPlans;
 const { view: viewSettings } = ACTION_PERMISSIONS.settings;
 const { view: viewInsights } = ACTION_PERMISSIONS.insights;
 const APPS_NO_ACCESS: NoAccess = {
@@ -73,6 +73,7 @@ const APPS_NO_ACCESS: NoAccess = {
 };
 const PLANS_NO_ACCESS: NoAccess = { featureName: T.PLANS.TITLE, permission: viewPlans };
 const SNAPSHOTS_NO_ACCESS: NoAccess = { featureName: T.STORAGE.TITLE, permission: viewSnapshots };
+const REPORTS_NO_ACCESS: NoAccess = { featureName: T.STORAGE.TITLE, permission: viewReports };
 const CLUSTER_NO_ACCESS: NoAccess = { featureName: T.CLUSTER.TITLE, permission: viewSettings };
 const INSIGHTS_NO_ACCESS: NoAccess = {
   featureName: T.NEEDS_ATTENTION.TITLE,
@@ -88,9 +89,15 @@ const Dashboard: React.FC = () => {
     viewSnapshots.level,
     viewSnapshots.deny,
   );
+  const canViewReports = usePermission(viewReports.scope, viewReports.level, viewReports.deny);
   const canViewSettings = usePermission(viewSettings.scope, viewSettings.level);
   const canViewInsights = usePermission(viewInsights.scope, viewInsights.level);
-  const storage = useDashboardData({ canViewApplications, canViewPlans, canViewSnapshots });
+  const storage = useDashboardData({
+    canViewApplications,
+    canViewPlans,
+    canViewSnapshots,
+    canViewReports,
+  });
   const attention = useAttentionInsights();
   const attentionState = canViewInsights
     ? toBoxState(attention.loading, attention.error, attention.page !== null)
@@ -178,8 +185,10 @@ const Dashboard: React.FC = () => {
             {...plansView.state}
           />
           <StorageBox
-            storage={storage}
-            noAccess={canViewSnapshots ? undefined : SNAPSHOTS_NO_ACCESS}
+            snapshots={storage.snapshots}
+            reports={storage.reports}
+            snapshotsNoAccess={canViewSnapshots ? undefined : SNAPSHOTS_NO_ACCESS}
+            reportsNoAccess={canViewReports ? undefined : REPORTS_NO_ACCESS}
           />
         </div>
         <div style={ROW_STYLE}>

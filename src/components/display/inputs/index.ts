@@ -7,3 +7,4 @@ export type { DatePickerProps } from './DatePicker';
 export { default as LabeledInput } from './LabeledInput';
 export { default as SearchInput } from './SearchInput';
 export type { SearchInputProps } from './SearchInput';
+export { default as FieldError } from './FieldError';

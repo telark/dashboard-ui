@@ -5,7 +5,7 @@ import { Switch, NumberInput, DatePicker } from '../../../../../../../components
 import { ROLES_CONSTANTS as RPC } from '../../../../constants';
 import { zonedNow } from '../../../../../../../utils/layout';
 import type { ValiditySectionProps } from '../../../../models';
-import { SPACING } from '../../../../../../../constants';
+import { INPUT_LIMITS, SPACING } from '../../../../../../../constants';
 
 const ValiditySection: React.FC<ValiditySectionProps> = memo(({ disabled = false }) => {
   const validityTypeOptions = [
@@ -131,7 +131,8 @@ const ValiditySection: React.FC<ValiditySectionProps> = memo(({ disabled = false
                               className="form-item-compact"
                             >
                               <NumberInput
-                                min={1}
+                                min={INPUT_LIMITS.ROLE_VALIDITY_HOURS.MIN}
+                                max={INPUT_LIMITS.ROLE_VALIDITY_HOURS.MAX}
                                 placeholder={RPC.VALIDITY.DURATION_PLACEHOLDER}
                                 style={{ width: '100%' }}
                                 addonAfter="hours"

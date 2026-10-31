@@ -8,6 +8,7 @@ import {
   makeEmailFormatRule,
   makeEmailUniqueRule,
   makeFullnameCharsRule,
+  makeUsernameFormatRule,
   makeUsernameUniqueRule,
 } from '../../../../access-and-permissions/users/utils';
 import { HTTP_STATUS } from '../../../../../constants';
@@ -87,7 +88,7 @@ export function useEditProfile({
   const { users: existingUsers } = useUsers();
 
   const usernameRules = useMemo(
-    () => [makeUsernameUniqueRule(existingUsers, currentUser?.id)],
+    () => [makeUsernameFormatRule(), makeUsernameUniqueRule(existingUsers, currentUser?.id)],
     [existingUsers, currentUser?.id],
   );
   const fullnameRules = [makeFullnameCharsRule()];

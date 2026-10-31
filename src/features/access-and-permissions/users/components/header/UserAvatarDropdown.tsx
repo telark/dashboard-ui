@@ -1,5 +1,5 @@
 import React, { useState, useEffect, memo } from 'react';
-import { Dropdown, App as AntdApp } from 'antd';
+import { Dropdown, App as AntdApp, theme } from 'antd';
 import { HiChevronUpDown } from 'react-icons/hi2';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -10,16 +10,26 @@ import {
 import { fetchCurrentUserDetails } from '../../utils';
 import { createUserMenuItems } from './UserMenuItems';
 import UserAvatar from './UserAvatar';
+import UserMenuHeader from './UserMenuHeader';
 import UserAvatarComponent from '../../../../../components/display/avatars/UserAvatar';
 import { avatarRingStyle } from '../../../../../components/display/avatars/avatarRing';
 import {
+  AVATAR_RING,
   BUTTON_CONFIGS,
   DEFAULT_COLORS,
   HEADER_CONSTANTS,
+  SIDEBAR_LAYOUT,
   SIDEBAR_USER_MENU,
-  SPACING,
+  getSidebarLabelFade,
 } from '../../../../../constants';
 import type { User } from '../../models';
+
+// The ringed avatar (size + 4 × ring border, see avatarRingStyle) centered in the collapsed row.
+const SIDEBAR_AVATAR_COLLAPSED_INSET =
+  (SIDEBAR_LAYOUT.WIDTH_COLLAPSED -
+    2 * BUTTON_CONFIGS.SIDEBAR_BUTTON.COLLAPSED_MARGIN_X -
+    (SIDEBAR_USER_MENU.AVATAR.SIZE + 4 * AVATAR_RING.BORDER_WIDTH)) /
+  2;
 
 interface UserAvatarDropdownProps {
   variant?: 'header' | 'sidebar';
@@ -33,6 +43,7 @@ const UserAvatarDropdown: React.FC<UserAvatarDropdownProps> = memo(
     const [rowHovered, setRowHovered] = useState(false);
     const navigate = useNavigate();
     const { message } = AntdApp.useApp();
+    const { token } = theme.useToken();
 
     useEffect(() => {
       const initialUser = getCurrentUser();
@@ -72,7 +83,7 @@ const UserAvatarDropdown: React.FC<UserAvatarDropdownProps> = memo(
     }
 
     const menuItems = createUserMenuItems({
-      currentUser,
+      onNavigate: (route) => void navigate(route),
       onLogout: handleLogoutWrapper,
       loggingOut,
     });
@@ -86,7 +97,20 @@ const UserAvatarDropdown: React.FC<UserAvatarDropdownProps> = memo(
         placement={isSidebar ? SIDEBAR_USER_MENU.PLACEMENT : HEADER_CONSTANTS.USER.MENU.PLACEMENT}
         trigger={['click']}
         rootClassName={HEADER_CONSTANTS.USER.MENU.ROOT_CLASS}
-        styles={{ root: { minWidth: HEADER_CONSTANTS.USER.MENU.MIN_WIDTH } }}
+        styles={{ root: { width: HEADER_CONSTANTS.USER.MENU.WIDTH } }}
+        popupRender={(menu) => (
+          <div
+            style={{
+              backgroundColor: DEFAULT_COLORS.SURFACE_WHITE,
+              borderRadius: token.borderRadiusLG,
+              boxShadow: token.boxShadowSecondary,
+              overflow: 'hidden',
+            }}
+          >
+            <UserMenuHeader currentUser={currentUser} />
+            {menu}
+          </div>
+        )}
       >
         {isSidebar ? (
           <button
@@ -97,18 +121,19 @@ const UserAvatarDropdown: React.FC<UserAvatarDropdownProps> = memo(
             style={{
               display: 'flex',
               alignItems: 'center',
-              justifyContent: isCollapsed ? 'center' : 'flex-start',
               gap: row.GAP,
               height: row.HEIGHT,
-              padding: isCollapsed ? SPACING.NONE : row.PADDING,
+              // Left-aligned in both states with the avatar centered in the rail, so a toggle never moves it.
+              padding: isCollapsed ? `0 0 0 ${SIDEBAR_AVATAR_COLLAPSED_INSET}px` : row.PADDING,
               marginLeft: isCollapsed ? row.COLLAPSED_MARGIN_X : row.MARGIN_LEFT,
               marginRight: isCollapsed ? row.COLLAPSED_MARGIN_X : row.MARGIN_RIGHT,
               border: 'none',
               borderRadius: row.BORDER_RADIUS,
               backgroundColor: rowHovered ? DEFAULT_COLORS.HOVER_BG : 'transparent',
               cursor: 'pointer',
-              transition: row.TRANSITION,
+              transition: `${row.TRANSITION}, ${SIDEBAR_LAYOUT.PADDING_TRANSITION}`,
               boxSizing: 'border-box',
+              overflow: 'hidden',
             }}
           >
             <div style={avatarRingStyle(SIDEBAR_USER_MENU.AVATAR.SIZE)}>
@@ -119,32 +144,39 @@ const UserAvatarDropdown: React.FC<UserAvatarDropdownProps> = memo(
                 style={{ border: 'none' }}
               />
             </div>
-            {!isCollapsed && (
-              <>
-                <span
-                  style={{
-                    flex: 1,
-                    minWidth: 0,
-                    textAlign: 'left',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                    fontSize: SIDEBAR_USER_MENU.USERNAME.FONT_SIZE,
-                    fontWeight: SIDEBAR_USER_MENU.USERNAME.FONT_WEIGHT,
-                    color: DEFAULT_COLORS.TEXT_PRIMARY,
-                  }}
-                >
-                  {currentUser.username || SIDEBAR_USER_MENU.FALLBACK_USERNAME}
-                </span>
-                <HiChevronUpDown
-                  style={{
-                    fontSize: SIDEBAR_USER_MENU.CHEVRON.SIZE,
-                    color: DEFAULT_COLORS.TEXT_MUTED,
-                    flexShrink: 0,
-                  }}
-                />
-              </>
-            )}
+            <span
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: row.GAP,
+                flex: 1,
+                minWidth: 0,
+                ...getSidebarLabelFade(isCollapsed),
+              }}
+            >
+              <span
+                style={{
+                  flex: 1,
+                  minWidth: 0,
+                  textAlign: 'left',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                  fontSize: SIDEBAR_USER_MENU.USERNAME.FONT_SIZE,
+                  fontWeight: SIDEBAR_USER_MENU.USERNAME.FONT_WEIGHT,
+                  color: DEFAULT_COLORS.TEXT_PRIMARY,
+                }}
+              >
+                {currentUser.username || SIDEBAR_USER_MENU.FALLBACK_USERNAME}
+              </span>
+              <HiChevronUpDown
+                style={{
+                  fontSize: SIDEBAR_USER_MENU.CHEVRON.SIZE,
+                  color: DEFAULT_COLORS.TEXT_MUTED,
+                  flexShrink: 0,
+                }}
+              />
+            </span>
           </button>
         ) : (
           <div>

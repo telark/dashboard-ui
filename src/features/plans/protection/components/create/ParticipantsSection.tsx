@@ -34,6 +34,7 @@ const ParticipantsSection: React.FC<ParticipantsSectionProps> = ({
           mode="multiple"
           loading={usersLoading}
           placeholder={FORM.PARTICIPANTS_PLACEHOLDER}
+          notFoundContent={FORM.PARTICIPANTS_EMPTY}
           style={{ width: '100%' }}
           options={userOptions}
           labelRender={({ label, value }) => label ?? userMap.get(String(value))?.username ?? value}

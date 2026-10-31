@@ -1,5 +1,6 @@
 import React from 'react';
-import { Form, Input, Button, Alert, FormInstance } from 'antd';
+import { Form, Input, Button, FormInstance } from 'antd';
+import { FieldError } from '../../../../components/display/inputs';
 import { KeyOutlined } from '@ant-design/icons';
 import { AUTH_ERROR_MESSAGES } from '../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/login';
@@ -10,34 +11,34 @@ import {
   SPACING,
   FONT_WEIGHT,
   FONT_SIZE,
-  RADIUS,
+  INPUT_LIMITS,
 } from '../../../../constants';
+import { inputGuard } from '../../../../utils/helpers/inputGuard';
 
 interface LoginFormProps {
   form: FormInstance;
   loading: boolean;
   onFinish: (values: { email: string }) => void;
   error?: string | null;
-  onClearError?: () => void;
 }
 
-export const LoginForm: React.FC<LoginFormProps> = ({
-  form,
-  loading,
-  onFinish,
-  error,
-  onClearError,
-}) => (
+const emailGuard = inputGuard(INPUT_LIMITS.EMAIL.MAX, {
+  required: AUTH_ERROR_MESSAGES.MISSING_EMAIL,
+});
+
+export const LoginForm: React.FC<LoginFormProps> = ({ form, loading, onFinish, error }) => (
   <AuthForm form={form} onFinish={onFinish}>
     <Form.Item
       name="email"
+      normalize={emailGuard.normalize}
       rules={[
-        { required: true, message: AUTH_ERROR_MESSAGES.MISSING_EMAIL },
+        ...emailGuard.rules,
         { type: 'email', message: 'Please enter a valid email address' },
       ]}
       style={{ marginBottom: SPACING.MD }}
     >
       <Input
+        {...emailGuard.input}
         type="email"
         placeholder={LOGIN_CONSTANTS.UI.EMAIL_PLACEHOLDER}
         autoFocus
@@ -85,19 +86,9 @@ export const LoginForm: React.FC<LoginFormProps> = ({
     )}
 
     {error && (
-      <Alert
-        title={error}
-        type="error"
-        showIcon
-        closable={{ onClose: onClearError }}
-        // 10: the alert's top margin and side padding sit between SM and MD.
-        style={{
-          marginTop: '10px',
-          borderRadius: RADIUS.MD,
-          padding: `${SPACING.S6}px 10px`,
-          fontSize: FONT_SIZE.MD,
-        }}
-      />
+      <div style={{ marginTop: SPACING.SM }}>
+        <FieldError message={error} />
+      </div>
     )}
   </AuthForm>
 );

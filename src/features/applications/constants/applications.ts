@@ -10,11 +10,6 @@ export const APPLICATION_CHANGE_LOG_PAGE_SIZE = 10;
 // A rollback cannot be aborted once the engine picks it up (~200ms after the
 // request), so the only real second chance is this delay before the request.
 export const ROLLBACK_UNDO_WINDOW_SECONDS = 5;
-// Mirrors the exporter's application patch limits (400 above these).
-export const APPLICATION_EDIT_LIMITS = {
-  DISPLAY_NAME_MAX: 200,
-  DESCRIPTION_MAX: 1000,
-} as const;
 export const APPLICATION_TRACKING_ANNOTATION_PREFIX =
   'metadata.annotations.telark.io/last-modified';
 
@@ -43,6 +38,8 @@ export const SYNC_STATUS_VALUE = {
 export const DISCOVERY_LABELS =
   'app.kubernetes.io/name, app.kubernetes.io/part-of, app.kubernetes.io/instance with app.kubernetes.io/component, or app';
 
+export const DISCOVERY_LABELS_HINT = `Telark groups workloads by the label ${DISCOVERY_LABELS}.`;
+
 export const ALL_EXCLUDED = (count: number): string =>
   count === 1
     ? '1 application is in an excluded namespace.'
@@ -59,10 +56,13 @@ export const APPLICATIONS_CONSTANTS = {
     RETRY_ATTEMPT_LOG: 'applications fetch retry attempt failed',
     NO_APPLICATIONS_TITLE: 'No applications found yet',
     NO_APPLICATIONS_DESCRIPTION:
-      'Telark groups workloads into applications by their labels. Discovery runs on its own, and new applications appear here within a minute.',
+      'Telark groups labeled workloads into applications. Discovery runs on its own.',
     HELP_TITLE: 'Nothing showing up?',
-    HELP_LABELS_LEAD: 'Check that your workloads carry',
-    HELP_EXCLUDED: 'Check that their namespace is not excluded in Settings, Discovery & Storage.',
+    HELP_STEPS: {
+      LABELS: { TITLE: 'Label workloads', HELPER: 'Each needs an app label.' },
+      NAMESPACE: { TITLE: 'Include namespaces', HELPER: 'Excluded ones are skipped.' },
+      CHECK: { TITLE: 'Wait a minute', HELPER: 'New ones appear on their own.' },
+    },
     CHECK_AGAIN: 'Check again',
     OPEN_DISCOVERY_SETTINGS: 'Open discovery settings',
     LAST_CHECKED: 'Last checked just now',

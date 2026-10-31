@@ -1,8 +1,45 @@
 import type { User } from '../../models';
 import { USERS_CONSTANTS as UC } from '../../constants';
+import { INPUT_LIMITS } from '../../../../../constants';
+import {
+  DEFAULT_NAME_VALIDATION_CONFIG,
+  sanitizeName,
+  validateNameFormat,
+} from '../../../../shared';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@.]+(?:\.[^\s@.]+)+$/;
-const FULLNAME_ALLOWED_CHARS = /^[a-zA-ZÀ-ÿ\s'\-.]+$/;
+// Any script's letters, since OIDC names can be non-Latin.
+const FULLNAME_ALLOWED_CHARS = /^[\p{L}\p{M} '.-]+$/u;
+const NOT_A_LETTER = /[^\p{L}\p{M}]+/u;
+
+const USERNAME_FORMAT = {
+  minLength: INPUT_LIMITS.USERNAME.MIN,
+  maxLength: INPUT_LIMITS.USERNAME.MAX,
+  allowedPattern: DEFAULT_NAME_VALIDATION_CONFIG.allowedPattern,
+  invalidCharsErrorMessage: UC.LABELS.VALIDATION.USERNAME_INVALID_CHARS,
+  lengthErrorMessage: UC.LABELS.VALIDATION.USERNAME_LENGTH,
+};
+
+// Drops what the username can't hold while typing, like role and group names.
+export const sanitizeUsername = (value: string) =>
+  sanitizeName(value, DEFAULT_NAME_VALIDATION_CONFIG);
+
+// A new member's first full name, until its owner edits it: the username's runs of letters, as the
+// server derives one from an email, since a username may hold digits and _ that a full name can't.
+export const fullnameFromUsername = (username: string) =>
+  username
+    .split(NOT_A_LETTER)
+    .filter(Boolean)
+    .join(' ')
+    .slice(0, INPUT_LIMITS.FULL_NAME.MAX)
+    .trim() || UC.DEFAULTS.FULLNAME;
+
+export const makeUsernameFormatRule = () => ({
+  validator(_: unknown, value: string) {
+    const error = validateNameFormat(value, USERNAME_FORMAT);
+    return error ? Promise.reject(new Error(error)) : Promise.resolve();
+  },
+});
 
 export const makeUsernameUniqueRule = (existingUsers: User[], currentUserId?: string) => ({
   validator(_: unknown, value: string) {

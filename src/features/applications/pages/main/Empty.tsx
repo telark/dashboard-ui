@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useState } from 'react';
-import { Button, Empty, Typography } from 'antd';
-import { QuestionCircleOutlined, ReloadOutlined } from '@ant-design/icons';
+import { Button, Empty, Tooltip, Typography } from 'antd';
+import { InfoCircleOutlined, QuestionCircleOutlined, ReloadOutlined } from '@ant-design/icons';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import {
@@ -15,14 +15,18 @@ import {
   SPACING,
   FONT_SIZE,
   FONT_WEIGHT,
+  UNSTYLED_BUTTON,
 } from '../../../../constants';
 import { LIST_PAGE } from '../../../../constants/shared/pages';
 import { PageContainer } from '../../../../components/shared';
+import { FancySpinner } from '../../../../components/animation';
+import { Step, StepList } from '../../../../components/display/steps';
 import type { AppDispatch } from '../../../../store';
 import {
   APPLICATIONS_CONSTANTS,
   APPLICATIONS_UI,
   DISCOVERY_LABELS,
+  DISCOVERY_LABELS_HINT,
   DISCOVERY_SETTINGS_ROUTE,
 } from '../../constants';
 import { DiscoveryStatusBar } from '../../components';
@@ -30,6 +34,15 @@ import { loadApplicationsSilent } from '../../utils/management/state';
 
 const ApplicationIcon = Icons.Application;
 const M = APPLICATIONS_CONSTANTS.MESSAGES;
+const H = M.HELP_STEPS;
+
+const helperStyle: React.CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: SPACING.S6,
+  fontSize: FONT_SIZE.SM,
+  color: DEFAULT_COLORS.TEXT_MUTED,
+};
 
 const iconTileStyle: React.CSSProperties = {
   display: 'inline-flex',
@@ -47,7 +60,7 @@ const iconTileStyle: React.CSSProperties = {
 const helpBoxStyle: React.CSSProperties = {
   boxSizing: 'border-box',
   width: '100%',
-  maxWidth: 680,
+  maxWidth: 760,
   margin: '0 auto',
   padding: SPACING.LG,
   borderRadius: RADIUS.MD,
@@ -55,50 +68,14 @@ const helpBoxStyle: React.CSSProperties = {
   border: SECTION_LAYOUT.SUBTLE_DIVIDER,
 };
 
-const stepNumberStyle: React.CSSProperties = {
-  display: 'inline-flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  flexShrink: 0,
-  width: 20,
-  height: 20,
-  marginTop: SPACING.XXS,
-  borderRadius: '50%',
-  background: DEFAULT_COLORS.CHIP_CUSTOM_BG,
-  color: DEFAULT_COLORS.TEXT_SECONDARY,
-  fontSize: FONT_SIZE.SM,
-  fontWeight: FONT_WEIGHT.SEMIBOLD,
-};
-
-// 10 and 1.8: the step list's gap and airy leading sit off the scales (between SM and MD, above LOOSE).
-const stepStyle: React.CSSProperties = {
-  display: 'flex',
-  alignItems: 'flex-start',
-  gap: 10,
-  fontSize: FONT_SIZE.MD,
-  lineHeight: 1.8,
-  color: DEFAULT_COLORS.TEXT_SECONDARY,
-};
-
-// 1: the inline code chip's vertical padding sits below XXS.
-const codeStyle: React.CSSProperties = {
-  padding: `1px ${SPACING.S6}px`,
-  borderRadius: RADIUS.XS,
-  fontSize: FONT_SIZE.SM,
-  whiteSpace: 'nowrap',
-  background: DEFAULT_COLORS.CHIP_CUSTOM_BG,
-  border: SECTION_LAYOUT.SUBTLE_DIVIDER,
-  color: DEFAULT_COLORS.TEXT_SECONDARY,
-};
-
 // The label keys in monospace, the joining words ("with", "or") as text.
 const labelKeys = DISCOVERY_LABELS.split(/(, or |, | with )/).map((part, i) =>
   i % 2 ? (
     part
   ) : (
-    <code key={part} className={MONOSPACE_CLASS} style={codeStyle}>
+    <span key={part} className={MONOSPACE_CLASS}>
       {part}
-    </code>
+    </span>
   ),
 );
 
@@ -164,29 +141,7 @@ const ApplicationsMainEmpty: React.FC<EmptyProps> = memo(({ excludedCount, onChe
                 <Typography.Text>{M.NO_APPLICATIONS_DESCRIPTION}</Typography.Text>
               </>
             }
-          >
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: SPACING.SM,
-              }}
-            >
-              <Button
-                type="primary"
-                icon={<ReloadOutlined />}
-                loading={checking}
-                onClick={checkAgain}
-                style={EMPTY_ACTION_STYLE}
-              >
-                {M.CHECK_AGAIN}
-              </Button>
-              {checked ? (
-                <Typography.Text type="secondary">{M.LAST_CHECKED}</Typography.Text>
-              ) : null}
-            </div>
-          </Empty>
+          />
           <section style={helpBoxStyle}>
             <header
               style={{
@@ -220,38 +175,51 @@ const ApplicationsMainEmpty: React.FC<EmptyProps> = memo(({ excludedCount, onChe
                 {DOCS_LINKS.DISCOVERY.LABEL}
               </Typography.Link>
             </header>
-            <ol
-              style={{
-                listStyle: 'none',
-                margin: `${SPACING.MD}px 0 0`,
-                padding: SPACING.NONE,
-                display: 'flex',
-                flexDirection: 'column',
-                gap: SPACING.MD,
-              }}
-            >
-              <li style={stepStyle}>
-                <span aria-hidden style={stepNumberStyle}>
-                  1
-                </span>
-                <span>
-                  {M.HELP_LABELS_LEAD} {labelKeys}.
-                </span>
-              </li>
-              <li style={stepStyle}>
-                <span aria-hidden style={stepNumberStyle}>
-                  2
-                </span>
-                <span
-                  style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}
-                >
-                  {M.HELP_EXCLUDED}
-                  <Link to={DISCOVERY_SETTINGS_ROUTE} style={{ color: DEFAULT_COLORS.SUCCESS }}>
+            <div style={{ marginTop: SPACING.MD }}>
+              <StepList>
+                <Step number={1} title={H.LABELS.TITLE}>
+                  <span style={helperStyle}>
+                    {H.LABELS.HELPER}
+                    <Tooltip title={<span>{labelKeys}</span>}>
+                      <InfoCircleOutlined tabIndex={0} aria-label={DISCOVERY_LABELS_HINT} />
+                    </Tooltip>
+                  </span>
+                </Step>
+                <Step number={2} title={H.NAMESPACE.TITLE}>
+                  <span style={helperStyle}>{H.NAMESPACE.HELPER}</span>
+                  <Link
+                    to={DISCOVERY_SETTINGS_ROUTE}
+                    style={{ color: DEFAULT_COLORS.SUCCESS, fontSize: FONT_SIZE.SM }}
+                  >
                     {M.OPEN_DISCOVERY_SETTINGS}
                   </Link>
-                </span>
-              </li>
-            </ol>
+                </Step>
+                <Step number={3} title={H.CHECK.TITLE} last>
+                  <span style={helperStyle}>
+                    {checked ? M.LAST_CHECKED : H.CHECK.HELPER}
+                    <Tooltip title={M.CHECK_AGAIN}>
+                      <button
+                        type="button"
+                        onClick={() => void checkAgain()}
+                        disabled={checking}
+                        aria-label={M.CHECK_AGAIN}
+                        style={{
+                          ...UNSTYLED_BUTTON,
+                          display: 'inline-flex',
+                          color: DEFAULT_COLORS.TEXT_MUTED,
+                        }}
+                      >
+                        {checking ? (
+                          <FancySpinner size={FONT_SIZE.SM} color={DEFAULT_COLORS.TEXT_MUTED} />
+                        ) : (
+                          <ReloadOutlined />
+                        )}
+                      </button>
+                    </Tooltip>
+                  </span>
+                </Step>
+              </StepList>
+            </div>
           </section>
         </>
       )}

@@ -28,11 +28,6 @@ html:has(.auth-root[data-theme='light']) body {
   --color-border: var(--color-auth-light-border);
 }
 
-/* The dark page's white text leaks onto the auth card's error alert title. */
-.auth-root .ant-alert-title {
-  color: var(--auth-text-primary, var(--color-auth-light-text)) !important;
-}
-
 /* The panel outlives navigation between login and register, so this reveal runs
    once on arrival rather than on every route change. */
 .auth-brand > * {
