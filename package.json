@@ -21,7 +21,7 @@
     "@dicebear/pixel-art": "^9.2.4",
     "@reduxjs/toolkit": "^2.13.0",
     "antd": "^6.6.7",
-    "axios": "^1.20.0",
+    "axios": "^1.21.0",
     "date-fns": "^4.4.0",
     "framer-motion": "^13.4.4",
     "js-yaml": "^5.5.0",
