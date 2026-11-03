@@ -2,6 +2,23 @@
 
 All notable changes to the Telark dashboard UI are documented here.
 
+## [0.2.1](https://github.com/telark/dashboard-ui/compare/v0.2.0...v0.2.1) - 2026-11-03
+
+### ✨ Features
+
+- Show report storage, and split the Discovery and Storage settings ([#56](https://github.com/telark/dashboard-ui/pull/56)) ([1d6d741](https://github.com/telark/dashboard-ui/commit/1d6d741fb7c27f7e256ffd65c99cd064ce746fbf))
+
+### 🐛 Bug Fixes
+
+- Rework the user menu and avatar rings ([#56](https://github.com/telark/dashboard-ui/pull/56)) ([0f24831](https://github.com/telark/dashboard-ui/commit/0f24831e649b87f93f474b337f6b47add287f302))
+- Keep sidebar items still while it opens and closes ([#56](https://github.com/telark/dashboard-ui/pull/56)) ([180a34a](https://github.com/telark/dashboard-ui/commit/180a34a4ddd48d8ac1bc2a6f6477e0ff6ff10de3))
+- One style for field errors and empty dropdowns ([#56](https://github.com/telark/dashboard-ui/pull/56)) ([193d777](https://github.com/telark/dashboard-ui/commit/193d7778cccd74e6774f565007614067c24cc80b))
+- Cap, clean and trim every text field ([#56](https://github.com/telark/dashboard-ui/pull/56)) ([46898ec](https://github.com/telark/dashboard-ui/commit/46898ec78b9dd4ed88af5fb217240742c9ef5d42))
+
+### Contributors
+
+- [@hourki](https://github.com/hourki)
+
 ## [0.2.0](https://github.com/telark/dashboard-ui/compare/v0.1.2...v0.2.0) - 2026-10-27
 
 ### ✨ Features
