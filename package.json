@@ -23,7 +23,7 @@
     "antd": "^6.6.7",
     "axios": "^1.20.0",
     "date-fns": "^4.4.0",
-    "framer-motion": "^13.4.4",
+    "framer-motion": "^14.9.0",
     "js-yaml": "^5.5.0",
     "loglevel": "^1.9.2",
     "react": "^19.3.1",
