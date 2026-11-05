@@ -104,6 +104,9 @@ export const STATUS_COLORS = {
     warning: WARNING,
     info: TEXT_MUTED,
   },
+  // No accent is the neutral pill: Info wears the same one as the category tag.
+  INSIGHT_SEVERITY_PILL: { critical: DANGER, warning: WARNING, info: undefined },
+  INSIGHT_TRIAGE: { acknowledged: SUCCESS, dismissed: undefined },
   // Text with a dot, never red or amber: those, and the gray pill, mean severity.
   INSIGHT_STATE: {
     open: NEUTRAL,

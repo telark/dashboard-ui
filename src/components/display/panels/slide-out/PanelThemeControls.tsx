@@ -1,10 +1,22 @@
 import React from 'react';
-import { Button, ConfigProvider, DatePicker, Form, Input, Select, Switch, Tabs } from 'antd';
+import {
+  Button,
+  Collapse,
+  ConfigProvider,
+  DatePicker,
+  Form,
+  Input,
+  Select,
+  Switch,
+  Tabs,
+  Tag,
+} from 'antd';
 import { PANEL_PREWARM } from '../../../../constants';
 import { PANEL_THEME } from './AnimationWrapper';
 
 const OPTIONS = [{ value: 0 }];
 const TABS = [{ key: '0', label: '0' }];
+const COLLAPSE = [{ key: '0', label: '0' }];
 
 // The controls most panels use, in the panel theme, out of sight (PanelThemePrewarm).
 const PanelThemeControls: React.FC = () => (
@@ -21,6 +33,8 @@ const PanelThemeControls: React.FC = () => (
         <Button type="primary" />
         <DatePicker />
         <Tabs items={TABS} />
+        <Collapse ghost items={COLLAPSE} />
+        <Tag />
       </Form>
     </ConfigProvider>
   </div>

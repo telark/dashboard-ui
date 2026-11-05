@@ -12,7 +12,7 @@ import type {
   RecommendationKind,
   LastRun,
 } from '../models';
-import { APP_ROUTE_PARAMS, APP_ROUTES, SIDEBAR_LAYOUT } from '../../../constants';
+import { APP_ROUTE_PARAMS, APP_ROUTES, DEFAULT_COLORS, SIDEBAR_LAYOUT } from '../../../constants';
 import { PAGE_CONTENT_LAYOUT } from '../../../constants/shared/pages';
 import { INSIGHTS_ERROR_MESSAGES } from './errors';
 import { INSIGHTS_UI } from './texts';
@@ -377,6 +377,8 @@ export const CLUSTER_INSIGHTS = {
   APP_PARAM: 'app',
   INSIGHT_PARAM: APP_ROUTE_PARAMS.INSIGHT,
   PANEL_WIDTH: 560,
+  // A quicker load shows no spinner, so the panel doesn't flash one before its content.
+  PANEL_SPINNER_DELAY_MS: 300,
   PANEL_WIDTH_EXPANDED: 900,
   // Per-viewer convenience only: the remembered Group by.
   GROUP_BY_STORAGE_KEY: 'insights.groupBy',
@@ -390,6 +392,9 @@ export const CLUSTER_INSIGHTS = {
     ENVIRONMENT: 'environment',
   },
 } as const;
+
+// White on the Acknowledged pill's green too (user decision, 2026-11-05).
+export const INSIGHT_TRIAGE_PILL_STYLE = { color: DEFAULT_COLORS.PILL_TEXT };
 
 export const INSIGHT_ROW_STATE_LABELS: Record<InsightRowState, string> = {
   open: P.STATE.OPEN,

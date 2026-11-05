@@ -33,6 +33,7 @@ import { RESOLVES_ON_ITS_OWN } from '../constants/guidance';
 import {
   CLUSTER_INSIGHTS,
   INSIGHT_CONFIDENCE_LABELS,
+  INSIGHT_TRIAGE_PILL_STYLE,
   INSIGHT_KIND_LABELS,
   INSIGHT_PARAM_LABELS,
   INSIGHT_ROW_STATE_LABELS,
@@ -85,8 +86,13 @@ const unsetButton: React.CSSProperties = { all: 'unset', cursor: 'pointer' };
 // Shown in the context card, so Details does not repeat them.
 const FACT_PARAMS = new Set(['message', 'namespace', 'workload', 'kind']);
 
-const chip = (text: string, accent?: string) => (
-  <Tag key={text} color={getPillColor(accent)} className={`${TAG_CLASS.MEDIUM} ${TAG_CLASS.AS_IS}`}>
+const chip = (text: string, accent?: string, style?: React.CSSProperties) => (
+  <Tag
+    key={text}
+    color={getPillColor(accent)}
+    className={`${TAG_CLASS.MEDIUM} ${TAG_CLASS.AS_IS}`}
+    style={style}
+  >
     {text}
   </Tag>
 );
@@ -277,10 +283,19 @@ const Summary: React.FC<{
         actions={actions}
         chips={
           <>
-            {chip(INSIGHT_SEVERITY_LABELS[insight.severity], accent)}
+            {chip(
+              INSIGHT_SEVERITY_LABELS[insight.severity],
+              STATUS_COLORS.INSIGHT_SEVERITY_PILL[insight.severity],
+            )}
             {chip(INSIGHT_KIND_LABELS[insight.kind] ?? insight.kind)}
             {chip(INSIGHT_ROW_STATE_LABELS[state])}
-            {triaged ? chip(triaged.state === 'dismissed' ? T.DISMISSED : T.ACKNOWLEDGED) : null}
+            {triaged
+              ? chip(
+                  triaged.state === 'dismissed' ? T.DISMISSED : T.ACKNOWLEDGED,
+                  STATUS_COLORS.INSIGHT_TRIAGE[triaged.state],
+                  INSIGHT_TRIAGE_PILL_STYLE,
+                )
+              : null}
           </>
         }
         facts={
@@ -363,6 +378,11 @@ const PanelBody: React.FC<BodyProps> = ({ namespace, app, id, row, onSelect, onC
     TRIAGE_PERMISSION.deny,
   );
   const [submitting, setSubmitting] = useState(false);
+  const [slowLoad, setSlowLoad] = useState(false);
+  useEffect(() => {
+    const timer = setTimeout(() => setSlowLoad(true), CLUSTER_INSIGHTS.PANEL_SPINNER_DELAY_MS);
+    return () => clearTimeout(timer);
+  }, []);
   const run = useEffectiveRun(doc?.lastRun);
   const insight = doc?.insights.find((i) => i.id === id);
   const others = useMemo(
@@ -371,6 +391,7 @@ const PanelBody: React.FC<BodyProps> = ({ namespace, app, id, row, onSelect, onC
   );
 
   if (!doc && isLoading) {
+    if (!slowLoad) return null;
     return (
       <div style={{ display: 'flex', justifyContent: 'center', padding: SPACING.XXL }}>
         <FancySpinner size={20} />

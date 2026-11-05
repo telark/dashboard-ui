@@ -602,7 +602,7 @@ const ClusterInsightsView: React.FC<Props> = memo(({ tab, active, tabs, appNote,
       },
       {
         key: K.KIND,
-        label: incidents ? P.FILTER.BY_KIND : P.FILTER.BY_FAMILY,
+        label: incidents ? P.FILTER.BY_KIND : P.FILTER.BY_CATEGORY,
         type: 'multiSelect',
         multiSelectOptions: kindOptions(incidents ? INCIDENT_KINDS : RECOMMENDATION_KINDS),
       },

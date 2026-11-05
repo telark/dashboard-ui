@@ -29,6 +29,7 @@ import TimeAgo from '../../../components/display/time/TimeAgo';
 import { INSIGHTS_UI } from '../constants/texts';
 import {
   CLUSTER_INSIGHTS,
+  INSIGHT_TRIAGE_PILL_STYLE,
   INSIGHT_KIND_LABELS,
   INSIGHT_ROW_STATE_LABELS,
   INSIGHT_SEVERITY_LABELS,
@@ -89,8 +90,13 @@ export const fittingInsightColumns = (available: number): ReadonlySet<InsightCol
   return FITTING_COLUMNS[count];
 };
 
-const tag = (text: string, accent?: string): React.ReactNode => (
-  <Tag key={text} color={getPillColor(accent)} className={`${TAG_CLASS.MEDIUM} ${TAG_CLASS.AS_IS}`}>
+const tag = (text: string, accent?: string, style?: React.CSSProperties): React.ReactNode => (
+  <Tag
+    key={text}
+    color={getPillColor(accent)}
+    className={`${TAG_CLASS.MEDIUM} ${TAG_CLASS.AS_IS}`}
+    style={style}
+  >
     {text}
   </Tag>
 );
@@ -235,7 +241,7 @@ export const buildInsightColumns = ({
       label: C.SEVERITY,
       icon: <AiOutlineWarning />,
       render: (r) =>
-        tag(INSIGHT_SEVERITY_LABELS[r.severity], STATUS_COLORS.INSIGHT_SEVERITY[r.severity]),
+        tag(INSIGHT_SEVERITY_LABELS[r.severity], STATUS_COLORS.INSIGHT_SEVERITY_PILL[r.severity]),
     },
     {
       key: 'APPLICATION',
@@ -251,7 +257,7 @@ export const buildInsightColumns = ({
     },
     {
       key: 'KIND',
-      label: recommendations ? C.FAMILY : C.KIND,
+      label: recommendations ? C.CATEGORY : C.KIND,
       icon: <AiOutlineTag />,
       render: (r) => tag(INSIGHT_KIND_LABELS[r.kind] ?? r.kind),
     },
@@ -267,7 +273,11 @@ export const buildInsightColumns = ({
       icon: <AiOutlineFlag />,
       render: (r) =>
         r.triage ? (
-          tag(TRIAGE_LABELS[r.triage.state])
+          tag(
+            TRIAGE_LABELS[r.triage.state],
+            STATUS_COLORS.INSIGHT_TRIAGE[r.triage.state],
+            INSIGHT_TRIAGE_PILL_STYLE,
+          )
         ) : (
           <span style={mutedStyle}>{EMPTY_VALUE}</span>
         ),
