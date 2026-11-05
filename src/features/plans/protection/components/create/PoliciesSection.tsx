@@ -17,7 +17,7 @@ import {
   POLICY_PARAM_LIMITS,
 } from '../../constants/protectionPlans';
 import { inputGuard } from '../../../../../utils/helpers/inputGuard';
-import type { PlanTemplate } from '../../models';
+import type { PlanMode, PlanTemplate } from '../../models';
 import Section from '../../../../../components/display/sections/Section';
 import { FieldError } from '../../../../../components/display/inputs';
 import { FancySpinner } from '../../../../../components/animation';
@@ -40,9 +40,16 @@ interface PoliciesSectionProps {
   disabled?: boolean;
 }
 
-// Under the mode select, the line a field error takes, while Audit is picked.
-const AuditNote: React.FC = () =>
-  Form.useWatch('mode') === 'audit' ? <FieldError warning message={FORM.AUDIT_WARNING} /> : null;
+const MODE_NOTES: Record<PlanMode, string> = {
+  audit: FORM.AUDIT_WARNING,
+  enforce: FORM.ENFORCE_WARNING,
+};
+
+// Under the mode select, the line a field error takes, saying what the picked mode does.
+const ModeNote: React.FC = () => {
+  const mode = Form.useWatch('mode') as PlanMode | undefined;
+  return <FieldError warning message={mode && MODE_NOTES[mode]} />;
+};
 
 const PoliciesSection: React.FC<PoliciesSectionProps> = ({
   policies,
@@ -80,7 +87,7 @@ const PoliciesSection: React.FC<PoliciesSectionProps> = ({
                 <InfoCircleOutlined tabIndex={0} aria-label={DOCS_LINKS.AUDIT_AND_ENFORCE.LABEL} />
               ),
             }}
-            extra={<AuditNote />}
+            extra={<ModeNote />}
           >
             <Select
               options={PPC.CREATE_PAGE.MODE_OPTIONS}

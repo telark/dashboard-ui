@@ -36,6 +36,12 @@ body {
   color-scheme: dark;
 }
 
+/* Pages scroll in the content pane. A tooltip at the screen edge pokes out a few pixels, and a
+   window scrollbar for it would shrink and reflow the whole app for a moment. */
+html {
+  overflow-x: hidden;
+}
+
 /* Chrome paints autofilled text via a UA !important rule, which outranks every
    author rule, and picks its color from color-scheme — so under the dark root
    above it goes white. Light surfaces must declare their own scheme or their

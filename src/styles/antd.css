@@ -312,6 +312,11 @@ body .ant-input-textarea-show-count {
   border-color: var(--color-surface-border) !important;
 }
 
+/* With a counter, the box is the wrapper: a filled square textarea would paint over its corners. */
+.app-panel-surface .ant-input-textarea-affix-wrapper > textarea.ant-input {
+  background-color: transparent !important;
+}
+
 /* That pin also hid antd's hover, focus and error borders. A hovered or focused field takes the
    muted ink, like App.tsx's hoverBorderColor and activeBorderColor (selects already do), and an
    invalid field keeps the error red. A disabled field doesn't react. */

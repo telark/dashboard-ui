@@ -446,6 +446,7 @@ export const PROTECTION_PLANS_CONSTANTS = {
       MODE_LABEL: 'When a change matches',
       POLICIES_LABEL: 'Policies to apply',
       AUDIT_WARNING: 'Audit only records matching changes. Nothing is blocked.',
+      ENFORCE_WARNING: 'Enforce blocks matching changes while the plan is active.',
       SCOPE_TYPE_LABEL: 'Scope type',
       APPLICATIONS_LABEL: 'Applications',
       APPLICATIONS_PLACEHOLDER: 'Select applications',

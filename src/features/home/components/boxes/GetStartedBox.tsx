@@ -21,7 +21,7 @@ import DashboardBox from '../box/DashboardBox';
 
 const { create } = ACTION_PERMISSIONS.protectionPlans;
 const G = T.GET_STARTED;
-const OPEN_CREATE_PANEL: CreatePlanRouteState = { createPlan: {} };
+const OPEN_CREATE_PANEL: CreatePlanRouteState = { createPlan: true };
 
 const helperStyle: React.CSSProperties = {
   ...S.MUTED_TEXT,

@@ -25,6 +25,7 @@ import ApplicationResetModal from '../../components/reset/ApplicationResetModal'
 import ApplicationDetailsToolbar from '../../components/layout/ApplicationDetailsToolbar';
 import { CLUSTER_INSIGHTS, insightsAppKey } from '../../../insights';
 import { ACTION_PERMISSIONS, usePermission } from '../../../auth/hooks';
+import ProtectPanelProvider from '../../components/protection/ProtectPanelProvider';
 
 const { viewSnapshotManifest } = ACTION_PERMISSIONS.applications;
 
@@ -159,7 +160,7 @@ const ApplicationDetailsView: React.FC = memo(() => {
   );
 
   return (
-    <>
+    <ProtectPanelProvider>
       <PageContainer
         breadcrumbs={breadcrumbItems}
         subtitle={APPLICATIONS_UI.DETAIL_PAGE.SUBTITLE}
@@ -212,7 +213,7 @@ const ApplicationDetailsView: React.FC = memo(() => {
         applicationNames={[details.name]}
         loading={resetLoading}
       />
-    </>
+    </ProtectPanelProvider>
   );
 });
 

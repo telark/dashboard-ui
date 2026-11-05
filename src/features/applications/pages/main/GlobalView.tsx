@@ -25,6 +25,7 @@ import { POLL_INTERVAL_MS } from '../../../../constants';
 import { pollWhileVisible } from '../../../../utils/helpers/poll';
 import ApplicationsMainEmpty from './Empty';
 import ApplicationsSuccess from './Success';
+import ProtectPanelProvider from '../../components/protection/ProtectPanelProvider';
 import { filterApplications, useApplications } from '../../hooks';
 import type { Application, ApplicationHealthQuickFilter } from '../../models';
 import { EditApplicationPanel } from '../../components/panels';
@@ -238,7 +239,7 @@ const ApplicationsGlobalView: React.FC = memo(() => {
   }
 
   return (
-    <>
+    <ProtectPanelProvider>
       <ApplicationsSuccess
         applications={paginatedApplications}
         searchValue={searchValue}
@@ -309,7 +310,7 @@ const ApplicationsGlobalView: React.FC = memo(() => {
           dispatch(clearAllFilters());
         }}
       />
-    </>
+    </ProtectPanelProvider>
   );
 });
 

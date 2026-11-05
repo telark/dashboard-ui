@@ -8,6 +8,9 @@ import { textChanged } from '../../../shared';
 import { APPLICATIONS_UI } from '../../constants/texts';
 import type { Application } from '../../models';
 import { useEditApplicationPanel } from '../../hooks/panels/useEditApplicationPanel';
+import { inputGuard } from '../../../../utils/helpers/inputGuard';
+
+const descriptionGuard = inputGuard(INPUT_LIMITS.APP_DESCRIPTION.MAX, { multiline: true });
 
 export interface EditApplicationPanelProps {
   open: boolean;
@@ -55,13 +58,19 @@ const EditApplicationPanel: React.FC<EditApplicationPanelProps> = ({
             required
             marginBottom={12}
           />
-          <LabeledInput
+          <Form.Item
             name="description"
             label={APPLICATIONS_UI.EDIT_PAGE.DESCRIPTION_LABEL}
-            maxLength={INPUT_LIMITS.APP_DESCRIPTION.MAX}
-            placeholder={APPLICATIONS_UI.EDIT_PAGE.DESCRIPTION_LABEL}
-            marginBottom={0}
-          />
+            normalize={descriptionGuard.normalize}
+            style={{ marginBottom: SPACING.NONE }}
+            className="form-item-compact no-asterisk"
+          >
+            <Input.TextArea
+              {...descriptionGuard.input}
+              autoSize={{ minRows: 2, maxRows: 6 }}
+              placeholder={APPLICATIONS_UI.EDIT_PAGE.DESCRIPTION_LABEL}
+            />
+          </Form.Item>
         </>
       }
       onSubmit={handleSubmit}
