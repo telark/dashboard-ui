@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import type { RootState } from '../../../../../../store';
 import { ACTION_PERMISSIONS, usePermission } from '../../../../../auth/hooks';
 import { NoPermissionCard } from '../../../../../../components/shared';
-import { ToggleButton } from '../../../../../../components/display/buttons';
 import type { ViewPanelTab } from '../../../../../../components/display/panels/view/types';
 import { USERS_CONSTANTS as UC } from '../../../constants';
 import { getEffectiveRoleRefs } from '../../../utils';
@@ -11,6 +10,9 @@ import { useGroupInheritedRoles } from '../role/useGroupInheritedRoles';
 import AssignedRolesView from '../../../../groups/components/display/role/AssignedRolesView';
 import UserGroupInheritedRolesView from '../../../components/display/manage/role/UserGroupInheritedRolesView';
 import UserAssignedGroupsView from '../../../components/display/manage/group/UserAssignedGroupsView';
+import RoleSourceSwitch, {
+  type RoleSource,
+} from '../../../components/display/shared/RoleSourceSwitch';
 import type { User } from '../../../models';
 import type { Role } from '../../../../roles/models';
 import type { Group } from '../../../../groups/models';
@@ -25,9 +27,6 @@ const ROLES_TAB_STYLE: React.CSSProperties = {
   flexDirection: 'column',
   gap: SPACING.MD,
 };
-const ROLE_SOURCE_STYLE: React.CSSProperties = { display: 'flex', gap: SPACING.SM };
-
-type RoleSource = 'direct' | 'groups';
 
 // The Members page loads roles and groups, so the tabs read them from the store. A role or group
 // opens in its own view panel on top of this one; a stacked panel (`stacked`) opens nothing further.
@@ -55,22 +54,12 @@ export const useUserViewTabs = (
         count: roleIds.length,
         content: canViewRoles ? (
           <div style={ROLES_TAB_STYLE}>
-            <div style={ROLE_SOURCE_STYLE}>
-              <ToggleButton
-                active={roleSource === 'direct'}
-                onClick={() => setRoleSource('direct')}
-                label={UC.LABELS.PANELS.VIEW.DIRECT_ROLES_BUTTON}
-                count={(user.roleRefs ?? []).length}
-                tooltip={UC.LABELS.PANELS.VIEW.DIRECT_ROLES_TOOLTIP}
-              />
-              <ToggleButton
-                active={roleSource === 'groups'}
-                onClick={() => setRoleSource('groups')}
-                label={UC.LABELS.PANELS.MANAGE_ROLE.FROM_GROUPS_BUTTON}
-                count={groupInheritedRoles.length}
-                tooltip={UC.LABELS.PANELS.MANAGE_ROLE.FROM_GROUPS_TOOLTIP}
-              />
-            </div>
+            <RoleSourceSwitch
+              value={roleSource}
+              onChange={setRoleSource}
+              directCount={(user.roleRefs ?? []).length}
+              groupsCount={groupInheritedRoles.length}
+            />
             {roleSource === 'direct' ? (
               <AssignedRolesView
                 assignedRoleIds={user.roleRefs ?? []}

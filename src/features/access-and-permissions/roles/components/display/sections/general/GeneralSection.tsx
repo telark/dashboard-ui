@@ -1,11 +1,17 @@
 import React, { memo } from 'react';
-import { Form, Select, Tooltip } from 'antd';
+import { Form, Input, Select, Tooltip } from 'antd';
 import Section from '../../../../../../../components/display/sections/Section';
 import { LabeledInput } from '../../../../../../../components/display/inputs';
 import { ROLES_CONSTANTS as RPC } from '../../../../constants';
 import type { RolesGeneralSectionProps } from '../../../../models';
 import { useRoleCategories, useNameValidation } from '../../../../hooks';
 import { INPUT_LIMITS, SPACING } from '../../../../../../../constants';
+import { inputGuard } from '../../../../../../../utils/helpers/inputGuard';
+
+const descriptionGuard = inputGuard(INPUT_LIMITS.ROLE_DESCRIPTION.MAX, {
+  required: `Please enter ${RPC.GENERAL.DESCRIPTION_LABEL.toLowerCase()}`,
+  multiline: true,
+});
 
 const RolesGeneralSection: React.FC<RolesGeneralSectionProps> = memo(
   ({
@@ -46,15 +52,24 @@ const RolesGeneralSection: React.FC<RolesGeneralSectionProps> = memo(
               placeholder={RPC.GENERAL.NAME_PLACEHOLDER}
               disabled={lockName || disabled}
             />
-            <LabeledInput
+            <Form.Item
               name="description"
               label={RPC.GENERAL.DESCRIPTION_LABEL}
-              maxLength={INPUT_LIMITS.ROLE_DESCRIPTION.MAX}
               required
-              placeholder={RPC.GENERAL.DESCRIPTION_PLACEHOLDER}
-              marginBottom={12}
-              disabled={disabled}
-            />
+              normalize={descriptionGuard.normalize}
+              rules={descriptionGuard.rules}
+              style={{ marginBottom: SPACING.MD }}
+              className="form-item-compact no-asterisk"
+            >
+              <Input.TextArea
+                {...descriptionGuard.input}
+                autoSize={{ minRows: 2, maxRows: 6 }}
+                placeholder={RPC.GENERAL.DESCRIPTION_PLACEHOLDER}
+                disabled={disabled}
+                // The counter sits beside the next field's label, so it needs no line of its own.
+                style={{ marginBottom: SPACING.NONE }}
+              />
+            </Form.Item>
             <Form.Item
               label={categoryLabel}
               name="categoryRef"

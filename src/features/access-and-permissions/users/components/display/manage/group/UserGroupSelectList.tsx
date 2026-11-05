@@ -89,7 +89,7 @@ const UserGroupSelectList: React.FC<UserGroupSelectListProps> = ({
                   hover: reason ? ARC.LIST.ITEM.DISABLED : AMC.LIST.ITEM.HOVER,
                 }}
                 nameStyles={AMC.LIST.MEMBER_NAME}
-                descriptionStyles={AMC.LIST.MEMBER_EMAIL}
+                descriptionStyles={AMC.LIST.GROUP_DESCRIPTION}
               />
             );
           })}

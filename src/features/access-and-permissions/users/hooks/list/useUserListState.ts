@@ -2,11 +2,18 @@ import React, { useState, useMemo, useCallback } from 'react';
 import { useSortState, sortData } from '../../../../../utils/layout/sort';
 import type { SortFieldConfig, SortOrder } from '../../../../../utils/layout/sort';
 import type { User } from '../../models';
+import { pillFor } from '../../components/display/shared/InvitePill';
 
 const USER_SORT_FIELDS: SortFieldConfig<User>[] = [
   { key: 'username', type: 'string' },
   { key: 'fullname', type: 'string' },
   { key: 'email', type: 'string' },
+  { key: 'state', type: 'string', getValue: (user) => user.status.phase },
+  {
+    key: 'invite',
+    type: 'string',
+    getValue: ({ status }) => pillFor(status.invite, status.inviteAcceptedAt).text,
+  },
   { key: 'creationDate', type: 'date' },
 ];
 

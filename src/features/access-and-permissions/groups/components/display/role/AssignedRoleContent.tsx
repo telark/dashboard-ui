@@ -4,7 +4,7 @@ import { isRoleProtected, getRoleScopesContent } from '../../../../roles/utils';
 import { truncateText, CapitalizeFirstLetter } from '../../../../../../utils/helpers/format';
 import { getScopeLabel } from '../../../../users/utils/role/scope';
 import type { Role } from '../../../../roles/models';
-import LockedRolePill from './LockedRolePill';
+import LockedRoleIcon from './LockedRoleIcon';
 
 interface AssignedRoleContentProps {
   role: Role;
@@ -17,7 +17,7 @@ const AssignedRoleContent: React.FC<AssignedRoleContentProps> = ({ role, fromGro
   <div style={ARC.LIST.ROLE_CONTENT}>
     <div style={ARC.LIST.ROLE_NAME_ROW}>
       <span style={ARC.LIST.ROLE_NAME}>{CapitalizeFirstLetter(role.name)}</span>
-      {isRoleProtected(role) && <LockedRolePill />}
+      {isRoleProtected(role) && <LockedRoleIcon />}
     </div>
     {role.description && (
       <span style={ARC.LIST.ROLE_DESCRIPTION}>

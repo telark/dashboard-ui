@@ -72,6 +72,24 @@ export const PANEL_TABS_THEME = {
   horizontalMargin: '0 0 14px 0',
 } as const;
 
+// A raised white selection on the track; the shadow draws its hairline too (user decision,
+// 2026-11-05: the one button-like control with a shadow).
+export const SEGMENTED_THEME = {
+  controlHeight: 38,
+  trackPadding: 3,
+  borderRadius: 10,
+  borderRadiusSM: 7,
+  fontSize: 13,
+  trackBg: DEFAULT_COLORS.SURFACE_SUBTLE,
+  itemColor: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+  itemHoverColor: DEFAULT_COLORS.TEXT_ON_SURFACE,
+  itemHoverBg: DEFAULT_COLORS.SURFACE_HOVER,
+  itemActiveBg: DEFAULT_COLORS.SURFACE_HOVER,
+  itemSelectedBg: DEFAULT_COLORS.SURFACE_WHITE,
+  itemSelectedColor: DEFAULT_COLORS.TEXT_ON_SURFACE,
+  boxShadowTertiary: `0 0 0 1px ${DEFAULT_COLORS.SURFACE_BORDER}, 0 1px 2px ${withAlpha(DEFAULT_COLORS.TEXT_ON_SURFACE, 0.08)}`,
+} as const;
+
 // Date and time pickers and their popups. Selection keeps the brand green of colorPrimary (user
 // decision, 2026-10-22), and hover and range take a 10% tint of it.
 export const DATE_PICKER_THEME = {

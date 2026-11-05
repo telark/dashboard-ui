@@ -12,6 +12,7 @@ import {
   PANEL_PREWARM,
   PANEL_TABS_THEME,
   PANEL_THEME_TOKENS,
+  SEGMENTED_THEME,
   SELECT_THEME,
   SIDEBAR_LAYOUT,
   SLIDE_OUT,
@@ -24,7 +25,12 @@ import { PanelFooter, PanelHeader } from '../shared';
 export const PANEL_THEME: ThemeConfig = {
   algorithm: theme.defaultAlgorithm,
   token: PANEL_THEME_TOKENS,
-  components: { Select: SELECT_THEME, Tabs: PANEL_TABS_THEME, DatePicker: DATE_PICKER_THEME },
+  components: {
+    Select: SELECT_THEME,
+    Tabs: PANEL_TABS_THEME,
+    DatePicker: DATE_PICKER_THEME,
+    Segmented: SEGMENTED_THEME,
+  },
   cssVar: { key: PANEL_PREWARM.CSS_VAR_KEY },
 };
 

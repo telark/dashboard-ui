@@ -51,6 +51,7 @@ export const USERS_CONSTANTS = {
       NO_ROLES: 'No roles',
       ROLE_NOUN: 'role',
       GROUP_ROLES_NOT_COUNTED: "Roles from groups aren't counted because you can't view groups",
+      STATE: 'State',
       INVITE: 'Invite',
     },
     BOOTSTRAP_PILL: {
@@ -61,6 +62,8 @@ export const USERS_CONSTANTS = {
       PENDING: 'Invite pending',
       EXPIRED: 'Invite expired',
       ENROLLED: 'Enrolled',
+      NOT_INVITED: 'Not invited',
+      NOT_INVITED_TOOLTIP: 'This member has no open enrollment link.',
       EXPIRES_AT: (when: string) => `Expires ${when}`,
       EXPIRED_AT: (when: string) => `Expired ${when}`,
       ENROLLED_AT: (when: string) => `Enrolled ${when}`,
@@ -163,6 +166,7 @@ export const USERS_CONSTANTS = {
           ROLES: 'Roles',
           GROUPS: 'Groups',
         },
+        ROLE_SOURCE_LABEL: 'Role source',
         DIRECT_ROLES_BUTTON: 'Direct',
         DIRECT_ROLES_TOOLTIP: 'View roles assigned to this user directly',
       },
@@ -236,6 +240,7 @@ export const USERS_CONSTANTS = {
     EMAIL: 'email',
     ROLES: 'roleRefs',
     CREATION_DATE: 'creationDate',
+    STATE: 'state',
     INVITE: 'invite',
     ACTIONS: 'actions',
     ENROLL_LINK_CREATE: 'enroll-link-create',
@@ -255,6 +260,7 @@ export const USERS_CONSTANTS = {
       ROLE: 120,
       // Narrower wraps the "Creation Date" header onto two lines.
       CREATED: 160,
+      STATE: 120,
       INVITE: 140,
       // Three row buttons with their gaps, plus the cell padding (measured).
       ACTIONS: 116,

@@ -24,7 +24,9 @@ const renderGroupContent = (group: Group): React.ReactNode => (
     <div style={AMC.LIST.MEMBER_INFO}>
       <div style={AMC.LIST.MEMBER_NAME}>{CapitalizeFirstLetter(group.name)}</div>
       {group.description && (
-        <div style={AMC.LIST.MEMBER_EMAIL}>{CapitalizeFirstLetter(group.description)}</div>
+        <div style={AMC.LIST.GROUP_DESCRIPTION} title={group.description}>
+          {CapitalizeFirstLetter(group.description)}
+        </div>
       )}
     </div>
   </div>

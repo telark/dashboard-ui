@@ -22,7 +22,7 @@ export interface ViewPanelProps {
   title: string;
   icon?: ReactNode;
   name: string;
-  description?: string;
+  description?: ReactNode;
   width?: number;
   details?: ViewDetailRow[];
   actions?: ViewPanelActions;
@@ -37,5 +37,5 @@ export interface ViewPanelDetailsProps {
 export interface ViewPanelHeaderProps {
   icon?: React.ReactNode;
   name: string;
-  description?: string;
+  description?: React.ReactNode;
 }
