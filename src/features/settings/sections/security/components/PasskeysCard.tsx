@@ -9,7 +9,7 @@ const linkStyle: React.CSSProperties = {
   ...UNSTYLED_BUTTON,
   fontSize: FONT_SIZE.BASE,
   fontWeight: FONT_WEIGHT.MEDIUM,
-  color: DEFAULT_COLORS.SUCCESS,
+  color: DEFAULT_COLORS.SUCCESS_TEXT,
   textDecoration: 'none',
   fontFamily: 'inherit',
 };

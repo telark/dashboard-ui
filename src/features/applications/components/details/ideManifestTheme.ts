@@ -1,10 +1,13 @@
-import { DEFAULT_COLORS } from '../../../../constants';
+import { DEFAULT_COLORS, PAGE_COLORS } from '../../../../constants';
 
+const { dark } = PAGE_COLORS;
+
+// The manifest viewer is a dark code editor in both themes.
 export const IDE_MANIFEST_THEME = {
-  bg: DEFAULT_COLORS.PAGE_BG,
-  border: DEFAULT_COLORS.BORDER_ELEVATED,
-  gutterText: DEFAULT_COLORS.ICON_MUTED,
-  headerBg: DEFAULT_COLORS.SURFACE_ELEVATED,
+  bg: dark.PAGE_BG,
+  border: dark.BORDER_ELEVATED,
+  gutterText: dark.ICON_MUTED,
+  headerBg: dark.SURFACE_ELEVATED,
   text: DEFAULT_COLORS.IDE_SYNTAX_TEXT,
   key: DEFAULT_COLORS.IDE_SYNTAX_KEY,
   string: DEFAULT_COLORS.IDE_SYNTAX_STRING,

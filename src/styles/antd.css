@@ -232,7 +232,13 @@ body .ant-input-textarea-show-count {
    colorPrimary, which also colors the jump arrows and the page input, so it is set here alone. */
 .app-pagination .ant-pagination-item-active,
 .app-pagination .ant-pagination-item-active:hover {
-  border-color: var(--color-text-muted);
+  border-color: var(--color-muted-fill);
+}
+
+/* The light theme's page takes the panels' hover and the darker "Off" track. */
+html[data-theme='light'] {
+  --app-toolbar-hover-bg: var(--color-surface-hover);
+  --app-switch-off-color: var(--color-text-muted);
 }
 
 /* Side panels keep the light surface they had before the dark theme, so the

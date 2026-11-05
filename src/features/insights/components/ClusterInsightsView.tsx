@@ -199,7 +199,7 @@ const EmptyInsights: React.FC<{
             <span style={mutedStyle}>{P.ANALYZER_OFF}</span>
             <Link
               to={CLUSTER_INSIGHTS.ANALYZER_SETTINGS_ROUTE}
-              style={{ color: DEFAULT_COLORS.SUCCESS }}
+              style={{ color: DEFAULT_COLORS.SUCCESS_TEXT }}
             >
               {P.OPEN_SETTINGS}
             </Link>

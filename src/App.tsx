@@ -27,6 +27,8 @@ import {
   FONT_SIZE,
   FORM_ITEM_GAP,
   FORM_LABEL_GAP,
+  MUTED_FILL,
+  PAGE_COLORS,
   SELECT_LOADING_ICON_SIZE,
   SIDEBAR_LAYOUT,
 } from './constants';
@@ -42,6 +44,7 @@ import {
 } from './features/auth/hooks';
 import { ensureGlobalConfigThunk } from './features/globalconfig/store';
 import { AttentionInsightsProvider } from './features/insights/hooks';
+import { useAppliedTheme } from './features/theme';
 import type { AppDispatch } from './store';
 
 const { view: viewSettings } = ACTION_PERMISSIONS.settings;
@@ -149,6 +152,9 @@ const renderEmpty = (componentName?: string) =>
   componentName && DROPDOWNS.has(componentName) ? DROPDOWN_EMPTY.DEFAULT : undefined;
 
 const App: React.FC = () => {
+  const pageTheme = useAppliedTheme();
+  const page = PAGE_COLORS[pageTheme];
+
   return (
     <ErrorBoundary>
       <ConfigProvider
@@ -164,7 +170,7 @@ const App: React.FC = () => {
         theme={{
           cssVar: { key: 'telark' },
           hashed: false,
-          algorithm: darkAlgorithm,
+          algorithm: pageTheme === 'dark' ? darkAlgorithm : theme.defaultAlgorithm,
           token: {
             // The single control box style: height, radius and font for every antd
             // Button/Input/Select/InputNumber/DatePicker. TOOLBAR_CONTROL feeds the
@@ -176,21 +182,27 @@ const App: React.FC = () => {
             fontFamily: FONT_FAMILY,
             colorPrimary: DEFAULT_COLORS.SUCCESS,
             colorSuccess: DEFAULT_COLORS.SUCCESS,
-            // No blue: antd's info Alerts and icons take the muted gray.
-            colorInfo: DEFAULT_COLORS.TEXT_MUTED,
+            // No blue: antd's info Alerts and icons take the muted gray. Panels inherit this seed.
+            colorInfo: MUTED_FILL,
             // antd draws every keyboard focus ring in this color; its derived dark mint is 1.76:1 on the page.
-            colorPrimaryBorder: DEFAULT_COLORS.TEXT_SECONDARY,
-            // Every link in the app, antd's or a plain <a>, takes the brand green from here.
-            colorLink: DEFAULT_COLORS.SUCCESS,
-            colorLinkHover: DEFAULT_COLORS.SUCCESS_HOVER,
-            colorLinkActive: DEFAULT_COLORS.SUCCESS_ACTIVE,
+            colorPrimaryBorder: page.TEXT_SECONDARY,
+            // Every link in the app, antd's or a plain <a>, takes its color from here.
+            colorLink: page.SUCCESS_TEXT,
+            colorLinkHover: page.SUCCESS_TEXT_HOVER,
+            colorLinkActive: page.SUCCESS_TEXT_ACTIVE,
             colorError: DEFAULT_COLORS.DANGER,
             colorWarning: DEFAULT_COLORS.WARNING,
-            colorBgBase: DEFAULT_COLORS.PAGE_BG,
-            colorTextBase: DEFAULT_COLORS.TEXT_PRIMARY,
-            colorBgContainer: DEFAULT_COLORS.PAGE_BG,
-            colorBgLayout: DEFAULT_COLORS.PAGE_BG,
-            colorBorder: DEFAULT_COLORS.BORDER_DEFAULT,
+            colorBgBase: page.PAGE_BG,
+            colorTextBase: page.TEXT_PRIMARY,
+            colorBgContainer: page.PAGE_BG,
+            colorBgLayout: page.PAGE_BG,
+            colorBorder: page.BORDER_DEFAULT,
+            ...(pageTheme === 'light' && {
+              // antd's light defaults fade to 2.9:1 at best on the page, and to 1.8:1 under an avatar's letter.
+              colorTextDescription: page.TEXT_MUTED,
+              colorTextPlaceholder: page.TEXT_MUTED,
+              colorTextTertiary: page.TEXT_MUTED,
+            }),
           },
           components: {
             // The dark algorithm derives a near-white disabled text color, which
@@ -211,7 +223,7 @@ const App: React.FC = () => {
             Form: {
               itemMarginBottom: FORM_ITEM_GAP,
               labelFontSize: FONT_SIZE.MD,
-              labelColor: DEFAULT_COLORS.TEXT_PRIMARY,
+              labelColor: page.TEXT_PRIMARY,
               verticalLabelPadding: `0 0 ${FORM_LABEL_GAP}px`,
             },
             // Focus ring matches Select: colorPrimary is the app green, which antd
@@ -267,20 +279,20 @@ const App: React.FC = () => {
             // same muted hairline the rest of the dark surface uses.
             // Selection is a neutral tint: teal means brand, primary action and success.
             Table: {
-              borderColor: DEFAULT_COLORS.BORDER_SUBTLE,
+              borderColor: page.BORDER_SUBTLE,
               rowSelectedBg: DEFAULT_COLORS.NEUTRAL_TINT,
               rowSelectedHoverBg: DEFAULT_COLORS.NEUTRAL_TINT,
-              rowHoverBg: DEFAULT_COLORS.HOVER_BG,
+              rowHoverBg: page.HOVER_BG,
               // The horizontal scrollbar track is drawn from colorSplit, which the
               // dark algorithm also derives as blue.
-              colorSplit: DEFAULT_COLORS.BORDER_SUBTLE,
-              stickyScrollBarBg: DEFAULT_COLORS.BORDER_HOVER,
+              colorSplit: page.BORDER_SUBTLE,
+              stickyScrollBarBg: page.BORDER_HOVER,
               selectionColumnWidth: LIST_PAGE.TABLE_SELECTION_COLUMN_WIDTH_PX,
               headerSplitColor: 'transparent',
             },
             // The current page is a selection, not a status: the selected quick filter's neutral fill.
             Pagination: {
-              itemActiveBg: DEFAULT_COLORS.TEXT_MUTED,
+              itemActiveBg: MUTED_FILL,
               itemActiveColor: DEFAULT_COLORS.TEXT_ON_SURFACE,
               itemActiveColorHover: DEFAULT_COLORS.TEXT_ON_SURFACE,
             },
@@ -301,8 +313,8 @@ const App: React.FC = () => {
             Segmented: {
               itemSelectedBg: DEFAULT_COLORS.SURFACE_WHITE,
               itemSelectedColor: DEFAULT_COLORS.TEXT_ON_SURFACE,
-              itemColor: DEFAULT_COLORS.TEXT_PRIMARY,
-              itemHoverColor: DEFAULT_COLORS.TEXT_PRIMARY,
+              itemColor: page.TEXT_PRIMARY,
+              itemHoverColor: page.TEXT_PRIMARY,
             },
           },
         }}

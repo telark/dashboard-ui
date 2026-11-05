@@ -53,7 +53,7 @@ const iconTileStyle: React.CSSProperties = {
   borderRadius: RADIUS.LG,
   background: DEFAULT_COLORS.SURFACE_ELEVATED,
   border: SECTION_LAYOUT.SUBTLE_DIVIDER,
-  color: DEFAULT_COLORS.SUCCESS,
+  color: DEFAULT_COLORS.SUCCESS_TEXT,
 };
 
 // The help box matches the Home boxes: elevated surface, icon and title header, numbered steps.
@@ -189,7 +189,7 @@ const ApplicationsMainEmpty: React.FC<EmptyProps> = memo(({ excludedCount, onChe
                   <span style={helperStyle}>{H.NAMESPACE.HELPER}</span>
                   <Link
                     to={DISCOVERY_SETTINGS_ROUTE}
-                    style={{ color: DEFAULT_COLORS.SUCCESS, fontSize: FONT_SIZE.SM }}
+                    style={{ color: DEFAULT_COLORS.SUCCESS_TEXT, fontSize: FONT_SIZE.SM }}
                   >
                     {M.OPEN_DISCOVERY_SETTINGS}
                   </Link>

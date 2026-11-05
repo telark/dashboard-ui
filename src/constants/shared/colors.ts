@@ -1,4 +1,62 @@
-// Hand-mirrored copies that cannot import this file: index.html theme-color and its inline --color-page-bg, public/manifest.json (PAGE_BG), public/telark-*.svg (PAGE_BG, SUCCESS, TEXT_PRIMARY).
+// Hand-mirrored copies that cannot import this file: index.html theme-color and its inline --color-page-bg (both themes), public/manifest.json (dark PAGE_BG), public/telark-*.svg (dark PAGE_BG, SUCCESS, dark TEXT_PRIMARY, TEXT_ON_SURFACE).
+export type PageTheme = 'dark' | 'light';
+
+// The page's colors, the only ones that change with the theme. Panels, modals and other
+// overlays stay light in both. DEFAULT_COLORS reads these through CSS variables, so a value
+// that must be a real color (antd's seeds, a canvas) comes from here, by theme.
+const DARK_PAGE_COLORS = {
+  PAGE_BG: '#111827',
+  HOVER_BG: '#1f2937',
+  SURFACE_ELEVATED: '#161f2e',
+  SURFACE_ELEVATED_HOVER: '#1c2738',
+  TEXT_PRIMARY: '#ffffff',
+  TEXT_SECONDARY: '#d1d5db',
+  TEXT_MUTED: '#9ca3af',
+  TEXT_DISABLED: '#6b7280',
+  BORDER_DEFAULT: '#374151',
+  BORDER_SUBTLE: '#1f2937',
+  BORDER_HOVER: '#4b5563',
+  BORDER_ELEVATED: '#2a3648',
+  ICON_MUTED: '#4b5563',
+  ICON_SECONDARY: '#6b7280',
+  CHIP_CUSTOM_BG: '#1f2937',
+  SUCCESS_TEXT: '#20C997',
+  SUCCESS_TEXT_HOVER: '#1db584',
+  SUCCESS_TEXT_ACTIVE: '#1aa572',
+  WARNING_TEXT: '#FAAD14',
+  NEUTRAL_TEXT: '#98a2b3',
+} as const;
+
+export const PAGE_COLORS: Record<PageTheme, Record<keyof typeof DARK_PAGE_COLORS, string>> = {
+  dark: DARK_PAGE_COLORS,
+  light: {
+    PAGE_BG: '#f8fafc',
+    HOVER_BG: '#f1f5f9',
+    SURFACE_ELEVATED: '#ffffff',
+    SURFACE_ELEVATED_HOVER: '#f8fafc',
+    TEXT_PRIMARY: '#111827',
+    TEXT_SECONDARY: '#334155',
+    TEXT_MUTED: '#5b6b80', // 4.97:1 on HOVER_BG, the darkest surface it sits on
+    TEXT_DISABLED: '#94a3b8',
+    BORDER_DEFAULT: '#cbd5e1',
+    BORDER_SUBTLE: '#e2e8f0',
+    BORDER_HOVER: '#94a3b8',
+    BORDER_ELEVATED: '#e2e8f0',
+    ICON_MUTED: '#94a3b8',
+    ICON_SECONDARY: '#64748b',
+    CHIP_CUSTOM_BG: '#f1f5f9',
+    // On white the brand green is 2.1:1 and amber 1.9:1, so their text on the page darkens.
+    SUCCESS_TEXT: '#0f766e',
+    SUCCESS_TEXT_HOVER: '#115e59',
+    SUCCESS_TEXT_ACTIVE: '#134e4a',
+    WARNING_TEXT: '#b45309',
+    NEUTRAL_TEXT: '#5b6b80',
+  },
+};
+
+// The muted gray as a fill, the same in both themes: its text is dark.
+export const MUTED_FILL = '#9ca3af';
+
 export const DEFAULT_COLORS = {
   // Status accents; SUCCESS is also the brand primary.
   SUCCESS: '#20C997',
@@ -7,6 +65,10 @@ export const DEFAULT_COLORS = {
   INFO: '#bfdbfe',
   INFO_STRONG: '#2563eb', // info blue that reads on white (5.17:1)
   NEUTRAL: '#98a2b3',
+  // The status colors as text and icons on the page, readable in both themes.
+  SUCCESS_TEXT: 'var(--color-success-text)',
+  WARNING_TEXT: 'var(--color-warning-text)',
+  NEUTRAL_TEXT: 'var(--color-neutral-text)',
   // Brand primary interaction states.
   SUCCESS_HOVER: '#1db584',
   SUCCESS_ACTIVE: '#1aa572',
@@ -17,25 +79,25 @@ export const DEFAULT_COLORS = {
   NEUTRAL_TINT: 'rgba(153, 153, 153, 0.12)',
   // Dark surfaces: the page, then elevated cards one step above it so they read as raised
   // without shadows and still sit below CHIP_CUSTOM_BG used inside them.
-  PAGE_BG: '#111827',
-  HOVER_BG: '#1f2937',
-  SURFACE_ELEVATED: '#161f2e',
-  SURFACE_ELEVATED_HOVER: '#1c2738',
+  PAGE_BG: 'var(--color-page-bg)',
+  HOVER_BG: 'var(--color-hover-bg)',
+  SURFACE_ELEVATED: 'var(--color-surface-elevated)',
+  SURFACE_ELEVATED_HOVER: 'var(--color-surface-elevated-hover)',
   // Text on dark surfaces.
-  TEXT_PRIMARY: '#ffffff',
-  TEXT_SECONDARY: '#d1d5db',
-  TEXT_MUTED: '#9ca3af',
-  TEXT_DISABLED: '#6b7280',
+  TEXT_PRIMARY: 'var(--color-text-primary)',
+  TEXT_SECONDARY: 'var(--color-text-secondary)',
+  TEXT_MUTED: 'var(--color-text-muted)',
+  TEXT_DISABLED: 'var(--color-text-disabled)',
   // Borders on dark surfaces; BORDER_SUBTLE is darker than BORDER_DEFAULT.
-  BORDER_DEFAULT: '#374151',
-  BORDER_SUBTLE: '#1f2937',
-  BORDER_HOVER: '#4b5563',
-  BORDER_ELEVATED: '#2a3648',
+  BORDER_DEFAULT: 'var(--color-border-default)',
+  BORDER_SUBTLE: 'var(--color-border-subtle)',
+  BORDER_HOVER: 'var(--color-border-hover)',
+  BORDER_ELEVATED: 'var(--color-border-elevated)',
   // Icons on dark surfaces.
-  ICON_MUTED: '#4b5563',
-  ICON_SECONDARY: '#6b7280',
+  ICON_MUTED: 'var(--color-icon-muted)',
+  ICON_SECONDARY: 'var(--color-icon-secondary)',
   // Chips on dark surfaces; CHIP_ON_SURFACE_* is the light counterpart.
-  CHIP_CUSTOM_BG: '#1f2937',
+  CHIP_CUSTOM_BG: 'var(--color-chip-custom-bg)',
   // Light surfaces: panels, modals, dropdowns, popovers.
   SURFACE_WHITE: '#ffffff',
   SURFACE_SUBTLE: '#f8fafc',
@@ -96,13 +158,28 @@ const rgbChannels = (color: string): string => {
 
 /** A token at another opacity, so alpha variants never become new literals. */
 export const withAlpha = (color: string, alpha: number): string =>
-  `rgba(${rgbChannels(color)}, ${alpha})`;
+  color.startsWith('var(')
+    ? `color-mix(in srgb, ${color} ${alpha * 100}%, transparent)`
+    : `rgba(${rgbChannels(color)}, ${alpha})`;
+
+const colorVariable = (key: string): string => `--color-${key.toLowerCase().replaceAll('_', '-')}`;
 
 /** CSS can't import this file: every token is exposed as `--color-<kebab-key>` on :root. */
-export const applyColorVariables = (root: HTMLElement = document.documentElement): void => {
-  Object.entries(DEFAULT_COLORS).forEach(([key, value]) =>
-    root.style.setProperty(`--color-${key.toLowerCase().replaceAll('_', '-')}`, value),
+export const applyColorVariables = (
+  pageTheme: PageTheme,
+  root: HTMLElement = document.documentElement,
+): void => {
+  Object.entries({ ...DEFAULT_COLORS, ...PAGE_COLORS[pageTheme], MUTED_FILL }).forEach(
+    ([key, value]) => root.style.setProperty(colorVariable(key), value),
   );
+};
+
+/** A canvas can't read CSS variables: a page token becomes its value for the theme. */
+export const resolvePageColor = (color: string, pageTheme: PageTheme): string => {
+  const entry = Object.entries(PAGE_COLORS[pageTheme]).find(
+    ([key]) => `var(${colorVariable(key)})` === color,
+  );
+  return entry ? entry[1] : color;
 };
 
 interface PillSurface {
@@ -118,7 +195,7 @@ const PILL_NEUTRAL = '#374151';
 const PILL_DARK_TEXT_FILLS: ReadonlySet<string> = new Set([
   DEFAULT_COLORS.SUCCESS,
   DEFAULT_COLORS.WARNING,
-  DEFAULT_COLORS.TEXT_MUTED,
+  MUTED_FILL,
   DEFAULT_COLORS.NEUTRAL,
 ]);
 
@@ -128,7 +205,7 @@ const PILL_CASES: Record<string, string> = {
   [DEFAULT_COLORS.WARNING]: DEFAULT_COLORS.WARNING,
   [DEFAULT_COLORS.INFO]: DEFAULT_COLORS.INFO_STRONG,
   [DEFAULT_COLORS.NEUTRAL]: DEFAULT_COLORS.NEUTRAL,
-  [DEFAULT_COLORS.TEXT_MUTED]: DEFAULT_COLORS.TEXT_MUTED,
+  [DEFAULT_COLORS.TEXT_MUTED]: MUTED_FILL,
 };
 
 /** Pill background for a case accent (an antd `Tag` color); no accent means the neutral pill. */

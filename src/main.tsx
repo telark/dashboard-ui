@@ -7,11 +7,12 @@ import App from './App';
 import { dropForeignPermissions } from './features/auth/hooks';
 import { dropLegacySessionToken } from './features/auth/utils';
 import { registerHealthInterceptors, selectServiceHealth } from './api';
-import { applyColorVariables, applyLayoutVariables } from './constants';
+import { applyLayoutVariables } from './constants';
+import { applyStoredTheme } from './features/theme';
 import './styles/index.css';
 import './styles/antd.css';
 
-applyColorVariables();
+applyStoredTheme();
 applyLayoutVariables();
 dropLegacySessionToken();
 

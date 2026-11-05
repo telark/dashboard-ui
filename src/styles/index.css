@@ -36,6 +36,11 @@ body {
   color-scheme: dark;
 }
 
+html[data-theme='light'],
+html[data-theme='light'] body {
+  color-scheme: light;
+}
+
 /* Pages scroll in the content pane. A tooltip at the screen edge pokes out a few pixels, and a
    window scrollbar for it would shrink and reflow the whole app for a moment. */
 html {

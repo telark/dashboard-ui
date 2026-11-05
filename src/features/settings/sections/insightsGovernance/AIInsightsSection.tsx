@@ -330,7 +330,7 @@ const AIInsightsSection: React.FC = memo(() => {
               <span
                 style={{
                   fontWeight: FONT_WEIGHT.BOLD,
-                  color: ready ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.WARNING,
+                  color: ready ? DEFAULT_COLORS.SUCCESS_TEXT : DEFAULT_COLORS.WARNING_TEXT,
                 }}
               >
                 {stateLabel}
@@ -443,7 +443,7 @@ const AIInsightsSection: React.FC = memo(() => {
             </div>
           ) : null}
           {researchLicensed ? (
-            <div style={{ color: DEFAULT_COLORS.WARNING }}>{C.LABELS.LICENSE_WARNING}</div>
+            <div style={{ color: DEFAULT_COLORS.WARNING_TEXT }}>{C.LABELS.LICENSE_WARNING}</div>
           ) : null}
           {pull ? (
             <div>

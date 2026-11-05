@@ -1,6 +1,6 @@
-/* The brand dark, matching DEFAULT_COLORS.PAGE_BG. */
+/* The brand dark, in both themes: the same color as the dark PAGE_BG. */
 .auth-root {
-  --color-primary: var(--color-page-bg);
+  --color-primary: var(--color-text-on-surface);
 }
 
 /* Auth fills the viewport exactly and never scrolls, so any rubber-band bounce

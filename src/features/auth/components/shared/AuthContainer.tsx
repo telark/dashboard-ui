@@ -6,7 +6,7 @@
  */
 import React from 'react';
 import { Row, Col, Grid } from 'antd';
-import { DEFAULT_COLORS, SPACING } from '../../../../constants';
+import { DEFAULT_COLORS, PAGE_COLORS, SPACING } from '../../../../constants';
 
 const { useBreakpoint } = Grid;
 
@@ -39,7 +39,8 @@ export const AuthContainer: React.FC<AuthContainerProps> = ({
           <div
             // 14: the banner's vertical padding sits between MD and LG.
             style={{
-              background: DEFAULT_COLORS.PAGE_BG,
+              // The brand panel is dark in both themes.
+              background: PAGE_COLORS.dark.PAGE_BG,
               padding: `14px ${SPACING.XXL}px`,
               display: 'flex',
               alignItems: 'center',
@@ -54,7 +55,7 @@ export const AuthContainer: React.FC<AuthContainerProps> = ({
               lg={12}
               // 48: the brand panel's padding sits above XXXL.
               style={{
-                background: DEFAULT_COLORS.PAGE_BG,
+                background: PAGE_COLORS.dark.PAGE_BG,
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',

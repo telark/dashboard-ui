@@ -19,7 +19,7 @@ export const EMPTY_ACTION_STYLE: CSSProperties = {
   fontWeight: 600,
   background: DEFAULT_COLORS.SUCCESS,
   borderColor: DEFAULT_COLORS.SUCCESS,
-  color: DEFAULT_COLORS.PAGE_BG,
+  color: DEFAULT_COLORS.TEXT_ON_SURFACE,
   display: 'inline-flex',
   alignItems: 'center',
   justifyContent: 'center',

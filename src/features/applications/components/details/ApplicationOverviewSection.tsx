@@ -154,7 +154,7 @@ const PressureValue: React.FC<{ pressure: Pressure }> = ({ pressure }) => (
         display: 'inline-flex',
         alignItems: 'center',
         gap: SPACING.S6,
-        color: DEFAULT_COLORS.WARNING,
+        color: DEFAULT_COLORS.WARNING_TEXT,
         whiteSpace: 'nowrap',
       }}
     >

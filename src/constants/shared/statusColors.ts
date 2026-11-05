@@ -5,6 +5,8 @@ const {
   DANGER,
   WARNING,
   NEUTRAL,
+  SUCCESS_TEXT,
+  NEUTRAL_TEXT,
   TEXT_SECONDARY,
   TEXT_MUTED,
   ICON_MUTED,
@@ -69,7 +71,7 @@ export const STATUS_COLORS = {
   // Unprotected is the risk, the one filled pill. The rest are outlines in these colors: the
   // nominal Protected in green, auditing and pending in two neutral tones.
   APPLICATION_COVERAGE: {
-    enforcing: SUCCESS,
+    enforcing: SUCCESS_TEXT,
     auditing: TEXT_SECONDARY,
     upcoming: TEXT_MUTED,
     // Neutral, like auditing: the warning icon alone marks it (user, 2026-10-22).
@@ -109,10 +111,10 @@ export const STATUS_COLORS = {
   INSIGHT_TRIAGE: { acknowledged: SUCCESS, dismissed: undefined },
   // Text with a dot, never red or amber: those, and the gray pill, mean severity.
   INSIGHT_STATE: {
-    open: NEUTRAL,
-    updated: NEUTRAL,
+    open: NEUTRAL_TEXT,
+    updated: NEUTRAL_TEXT,
     stale: TEXT_MUTED,
-    resolved: SUCCESS,
+    resolved: SUCCESS_TEXT,
   },
   NOTIFICATION_SEVERITY: {
     info: NEUTRAL,

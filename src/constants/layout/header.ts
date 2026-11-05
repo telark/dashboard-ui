@@ -6,6 +6,7 @@ export const HEADER_LAYOUT = {
   MIN_HEIGHT: 'calc(100vh - 55px)',
   LOGO: {
     SRC: '/telark-logo.svg',
+    SRC_ON_LIGHT: '/telark-logo-on-light.svg',
     ALT: 'telark',
     WIDTH: 96,
     HEIGHT: 22,

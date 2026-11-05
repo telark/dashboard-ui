@@ -4,6 +4,7 @@ import { HiChevronUpDown } from 'react-icons/hi2';
 import { useNavigate } from 'react-router-dom';
 import {
   getCurrentUser,
+  setCurrentUser as storeCurrentUser,
   CURRENT_USER_UPDATED_EVENT,
   handleUserLogout,
 } from '../../../../auth/utils';
@@ -49,8 +50,9 @@ const UserAvatarDropdown: React.FC<UserAvatarDropdownProps> = memo(
       const initialUser = getCurrentUser();
 
       if (initialUser?.id) {
+        // Through the stored user: settings changed on another device (theme, time zone) apply here.
         fetchCurrentUserDetails((user) => {
-          setCurrentUser(user);
+          storeCurrentUser(user);
         });
       }
 
