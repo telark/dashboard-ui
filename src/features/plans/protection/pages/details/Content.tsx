@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, domAnimation, LazyMotion, m } from 'framer-motion';
 import { Button, Select, Tooltip } from 'antd';
 import { InfoCircleOutlined, ReloadOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
@@ -402,25 +402,27 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
         <div ref={barRef} style={LIST_PAGE.DETAILS_STICKY_ROW_STYLE}>
           <div style={ROW_STYLE}>
             <div style={STATUS_GROUP_STYLE}>
-              <AnimatePresence initial={false}>
-                {nameVisible ? (
-                  <motion.div
-                    key="name"
-                    initial={{ opacity: 0, y: -4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -4 }}
-                    transition={{
-                      duration: LIST_PAGE.DETAILS_NAME_REVEAL_DURATION_S,
-                      ease: 'easeOut',
-                    }}
-                    style={NAME_STYLE}
-                  >
-                    <span title={plan.name} style={NAME_TEXT_STYLE}>
-                      {plan.name}
-                    </span>
-                  </motion.div>
-                ) : null}
-              </AnimatePresence>
+              <LazyMotion features={domAnimation}>
+                <AnimatePresence initial={false}>
+                  {nameVisible ? (
+                    <m.div
+                      key="name"
+                      initial={{ opacity: 0, y: -4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -4 }}
+                      transition={{
+                        duration: LIST_PAGE.DETAILS_NAME_REVEAL_DURATION_S,
+                        ease: 'easeOut',
+                      }}
+                      style={NAME_STYLE}
+                    >
+                      <span title={plan.name} style={NAME_TEXT_STYLE}>
+                        {plan.name}
+                      </span>
+                    </m.div>
+                  ) : null}
+                </AnimatePresence>
+              </LazyMotion>
               <PlanStatusBand
                 plan={plan}
                 health={healthState}
