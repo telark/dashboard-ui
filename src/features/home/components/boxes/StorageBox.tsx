@@ -8,6 +8,7 @@ import {
   HOME_DASHBOARD_LAYOUT as L,
   HOME_DASHBOARD_STYLES as ST,
   HOME_DASHBOARD_TEXTS as T,
+  STORAGE_SETTINGS_ROUTE,
 } from '../../constants/dashboard';
 import type { NoAccess, StorageState } from '../../models';
 import DashboardBox from '../box/DashboardBox';
@@ -83,6 +84,7 @@ const StorageBox: React.FC<StorageBoxProps> = memo(
     <DashboardBox
       title={S.TITLE}
       icon={HOME_BOX_ICONS.STORAGE}
+      viewAllTo={STORAGE_SETTINGS_ROUTE}
       noAccess={snapshotsNoAccess && reportsNoAccess ? snapshotsNoAccess : undefined}
       loading={pending(snapshots, snapshotsNoAccess) || pending(reports, reportsNoAccess)}
       failed={unavailable(snapshots, snapshotsNoAccess) && unavailable(reports, reportsNoAccess)}

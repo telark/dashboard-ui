@@ -7,9 +7,11 @@ import {
   AiOutlineWarning,
 } from 'react-icons/ai';
 import { SiKubernetes } from 'react-icons/si';
-import { CARD_LAYOUT, DEFAULT_COLORS, Icons } from '../../../constants';
+import { APP_ROUTES, CARD_LAYOUT, DEFAULT_COLORS, Icons } from '../../../constants';
 import { ALL_EXCLUDED, DISCOVERY_LABELS_HINT } from '../../applications';
 import type { PlanEventKey, SeverityKey } from '../models';
+
+export const STORAGE_SETTINGS_ROUTE = `${APP_ROUTES.SETTINGS}/storage`;
 
 export const HOME_DASHBOARD_TEXTS = {
   TITLE: 'Home',
