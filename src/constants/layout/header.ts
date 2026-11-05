@@ -34,6 +34,7 @@ export const HEADER_CONSTANTS = {
         SECURITY: 'Security',
         MY_PERMISSIONS: 'My Permissions',
         LOGOUT: 'Logout',
+        BOOTSTRAP: 'Bootstrap',
       },
     },
     // The identity band above the menu items, the same SURFACE_SUBTLE band as the view panels' header.

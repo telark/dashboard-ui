@@ -1,4 +1,5 @@
 import React from 'react';
+import { Tag } from 'antd';
 import UserAvatarComponent from '../../../../../components/display/avatars/UserAvatar';
 import { avatarRingStyle } from '../../../../../components/display/avatars/avatarRing';
 import {
@@ -44,15 +45,21 @@ const UserMenuHeader: React.FC<{ currentUser: User }> = ({ currentUser }) => (
       />
     </div>
     <div style={{ minWidth: 0, lineHeight: LINE_HEIGHT.SNUG }}>
-      <div
-        style={{
-          ...ellipsis,
-          fontSize: FONT_SIZE.BASE,
-          fontWeight: FONT_WEIGHT.SEMIBOLD,
-          color: INFO.USERNAME_COLOR,
-        }}
-      >
-        {currentUser.username || SIDEBAR_USER_MENU.FALLBACK_USERNAME}
+      <div style={{ display: 'flex', alignItems: 'center', gap: SPACING.SM }}>
+        <div
+          title={currentUser.username}
+          style={{
+            ...ellipsis,
+            fontSize: FONT_SIZE.BASE,
+            fontWeight: FONT_WEIGHT.SEMIBOLD,
+            color: INFO.USERNAME_COLOR,
+          }}
+        >
+          {currentUser.username || SIDEBAR_USER_MENU.FALLBACK_USERNAME}
+        </div>
+        {currentUser.bootstrap === true ? (
+          <Tag style={{ flexShrink: 0 }}>{HEADER_CONSTANTS.USER.MENU.TEXTS.BOOTSTRAP}</Tag>
+        ) : null}
       </div>
       {currentUser.email ? (
         <div
