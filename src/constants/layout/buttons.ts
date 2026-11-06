@@ -1,5 +1,4 @@
 import { CONTROL_HEIGHT, SPACING } from './controls';
-import {} from '..';
 import { SIDEBAR_LAYOUT } from './sidebar';
 import { DEFAULT_COLORS } from '../shared/colors';
 
