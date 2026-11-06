@@ -387,7 +387,7 @@ function applyApplicationFilters(
   });
 }
 
-const KNOWN_HEALTH: readonly string[] = ['healthy', 'degraded', 'down'];
+const KNOWN_HEALTH: ReadonlySet<string> = new Set(['healthy', 'degraded', 'down']);
 
 function countByHealthQuickFilter(
   apps: Application[],
@@ -416,7 +416,7 @@ function applyHealthQuickFilter(
   if (q === 'all') return apps;
   // Unknown takes every status the other pills don't, as the card shows it, so the counts add up to All.
   if (q === 'unknown') {
-    return apps.filter((a) => !KNOWN_HEALTH.includes(String(a.health?.status || '').toLowerCase()));
+    return apps.filter((a) => !KNOWN_HEALTH.has(String(a.health?.status || '').toLowerCase()));
   }
   const wanted = q === 'unhealthy' ? 'down' : q;
   return apps.filter((a) => String(a.health?.status || '').toLowerCase() === wanted);

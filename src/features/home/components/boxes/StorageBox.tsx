@@ -37,11 +37,10 @@ interface MeterProps {
 // A meter the viewer can't read, or that failed while the other loaded, says so on that line.
 const StorageMeter: React.FC<MeterProps> = ({ label, infos, count, noAccess }) => {
   const percent = infos?.consumedSpace.percent ?? 0;
+  const unavailable = noAccess ? S.NO_ACCESS : T.LOAD_FAILED;
   const amounts = infos
     ? `${mb(infos.consumedSpace.mb)} / ${mb(infos.totalPVCSpace.mb)} ${S.MB}${T.META_SEPARATOR}${count}`
-    : noAccess
-      ? S.NO_ACCESS
-      : T.LOAD_FAILED;
+    : unavailable;
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.XS }}>
       <div style={{ display: 'flex', alignItems: 'baseline', gap: SPACING.SM }}>

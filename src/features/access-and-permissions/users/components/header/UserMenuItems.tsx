@@ -43,7 +43,7 @@ export const createUserMenuItems = ({
     icon,
     onClick: () => onNavigate(`${APP_ROUTES.SETTINGS}/${slug}`),
   })),
-  { type: 'divider' },
+  { type: 'divider', style: HEADER_CONSTANTS.USER.MENU.DIVIDER_STYLE },
   {
     key: 'logout',
     label: TEXTS.LOGOUT,

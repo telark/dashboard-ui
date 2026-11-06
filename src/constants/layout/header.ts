@@ -28,7 +28,10 @@ export const HEADER_CONSTANTS = {
     MENU: {
       WIDTH: 260,
       PLACEMENT: 'bottomRight' as const,
-      ROOT_CLASS: 'user-menu-dropdown',
+      // The menu sits under its identity band in one white frame (popupRender), so it drops its
+      // own shadow and corners, and its divider bleeds to the frame edges.
+      LIST_STYLE: { boxShadow: 'none', borderRadius: 0 },
+      DIVIDER_STYLE: { backgroundColor: DEFAULT_COLORS.SURFACE_BORDER_LIGHT, margin: '4px -4px' },
       TEXTS: {
         PROFILE: 'Profile',
         SECURITY: 'Security',

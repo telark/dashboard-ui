@@ -1,4 +1,5 @@
 import { CONTROL_HEIGHT, SPACING } from './controls';
+import {} from '..';
 import { SIDEBAR_LAYOUT } from './sidebar';
 import { DEFAULT_COLORS } from '../shared/colors';
 
@@ -18,6 +19,17 @@ export const UNSTYLED_BUTTON = {
   border: 'none',
   padding: SPACING.NONE,
   cursor: 'pointer',
+} as const;
+
+// Text with a tooltip that keyboard users must reach: focus shows the tooltip, and the button has no
+// action of its own. It keeps the look and cursor of the text around it.
+export const TOOLTIP_TEXT_BUTTON = {
+  ...UNSTYLED_BUTTON,
+  margin: SPACING.NONE,
+  font: 'inherit',
+  color: 'inherit',
+  textAlign: 'inherit',
+  cursor: 'inherit',
 } as const;
 
 // Spacing between toolbar items, and between a toolbar and its neighbors, so
@@ -51,8 +63,6 @@ export const LIST_TOOLBAR = {
   PILL_RADIUS_PX: 999,
   // Also scopes the green checkbox styling in antd.css.
   BULK_SELECT_CLASS: 'app-bulk-select',
-  // Quick-filter pills are unstyled buttons: this class gives them back a keyboard focus ring.
-  QUICK_FILTER_CLASS: 'tk-quick-filter',
   // A page empty state keeps its distance below the toolbar through this anchor (antd.css).
   ANCHOR_NAME: '--tk-list-toolbar',
   // Without anchor positioning, ListToolbar sets its bottom on the page box in this variable instead.

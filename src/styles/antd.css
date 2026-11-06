@@ -253,18 +253,6 @@ html[data-theme='light'] {
   --app-switch-off-color: var(--color-text-on-surface-muted);
 }
 
-/* The user menu sits under its identity band in one white frame (popupRender), so the
-   menu drops its own shadow and corners, and its divider bleeds to the frame edges. */
-.user-menu-dropdown .ant-dropdown-menu {
-  box-shadow: none !important;
-  border-radius: 0 !important;
-}
-
-.user-menu-dropdown .ant-dropdown-menu-item-divider {
-  background-color: var(--color-surface-border-light) !important;
-  margin: 4px -4px !important;
-}
-
 /* A menu's selected item is bold like a Select's (antd sets menu items to normal weight). */
 .ant-dropdown .ant-dropdown-menu-item.ant-dropdown-menu-item-selected {
   font-weight: var(--ant-font-weight-strong);

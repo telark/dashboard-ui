@@ -6,6 +6,7 @@ import {
   APP_ROUTES,
   DEFAULT_COLORS,
   EMPTY_VALUE,
+  KEYBOARD_TOOLTIP_TRIGGER,
   MONOSPACE_CLASS,
   NONE_TEXT,
   ROW_ACTION_CLASS,
@@ -14,6 +15,7 @@ import {
   UNSTYLED_BUTTON,
   SPACING,
   FONT_SIZE,
+  TOOLTIP_TEXT_BUTTON,
 } from '../../../../constants';
 import SettingsCard from '../../../settings/components/SettingsCard';
 import { CardTagList } from '../../../../components/display/card';
@@ -90,10 +92,10 @@ const ActorName: React.FC<{ actor: string }> = ({ actor }) => {
   const usernamesById = useUsernamesByIds(ids, true);
   // The short name is the identity's last segment: hover and focus show the whole one.
   return (
-    <Tooltip title={actor}>
-      <span tabIndex={0} aria-label={actor}>
+    <Tooltip title={actor} trigger={KEYBOARD_TOOLTIP_TRIGGER}>
+      <button type="button" aria-label={actor} style={TOOLTIP_TEXT_BUTTON}>
         {usernamesById[actor]}
-      </span>
+      </button>
     </Tooltip>
   );
 };
@@ -147,10 +149,14 @@ function findPressures(application: Application): Pressure[] {
 }
 
 const PressureValue: React.FC<{ pressure: Pressure }> = ({ pressure }) => (
-  <Tooltip title={O.PRESSURE_TOOLTIP(pressure.workload, pressure.resource, pressure.percent)}>
-    <span
-      tabIndex={0}
+  <Tooltip
+    title={O.PRESSURE_TOOLTIP(pressure.workload, pressure.resource, pressure.percent)}
+    trigger={KEYBOARD_TOOLTIP_TRIGGER}
+  >
+    <button
+      type="button"
       style={{
+        ...TOOLTIP_TEXT_BUTTON,
         display: 'inline-flex',
         alignItems: 'center',
         gap: SPACING.S6,
@@ -160,7 +166,7 @@ const PressureValue: React.FC<{ pressure: Pressure }> = ({ pressure }) => (
     >
       <WarningOutlined aria-hidden />
       {O.PRESSURE(pressure.resource, pressure.percent)}
-    </span>
+    </button>
   </Tooltip>
 );
 
@@ -179,8 +185,10 @@ const HealthValue: React.FC<{ application: Application }> = ({ application }) =>
 // Quiet: the API compares with the first recorded state, not a desired one, so a change is history.
 const DriftValue: React.FC<{ drifted: boolean }> = ({ drifted }) =>
   drifted ? (
-    <Tooltip title={O.DRIFT_CHANGED_TOOLTIP}>
-      <span tabIndex={0}>{O.DRIFT_CHANGED}</span>
+    <Tooltip title={O.DRIFT_CHANGED_TOOLTIP} trigger={KEYBOARD_TOOLTIP_TRIGGER}>
+      <button type="button" style={TOOLTIP_TEXT_BUTTON}>
+        {O.DRIFT_CHANGED}
+      </button>
     </Tooltip>
   ) : (
     <>{NONE_TEXT}</>

@@ -126,13 +126,6 @@ h3 {
   outline: 2px solid var(--color-info) !important;
 }
 
-/* Quick-filter pills (LIST_TOOLBAR.QUICK_FILTER_CLASS) reset every style inline too; the ring sits
-   off the pill so it reads on both the outline and the filled one. */
-.tk-quick-filter:focus-visible {
-  outline: 2px solid var(--color-text-secondary) !important;
-  outline-offset: 2px !important;
-}
-
 /* The panel's plain buttons (SLIDE_OUT.HEADER_BUTTON_CLASS) get the ring antd draws on the panel
    surface (PANEL_THEME_TOKENS); !important beats the inline all: unset some of them carry. */
 .tk-panel-header-button:focus-visible {

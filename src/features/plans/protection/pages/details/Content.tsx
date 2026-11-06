@@ -15,6 +15,7 @@ import {
   SIDEBAR_LAYOUT,
   SPACING,
   TIME_FORMATS,
+  KEYBOARD_TOOLTIP_TRIGGER,
 } from '../../../../../constants';
 import { LIST_PAGE } from '../../../../../constants/shared/pages';
 import SettingsCard from '../../../../settings/components/SettingsCard';
@@ -29,11 +30,14 @@ import ReportsSection from '../../components/details/ReportsSection';
 import PlanStatusBand from '../../components/layout/PlanStatusBand';
 import ProtectionPlanDetailsToolbar from '../../components/layout/ProtectionPlanDetailsToolbar';
 import { usePlanHealth, type UsePlanHealthResult } from '../../hooks/usePlanHealth';
-import { usePlanViolations, type UsePlanViolationsResult } from '../../hooks/usePlanViolations';
+import {
+  usePlanViolations,
+  type UsePlanViolationsResult,
+  type ViolationsResultFilter,
+} from '../../hooks/usePlanViolations';
 import { usePlanReports, type UsePlanReportsResult } from '../../hooks/usePlanReports';
 import { usePermission, ACTION_PERMISSIONS } from '../../../../auth/hooks';
 import { NoPermissionCard } from '../../../../../components/shared';
-import type { ViolationsResultFilter } from '../../hooks/usePlanViolations';
 import type { AppDispatch, RootState } from '../../../../../store';
 import { fetchProtectionPlanTemplatesThunk, selectProtectionPlanTemplates } from '../../store';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
@@ -120,7 +124,7 @@ const reportsCopy = (plan: ProtectionPlan): { description: string; info: string 
 
 // The card top-aligns a title badge: 6 centers the 11px icon on the title's 24px line.
 const ReportsInfo: React.FC<{ info: string }> = ({ info }) => (
-  <Tooltip title={info}>
+  <Tooltip title={info} trigger={KEYBOARD_TOOLTIP_TRIGGER}>
     <InfoCircleOutlined
       tabIndex={0}
       aria-label={info}
@@ -184,7 +188,7 @@ const { viewViolations, viewReports } = ACTION_PERMISSIONS.protectionPlans;
 // Which decisions the list holds, in the refresh button's box so the two icons pair up.
 const WindowInfo: React.FC<{ note: string }> = ({ note }) => (
   <span style={COMPACT_REFRESH_BUTTON_STYLE}>
-    <Tooltip title={note}>
+    <Tooltip title={note} trigger={KEYBOARD_TOOLTIP_TRIGGER}>
       <InfoCircleOutlined tabIndex={0} aria-label={note} />
     </Tooltip>
   </span>

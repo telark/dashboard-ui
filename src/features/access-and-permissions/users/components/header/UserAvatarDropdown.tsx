@@ -93,26 +93,27 @@ const UserAvatarDropdown: React.FC<UserAvatarDropdownProps> = memo(
     const isSidebar = variant === 'sidebar';
     const row = BUTTON_CONFIGS.SIDEBAR_BUTTON;
 
+    const renderPopup = (menu: React.ReactNode) => (
+      <div
+        style={{
+          backgroundColor: DEFAULT_COLORS.SURFACE_WHITE,
+          borderRadius: token.borderRadiusLG,
+          boxShadow: token.boxShadowSecondary,
+          overflow: 'hidden',
+        }}
+      >
+        <UserMenuHeader currentUser={currentUser} />
+        {menu}
+      </div>
+    );
+
     return (
       <Dropdown
-        menu={{ items: menuItems }}
+        menu={{ items: menuItems, style: HEADER_CONSTANTS.USER.MENU.LIST_STYLE }}
         placement={isSidebar ? SIDEBAR_USER_MENU.PLACEMENT : HEADER_CONSTANTS.USER.MENU.PLACEMENT}
         trigger={['click']}
-        rootClassName={HEADER_CONSTANTS.USER.MENU.ROOT_CLASS}
         styles={{ root: { width: HEADER_CONSTANTS.USER.MENU.WIDTH } }}
-        popupRender={(menu) => (
-          <div
-            style={{
-              backgroundColor: DEFAULT_COLORS.SURFACE_WHITE,
-              borderRadius: token.borderRadiusLG,
-              boxShadow: token.boxShadowSecondary,
-              overflow: 'hidden',
-            }}
-          >
-            <UserMenuHeader currentUser={currentUser} />
-            {menu}
-          </div>
-        )}
+        popupRender={renderPopup}
       >
         {isSidebar ? (
           <button

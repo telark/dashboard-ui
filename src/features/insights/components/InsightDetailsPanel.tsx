@@ -272,6 +272,7 @@ const Summary: React.FC<{
     (insight.status !== 'resolved' && now - Date.parse(insight.lastSeenAt) > INSIGHTS_STALE_MS);
   const state = insightRowState({ stale, status: insight.status });
   const triaged = insight.triage;
+  const triageLabel = triaged?.state === 'dismissed' ? T.DISMISSED : T.ACKNOWLEDGED;
   // An application can span namespaces; the card names the one its workload runs in.
   const where = insight.params?.namespace || namespace;
   const accent = STATUS_COLORS.INSIGHT_SEVERITY[insight.severity];
@@ -291,7 +292,7 @@ const Summary: React.FC<{
             {chip(INSIGHT_ROW_STATE_LABELS[state])}
             {triaged
               ? chip(
-                  triaged.state === 'dismissed' ? T.DISMISSED : T.ACKNOWLEDGED,
+                  triageLabel,
                   STATUS_COLORS.INSIGHT_TRIAGE[triaged.state],
                   INSIGHT_TRIAGE_PILL_STYLE,
                 )
