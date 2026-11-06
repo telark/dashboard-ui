@@ -1,11 +1,11 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { Select, Tooltip, App as AntdApp } from 'antd';
 import SettingsCard from '../../components/SettingsCard';
-import { SettingsField } from '../../components/SettingsFields';
+import { SettingsField, SettingsStack } from '../../components/SettingsFields';
 import Toolbar from '../../../../components/display/toolbar/Toolbar';
 import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 import { Client, discoveryApiClient, exporterApiClient } from '../../../../api';
-import { DEFAULT_COLORS, Endpoints, FONT_WEIGHT, SPACING } from '../../../../constants';
+import { DEFAULT_COLORS, Endpoints, FONT_WEIGHT } from '../../../../constants';
 import type { ResourceDetailsResponse } from '../../../../interfaces/http';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchGlobalConfigThunk, selectGlobalConfigState } from '../../../globalconfig/store';
@@ -68,22 +68,23 @@ const DiscoveryBehaviorSection: React.FC = memo(() => {
     return false;
   }, [excludedNamespaces, initialExcluded]);
 
-  const loadNamespaces = useCallback(async () => {
-    try {
-      const { path, method } = Endpoints.NAMESPACES.GET;
-      const res = await Client<ResourceDetailsResponse<string[]>>(discoveryApiClient, path, {
-        method,
-      });
-      const all = (res?.data ?? []).filter(Boolean);
-      setNamespacesOptions(all);
-    } catch {
-      message.error(C.MESSAGES.NAMESPACES_LOAD_FAILED);
-    }
-  }, [message]);
-
   useEffect(() => {
-    if (canListNamespaces) loadNamespaces();
-  }, [loadNamespaces, canListNamespaces]);
+    if (!canListNamespaces) return;
+    // A cleaned-up run (a dev double mount, a page left) sets nothing and shows no toast.
+    let canceled = false;
+    const { path, method } = Endpoints.NAMESPACES.GET;
+    Client<ResourceDetailsResponse<string[]>>(discoveryApiClient, path, { method }).then(
+      (res) => {
+        if (!canceled) setNamespacesOptions((res?.data ?? []).filter(Boolean));
+      },
+      () => {
+        if (!canceled) message.error(C.MESSAGES.NAMESPACES_LOAD_FAILED);
+      },
+    );
+    return () => {
+      canceled = true;
+    };
+  }, [canListNamespaces, message]);
 
   const saveDiscoveryAndBehavior = useCallback(async () => {
     setSavingDiscoveryBehavior(true);
@@ -186,7 +187,7 @@ const DiscoveryBehaviorSection: React.FC = memo(() => {
       title={C.LABELS.DISCOVERY_SCOPE_TITLE}
       description={C.LABELS.DISCOVERY_SCOPE_DESCRIPTION}
     >
-      <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.MD }}>
+      <SettingsStack>
         <SettingsField label={C.LABELS.NAMESPACES_TITLE}>
           <Select
             mode="multiple"
@@ -200,37 +201,36 @@ const DiscoveryBehaviorSection: React.FC = memo(() => {
             maxTagPlaceholder={maxNamespaceTagPlaceholder}
             disabled={!canEditDiscoveryConfig}
           />
+          {namespacesImpactPreview ? (
+            <div
+              style={{
+                fontSize: SETTINGS_CONSTANTS.CONTENT.HINT_FONT_SIZE,
+                fontWeight: FONT_WEIGHT.BOLD,
+                color: DEFAULT_COLORS.TEXT_MUTED,
+              }}
+            >
+              {namespacesImpactPreview.hidden > 0 ? (
+                <span>
+                  {pluralize(namespacesImpactPreview.hidden, C.LABELS.NAMESPACES_IMPACT_NOUN)}{' '}
+                  {C.LABELS.NAMESPACES_IMPACT_HIDDEN}
+                </span>
+              ) : null}
+              {namespacesImpactPreview.hidden > 0 && namespacesImpactPreview.revealed > 0 ? (
+                <span style={{ fontWeight: FONT_WEIGHT.SEMIBOLD }}> · </span>
+              ) : null}
+              {namespacesImpactPreview.revealed > 0 ? (
+                <span>
+                  {pluralize(namespacesImpactPreview.revealed, C.LABELS.NAMESPACES_IMPACT_NOUN)}{' '}
+                  {C.LABELS.NAMESPACES_IMPACT_REVEALED}
+                </span>
+              ) : null}
+            </div>
+          ) : null}
         </SettingsField>
-        {namespacesImpactPreview ? (
-          <div
-            style={{
-              fontSize: SETTINGS_CONSTANTS.CONTENT.HINT_FONT_SIZE,
-              fontWeight: FONT_WEIGHT.BOLD,
-              color: DEFAULT_COLORS.TEXT_MUTED,
-            }}
-          >
-            {namespacesImpactPreview.hidden > 0 ? (
-              <span>
-                {pluralize(namespacesImpactPreview.hidden, C.LABELS.NAMESPACES_IMPACT_NOUN)}{' '}
-                {C.LABELS.NAMESPACES_IMPACT_HIDDEN}
-              </span>
-            ) : null}
-            {namespacesImpactPreview.hidden > 0 && namespacesImpactPreview.revealed > 0 ? (
-              <span style={{ fontWeight: FONT_WEIGHT.SEMIBOLD }}> · </span>
-            ) : null}
-            {namespacesImpactPreview.revealed > 0 ? (
-              <span>
-                {pluralize(namespacesImpactPreview.revealed, C.LABELS.NAMESPACES_IMPACT_NOUN)}{' '}
-                {C.LABELS.NAMESPACES_IMPACT_REVEALED}
-              </span>
-            ) : null}
-          </div>
-        ) : null}
-
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <Toolbar config={saveToolbarConfig} />
         </div>
-      </div>
+      </SettingsStack>
     </SettingsCard>
   );
 });

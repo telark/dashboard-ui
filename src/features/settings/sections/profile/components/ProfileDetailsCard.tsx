@@ -60,8 +60,6 @@ const profileRowLabelStyle: React.CSSProperties = {
   fontSize: FONT_SIZE.SM,
   fontWeight: FONT_WEIGHT.MEDIUM,
   color: DEFAULT_COLORS.TEXT_MUTED,
-  textTransform: 'uppercase',
-  letterSpacing: '0.02em',
   flexShrink: 0,
   minWidth: 100,
 };

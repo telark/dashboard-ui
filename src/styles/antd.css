@@ -192,6 +192,15 @@ body .ant-input-textarea-show-count {
   margin-bottom: calc(var(--ant-font-size) * var(--ant-line-height));
 }
 
+/* A FieldError right under the box takes the counter's line instead, as close to the box as an
+   error under a plain input: the error on the left, the counter on the right, never under it. */
+body .ant-input-textarea-show-count:has(+ [role='alert']) {
+  margin-bottom: 0;
+}
+body .ant-input-textarea-show-count + [role='alert'] {
+  padding-inline-end: 8em;
+}
+
 /* Button icon vertical alignment */
 .ant-btn {
   display: inline-flex !important;

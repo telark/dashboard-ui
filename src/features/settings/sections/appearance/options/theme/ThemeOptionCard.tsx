@@ -27,9 +27,13 @@ const ThemeOptionCard: React.FC = memo(() => {
 
   // The server replaces settings whole, so the save below must start from its current values.
   useEffect(() => {
+    let canceled = false;
     fetchCurrentUserDetails((fresh) => {
-      setCurrentUser(fresh);
+      if (!canceled) setCurrentUser(fresh);
     });
+    return () => {
+      canceled = true;
+    };
   }, []);
 
   const onChange = useCallback(

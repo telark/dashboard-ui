@@ -6,8 +6,8 @@ import { Switch } from '../../../../components/display/inputs';
 import { extractErrorMessage } from '../../../../utils/helpers/format';
 import { BOOTSTRAP_TEXTS as T, setBreakGlassAlerts } from '../../../bootstrap';
 import { SETTINGS_CONSTANTS } from '../../constants';
+import { SettingsStack, SettingsToggle } from '../../components/SettingsFields';
 import { IDENTITY_PROVIDER_CONSTANTS as C } from './constants';
-import { FONT_WEIGHT } from '../../../../constants';
 
 interface BreakGlassAlertsSettingProps {
   stored: boolean;
@@ -53,27 +53,14 @@ const BreakGlassAlertsSetting: React.FC<BreakGlassAlertsSettingProps> = memo(
     );
 
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: C.LAYOUT.FIELD_GAP }}>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            gap: C.LAYOUT.ROW_GAP,
-          }}
-        >
-          <div>
-            <div style={{ fontWeight: FONT_WEIGHT.BOLD }}>{T.ALERTS_LABEL}</div>
-            <div style={{ fontSize: SETTINGS_CONSTANTS.CONTENT.HINT_FONT_SIZE }}>
-              {T.ALERTS_HINT}
-            </div>
-          </div>
+      <SettingsStack>
+        <SettingsToggle label={T.ALERTS_LABEL} hint={T.ALERTS_HINT}>
           <Switch checked={enabled} onChange={setDraft} />
-        </div>
+        </SettingsToggle>
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <Toolbar config={saveToolbarConfig} />
         </div>
-      </div>
+      </SettingsStack>
     );
   },
 );

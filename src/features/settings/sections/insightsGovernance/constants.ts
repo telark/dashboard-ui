@@ -145,7 +145,4 @@ export const INSIGHTS_GOVERNANCE_CONSTANTS = {
       },
     ],
   },
-  LAYOUT: {
-    FIELD_ROW_GAP: 12,
-  },
 } as const;

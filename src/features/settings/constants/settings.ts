@@ -77,7 +77,13 @@ export const SETTINGS_CONSTANTS = {
     CARD_PADDING: 20,
     // Below this a header action wraps under the title instead of squeezing it.
     CARD_TITLE_MIN_WIDTH_PX: 120,
+    // The settings spacing scale (AGENTS.md, "Settings spacing"). A title or label to its
+    // description or hint; the negative pull cancels the two lines' leading.
     CARD_TITLE_TO_DESCRIPTION_GAP_PX: -4,
+    // Card header to body, field to field, a heading to its content, the last field to the actions.
+    FIELD_GAP: 12,
+    // Group to group inside one card (where a divider used to be).
+    GROUP_GAP: 24,
     SECTION_TITLE_FONT_SIZE: 20,
     HINT_FONT_SIZE: 12,
     CARD_TITLE_FONT_SIZE: 15,

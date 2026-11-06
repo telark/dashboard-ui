@@ -1,7 +1,7 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { App as AntdApp, Select } from 'antd';
 import SettingsCard from '../../components/SettingsCard';
-import { SettingsField } from '../../components/SettingsFields';
+import { SettingsField, SettingsStack } from '../../components/SettingsFields';
 import Toolbar from '../../../../components/display/toolbar/Toolbar';
 import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 import { updateUser } from '../../../access-and-permissions/users/clients';
@@ -16,7 +16,6 @@ import {
 import type { User, UserSettings } from '../../../access-and-permissions/users/models';
 import { SETTINGS_CONSTANTS } from '../../constants';
 import { TIMEZONE_SECTION_CONSTANTS } from './constants';
-import { SPACING } from '../../../../constants';
 
 const { LABELS, REGION_CODES, DISPLAY_LOCALE } = TIMEZONE_SECTION_CONSTANTS;
 
@@ -103,7 +102,7 @@ const TimezoneSectionContent: React.FC = memo(() => {
 
   return (
     <SettingsCard title={LABELS.CARD_TITLE} description={LABELS.CARD_DESCRIPTION}>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.MD }}>
+      <SettingsStack>
         <SettingsField label={LABELS.TIMEZONE_LABEL}>
           <Select
             showSearch
@@ -133,7 +132,7 @@ const TimezoneSectionContent: React.FC = memo(() => {
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <Toolbar config={saveToolbarConfig} />
         </div>
-      </div>
+      </SettingsStack>
     </SettingsCard>
   );
 });

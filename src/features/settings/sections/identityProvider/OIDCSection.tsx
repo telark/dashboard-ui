@@ -2,15 +2,15 @@ import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { Alert, Input, Tooltip, App as AntdApp } from 'antd';
 import SettingsCard from '../../components/SettingsCard';
 import {
-  SettingsDivider,
   SettingsField,
-  SettingsFieldLabel,
+  SettingsStack,
   SettingsSubsectionHeader,
+  SettingsToggle,
 } from '../../components/SettingsFields';
 import Toolbar from '../../../../components/display/toolbar/Toolbar';
 import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 import { Client, authApiClient } from '../../../../api';
-import { Endpoints, FONT_WEIGHT, INPUT_LIMITS } from '../../../../constants';
+import { Endpoints, FORM_LABEL_GAP, INPUT_LIMITS } from '../../../../constants';
 import { inputGuard } from '../../../../utils/helpers/inputGuard';
 import { FieldError, Switch } from '../../../../components/display/inputs';
 import { useDispatch, useSelector } from 'react-redux';
@@ -163,34 +163,28 @@ const OIDCSection: React.FC = memo(() => {
 
   return (
     <SettingsCard title={C.LABELS.CARD_TITLE} description={C.LABELS.CARD_DESCRIPTION}>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: C.LAYOUT.FIELD_GAP }}>
+      <SettingsStack>
         {bootstrapOnly ? (
           <Alert type="info" showIcon title={C.LABELS.BOOTSTRAP_ONLY_NOTICE} />
         ) : null}
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            gap: C.LAYOUT.ROW_GAP,
-          }}
-        >
-          <div style={{ fontWeight: FONT_WEIGHT.BOLD }}>{C.LABELS.ENABLE_LABEL}</div>
-          <Tooltip title={deniedTooltip}>
-            <span style={canEdit ? {} : { display: 'inline-block', cursor: 'not-allowed' }}>
-              <Switch
-                checked={form.enabled}
-                onChange={canEdit ? (v: boolean) => update('enabled', v) : undefined}
-                disabled={!canEdit}
-              />
-            </span>
-          </Tooltip>
+        {/* The setup box belongs to the switch that reveals it, so it sits a label gap under it. */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: FORM_LABEL_GAP }}>
+          <SettingsToggle label={C.LABELS.ENABLE_LABEL}>
+            <Tooltip title={deniedTooltip}>
+              <span style={canEdit ? {} : { display: 'inline-block', cursor: 'not-allowed' }}>
+                <Switch
+                  checked={form.enabled}
+                  onChange={canEdit ? (v: boolean) => update('enabled', v) : undefined}
+                  disabled={!canEdit}
+                />
+              </span>
+            </Tooltip>
+          </SettingsToggle>
+          {form.enabled ? <GoogleSetupHelp /> : null}
         </div>
 
         {form.enabled ? (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: C.LAYOUT.FIELD_GAP }}>
-            <SettingsDivider />
-            <GoogleSetupHelp />
+          <SettingsStack groups>
             <SettingsField label={C.LABELS.CLIENT_ID_LABEL}>
               <Input
                 {...clientIdGuard.input}
@@ -207,59 +201,51 @@ const OIDCSection: React.FC = memo(() => {
               <FieldError message={errors.clientId} />
             </SettingsField>
 
-            <SettingsDivider />
-            <SettingsSubsectionHeader title={C.SETUP.KEYS_TITLE} />
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                gap: C.LAYOUT.ROW_GAP,
-              }}
-            >
-              <SettingsFieldLabel label={C.LABELS.EGRESS_LABEL} info={C.LABELS.EGRESS_HINT} />
-              <Switch
-                checked={form.egressAllowed}
-                onChange={canEdit ? (v: boolean) => update('egressAllowed', v) : undefined}
-                disabled={!canEdit}
-                tooltip={deniedTooltip}
-              />
-            </div>
-
-            {!form.egressAllowed ? (
-              <SettingsField
-                label={C.LABELS.JWK_LABEL}
-                hint={
-                  <>
-                    {C.LABELS.JWK_SOURCE_HINT}{' '}
-                    <a href={C.LINKS.JWKS_URL} target="_blank" rel="noreferrer">
-                      {C.LINKS.JWKS_URL}
-                    </a>
-                    {C.LABELS.JWK_SOURCE_HINT_END}
-                    {hasPinnedKeys ? ` ${C.LABELS.JWK_KEEP_HINT}` : null}
-                  </>
-                }
-              >
-                <Input.TextArea
-                  {...keySetGuard.input}
-                  placeholder={C.LABELS.JWK_PLACEHOLDER}
-                  value={form.googleJwkJson}
+            <SettingsStack>
+              <SettingsSubsectionHeader title={C.SETUP.KEYS_TITLE} />
+              <SettingsToggle label={C.LABELS.EGRESS_LABEL} info={C.LABELS.EGRESS_HINT}>
+                <Switch
+                  checked={form.egressAllowed}
+                  onChange={canEdit ? (v: boolean) => update('egressAllowed', v) : undefined}
                   disabled={!canEdit}
-                  rows={C.LAYOUT.JWK_ROWS}
-                  status={errors.keys ? 'error' : undefined}
-                  onChange={(e) => update('googleJwkJson', keySetGuard.normalize(e.target.value))}
+                  tooltip={deniedTooltip}
                 />
-                <FieldError message={errors.keys} />
-              </SettingsField>
-            ) : null}
-          </div>
+              </SettingsToggle>
+
+              {!form.egressAllowed ? (
+                <SettingsField
+                  label={C.LABELS.JWK_LABEL}
+                  hint={
+                    <>
+                      {C.LABELS.JWK_SOURCE_HINT}{' '}
+                      <a href={C.LINKS.JWKS_URL} target="_blank" rel="noreferrer">
+                        {C.LINKS.JWKS_URL}
+                      </a>
+                      {C.LABELS.JWK_SOURCE_HINT_END}
+                      {hasPinnedKeys ? ` ${C.LABELS.JWK_KEEP_HINT}` : null}
+                    </>
+                  }
+                >
+                  <Input.TextArea
+                    {...keySetGuard.input}
+                    placeholder={C.LABELS.JWK_PLACEHOLDER}
+                    value={form.googleJwkJson}
+                    disabled={!canEdit}
+                    rows={C.LAYOUT.JWK_ROWS}
+                    status={errors.keys ? 'error' : undefined}
+                    onChange={(e) => update('googleJwkJson', keySetGuard.normalize(e.target.value))}
+                  />
+                  <FieldError message={errors.keys} />
+                </SettingsField>
+              ) : null}
+            </SettingsStack>
+          </SettingsStack>
         ) : null}
 
-        <SettingsDivider />
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <Toolbar config={saveToolbarConfig} />
         </div>
-      </div>
+      </SettingsStack>
     </SettingsCard>
   );
 });

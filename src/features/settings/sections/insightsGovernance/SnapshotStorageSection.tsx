@@ -1,12 +1,17 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { InputNumber, Select, App as AntdApp } from 'antd';
 import SettingsCard from '../../components/SettingsCard';
-import { SettingsDetails, SettingsField, SettingsHint } from '../../components/SettingsFields';
+import {
+  SettingsDetails,
+  SettingsField,
+  SettingsHint,
+  SettingsStack,
+} from '../../components/SettingsFields';
 import Toolbar from '../../../../components/display/toolbar/Toolbar';
 import { ActionConfirmModal } from '../../../../components/display/modal';
 import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 import { Client, exporterApiClient } from '../../../../api';
-import { Endpoints, INPUT_LIMITS } from '../../../../constants';
+import { Endpoints, FORM_LABEL_GAP, INPUT_LIMITS } from '../../../../constants';
 import type { ResourceDetailsResponse } from '../../../../interfaces/http';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchGlobalConfigThunk, selectGlobalConfigState } from '../../../globalconfig/store';
@@ -157,14 +162,7 @@ const SnapshotStorageSection: React.FC = memo(() => {
       title={C.LABELS.SNAPSHOT_STORAGE_TITLE}
       description={C.LABELS.SNAPSHOT_STORAGE_DESCRIPTION}
     >
-      <div
-        style={{
-          // Off scale, kept exact: gap 14 (MD to LG).
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 14,
-        }}
-      >
+      <SettingsStack>
         {!canViewSnapshotStorage ? (
           <SettingsHint>{C.LABELS.SNAPSHOT_STORAGE_NO_ACCESS}</SettingsHint>
         ) : snapshotInfosLoading ? (
@@ -189,18 +187,11 @@ const SnapshotStorageSection: React.FC = memo(() => {
             />
           </>
         ) : null}
-        <div
-          style={{
-            // Off scale, kept exact: gap 10 (SM to MD).
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 10,
-          }}
+        <SettingsField
+          label={C.LABELS.SNAPSHOTS_MAX_PER_APP_LABEL}
+          info={C.LABELS.SNAPSHOTS_MAX_PER_APP_HINT}
         >
-          <SettingsField
-            label={C.LABELS.SNAPSHOTS_MAX_PER_APP_LABEL}
-            info={C.LABELS.SNAPSHOTS_MAX_PER_APP_HINT}
-          >
+          <div style={{ display: 'flex', flexDirection: 'column', gap: FORM_LABEL_GAP }}>
             <Select
               value={snapshotsMaxSelection}
               disabled={!canEditSnapshotStorage}
@@ -220,31 +211,31 @@ const SnapshotStorageSection: React.FC = memo(() => {
               ]}
               style={{ width: '100%' }}
             />
-          </SettingsField>
-          {snapshotsMaxSelection === C.SNAPSHOTS_CUSTOM_VALUE ? (
-            <InputNumber
-              min={INPUT_LIMITS.SNAPSHOTS_MAX.MIN}
-              max={INPUT_LIMITS.SNAPSHOTS_MAX.MAX}
-              precision={0}
-              value={customSnapshotsMaxPerApp}
-              disabled={!canEditSnapshotStorage}
-              onChange={(v) => {
-                const n = Number(v);
-                if (!Number.isFinite(n) || n <= 0 || n > INPUT_LIMITS.SNAPSHOTS_MAX.MAX) return;
-                const next = Math.floor(n);
-                setCustomSnapshotsMaxPerApp(next);
-                setSnapshotsMaxPerApp(next);
-              }}
-              style={{ width: '100%' }}
-            />
-          ) : null}
+            {snapshotsMaxSelection === C.SNAPSHOTS_CUSTOM_VALUE ? (
+              <InputNumber
+                min={INPUT_LIMITS.SNAPSHOTS_MAX.MIN}
+                max={INPUT_LIMITS.SNAPSHOTS_MAX.MAX}
+                precision={0}
+                value={customSnapshotsMaxPerApp}
+                disabled={!canEditSnapshotStorage}
+                onChange={(v) => {
+                  const n = Number(v);
+                  if (!Number.isFinite(n) || n <= 0 || n > INPUT_LIMITS.SNAPSHOTS_MAX.MAX) return;
+                  const next = Math.floor(n);
+                  setCustomSnapshotsMaxPerApp(next);
+                  setSnapshotsMaxPerApp(next);
+                }}
+                style={{ width: '100%' }}
+              />
+            ) : null}
+          </div>
           {/* Visible, not only in the tooltip: a lower limit deletes snapshots (confirmed on save). */}
           <SettingsHint>{C.LABELS.SNAPSHOTS_LOWER_HINT}</SettingsHint>
-        </div>
+        </SettingsField>
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <Toolbar config={saveToolbarConfig} />
         </div>
-      </div>
+      </SettingsStack>
       <ActionConfirmModal
         open={confirmLowerOpen}
         onClose={() => setConfirmLowerOpen(false)}

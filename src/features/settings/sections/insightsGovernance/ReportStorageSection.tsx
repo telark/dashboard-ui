@@ -1,7 +1,12 @@
 import React, { memo, useEffect, useState } from 'react';
 import { App as AntdApp } from 'antd';
 import SettingsCard from '../../components/SettingsCard';
-import { SettingsDetails, SettingsField, SettingsHint } from '../../components/SettingsFields';
+import {
+  SettingsDetails,
+  SettingsField,
+  SettingsHint,
+  SettingsStack,
+} from '../../components/SettingsFields';
 import SnapshotStorageBar from '../../../applications/components/snapshots/SnapshotStorageBar';
 import type { SnapshotStorageMetric } from '../../../applications/models';
 import { fetchReportStorage } from '../../../plans/protection/clients';
@@ -88,16 +93,7 @@ const ReportStorageSection: React.FC = memo(() => {
       title={C.LABELS.REPORT_STORAGE_TITLE}
       description={C.LABELS.REPORT_STORAGE_DESCRIPTION}
     >
-      <div
-        style={{
-          // Off scale, kept exact: gap 14 (MD to LG), as in Snapshot storage.
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 14,
-        }}
-      >
-        {renderContent()}
-      </div>
+      <SettingsStack>{renderContent()}</SettingsStack>
     </SettingsCard>
   );
 });

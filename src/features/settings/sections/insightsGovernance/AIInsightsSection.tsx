@@ -1,25 +1,29 @@
 import React, { memo, useCallback, useMemo, useState } from 'react';
 import axios from 'axios';
 import { App as AntdApp, Button, Input, Progress, Select, Space } from 'antd';
-import { CopyOutlined } from '@ant-design/icons';
+import { CloseCircleFilled, CopyOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import SettingsCard from '../../components/SettingsCard';
 import {
   SettingsDetails,
-  SettingsDivider,
-  SettingsField,
-  SettingsFieldLabel,
-  SettingsHint,
+  SettingsStack,
   SettingsSubsectionHeader,
+  SettingsToggle,
   type SettingsDetail,
 } from '../../components/SettingsFields';
 import Toolbar from '../../../../components/display/toolbar/Toolbar';
-import { Switch } from '../../../../components/display/inputs';
+import { FieldError, Switch } from '../../../../components/display/inputs';
 import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 import type { ResourceDetailsResponse } from '../../../../interfaces/http';
 import type { ExtendedAxiosError } from '../../../../api/client/normalize';
 import { Client, exporterApiClient } from '../../../../api';
-import { Endpoints, DEFAULT_COLORS, FONT_WEIGHT, SPACING } from '../../../../constants';
+import {
+  Endpoints,
+  DEFAULT_COLORS,
+  FONT_WEIGHT,
+  FORM_LABEL_GAP,
+  SPACING,
+} from '../../../../constants';
 import logger from '../../../../logging';
 import type { AppDispatch } from '../../../../store';
 import { fetchGlobalConfigThunk, selectGlobalConfigState } from '../../../globalconfig/store';
@@ -73,21 +77,6 @@ const validateErrorData = (error: unknown): ValidateError | undefined =>
     ? error.response?.data?.data
     : undefined;
 
-const COLUMN: React.CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: C.LAYOUT.FIELD_ROW_GAP,
-};
-
-// Off scale, kept exact: gap 10 (SM to MD).
-const TOGGLE_ROW: React.CSSProperties = {
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  gap: 10,
-  padding: `${SPACING.XXS}px 0`,
-};
-
 const AIInsightsSection: React.FC = memo(() => {
   const dispatch = useDispatch<AppDispatch>();
   const globalConfig = useSelector(selectGlobalConfigState);
@@ -128,6 +117,7 @@ const AIInsightsSection: React.FC = memo(() => {
   const runtimeState = runtime?.state ?? 'unreachable';
   const stateLabel = C.LABELS.RUNTIME_STATE_LABELS[runtimeState];
   const ready = runtimeState === 'ready';
+  const unreachable = runtimeState === 'unreachable';
   const modelValid = C.MODELS.NAME_PATTERN.test(form.model);
   const currentCheck = check?.model === form.model ? check : null;
   const researchLicensed =
@@ -319,6 +309,8 @@ const AIInsightsSection: React.FC = memo(() => {
       ? C.LABELS.ENABLE_BLOCKED_HINT_MODEL
       : C.LABELS.ENABLE_BLOCKED_HINT;
 
+  const stateColor = ready ? DEFAULT_COLORS.SUCCESS_TEXT : DEFAULT_COLORS.WARNING_TEXT;
+
   // The runtime's state and the picked model's facts read as one list under the picker.
   const runtimeDetails: SettingsDetail[] = isLoading
     ? []
@@ -327,10 +319,17 @@ const AIInsightsSection: React.FC = memo(() => {
           label: C.LABELS.RUNTIME_STATUS_TITLE,
           value: (
             <>
+              {unreachable ? (
+                // Red can't be text on the dark page: the icon carries it.
+                <CloseCircleFilled
+                  aria-hidden
+                  style={{ color: DEFAULT_COLORS.DANGER, marginRight: SPACING.S6 }}
+                />
+              ) : null}
               <span
                 style={{
                   fontWeight: FONT_WEIGHT.BOLD,
-                  color: ready ? DEFAULT_COLORS.SUCCESS_TEXT : DEFAULT_COLORS.WARNING_TEXT,
+                  color: unreachable ? DEFAULT_COLORS.TEXT_PRIMARY : stateColor,
                 }}
               >
                 {stateLabel}
@@ -363,65 +362,62 @@ const AIInsightsSection: React.FC = memo(() => {
         },
       ]
     : [];
-  const details = [...runtimeDetails, ...modelDetails];
+  const modelRow: SettingsDetail = {
+    label: C.LABELS.MODEL_LABEL,
+    value: (
+      <Select
+        size="small"
+        aria-label={C.LABELS.MODEL_LABEL}
+        value={form.model}
+        notFoundContent={C.LABELS.MODELS_EMPTY}
+        options={modelOptions}
+        onChange={onModelChange}
+        allowClear={false}
+        disabled={!canControlAiInsights}
+        style={{ width: '100%' }}
+      />
+    ),
+  };
+  const details = [modelRow, ...runtimeDetails, ...modelDetails];
 
   return (
-    <div style={COLUMN}>
-      <SettingsCard
-        title={C.LABELS.AI_INSIGHTS_TITLE}
-        description={C.LABELS.AI_INSIGHTS_DESCRIPTION}
-      >
-        <div style={COLUMN}>
-          <div>
-            <div style={TOGGLE_ROW}>
-              <SettingsFieldLabel
-                label={C.LABELS.ENABLE_AI_LABEL}
-                info={C.LABELS.ENABLE_AI_TOOLTIP}
-              />
-              <Switch
-                checked={form.enabled}
-                onChange={(enabled) => setForm((prev) => ({ ...prev, enabled }))}
-                disabled={!canControlAiInsights || enableBlocked}
-                tooltip={deniedTooltip}
-              />
-            </div>
-            {enableBlocked && !isLoading ? <SettingsHint>{enableBlockedHint}</SettingsHint> : null}
-          </div>
-          <div>
-            <div style={TOGGLE_ROW}>
-              <SettingsFieldLabel
-                label={C.LABELS.AUTO_ANALYZE_LABEL}
-                info={C.LABELS.AUTO_ANALYZE_TOOLTIP}
-              />
-              <Switch
-                checked={form.autoAnalyze}
-                onChange={(autoAnalyze) => setForm((prev) => ({ ...prev, autoAnalyze }))}
-                disabled={!canControlAiInsights}
-                tooltip={deniedTooltip}
-              />
-            </div>
-            <SettingsHint>{C.LABELS.AUTO_ANALYZE_HINT}</SettingsHint>
-          </div>
-          <SettingsDivider />
+    <SettingsCard title={C.LABELS.AI_INSIGHTS_TITLE} description={C.LABELS.AI_INSIGHTS_DESCRIPTION}>
+      <SettingsStack groups>
+        <SettingsStack>
+          <SettingsToggle
+            label={C.LABELS.ENABLE_AI_LABEL}
+            info={C.LABELS.ENABLE_AI_TOOLTIP}
+            hint={enableBlocked && !isLoading ? enableBlockedHint : undefined}
+          >
+            <Switch
+              checked={form.enabled}
+              onChange={(enabled) => setForm((prev) => ({ ...prev, enabled }))}
+              disabled={!canControlAiInsights || enableBlocked}
+              tooltip={deniedTooltip}
+            />
+          </SettingsToggle>
+          <SettingsToggle
+            label={C.LABELS.AUTO_ANALYZE_LABEL}
+            info={C.LABELS.AUTO_ANALYZE_TOOLTIP}
+            hint={C.LABELS.AUTO_ANALYZE_HINT}
+          >
+            <Switch
+              checked={form.autoAnalyze}
+              onChange={(autoAnalyze) => setForm((prev) => ({ ...prev, autoAnalyze }))}
+              disabled={!canControlAiInsights}
+              tooltip={deniedTooltip}
+            />
+          </SettingsToggle>
+        </SettingsStack>
+        <SettingsStack>
           <SettingsSubsectionHeader
             title={C.LABELS.RUNTIME_SECTION_TITLE}
             description={modelHint}
           />
-          <SettingsField label={C.LABELS.MODEL_LABEL}>
-            <Select
-              value={form.model}
-              notFoundContent={C.LABELS.MODELS_EMPTY}
-              options={modelOptions}
-              onChange={onModelChange}
-              allowClear={false}
-              disabled={!canControlAiInsights}
-              style={{ width: '100%' }}
-            />
-          </SettingsField>
-          {details.length > 0 ? <SettingsDetails items={details} /> : null}
+          <SettingsDetails items={details} />
 
           {runtimeState === 'absent' && !isLoading ? (
-            <div style={COLUMN}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: FORM_LABEL_GAP }}>
               <div style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>{C.LABELS.HELM_HINT_TEXT}</div>
               <Space.Compact style={{ width: '100%' }}>
                 <Input readOnly value={C.LABELS.HELM_HINT_COMMAND} />
@@ -432,16 +428,13 @@ const AIInsightsSection: React.FC = memo(() => {
             </div>
           ) : null}
 
-          {currentCheck ? (
-            <div
-              style={{
-                color: currentCheck.ok ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.DANGER,
-                fontWeight: FONT_WEIGHT.BOLD,
-              }}
-            >
+          {currentCheck?.ok ? (
+            <div style={{ color: DEFAULT_COLORS.SUCCESS, fontWeight: FONT_WEIGHT.BOLD }}>
               {currentCheck.text}
             </div>
-          ) : null}
+          ) : (
+            <FieldError message={currentCheck?.text} />
+          )}
           {researchLicensed ? (
             <div style={{ color: DEFAULT_COLORS.WARNING_TEXT }}>{C.LABELS.LICENSE_WARNING}</div>
           ) : null}
@@ -461,13 +454,12 @@ const AIInsightsSection: React.FC = memo(() => {
           <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
             <Toolbar config={modelToolbarConfig} />
           </div>
-          <SettingsDivider />
           <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
             <Toolbar config={saveToolbarConfig} />
           </div>
-        </div>
-      </SettingsCard>
-    </div>
+        </SettingsStack>
+      </SettingsStack>
+    </SettingsCard>
   );
 });
 

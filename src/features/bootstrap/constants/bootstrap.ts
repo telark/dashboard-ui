@@ -10,7 +10,6 @@ export const BOOTSTRAP_CONSTANTS = {
   KIND_RECOVER: 'recover',
   KIND_REPLACE: 'replace',
   LAYOUT: {
-    ROW_GAP: 12,
     LINE_GAP: 4,
     BUTTON_GAP: 8,
     PAGE_GAP: 12,
