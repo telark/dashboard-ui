@@ -12,6 +12,7 @@ import {
 import { CONNECTIVITY_CONSTANTS } from '../../../constants/pages/connectivity';
 import { LIST_PAGE, PAGE_CONTENT_LAYOUT } from '../../../constants/shared/pages';
 import type {
+  CountLabel,
   FilterChip,
   ListToolbarProps,
   ListToolbarSelection,
@@ -129,6 +130,13 @@ const shareBottomWithoutAnchors = (toolbar: HTMLDivElement | null) => {
   };
 };
 
+const renderCount = (totalCount: number | undefined, countSuffix: CountLabel) =>
+  totalCount === undefined ? null : (
+    <span style={metaStyle}>
+      {totalCount} {totalCount === 1 ? countSuffix.one : countSuffix.other}
+    </span>
+  );
+
 const ListToolbar: React.FC<ListToolbarProps> = ({
   totalCount,
   countSuffix,
@@ -154,12 +162,7 @@ const ListToolbar: React.FC<ListToolbarProps> = ({
   const threshold = bulkMode ? compactWidth.BULK : compactWidth.DEFAULT;
   const isCompact = width > 0 && width < threshold;
   const isQuickFilterCompact = width > 0 && width < (compactWidth.QUICK_FILTER ?? threshold);
-  const count =
-    totalCount === undefined ? null : (
-      <span style={metaStyle}>
-        {totalCount} {totalCount === 1 ? countSuffix.one : countSuffix.other}
-      </span>
-    );
+  const count = renderCount(totalCount, countSuffix);
   const clearAllConfig =
     hasActiveFilters && onClearAllFilters
       ? {

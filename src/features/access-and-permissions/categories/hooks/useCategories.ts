@@ -35,16 +35,18 @@ export const useCategories = (scope: string = CATEGORIES_CONSTANTS.SCOPES.GROUPS
   // once per mount, sharing one request per scope between the consumers mounting together.
   useEffect(() => {
     let canceled = false;
-    revalidate(dispatch, scope).then(() => {
-      if (!canceled) setSettledScope(scope);
-    });
+    revalidate(dispatch, scope)
+      .then(() => {
+        if (!canceled) setSettledScope(scope);
+      })
+      .catch(() => undefined);
     return () => {
       canceled = true;
     };
   }, [dispatch, scope]);
 
   const refetch = useCallback((): void => {
-    revalidate(dispatch, scope);
+    revalidate(dispatch, scope).catch(() => undefined);
   }, [dispatch, scope]);
 
   return {
