@@ -4,8 +4,10 @@ import { getMyPermissions } from '../../clients/permissions';
 import { extractErrorMessage } from '../../../../utils/helpers/format';
 import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../../constants/store/store';
 import logger from '../../../../logging';
+import type { RootState } from '../../../../store';
+import type { Passkey } from '../../models/passkeys';
 
-export const fetchAllPasskeysThunk = createAsyncThunk(
+export const fetchAllPasskeysThunk = createAsyncThunk<Passkey[], void, { state: RootState }>(
   STORE_ACTIONS.PASSKEYS.FETCH,
   async (_, { rejectWithValue }) => {
     try {
@@ -16,6 +18,8 @@ export const fetchAllPasskeysThunk = createAsyncThunk(
       return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.FETCH_PASSKEYS));
     }
   },
+  // StrictMode's second mount and a repeated Retry find the request in flight and send none.
+  { condition: (_, { getState }) => !getState().passkeys.loading },
 );
 
 export const fetchAllPasskeysSilentThunk = createAsyncThunk(

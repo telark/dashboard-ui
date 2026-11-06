@@ -3,6 +3,7 @@ import { fetchUsers, fetchUserById } from '../../clients';
 import { extractErrorMessage } from '../../../../../utils/helpers/format';
 import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../../../constants/store/store';
 import logger from '../../../../../logging';
+import type { RootState } from '../../../../../store';
 import type { User } from '../../models';
 import type { ResourceListResponse, ResourceDetailsResponse } from '../../../../../interfaces/http';
 
@@ -14,7 +15,7 @@ export const mapUserDetailsData = (response: ResourceDetailsResponse<User>): Use
   return response.data;
 };
 
-export const fetchAllUsersThunk = createAsyncThunk(
+export const fetchAllUsersThunk = createAsyncThunk<User[], void, { state: RootState }>(
   STORE_ACTIONS.USERS.FETCH,
   async (_, { rejectWithValue }) => {
     try {
@@ -25,6 +26,8 @@ export const fetchAllUsersThunk = createAsyncThunk(
       return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.FETCH_USERS));
     }
   },
+  // StrictMode's second mount and a repeated Retry find the request in flight and send none.
+  { condition: (_, { getState }) => !getState().users.loading },
 );
 
 export const fetchAllUsersSilentThunk = createAsyncThunk(

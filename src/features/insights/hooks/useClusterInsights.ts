@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import logger from '../../../logging';
 import { HTTP_STATUS } from '../../../constants';
+import { connectivityIssueFrom } from '../../../api/client/health-interceptor';
 import { keepUnchanged } from '../../../store/keepUnchanged';
 import { extractErrorMessage } from '../../../utils/helpers/format';
 import { fetchClusterInsights } from '../clients/insights';
@@ -84,15 +85,16 @@ export function useClusterInsights(
         if (canceled) return;
         logger.error(INSIGHTS_ERROR_MESSAGES.CLIENT.FETCH_CLUSTER_INSIGHTS_FAILED, error);
         // Without a first page there is nothing to keep showing, so any failure is reported. A 4xx
-        // carries the server's reason; the generic text reads as a network outage.
+        // carries the server's reason, and a connectivity failure keeps its own text (the unreachable state).
         const definite = isDefiniteError(error);
         const fallback = INSIGHTS_ERROR_MESSAGES.CLIENT.FETCH_CLUSTER_INSIGHTS_FAILED;
+        const text = extractErrorMessage(error, fallback);
         setState((prev) =>
           definite || !prev.page
             ? {
                 ...prev,
                 loading: false,
-                error: definite ? extractErrorMessage(error, fallback) : fallback,
+                error: definite || connectivityIssueFrom(text) ? text : fallback,
               }
             : prev,
         );

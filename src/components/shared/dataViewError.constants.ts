@@ -6,17 +6,8 @@ export const DATA_VIEW_ERROR_CONSTANTS = {
     RETRY_BUTTON: 'Retry',
   },
   LAYOUT: {
-    CARD: {
-      MIN_HEIGHT: 280,
-      PADDING: '48px 24px',
-    },
-    TABLE: {
-      MIN_HEIGHT: 220,
-      PADDING: '32px 24px',
-    },
-    ICON_SIZE: 40,
-    BANNER_MAX_WIDTH: 720,
-    GAP: 12,
+    PADDING: '48px 24px',
+    ICON_SIZE: 32,
   },
   TIMEOUT_MS: 15_000,
 } as const;

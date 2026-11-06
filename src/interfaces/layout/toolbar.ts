@@ -76,4 +76,6 @@ export interface ListToolbarProps {
   quickFilter?: (compact: boolean) => React.ReactNode;
   /** Right-hand toolbars, in order, after the filter button. */
   toolbars: ToolbarConfig[];
+  /** The list can't reach the server: every action is disabled and its tooltip says why. */
+  unreachable?: boolean;
 }

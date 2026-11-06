@@ -1,15 +1,11 @@
-import React, { useEffect, useState, useMemo, useCallback, startTransition } from 'react';
-import { App } from 'antd';
+import React, { useLayoutEffect, useState, useMemo, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { PASSKEYS_CONSTANTS as PPC } from '../../constants/passkeys';
-import { AUTH_ERROR_MESSAGES } from '../../constants';
-import { isDevelopment } from '../../../../utils/helpers/env';
-import logger from '../../../../logging';
 import { AppDispatch } from '../../../../store';
+import { connectivityIssueFrom } from '../../../../api/client/health-interceptor';
 import { fetchAllPasskeysThunk } from '../../store/thunks/fetchThunks';
 import {
   selectPasskeys,
-  selectPasskeyLoading,
   selectPasskeyLoaded,
   selectPasskeyError,
 } from '../../store/selectors/passkeySelectors';
@@ -24,15 +20,12 @@ import { ActionConfirmModal } from '../../../../components/display/modal';
 import FullPageLoader from '../../../../components/display/views/FullPageLoader';
 
 const MainPage: React.FC = () => {
-  const { message } = App.useApp();
   const dispatch: AppDispatch = useDispatch();
   const passkeys = useSelector(selectPasskeys);
-  const loading = useSelector(selectPasskeyLoading);
   const loaded = useSelector(selectPasskeyLoaded);
   const error = useSelector(selectPasskeyError);
 
   const [searchTerm, setSearchTerm] = useState('');
-  const [lastFetchError, setLastFetchError] = useState<string | null>(null);
   const [sortOrder] = useState<'asc' | 'desc'>('desc');
   const [pendingDelete, setPendingDelete] = useState<Passkey | null>(null);
   const [deleting, setDeleting] = useState(false);
@@ -51,22 +44,11 @@ const MainPage: React.FC = () => {
   const { submitting, handleDelete, handleCreate, handleUpdate } = usePasskeyActions(openEditPanel);
   const { enrollUrl, enrollLoading, createLink, clearLink } = useEnrollLink();
 
-  useEffect(() => {
+  // Before paint, so the pending clears a previous visit's error ahead of the loader.
+  // A failed load shows on the page alone (no toast), like Members, Groups and Roles.
+  useLayoutEffect(() => {
     dispatch(fetchAllPasskeysThunk());
   }, [dispatch]);
-
-  useEffect(() => {
-    // Only a load failure lands in the slice's error: a failed save shows its own message.
-    if (error && !loading && error !== lastFetchError) {
-      message.error(AUTH_ERROR_MESSAGES.FETCH_PASSKEYS_FAILED);
-      if (isDevelopment()) {
-        logger.error(PPC.LOGS.FAILED_TO_LOAD_PASSKEYS, error);
-      }
-      startTransition(() => {
-        setLastFetchError(error);
-      });
-    }
-  }, [error, loading, lastFetchError, message]);
 
   const handlePanelSubmit = useCallback(
     async (values: Record<string, unknown>) => {
@@ -112,6 +94,7 @@ const MainPage: React.FC = () => {
     onCreatePasskeyClick: openCreatePanel,
     onEnrollLinkClick: createLink,
     enrollLinkLoading: enrollLoading,
+    unreachable: Boolean(connectivityIssueFrom(error)),
   });
 
   const shouldShowEmpty = useMemo(
@@ -146,17 +129,12 @@ const MainPage: React.FC = () => {
     dispatch(fetchAllPasskeysThunk());
   };
 
-  const augmentedPageConfig = {
-    ...pageConfig,
-    loading,
-    error,
-    onRetry: refetchPasskeys,
-  };
-
   return (
     <>
       <PasskeysListPage
-        pageConfig={augmentedPageConfig}
+        pageConfig={pageConfig}
+        error={error}
+        onRetry={refetchPasskeys}
         passkeys={filteredAndSortedPasskeys}
         allPasskeys={passkeys}
         searchTerm={searchTerm}

@@ -191,7 +191,7 @@ const MainPage: React.FC = () => {
 
   const augmentedPageConfig = {
     ...pageConfig,
-    loading: !loaded,
+    loaded,
     fullPageLoading: !loaded,
     error,
     onRetry: refetch,

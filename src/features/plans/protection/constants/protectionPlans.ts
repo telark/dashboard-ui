@@ -87,7 +87,6 @@ export const PROTECTION_PLANS_CONSTANTS = {
     REPORTS_TAB: {
       SEARCH_PLACEHOLDER: 'Search reports by plan name...',
       COUNT_SUFFIX: { one: 'report', other: 'reports' },
-      REFRESH: 'Refresh',
       DOWNLOAD: 'Download',
       DELETED_PLAN: 'Deleted plan',
       KEPT_PLAN: (name: string) => `${name} (deleted)`,

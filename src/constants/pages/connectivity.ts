@@ -22,6 +22,14 @@ export const CONNECTIVITY_CONSTANTS = {
     CANCEL: 'Cancel',
     CONNECTION_PROBLEM: 'Connection Problem',
   },
+  // One state for every feature, whether the network or a service is down.
+  UNREACHABLE: {
+    TITLE: "Can't reach the server",
+    MESSAGE:
+      'Your connection dropped or the server is out of reach. Nothing was lost — reconnect and pick up where you left off.',
+    RETRY_BUTTON: 'Try again',
+    ACTION_TOOLTIP: 'Unavailable while the server is out of reach',
+  },
   LAYOUT: {
     ERROR_CONTAINER: {
       display: 'flex',

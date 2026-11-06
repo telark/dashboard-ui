@@ -17,8 +17,8 @@ export interface HealthStoreBinding {
   dispatch: (action: HealthAction) => void;
 }
 
-const SERVICE_UNAVAILABLE_MESSAGE = (name: string): string =>
-  `Service '${name}' is temporarily unavailable. Please try again in a moment.`;
+// Generic on purpose: views show this text, and the UI never names internal services.
+const SERVICE_UNAVAILABLE_MESSAGE = 'Service is temporarily unavailable. Try again in a moment.';
 
 // Thunks reject with a string, so the CircuitOpenError instance is gone by the
 // time a view decides how to render it. These survive that boundary.
@@ -28,22 +28,25 @@ const SERVICE_UNAVAILABLE_MARKERS = [
   'is temporarily unavailable',
   'Service temporarily unavailable',
 ];
-const NETWORK_MARKERS = ['Cannot reach', 'Network Error', 'Failed to fetch'];
+const NETWORK_MARKERS = ['Cannot reach', 'Network Error'];
+// Matched whole: app fallbacks for server errors start with it ('Failed to fetch users').
+const FETCH_FAILED_MESSAGE = 'Failed to fetch';
 
 export interface ConnectivityIssue {
   kind: 'service' | 'network';
-  serviceName?: string;
 }
 
 export const connectivityIssueFrom = (message: string | null): ConnectivityIssue | undefined => {
   if (!message) return undefined;
   if (SERVICE_UNAVAILABLE_MARKERS.some((marker) => message.includes(marker))) {
-    return {
-      kind: 'service',
-      serviceName: /Service '([^']+)' is temporarily unavailable/.exec(message)?.[1],
-    };
+    return { kind: 'service' };
   }
-  if (NETWORK_MARKERS.some((marker) => message.includes(marker))) return { kind: 'network' };
+  if (
+    message === FETCH_FAILED_MESSAGE ||
+    NETWORK_MARKERS.some((marker) => message.includes(marker))
+  ) {
+    return { kind: 'network' };
+  }
   return undefined;
 };
 
@@ -62,7 +65,7 @@ export class CircuitOpenError extends Error {
   readonly isCircuitOpen: true;
 
   constructor(serviceName: string) {
-    super(SERVICE_UNAVAILABLE_MESSAGE(serviceName));
+    super(SERVICE_UNAVAILABLE_MESSAGE);
     this.name = 'CircuitOpenError';
     this.serviceName = serviceName;
     this.isCircuitOpen = true;

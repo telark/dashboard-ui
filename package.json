@@ -35,7 +35,7 @@
     "redux-persist": "^6.0.0"
   },
   "scripts": {
-    "dev": "BROWSER='Google Chrome' vite --port 3000 --open",
+    "dev": "vite --port 3000 --open",
     "generate:licenses": "node scripts/generate-licenses.mjs",
     "build": "npm run generate:licenses && vite build",
     "build:analyze": "npm run generate:licenses && vite build --mode analyze",
