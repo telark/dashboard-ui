@@ -364,9 +364,13 @@ const ClusterInsightsView: React.FC<Props> = memo(({ tab, active, tabs, appNote,
     [handleSort],
   );
 
+  const environmentNames = useMemo(
+    () => Object.fromEntries(environments.map((e) => [e.id, e.name])),
+    [environments],
+  );
   const sortedRows = useMemo(
-    () => sortInsightRows(items, sortKey, sortOrder),
-    [items, sortKey, sortOrder],
+    () => sortInsightRows(items, sortKey, sortOrder, environmentNames),
+    [items, sortKey, sortOrder, environmentNames],
   );
   const grouped = useMemo(
     () =>
@@ -431,10 +435,6 @@ const ClusterInsightsView: React.FC<Props> = memo(({ tab, active, tabs, appNote,
     [groupBy],
   );
 
-  const environmentNames = useMemo(
-    () => Object.fromEntries(environments.map((e) => [e.id, e.name])),
-    [environments],
-  );
   // Keyed on the fitting columns, not the width: a resize that keeps them skips the table.
   const visibleColumns = fittingInsightColumns(width);
   const phoneWidth = width > 0 && width < CLUSTER_INSIGHTS.PHONE_WIDTH_PX ? width : 0;

@@ -51,13 +51,14 @@ export type InsightColumnKey = keyof typeof CLUSTER_INSIGHTS.COLUMN_WIDTHS;
 
 const W = CLUSTER_INSIGHTS.COLUMN_WIDTHS;
 const C = INSIGHTS_UI.PAGE.COLUMNS;
-// Lowest priority last: dropped first when the table runs out of room.
+// Lowest priority last: dropped first when the table runs out of room. Category (Kind) and
+// Environment stay longest so a laptop still shows them; Namespace repeats the application's.
 const OPTIONAL_COLUMNS: InsightColumnKey[] = [
-  'NAMESPACE',
-  'STATE',
-  'TRIAGE',
   'KIND',
   'ENVIRONMENT',
+  'STATE',
+  'TRIAGE',
+  'NAMESPACE',
 ];
 const REQUIRED_WIDTH = W.SEVERITY + W.TITLE + W.APPLICATION + W.LAST_SEEN;
 // One Set per fitting count, so the result keeps its identity while the same columns fit.
@@ -173,8 +174,16 @@ const INSIGHT_SORT_FIELDS: SortFieldConfig<InsightRow>[] = [
   { key: 'LAST_SEEN', type: 'date', getValue: (r) => r.lastSeenAt },
 ];
 
+// Environment sorts by the names shown, which only the page knows (rows carry ids).
+const environmentSortField = (names: Record<string, string>): SortFieldConfig<InsightRow> => ({
+  key: 'ENVIRONMENT',
+  type: 'string',
+  getValue: (r) =>
+    r.environments?.length ? r.environments.map((id) => names[id] ?? id).join(', ') : null,
+});
+
 const isSortable = (key: InsightColumnKey): boolean =>
-  INSIGHT_SORT_FIELDS.some((field) => field.key === key);
+  key === 'ENVIRONMENT' || INSIGHT_SORT_FIELDS.some((field) => field.key === key);
 
 const mostUrgentFirst = (a: InsightRow, b: InsightRow): number =>
   SEVERITY_RANK[b.severity] - SEVERITY_RANK[a.severity] ||
@@ -185,11 +194,20 @@ export const sortInsightRows = (
   rows: InsightRow[],
   sortKey: string | null,
   sortOrder: SortOrder,
+  environmentNames: Record<string, string>,
 ): InsightRow[] =>
-  sortData([...rows].sort(mostUrgentFirst), sortKey, sortOrder, INSIGHT_SORT_FIELDS);
+  sortData([...rows].sort(mostUrgentFirst), sortKey, sortOrder, [
+    ...INSIGHT_SORT_FIELDS,
+    environmentSortField(environmentNames),
+  ]);
 
+// Centered like a single tag: once the tags wrap, the row fills the cell.
 const chips = (nodes: React.ReactNode[]): React.ReactNode => (
-  <div style={{ display: 'inline-flex', flexWrap: 'wrap', gap: SPACING.XS }}>{nodes}</div>
+  <div
+    style={{ display: 'inline-flex', flexWrap: 'wrap', justifyContent: 'center', gap: SPACING.XS }}
+  >
+    {nodes}
+  </div>
 );
 
 interface ColumnSpec {
