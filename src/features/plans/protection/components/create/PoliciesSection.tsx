@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Form, Select, Typography } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import {
@@ -60,182 +60,195 @@ const PoliciesSection: React.FC<PoliciesSectionProps> = ({
   onPoliciesChange,
   onPolicyParamChange,
   disabled = false,
-}) => (
-  <Section
-    title={SECTIONS.POLICIES_TITLE}
-    subtitle={SECTIONS.POLICIES_DESCRIPTION}
-    content={
-      templatesLoading ? (
-        <FancySpinner size={14} />
-      ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.MD }}>
-          <Form.Item
-            name="mode"
-            label={FORM.MODE_LABEL}
-            style={{ marginBottom: SPACING.NONE }}
-            className={FORM_ITEM_CLASS}
-            tooltip={{
-              title: (
-                <Typography.Link
-                  href={DOCS_LINKS.AUDIT_AND_ENFORCE.HREF}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {DOCS_LINKS.AUDIT_AND_ENFORCE.LABEL}
-                </Typography.Link>
-              ),
-              icon: (
-                <InfoCircleOutlined tabIndex={0} aria-label={DOCS_LINKS.AUDIT_AND_ENFORCE.LABEL} />
-              ),
-              trigger: KEYBOARD_TOOLTIP_TRIGGER,
-            }}
-            extra={<ModeNote />}
-          >
-            <Select
-              options={PPC.CREATE_PAGE.MODE_OPTIONS}
-              style={{ width: '100%' }}
-              disabled={disabled}
-            />
-          </Form.Item>
-          <Form.Item
-            label={FORM.POLICIES_LABEL}
-            style={{ marginBottom: SPACING.NONE }}
-            className={FORM_ITEM_CLASS}
-            validateStatus={policies.length === 0 ? 'error' : ''}
-            help={policies.length === 0 ? FORM.POLICIES_REQUIRED_ERROR : undefined}
-            required
-          >
-            <Select
-              mode="multiple"
-              notFoundContent={FORM.POLICIES_EMPTY}
-              placeholder={FORM.ADD_POLICY_BUTTON}
-              style={{ width: '100%' }}
-              value={policies.map((p) => p.templateID)}
-              disabled={disabled}
-              options={availableTemplates.map((t) => ({ value: t.id, label: templateLabel(t) }))}
-              optionRender={(option) => (
-                <div>
-                  <div>{option.label}</div>
-                  <Typography.Text type="secondary" style={{ fontSize: FONT_SIZE.SM }}>
-                    {templates.find((t) => t.id === option.value)?.description}
-                  </Typography.Text>
-                </div>
-              )}
-              onChange={(selectedIds: string[]) => {
-                onPoliciesChange(
-                  selectedIds.map((id) => {
-                    const existing = policies.find((p) => p.templateID === id);
-                    if (existing) return existing;
-                    const tpl = templates.find((t) => t.id === id);
-                    const initialParams: Record<string, string[]> = {};
-                    tpl?.params?.forEach((p) => {
-                      initialParams[p.key] = [];
-                    });
-                    return { templateID: id, params: initialParams };
-                  }),
-                );
+}) => {
+  // The body unmounts with the panel, so each open starts untouched. A submit can't happen
+  // with no policy (its button is disabled), so touching is the only way to reach the error.
+  const [touched, setTouched] = useState(false);
+  const showRequired = touched && policies.length === 0;
+  return (
+    <Section
+      title={SECTIONS.POLICIES_TITLE}
+      subtitle={SECTIONS.POLICIES_DESCRIPTION}
+      content={
+        templatesLoading ? (
+          <FancySpinner size={14} />
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.MD }}>
+            <Form.Item
+              name="mode"
+              label={FORM.MODE_LABEL}
+              style={{ marginBottom: SPACING.NONE }}
+              className={FORM_ITEM_CLASS}
+              tooltip={{
+                title: (
+                  <Typography.Link
+                    href={DOCS_LINKS.AUDIT_AND_ENFORCE.HREF}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {DOCS_LINKS.AUDIT_AND_ENFORCE.LABEL}
+                  </Typography.Link>
+                ),
+                icon: (
+                  <InfoCircleOutlined
+                    tabIndex={0}
+                    aria-label={DOCS_LINKS.AUDIT_AND_ENFORCE.LABEL}
+                  />
+                ),
+                trigger: KEYBOARD_TOOLTIP_TRIGGER,
               }}
-              filterOption={(input, option) =>
-                String(option?.label ?? '')
-                  .toLowerCase()
-                  .includes(input.toLowerCase())
-              }
-            />
-          </Form.Item>
+              extra={<ModeNote />}
+            >
+              <Select
+                options={PPC.CREATE_PAGE.MODE_OPTIONS}
+                style={{ width: '100%' }}
+                disabled={disabled}
+              />
+            </Form.Item>
+            <Form.Item
+              label={FORM.POLICIES_LABEL}
+              style={{ marginBottom: SPACING.NONE }}
+              className={FORM_ITEM_CLASS}
+              validateStatus={showRequired ? 'error' : ''}
+              help={showRequired ? FORM.POLICIES_REQUIRED_ERROR : undefined}
+              required
+            >
+              <Select
+                mode="multiple"
+                notFoundContent={FORM.POLICIES_EMPTY}
+                placeholder={FORM.ADD_POLICY_BUTTON}
+                style={{ width: '100%' }}
+                value={policies.map((p) => p.templateID)}
+                disabled={disabled}
+                options={availableTemplates.map((t) => ({ value: t.id, label: templateLabel(t) }))}
+                optionRender={(option) => (
+                  <div>
+                    <div>{option.label}</div>
+                    <Typography.Text type="secondary" style={{ fontSize: FONT_SIZE.SM }}>
+                      {templates.find((t) => t.id === option.value)?.description}
+                    </Typography.Text>
+                  </div>
+                )}
+                onBlur={() => setTouched(true)}
+                onChange={(selectedIds: string[]) => {
+                  setTouched(true);
+                  onPoliciesChange(
+                    selectedIds.map((id) => {
+                      const existing = policies.find((p) => p.templateID === id);
+                      if (existing) return existing;
+                      const tpl = templates.find((t) => t.id === id);
+                      const initialParams: Record<string, string[]> = {};
+                      tpl?.params?.forEach((p) => {
+                        initialParams[p.key] = [];
+                      });
+                      return { templateID: id, params: initialParams };
+                    }),
+                  );
+                }}
+                filterOption={(input, option) =>
+                  String(option?.label ?? '')
+                    .toLowerCase()
+                    .includes(input.toLowerCase())
+                }
+              />
+            </Form.Item>
 
-          {policies
-            .filter((entry) => {
-              const tpl = templates.find((t) => t.id === entry.templateID);
-              return (tpl?.params?.length ?? 0) > 0;
-            })
-            .map((entry) => {
-              const tpl = templates.find((t) => t.id === entry.templateID);
-              if (!tpl) return null;
-              const policyIndex = policies.findIndex((p) => p.templateID === entry.templateID);
-              return (
-                <div
-                  key={entry.templateID}
-                  style={{
-                    border: HAIRLINE.SURFACE_BORDER,
-                    borderRadius: RADIUS.MD,
-                    padding: SPACING.MD,
-                  }}
-                >
-                  <span
+            {policies
+              .filter((entry) => {
+                const tpl = templates.find((t) => t.id === entry.templateID);
+                return (tpl?.params?.length ?? 0) > 0;
+              })
+              .map((entry) => {
+                const tpl = templates.find((t) => t.id === entry.templateID);
+                if (!tpl) return null;
+                const policyIndex = policies.findIndex((p) => p.templateID === entry.templateID);
+                return (
+                  <div
+                    key={entry.templateID}
                     style={{
-                      fontWeight: FONT_WEIGHT.SEMIBOLD,
-                      fontSize: FONT_SIZE.MD,
-                      display: 'block',
-                      marginBottom: SPACING.SM,
+                      border: HAIRLINE.SURFACE_BORDER,
+                      borderRadius: RADIUS.MD,
+                      padding: SPACING.MD,
                     }}
                   >
-                    {templateLabel(tpl)}
-                  </span>
-                  {(tpl.params ?? []).map((param) => {
-                    const error = paramError(entry, param);
-                    const limit = POLICY_PARAM_LIMITS[param.key] ?? INPUT_LIMITS.IMAGE_PATTERN;
-                    const guard = inputGuard(limit.MAX);
-                    return (
-                      <div key={param.key} style={{ marginTop: SPACING.SM }}>
-                        <Typography.Text
-                          style={{
-                            fontSize: FONT_SIZE.SM,
-                            fontWeight: FONT_WEIGHT.MEDIUM,
-                            display: 'block',
-                            marginBottom: SPACING.XS,
-                          }}
-                        >
-                          {param.label}
-                          {param.required && (
-                            <span style={{ color: DEFAULT_COLORS.DANGER, marginLeft: SPACING.XXS }}>
-                              *
-                            </span>
-                          )}
-                        </Typography.Text>
-                        <Select
-                          mode="tags"
-                          placeholder={param.placeholder ?? FORM.PARAM_PLACEHOLDER(param.label)}
-                          value={entry.params[param.key] ?? []}
-                          onChange={(vals: string[]) =>
-                            onPolicyParamChange(
-                              policyIndex,
-                              param.key,
-                              // maxLength only stops typing: a pasted value becomes a tag uncut.
-                              vals
-                                .map((v) => guard.normalize(v).trim().slice(0, limit.MAX).trim())
-                                .filter(Boolean),
-                            )
-                          }
-                          maxLength={guard.input.maxLength}
-                          maxCount={limit.ITEMS}
-                          style={{ width: '100%' }}
-                          tokenSeparators={[',']}
-                          disabled={disabled}
-                          status={error ? 'error' : undefined}
-                        />
-                        <FieldError message={error} />
-                        {param.description && (
+                    <span
+                      style={{
+                        fontWeight: FONT_WEIGHT.SEMIBOLD,
+                        fontSize: FONT_SIZE.MD,
+                        display: 'block',
+                        marginBottom: SPACING.SM,
+                      }}
+                    >
+                      {templateLabel(tpl)}
+                    </span>
+                    {(tpl.params ?? []).map((param) => {
+                      const error = paramError(entry, param);
+                      const limit = POLICY_PARAM_LIMITS[param.key] ?? INPUT_LIMITS.IMAGE_PATTERN;
+                      const guard = inputGuard(limit.MAX);
+                      return (
+                        <div key={param.key} style={{ marginTop: SPACING.SM }}>
                           <Typography.Text
-                            type="secondary"
                             style={{
-                              fontSize: FONT_SIZE.XS,
+                              fontSize: FONT_SIZE.SM,
+                              fontWeight: FONT_WEIGHT.MEDIUM,
                               display: 'block',
-                              marginTop: SPACING.XXS,
+                              marginBottom: SPACING.XS,
                             }}
                           >
-                            {param.description}
+                            {param.label}
+                            {param.required && (
+                              <span
+                                style={{ color: DEFAULT_COLORS.DANGER, marginLeft: SPACING.XXS }}
+                              >
+                                *
+                              </span>
+                            )}
                           </Typography.Text>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              );
-            })}
-        </div>
-      )
-    }
-  />
-);
+                          <Select
+                            mode="tags"
+                            placeholder={param.placeholder ?? FORM.PARAM_PLACEHOLDER(param.label)}
+                            value={entry.params[param.key] ?? []}
+                            onChange={(vals: string[]) =>
+                              onPolicyParamChange(
+                                policyIndex,
+                                param.key,
+                                // maxLength only stops typing: a pasted value becomes a tag uncut.
+                                vals
+                                  .map((v) => guard.normalize(v).trim().slice(0, limit.MAX).trim())
+                                  .filter(Boolean),
+                              )
+                            }
+                            maxLength={guard.input.maxLength}
+                            maxCount={limit.ITEMS}
+                            style={{ width: '100%' }}
+                            tokenSeparators={[',']}
+                            disabled={disabled}
+                            status={error ? 'error' : undefined}
+                          />
+                          <FieldError message={error} />
+                          {param.description && (
+                            <Typography.Text
+                              type="secondary"
+                              style={{
+                                fontSize: FONT_SIZE.XS,
+                                display: 'block',
+                                marginTop: SPACING.XXS,
+                              }}
+                            >
+                              {param.description}
+                            </Typography.Text>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              })}
+          </div>
+        )
+      }
+    />
+  );
+};
 
 export default PoliciesSection;

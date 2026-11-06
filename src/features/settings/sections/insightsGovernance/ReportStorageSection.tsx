@@ -52,6 +52,37 @@ const ReportStorageSection: React.FC = memo(() => {
     };
   }, [canViewReportStorage, message]);
 
+  const renderContent = () => {
+    if (!canViewReportStorage) {
+      return <SettingsHint>{C.LABELS.REPORT_STORAGE_NO_ACCESS}</SettingsHint>;
+    }
+    if (loading) return <SettingsHint>{C.LABELS.REPORT_STORAGE_LOADING}</SettingsHint>;
+    if (!infos) return null;
+    return (
+      <>
+        <SettingsField label={C.LABELS.SNAPSHOT_STORAGE_USAGE_LABEL}>
+          <SnapshotStorageBar
+            percentUsed={infos.consumedSpace.percent ?? 0}
+            metricsLine={`${infos.consumedSpace.mb.toFixed(2)} MB / ${infos.totalPVCSpace.mb.toFixed(2)} MB`}
+          />
+        </SettingsField>
+        <SettingsDetails
+          items={[
+            {
+              label: C.LABELS.SNAPSHOT_STORAGE_CONSUMED,
+              value: metricLine(infos.consumedSpace),
+            },
+            {
+              label: C.LABELS.SNAPSHOT_STORAGE_AVAILABLE,
+              value: metricLine(infos.availableSpace),
+            },
+            { label: C.LABELS.REPORT_STORAGE_TOTAL_REPORTS, value: infos.totalReports },
+          ]}
+        />
+      </>
+    );
+  };
+
   return (
     <SettingsCard
       title={C.LABELS.REPORT_STORAGE_TITLE}
@@ -65,33 +96,7 @@ const ReportStorageSection: React.FC = memo(() => {
           gap: 14,
         }}
       >
-        {!canViewReportStorage ? (
-          <SettingsHint>{C.LABELS.REPORT_STORAGE_NO_ACCESS}</SettingsHint>
-        ) : loading ? (
-          <SettingsHint>{C.LABELS.REPORT_STORAGE_LOADING}</SettingsHint>
-        ) : infos ? (
-          <>
-            <SettingsField label={C.LABELS.SNAPSHOT_STORAGE_USAGE_LABEL}>
-              <SnapshotStorageBar
-                percentUsed={infos.consumedSpace.percent ?? 0}
-                metricsLine={`${infos.consumedSpace.mb.toFixed(2)} MB / ${infos.totalPVCSpace.mb.toFixed(2)} MB`}
-              />
-            </SettingsField>
-            <SettingsDetails
-              items={[
-                {
-                  label: C.LABELS.SNAPSHOT_STORAGE_CONSUMED,
-                  value: metricLine(infos.consumedSpace),
-                },
-                {
-                  label: C.LABELS.SNAPSHOT_STORAGE_AVAILABLE,
-                  value: metricLine(infos.availableSpace),
-                },
-                { label: C.LABELS.REPORT_STORAGE_TOTAL_REPORTS, value: infos.totalReports },
-              ]}
-            />
-          </>
-        ) : null}
+        {renderContent()}
       </div>
     </SettingsCard>
   );
