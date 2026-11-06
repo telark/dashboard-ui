@@ -72,20 +72,35 @@ const SnapshotStorageSection: React.FC = memo(() => {
   // A lower limit deletes snapshots, so it is confirmed first. A higher one saves directly.
   const lowering = initialSnapshots !== null && snapshotsMaxPerApp < initialSnapshots.maxPerApp;
 
-  const loadSnapshotInfos = useCallback(async () => {
-    setSnapshotInfosLoading(true);
-    try {
-      setSnapshotInfos(await getSnapshotInfos());
-    } catch {
-      setSnapshotInfos(null);
-      message.error(C.MESSAGES.SNAPSHOT_STORAGE_LOAD_FAILED);
-    } finally {
-      setSnapshotInfosLoading(false);
-    }
-  }, [message]);
+  // A cleaned-up effect run (a dev double mount, a page left) sets nothing and shows no toast.
+  const loadSnapshotInfos = useCallback(
+    (isStale: () => boolean = () => false) => {
+      setSnapshotInfosLoading(true);
+      getSnapshotInfos()
+        .then(
+          (infos) => {
+            if (!isStale()) setSnapshotInfos(infos);
+          },
+          () => {
+            if (isStale()) return;
+            setSnapshotInfos(null);
+            message.error(C.MESSAGES.SNAPSHOT_STORAGE_LOAD_FAILED);
+          },
+        )
+        .finally(() => {
+          if (!isStale()) setSnapshotInfosLoading(false);
+        });
+    },
+    [message],
+  );
 
   useEffect(() => {
-    if (canViewSnapshotStorage) loadSnapshotInfos();
+    if (!canViewSnapshotStorage) return;
+    let canceled = false;
+    loadSnapshotInfos(() => canceled);
+    return () => {
+      canceled = true;
+    };
   }, [loadSnapshotInfos, canViewSnapshotStorage]);
 
   const saveSnapshotsMax = useCallback(async () => {
@@ -100,7 +115,7 @@ const SnapshotStorageSection: React.FC = memo(() => {
       message.success(C.MESSAGES.PLATFORM_SAVE_SNAPSHOTS_SUCCESS);
       setInitialSnapshots({ maxPerApp });
       dispatch(fetchGlobalConfigThunk());
-      void loadSnapshotInfos();
+      loadSnapshotInfos();
     } catch {
       message.error(C.MESSAGES.PLATFORM_SAVE_SNAPSHOTS_FAILED);
     } finally {

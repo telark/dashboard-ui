@@ -30,13 +30,26 @@ const ReportStorageSection: React.FC = memo(() => {
 
   useEffect(() => {
     if (!canViewReportStorage) return;
+    // A cleaned-up run (a dev double mount, a page left) sets nothing and shows no toast.
+    let canceled = false;
     setLoading(true);
     fetchReportStorage()
-      .then(setInfos, () => {
-        setInfos(null);
-        message.error(C.MESSAGES.REPORT_STORAGE_LOAD_FAILED);
-      })
-      .finally(() => setLoading(false));
+      .then(
+        (next) => {
+          if (!canceled) setInfos(next);
+        },
+        () => {
+          if (canceled) return;
+          setInfos(null);
+          message.error(C.MESSAGES.REPORT_STORAGE_LOAD_FAILED);
+        },
+      )
+      .finally(() => {
+        if (!canceled) setLoading(false);
+      });
+    return () => {
+      canceled = true;
+    };
   }, [canViewReportStorage, message]);
 
   return (
