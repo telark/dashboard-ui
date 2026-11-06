@@ -9,6 +9,8 @@ import {
   FONT_WEIGHT,
   SPACING,
   MOTION,
+  KEYBOARD_TOOLTIP_TRIGGER,
+  TOOLTIP_TEXT_BUTTON,
 } from '../../../../constants';
 import { CardTagList } from '../../../../components/display/card';
 import { PAGINATION_DEFAULTS } from '../../../../components/display/table/constants';
@@ -73,10 +75,11 @@ const PodBlock: React.FC<{ instance: ApplicationWorkloadUsagePerInstance }> = ({
           {instance.name}
         </span>
         <span style={{ flex: 1 }} />
-        <Tooltip title={WM.POD_TOTAL_TOOLTIP}>
-          <span
-            tabIndex={0}
+        <Tooltip title={WM.POD_TOTAL_TOOLTIP} trigger={KEYBOARD_TOOLTIP_TRIGGER}>
+          <button
+            type="button"
             style={{
+              ...TOOLTIP_TEXT_BUTTON,
               display: 'inline-flex',
               alignItems: 'center',
               gap: SPACING.S6,
@@ -88,7 +91,7 @@ const PodBlock: React.FC<{ instance: ApplicationWorkloadUsagePerInstance }> = ({
               {WM.POD_TOTAL_LABEL}
             </span>
             <UsageValue cpu={instance.totalCpu} memory={instance.totalMemory} strong />
-          </span>
+          </button>
         </Tooltip>
       </div>
 
@@ -191,13 +194,18 @@ const QosClass: React.FC<{ qos: string }> = ({ qos }) => {
   const tooltip = WM.QOS_TOOLTIPS[qos];
   if (!tooltip) return <>{qos}</>;
   return (
-    <Tooltip title={tooltip}>
-      <span
-        tabIndex={0}
-        style={{ cursor: 'help', textDecoration: 'underline dotted', textUnderlineOffset: 3 }}
+    <Tooltip title={tooltip} trigger={KEYBOARD_TOOLTIP_TRIGGER}>
+      <button
+        type="button"
+        style={{
+          ...TOOLTIP_TEXT_BUTTON,
+          cursor: 'help',
+          textDecoration: 'underline dotted',
+          textUnderlineOffset: 3,
+        }}
       >
         {qos}
-      </span>
+      </button>
     </Tooltip>
   );
 };

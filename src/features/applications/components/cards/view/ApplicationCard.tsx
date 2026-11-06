@@ -14,6 +14,8 @@ import {
   getCardShellStyle,
   SPACING,
   FONT_WEIGHT,
+  KEYBOARD_TOOLTIP_TRIGGER,
+  TOOLTIP_TEXT_BUTTON,
 } from '../../../../../constants';
 import type { Application, ApplicationCoverage, ApplicationProtection } from '../../../models';
 import {
@@ -75,6 +77,7 @@ const headerProtection = (
 };
 
 const MORE_PLANS_STYLE: React.CSSProperties = {
+  ...TOOLTIP_TEXT_BUTTON,
   flexShrink: 0,
   textDecoration: 'underline dotted',
   textUnderlineOffset: 2,
@@ -135,14 +138,14 @@ const PlanLine: React.FC<{ application: Application; coverage: ApplicationCovera
         <span style={{ flexShrink: 0 }}>{COVERAGE.NOT_STARTED_AFTER_NAME}</span>
       )}
       {rest.length > 0 && (
-        <Tooltip title={others}>
-          <span
-            tabIndex={0}
+        <Tooltip title={others} trigger={KEYBOARD_TOOLTIP_TRIGGER}>
+          <button
+            type="button"
             aria-label={COVERAGE.MORE_PLANS_LABEL(others)}
             style={MORE_PLANS_STYLE}
           >
             {COVERAGE.MORE_PLANS(rest.length)}
-          </span>
+          </button>
         </Tooltip>
       )}
     </div>

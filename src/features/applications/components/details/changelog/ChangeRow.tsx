@@ -13,6 +13,8 @@ import {
   SPACING,
   FONT_SIZE,
   LINE_HEIGHT,
+  KEYBOARD_TOOLTIP_TRIGGER,
+  TOOLTIP_TEXT_BUTTON,
 } from '../../../../../constants';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import { APPLICATIONS_UI } from '../../../constants';
@@ -31,10 +33,14 @@ const ROW_ICON_STYLE: React.CSSProperties = {
 
 // Quiet on purpose: severity is the one colored chip in the row.
 const SnapshotMarker: React.FC<{ hasSnapshot: boolean }> = ({ hasSnapshot }) => (
-  <Tooltip title={hasSnapshot ? CL.SNAPSHOT_AVAILABLE_TOOLTIP : CL.SNAPSHOT_MISSING_TOOLTIP}>
-    <span
-      tabIndex={0}
+  <Tooltip
+    title={hasSnapshot ? CL.SNAPSHOT_AVAILABLE_TOOLTIP : CL.SNAPSHOT_MISSING_TOOLTIP}
+    trigger={KEYBOARD_TOOLTIP_TRIGGER}
+  >
+    <button
+      type="button"
       style={{
+        ...TOOLTIP_TEXT_BUTTON,
         display: 'inline-flex',
         alignItems: 'center',
         gap: SPACING.XS,
@@ -44,7 +50,7 @@ const SnapshotMarker: React.FC<{ hasSnapshot: boolean }> = ({ hasSnapshot }) => 
     >
       <DatabaseOutlined aria-hidden />
       {hasSnapshot ? CL.SNAPSHOT_AVAILABLE : CL.SNAPSHOT_MISSING}
-    </span>
+    </button>
   </Tooltip>
 );
 

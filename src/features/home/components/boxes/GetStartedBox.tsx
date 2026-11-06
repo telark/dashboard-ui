@@ -2,7 +2,14 @@ import React, { memo, useMemo } from 'react';
 import { Tooltip, Typography } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import { APP_ROUTES, DEFAULT_COLORS, DOCS_LINKS, Icons, SPACING } from '../../../../constants';
+import {
+  APP_ROUTES,
+  DEFAULT_COLORS,
+  DOCS_LINKS,
+  Icons,
+  SPACING,
+  KEYBOARD_TOOLTIP_TRIGGER,
+} from '../../../../constants';
 import { FancySpinner } from '../../../../components/animation';
 import { Step, StepList } from '../../../../components/display/steps';
 import { Toolbar } from '../../../../components/display/toolbar';
@@ -77,7 +84,7 @@ const GetStartedBox: React.FC<GetStartedBoxProps> = memo(
               ) : null}
               {discovery}
               {showLabelsHint ? (
-                <Tooltip title={G.DISCOVER.LABELS_HINT}>
+                <Tooltip title={G.DISCOVER.LABELS_HINT} trigger={KEYBOARD_TOOLTIP_TRIGGER}>
                   <InfoCircleOutlined tabIndex={0} aria-label={G.DISCOVER.LABELS_HINT} />
                 </Tooltip>
               ) : null}

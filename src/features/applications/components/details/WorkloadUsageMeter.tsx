@@ -1,6 +1,13 @@
 import React, { memo } from 'react';
 import { Tooltip } from 'antd';
-import { DEFAULT_COLORS, EMPTY_VALUE, MOTION, SPACING } from '../../../../constants';
+import {
+  DEFAULT_COLORS,
+  EMPTY_VALUE,
+  MOTION,
+  SPACING,
+  KEYBOARD_TOOLTIP_TRIGGER,
+  TOOLTIP_TEXT_BUTTON,
+} from '../../../../constants';
 import { APPLICATIONS_UI } from '../../constants';
 import { APPLICATION_WORKLOAD_METRICS } from '../../constants/sectionLayout';
 
@@ -28,11 +35,12 @@ const usageColor = (ratio: number, hasLimit: boolean): string | null => {
 };
 
 const RequestMarker: React.FC<{ percent: number; request: string }> = ({ percent, request }) => (
-  <Tooltip title={WM.REQUEST_MARKER(request)}>
-    <span
-      tabIndex={0}
+  <Tooltip title={WM.REQUEST_MARKER(request)} trigger={KEYBOARD_TOOLTIP_TRIGGER}>
+    <button
+      type="button"
       aria-label={WM.REQUEST_MARKER(request)}
       style={{
+        ...TOOLTIP_TEXT_BUTTON,
         position: 'absolute',
         top: -4,
         bottom: -4,
@@ -50,7 +58,7 @@ const RequestMarker: React.FC<{ percent: number; request: string }> = ({ percent
           background: DEFAULT_COLORS.TEXT_SECONDARY,
         }}
       />
-    </span>
+    </button>
   </Tooltip>
 );
 
@@ -125,10 +133,11 @@ const WorkloadUsageMeter: React.FC<WorkloadUsageMeterProps> = memo(
             ) : null}
           </div>
         </div>
-        <Tooltip title={shareTooltip}>
-          <span
-            tabIndex={0}
+        <Tooltip title={shareTooltip} trigger={KEYBOARD_TOOLTIP_TRIGGER}>
+          <button
+            type="button"
             style={{
+              ...TOOLTIP_TEXT_BUTTON,
               flexShrink: 0,
               marginLeft: 'auto',
               fontSize: M.METER_VALUE_FONT_SIZE_PX,
@@ -138,7 +147,7 @@ const WorkloadUsageMeter: React.FC<WorkloadUsageMeterProps> = memo(
             }}
           >
             {formatPair(used, scale)} {WM.MID_DOT} {Math.round(ratio * FULL_PERCENT)}%
-          </span>
+          </button>
         </Tooltip>
       </div>
     ) : (

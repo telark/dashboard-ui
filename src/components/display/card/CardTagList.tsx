@@ -1,6 +1,12 @@
 import React from 'react';
 import { Tag, Tooltip } from 'antd';
-import { CARD_LAYOUT, CARD_MORE_LABEL, TAG_CLASS } from '../../../constants';
+import {
+  CARD_LAYOUT,
+  CARD_MORE_LABEL,
+  TAG_CLASS,
+  KEYBOARD_TOOLTIP_TRIGGER,
+  TOOLTIP_TEXT_BUTTON,
+} from '../../../constants';
 
 // The first `max` tags, then one "+N" pill whose tooltip lists the rest.
 const CardTagList: React.FC<{ tags: string[]; max?: number }> = ({
@@ -21,12 +27,16 @@ const CardTagList: React.FC<{ tags: string[]; max?: number }> = ({
         </Tag>
       ))}
       {hidden.length > 0 && (
-        <Tooltip title={hidden.join(', ')}>
-          <span tabIndex={0} aria-label={hidden.join(', ')} style={{ display: 'inline-flex' }}>
+        <Tooltip title={hidden.join(', ')} trigger={KEYBOARD_TOOLTIP_TRIGGER}>
+          <button
+            type="button"
+            aria-label={hidden.join(', ')}
+            style={{ ...TOOLTIP_TEXT_BUTTON, display: 'inline-flex' }}
+          >
             <Tag className={`${TAG_CLASS.XSMALL} ${TAG_CLASS.AS_IS}`}>
               {CARD_MORE_LABEL(hidden.length)}
             </Tag>
-          </span>
+          </button>
         </Tooltip>
       )}
     </>

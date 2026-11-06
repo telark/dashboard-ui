@@ -8,6 +8,7 @@ import {
   FONT_WEIGHT,
   LINE_HEIGHT,
   SPACING,
+  KEYBOARD_TOOLTIP_TRIGGER,
 } from '../../../constants';
 import { SETTINGS_CONSTANTS } from '../constants';
 
@@ -29,7 +30,7 @@ export const SettingsFieldLabel: React.FC<SettingsFieldLabelProps> = ({ label, i
   >
     {label}
     {info ? (
-      <Tooltip title={info}>
+      <Tooltip title={info} trigger={KEYBOARD_TOOLTIP_TRIGGER}>
         <InfoCircleOutlined
           tabIndex={0}
           aria-label={info}

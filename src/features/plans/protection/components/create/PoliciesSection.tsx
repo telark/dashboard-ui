@@ -10,6 +10,7 @@ import {
   RADIUS,
   FONT_WEIGHT,
   INPUT_LIMITS,
+  KEYBOARD_TOOLTIP_TRIGGER,
 } from '../../../../../constants';
 import {
   PROTECTION_PLANS_CONSTANTS as PPC,
@@ -86,6 +87,7 @@ const PoliciesSection: React.FC<PoliciesSectionProps> = ({
               icon: (
                 <InfoCircleOutlined tabIndex={0} aria-label={DOCS_LINKS.AUDIT_AND_ENFORCE.LABEL} />
               ),
+              trigger: KEYBOARD_TOOLTIP_TRIGGER,
             }}
             extra={<ModeNote />}
           >

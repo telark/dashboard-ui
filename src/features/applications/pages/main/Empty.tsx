@@ -16,6 +16,7 @@ import {
   FONT_SIZE,
   FONT_WEIGHT,
   UNSTYLED_BUTTON,
+  KEYBOARD_TOOLTIP_TRIGGER,
 } from '../../../../constants';
 import { LIST_PAGE } from '../../../../constants/shared/pages';
 import { PageContainer } from '../../../../components/shared';
@@ -180,7 +181,7 @@ const ApplicationsMainEmpty: React.FC<EmptyProps> = memo(({ excludedCount, onChe
                 <Step number={1} title={H.LABELS.TITLE}>
                   <span style={helperStyle}>
                     {H.LABELS.HELPER}
-                    <Tooltip title={<span>{labelKeys}</span>}>
+                    <Tooltip title={<span>{labelKeys}</span>} trigger={KEYBOARD_TOOLTIP_TRIGGER}>
                       <InfoCircleOutlined tabIndex={0} aria-label={DISCOVERY_LABELS_HINT} />
                     </Tooltip>
                   </span>
