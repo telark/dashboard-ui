@@ -1,15 +1,18 @@
 import React from 'react';
 import { CloseOutlined } from '@ant-design/icons';
-import { Checkbox } from 'antd';
+import { Checkbox, Tooltip } from 'antd';
 import {
   DEFAULT_COLORS,
+  DISABLED_OPACITY,
   LIST_TOOLBAR,
   TOOLBAR_ITEM_GAP,
   getPillSurface,
   LINE_HEIGHT,
 } from '../../../constants';
+import { CONNECTIVITY_CONSTANTS } from '../../../constants/pages/connectivity';
 import { LIST_PAGE, PAGE_CONTENT_LAYOUT } from '../../../constants/shared/pages';
 import type {
+  CountLabel,
   FilterChip,
   ListToolbarProps,
   ListToolbarSelection,
@@ -17,6 +20,7 @@ import type {
 import { useElementWidth } from '../../../hooks/layout';
 import { FilterButton } from '../buttons';
 import Toolbar from './Toolbar';
+import { lockConfig } from './lockConfig';
 
 const metaStyle: React.CSSProperties = {
   fontSize: LIST_TOOLBAR.META_FONT_SIZE_PX,
@@ -87,6 +91,24 @@ const SelectionSummary: React.FC<{ selection: ListToolbarSelection }> = ({ selec
   );
 };
 
+// inert takes the controls out of reach, so the hover lands on the wrapper and opens its tooltip.
+const Locked: React.FC<{ reason?: string; dim?: boolean; children: React.ReactNode }> = ({
+  reason,
+  dim = false,
+  children,
+}) =>
+  reason ? (
+    <Tooltip title={reason}>
+      <span style={{ display: 'inline-flex', opacity: dim ? DISABLED_OPACITY : 1 }}>
+        <span inert style={{ display: 'inline-flex' }}>
+          {children}
+        </span>
+      </span>
+    </Tooltip>
+  ) : (
+    children
+  );
+
 // Browsers without CSS anchor positioning read the toolbar's bottom from the page box instead (antd.css).
 // Its parent is watched too: a header that rewraps above it moves it without resizing it.
 const shareBottomWithoutAnchors = (toolbar: HTMLDivElement | null) => {
@@ -108,6 +130,13 @@ const shareBottomWithoutAnchors = (toolbar: HTMLDivElement | null) => {
   };
 };
 
+const renderCount = (totalCount: number | undefined, countSuffix: CountLabel) =>
+  totalCount === undefined ? null : (
+    <span style={metaStyle}>
+      {totalCount} {totalCount === 1 ? countSuffix.one : countSuffix.other}
+    </span>
+  );
+
 const ListToolbar: React.FC<ListToolbarProps> = ({
   totalCount,
   countSuffix,
@@ -124,19 +153,16 @@ const ListToolbar: React.FC<ListToolbarProps> = ({
   bulkActions,
   quickFilter,
   toolbars,
+  unreachable = false,
 }) => {
   const { ref, width } = useElementWidth<HTMLDivElement>();
+  const reason = unreachable ? CONNECTIVITY_CONSTANTS.UNREACHABLE.ACTION_TOOLTIP : undefined;
   // Bulk mode adds the select-all cluster and its actions, so it runs out of room
   // far earlier than the default toolbar.
   const threshold = bulkMode ? compactWidth.BULK : compactWidth.DEFAULT;
   const isCompact = width > 0 && width < threshold;
   const isQuickFilterCompact = width > 0 && width < (compactWidth.QUICK_FILTER ?? threshold);
-  const count =
-    totalCount === undefined ? null : (
-      <span style={metaStyle}>
-        {totalCount} {totalCount === 1 ? countSuffix.one : countSuffix.other}
-      </span>
-    );
+  const count = renderCount(totalCount, countSuffix);
   const clearAllConfig =
     hasActiveFilters && onClearAllFilters
       ? {
@@ -192,7 +218,9 @@ const ListToolbar: React.FC<ListToolbarProps> = ({
           {bulkMode && selection && selection.pageCount > 0 ? (
             <SelectionSummary selection={selection} />
           ) : null}
-          {bulkMode ? <Toolbar config={bulkActions} compact={isCompact} /> : null}
+          {bulkMode ? (
+            <Toolbar config={lockConfig(bulkActions, reason)} compact={isCompact} />
+          ) : null}
           {bulkMode ? count : null}
           <FilterChips
             chips={filterChips}
@@ -200,7 +228,7 @@ const ListToolbar: React.FC<ListToolbarProps> = ({
             onRemove={onRemoveFilterChip}
           />
           {filterNote ? <span style={metaStyle}>{filterNote}</span> : null}
-          <Toolbar config={clearAllConfig} compact={isCompact} />
+          <Toolbar config={lockConfig(clearAllConfig, reason)} compact={isCompact} />
         </div>
         {/* Fills the rest of the row, so the count appearing grows it inward: its start never moves.
             On a phone it wraps onto more lines instead of running off the edge. */}
@@ -216,10 +244,22 @@ const ListToolbar: React.FC<ListToolbarProps> = ({
           }}
         >
           {bulkMode ? null : count}
-          {quickFilter?.(isQuickFilterCompact)}
-          {onOpenFilters ? <FilterButton onClick={onOpenFilters} compact={isCompact} /> : null}
+          {quickFilter ? (
+            <Locked reason={reason} dim>
+              {quickFilter(isQuickFilterCompact)}
+            </Locked>
+          ) : null}
+          {onOpenFilters ? (
+            <Locked reason={reason}>
+              <FilterButton onClick={onOpenFilters} compact={isCompact} disabled={unreachable} />
+            </Locked>
+          ) : null}
           {toolbars.map((config, index) => (
-            <Toolbar key={config.buttons[0]?.key ?? index} config={config} compact={isCompact} />
+            <Toolbar
+              key={config.buttons[0]?.key ?? index}
+              config={lockConfig(config, reason)}
+              compact={isCompact}
+            />
           ))}
         </div>
       </div>

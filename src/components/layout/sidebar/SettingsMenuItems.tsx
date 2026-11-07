@@ -1,18 +1,18 @@
 import { memo, useCallback, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { HiChevronLeft } from 'react-icons/hi';
-import { LockOutlined } from '@ant-design/icons';
 import {
-  UserOutlined,
-  BulbOutlined,
-  SafetyOutlined,
-  RobotOutlined,
-  DatabaseOutlined,
-  PartitionOutlined,
-  KeyOutlined,
-  InfoCircleOutlined,
-  GlobalOutlined,
-} from '@ant-design/icons';
+  AiOutlineUser,
+  AiOutlineLock,
+  AiOutlineBulb,
+  AiOutlineSafety,
+  AiOutlineRobot,
+  AiOutlineDatabase,
+  AiOutlinePartition,
+  AiOutlineKey,
+  AiOutlineInfoCircle,
+  AiOutlineGlobal,
+} from 'react-icons/ai';
 import SidebarButton from '../../display/buttons/SideBarButton';
 import SidebarSectionLabel from './SidebarSectionLabel';
 import {
@@ -50,16 +50,16 @@ const SETTINGS_ROUTES = {
 
 // Stable icon elements keep SidebarButton's memo, so a navigation re-renders only two buttons.
 const SETTINGS_ICONS = {
-  profile: <UserOutlined />,
-  myPermissions: <LockOutlined />,
-  security: <SafetyOutlined />,
-  appearance: <BulbOutlined />,
-  timezone: <GlobalOutlined />,
-  identityProvider: <KeyOutlined />,
-  aiInsights: <RobotOutlined />,
-  discovery: <PartitionOutlined />,
-  storage: <DatabaseOutlined />,
-  about: <InfoCircleOutlined />,
+  profile: <AiOutlineUser />,
+  myPermissions: <AiOutlineLock />,
+  security: <AiOutlineSafety />,
+  appearance: <AiOutlineBulb />,
+  timezone: <AiOutlineGlobal />,
+  identityProvider: <AiOutlineKey />,
+  aiInsights: <AiOutlineRobot />,
+  discovery: <AiOutlinePartition />,
+  storage: <AiOutlineDatabase />,
+  about: <AiOutlineInfoCircle />,
 } as const;
 
 const BackButton = memo(

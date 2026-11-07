@@ -62,7 +62,9 @@ const ApplicationDetailsIdentity: React.FC<{ application: Application }> = memo(
           <ApplicationHealthIndicator status={application.health?.status} />
           <span>{LABELS.SEPARATOR}</span>
           {lastSyncedAt ? (
-            <span style={isStale(lastSyncedAt) ? { color: DEFAULT_COLORS.WARNING } : undefined}>
+            <span
+              style={isStale(lastSyncedAt) ? { color: DEFAULT_COLORS.WARNING_TEXT } : undefined}
+            >
               {LABELS.SYNCED_PREFIX} <TimeAgo date={lastSyncedAt} short />
             </span>
           ) : (

@@ -44,6 +44,7 @@ interface ApplicationsToolbarProps {
   healthQuickFilter: HealthQuickFilter;
   healthCounts: Record<HealthQuickFilter, number>;
   onHealthQuickFilterChange: (next: HealthQuickFilter) => void;
+  unreachable: boolean;
 }
 
 const HEALTH_PILLS = [
@@ -120,6 +121,7 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
   healthQuickFilter,
   healthCounts,
   onHealthQuickFilterChange,
+  unreachable,
 }) => {
   const { forceSync, delete: reset } = ACTION_PERMISSIONS.applications;
   const canForceSync = usePermission(forceSync.scope, forceSync.level, forceSync.deny);
@@ -242,6 +244,7 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
         label: APPLICATIONS_UI.TOOLBAR_SELECT_ALL,
       }}
       bulkActions={bulkActions}
+      unreachable={unreachable}
       quickFilter={(compact) => (
         <HealthPills
           active={healthQuickFilter || 'all'}

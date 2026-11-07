@@ -2,10 +2,11 @@ import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { App as AntdApp } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import SettingsCard from '../../components/SettingsCard';
+import { SettingsStack, SettingsToggle } from '../../components/SettingsFields';
 import Toolbar from '../../../../components/display/toolbar/Toolbar';
 import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 import { Client, authApiClient } from '../../../../api';
-import { Endpoints, FONT_WEIGHT } from '../../../../constants';
+import { Endpoints } from '../../../../constants';
 import { Switch } from '../../../../components/display/inputs';
 import {
   ensureGlobalConfigThunk,
@@ -65,32 +66,22 @@ const SelfRegistrationSection: React.FC = memo(() => {
 
   return (
     <SettingsCard title={C.LABELS.SELF_REGISTRATION_TITLE}>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: C.LAYOUT.FIELD_GAP }}>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            gap: C.LAYOUT.ROW_GAP,
-          }}
+      <SettingsStack>
+        <SettingsToggle
+          label={C.LABELS.SELF_REGISTRATION_LABEL}
+          hint={C.LABELS.SELF_REGISTRATION_HINT}
         >
-          <div>
-            <div style={{ fontWeight: FONT_WEIGHT.BOLD }}>{C.LABELS.SELF_REGISTRATION_LABEL}</div>
-            <div style={{ fontSize: SETTINGS_CONSTANTS.CONTENT.HINT_FONT_SIZE }}>
-              {C.LABELS.SELF_REGISTRATION_HINT}
-            </div>
-          </div>
           <Switch
             checked={enabled}
             onChange={setDraft}
             disabled={!canEdit}
             tooltip={deniedTooltip}
           />
-        </div>
+        </SettingsToggle>
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <Toolbar config={saveToolbarConfig} />
         </div>
-      </div>
+      </SettingsStack>
     </SettingsCard>
   );
 });

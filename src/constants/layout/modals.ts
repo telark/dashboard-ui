@@ -22,6 +22,8 @@ export const MODAL_CHROME = {
     BORDER_RADIUS: 12,
     PADDING: '16px 20px',
     CLASS_NAME: 'app-modal',
+    /** On the modal's root (mask and wrap), for the mask's animation in antd.css. */
+    ROOT_CLASS_NAME: 'app-modal-root',
     /** Above SLIDE_OUT.PANEL so a modal raised from a panel is not buried. */
     Z_INDEX: Z_INDEX.MODAL,
   },

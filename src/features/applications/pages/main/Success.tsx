@@ -205,6 +205,7 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
           healthQuickFilter={healthQuickFilter}
           healthCounts={healthCounts}
           onHealthQuickFilterChange={onHealthQuickFilterChange}
+          unreachable={dataState.phase === 'error' && Boolean(dataState.connectivity)}
         />
 
         <div ref={gridRef} style={{ marginTop: LIST_PAGE.CONTENT_OFFSET_PX }}>

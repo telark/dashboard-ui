@@ -6,6 +6,7 @@ import { buildTimeZoneOptions } from '../../../../../utils/shared/time';
 import { FORM_FIELD_PAIR_STYLE, FORM_ITEM_CLASS } from '../create/types';
 import { REPEAT_CLOCK_BASE } from '../../utils/planFormValues';
 import { DATE_PICKER_POPUP_CLASS, SPACING } from '../../../../../constants';
+import { FieldError } from '../../../../../components/display/inputs';
 
 const { FORM, REPEAT_DAY_OPTIONS, REPEAT_TIME_FORMAT } = PPC.CREATE_PAGE;
 
@@ -81,7 +82,7 @@ const RepeatFields: React.FC<RepeatFieldsProps> = ({ disabled = false }) => {
       <Form.Item
         name="repeatTimeZone"
         label={FORM.REPEAT_TIME_ZONE_LABEL}
-        extra={FORM.REPEAT_HELP}
+        extra={<FieldError warning message={FORM.REPEAT_HELP} />}
         style={{ marginBottom: SPACING.NONE }}
         className={FORM_ITEM_CLASS}
         rules={[{ required: true, message: FORM.REPEAT_TIME_ZONE_REQUIRED_ERROR }]}

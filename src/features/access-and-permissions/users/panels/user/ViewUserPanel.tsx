@@ -1,19 +1,16 @@
 import React, { useMemo } from 'react';
-import { Tag } from 'antd';
 import { UserSwitchOutlined } from '@ant-design/icons';
 import {
   DEFAULT_COLORS,
   EMPTY_VALUE,
   Icons,
-  STATUS_COLORS,
-  TAG_CLASS,
   VIEW,
-  getPillColor,
   FONT_SIZE,
   FONT_WEIGHT,
   SPACING,
 } from '../../../../../constants';
 import { USERS_CONSTANTS as UC } from '../../constants';
+import UserStatePill from '../../components/display/shared/UserStatePill';
 import ViewPanel from '../../../../../components/display/panels/view/ViewPanel';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import UserAvatar from '../../../../../components/display/avatars/UserAvatar';
@@ -100,14 +97,7 @@ const ViewUserPanel: React.FC<ViewUserPanelProps> = ({
       },
       {
         label: UC.LABELS.VIEW_LABELS.STATUS,
-        value: (
-          <Tag
-            color={getPillColor(STATUS_COLORS.USER_STATE[user.status.phase])}
-            className={TAG_CLASS.MEDIUM}
-          >
-            {user.status.phase}
-          </Tag>
-        ),
+        value: <UserStatePill phase={user.status.phase} />,
       },
       {
         label: UC.LABELS.VIEW_LABELS.CREATION_DATE,

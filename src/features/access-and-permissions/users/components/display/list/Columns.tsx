@@ -14,12 +14,19 @@ import type { GenerateColumnCtx } from '../../../../../../interfaces/layout/tabl
 import type { User } from '../../../models';
 import type { Group } from '../../../../groups/models';
 import UserAvatar from '../../../../../../components/display/avatars/UserAvatar';
-import { AiOutlineUser, AiOutlineMail, AiOutlineCalendar, AiOutlineLink } from 'react-icons/ai';
+import {
+  AiOutlineUser,
+  AiOutlineMail,
+  AiOutlineCalendar,
+  AiOutlineCheckCircle,
+  AiOutlineLink,
+} from 'react-icons/ai';
 import React from 'react';
 import { Tag, Tooltip } from 'antd';
 import { pluralize } from '../../../../../../utils/helpers/format';
 import { getTotalRoleCount } from '../../../utils';
 import InvitePill from '../shared/InvitePill';
+import UserStatePill from '../shared/UserStatePill';
 
 const RoleIcon = Icons.Role;
 
@@ -123,11 +130,20 @@ const Columns = (ctx: GenerateColumnCtx, groups: Group[] = [], canViewGroups = t
     ),
     generateColumn(
       {
+        key: UC.KEYS.STATE,
+        label: UC.LABELS.COLUMNS.STATE,
+        icon: <AiOutlineCheckCircle />,
+        width: UC.SIZES.COLUMNS.STATE,
+        render: (_: unknown, record: User) => <UserStatePill phase={record.status.phase} />,
+      },
+      ctx,
+    ),
+    generateColumn(
+      {
         key: UC.KEYS.INVITE,
         label: UC.LABELS.COLUMNS.INVITE,
         icon: <AiOutlineLink />,
         width: UC.SIZES.COLUMNS.INVITE,
-        sortable: false,
         render: (_: unknown, record: User) => (
           <InvitePill invite={record.status.invite} acceptedAt={record.status.inviteAcceptedAt} />
         ),

@@ -23,6 +23,9 @@ export interface PageLayoutConfig<T = unknown> {
   onRowClick?: (record: T) => void;
   empty?: React.ReactNode;
   loading?: boolean;
+  /** The list arrived once (the slice's `loaded`). Until then the page shows its loader, never
+   *  rows kept from an earlier visit or an empty table. Unset counts as loaded. */
+  loaded?: boolean;
   /** Loads behind the full-page loader instead of this frame: set while the list is unknown
    *  on a page whose empty state is a page of its own. */
   fullPageLoading?: boolean;

@@ -51,6 +51,7 @@ export const ATTACHED_MEMBERS_CONSTANTS = {
       flexDirection: 'column' as const,
       gap: 2,
       flex: 1,
+      minWidth: 0,
     },
     MEMBER_NAME: {
       fontSize: 14,
@@ -62,6 +63,14 @@ export const ATTACHED_MEMBERS_CONSTANTS = {
       fontSize: 12,
       color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
       lineHeight: 1.3,
+    },
+    GROUP_DESCRIPTION: {
+      fontSize: 12,
+      color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+      lineHeight: 1.3,
+      overflow: 'hidden' as const,
+      textOverflow: 'ellipsis' as const,
+      whiteSpace: 'nowrap' as const,
     },
   },
 } as const;

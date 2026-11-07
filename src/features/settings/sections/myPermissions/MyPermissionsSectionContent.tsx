@@ -7,6 +7,8 @@ import type { PermissionLevel, ResolvedRole } from '../../../auth/models/permiss
 import { AUTH_PERMISSIONS_LABELS } from '../../../auth/constants';
 import { getCurrentUser } from '../../../auth/utils';
 import SettingsCard from '../../components/SettingsCard';
+import { SettingsStack } from '../../components/SettingsFields';
+import { SETTINGS_CONSTANTS } from '../../constants';
 import {
   DEFAULT_COLORS,
   EMPTY_VALUE,
@@ -19,6 +21,7 @@ import {
 import { SCOPE_LABELS } from '../../../../components/shared';
 import { denyRuleSentence } from '../../../access-and-permissions/roles/constants';
 
+const { CONTENT } = SETTINGS_CONSTANTS;
 const LEVEL_COLOR = DEFAULT_COLORS.TEXT_MUTED;
 
 function getWinningRoleForScope(roles: ResolvedRole[], scopeName: string): ResolvedRole | null {
@@ -92,7 +95,7 @@ interface ScopeRowProps {
 }
 
 const ScopeRow: React.FC<ScopeRowProps> = memo(({ title, level, rules, sourceText }) => (
-  <div style={{ marginBottom: SPACING.SM }}>
+  <div>
     <div
       style={{
         display: 'flex',
@@ -153,7 +156,11 @@ const ScopeRow: React.FC<ScopeRowProps> = memo(({ title, level, rules, sourceTex
     </div>
     {rules.length > 0 && (
       <div
-        style={{ marginTop: SPACING.XS, fontSize: FONT_SIZE.SM, color: DEFAULT_COLORS.TEXT_MUTED }}
+        style={{
+          marginTop: CONTENT.CARD_TITLE_TO_DESCRIPTION_GAP_PX,
+          fontSize: FONT_SIZE.SM,
+          color: DEFAULT_COLORS.TEXT_MUTED,
+        }}
       >
         {rules.map((rule) => (
           <div key={rule}>{denyRuleSentence(rule)}</div>
@@ -191,32 +198,22 @@ const MyPermissionsSectionContent: React.FC = memo(() => {
 
   if (getCurrentUser()?.bootstrap === true) {
     return (
-      <SettingsCard title={AUTH_PERMISSIONS_LABELS.FULL_ACCESS_TITLE}>
-        <p
-          style={{
-            margin: SPACING.NONE,
-            fontSize: FONT_SIZE.BASE,
-            color: DEFAULT_COLORS.TEXT_MUTED,
-          }}
-        >
-          {AUTH_PERMISSIONS_LABELS.FULL_ACCESS_DESCRIPTION}
-        </p>
+      <SettingsCard
+        title={AUTH_PERMISSIONS_LABELS.FULL_ACCESS_TITLE}
+        description={AUTH_PERMISSIONS_LABELS.FULL_ACCESS_DESCRIPTION}
+      >
+        {null}
       </SettingsCard>
     );
   }
 
   if (!hasActiveRoles) {
     return (
-      <SettingsCard title={AUTH_PERMISSIONS_LABELS.NO_PERMISSIONS_TITLE}>
-        <p
-          style={{
-            margin: SPACING.NONE,
-            fontSize: FONT_SIZE.BASE,
-            color: DEFAULT_COLORS.TEXT_MUTED,
-          }}
-        >
-          {AUTH_PERMISSIONS_LABELS.NO_PERMISSIONS_DESCRIPTION}
-        </p>
+      <SettingsCard
+        title={AUTH_PERMISSIONS_LABELS.NO_PERMISSIONS_TITLE}
+        description={AUTH_PERMISSIONS_LABELS.NO_PERMISSIONS_DESCRIPTION}
+      >
+        {null}
       </SettingsCard>
     );
   }
@@ -242,15 +239,17 @@ const MyPermissionsSectionContent: React.FC = memo(() => {
 
   return (
     <SettingsCard title={AUTH_PERMISSIONS_LABELS.EFFECTIVE_PERMISSIONS_TITLE}>
-      {allRows.map((row) => (
-        <ScopeRow
-          key={row.title}
-          title={row.title}
-          level={row.level}
-          rules={row.rules}
-          sourceText={row.sourceText}
-        />
-      ))}
+      <SettingsStack>
+        {allRows.map((row) => (
+          <ScopeRow
+            key={row.title}
+            title={row.title}
+            level={row.level}
+            rules={row.rules}
+            sourceText={row.sourceText}
+          />
+        ))}
+      </SettingsStack>
     </SettingsCard>
   );
 });

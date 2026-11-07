@@ -3,6 +3,7 @@ import { Button, Tooltip } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { NotificationBell } from '../../../features/notifications/components';
+import { useResolvedTheme } from '../../../features/theme';
 import SidebarToggleButton from './SidebarToggleButton';
 import {
   APP_ROUTES,
@@ -16,6 +17,8 @@ import {
 } from '../../../constants';
 
 const Header: React.FC = () => {
+  const pageTheme = useResolvedTheme();
+
   return (
     <div
       style={{
@@ -52,7 +55,7 @@ const Header: React.FC = () => {
           style={{ display: 'flex', alignItems: 'center' }}
         >
           <img
-            src={HEADER_LAYOUT.LOGO.SRC}
+            src={pageTheme === 'light' ? HEADER_LAYOUT.LOGO.SRC_ON_LIGHT : HEADER_LAYOUT.LOGO.SRC}
             alt={HEADER_LAYOUT.LOGO.ALT}
             width={HEADER_LAYOUT.LOGO.WIDTH}
             height={HEADER_LAYOUT.LOGO.HEIGHT}

@@ -23,7 +23,8 @@ interface SettingsCardProps {
 const SettingsCard: React.FC<SettingsCardProps> = memo(
   ({ title, description, headerStart, headerAction, titleBadge, children }) => {
     const hasDescription = description != null && description.length > 0;
-    const bodyGap = hasDescription || children ? (hasDescription ? 12 : 16) : 0;
+    // A card without a body ends at its header, so its bottom inset matches its top.
+    const bodyGap = children ? CONTENT.FIELD_GAP : 0;
     const headerStyle: React.CSSProperties = {
       display: 'flex',
       flexWrap: 'wrap',

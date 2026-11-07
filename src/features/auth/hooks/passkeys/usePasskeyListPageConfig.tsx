@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
 import { usePasskeyListConfig } from '../../config/passkeyListConfig';
+import { lockConfig } from '../../../../components/display/toolbar';
+import { CONNECTIVITY_CONSTANTS } from '../../../../constants/pages/connectivity';
 import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 
 export interface PasskeyListPageConfig {
@@ -12,6 +14,7 @@ interface UsePasskeyListPageConfigProps {
   onCreatePasskeyClick: () => void;
   onEnrollLinkClick: () => void;
   enrollLinkLoading: boolean;
+  unreachable: boolean;
 }
 
 export const usePasskeyListPageConfig = ({
@@ -20,6 +23,7 @@ export const usePasskeyListPageConfig = ({
   onCreatePasskeyClick,
   onEnrollLinkClick,
   enrollLinkLoading,
+  unreachable,
 }: UsePasskeyListPageConfigProps): PasskeyListPageConfig => {
   const toolbarConfig = usePasskeyListConfig({
     searchValue,
@@ -31,8 +35,11 @@ export const usePasskeyListPageConfig = ({
 
   return useMemo(
     () => ({
-      toolbarConfig,
+      toolbarConfig: lockConfig(
+        toolbarConfig,
+        unreachable ? CONNECTIVITY_CONSTANTS.UNREACHABLE.ACTION_TOOLTIP : undefined,
+      ),
     }),
-    [toolbarConfig],
+    [toolbarConfig, unreachable],
   );
 };

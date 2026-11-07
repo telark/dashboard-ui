@@ -192,6 +192,15 @@ body .ant-input-textarea-show-count {
   margin-bottom: calc(var(--ant-font-size) * var(--ant-line-height));
 }
 
+/* A FieldError right under the box takes the counter's line instead, as close to the box as an
+   error under a plain input: the error on the left, the counter on the right, never under it. */
+body .ant-input-textarea-show-count:has(+ [role='alert']) {
+  margin-bottom: 0;
+}
+body .ant-input-textarea-show-count + [role='alert'] {
+  padding-inline-end: 8em;
+}
+
 /* Button icon vertical alignment */
 .ant-btn {
   display: inline-flex !important;
@@ -232,7 +241,13 @@ body .ant-input-textarea-show-count {
    colorPrimary, which also colors the jump arrows and the page input, so it is set here alone. */
 .app-pagination .ant-pagination-item-active,
 .app-pagination .ant-pagination-item-active:hover {
-  border-color: var(--color-text-muted);
+  border-color: var(--color-muted-fill);
+}
+
+/* The light theme's page takes the panels' hover and the darker "Off" track. */
+html[data-theme='light'] {
+  --app-toolbar-hover-bg: var(--color-surface-hover);
+  --app-switch-off-color: var(--color-text-muted);
 }
 
 /* Side panels keep the light surface they had before the dark theme, so the
@@ -245,18 +260,6 @@ body .ant-input-textarea-show-count {
   --app-muted-text-color: var(--color-text-on-surface-muted);
   /* The track carries the white "Off" label, so it stays dark enough to read. */
   --app-switch-off-color: var(--color-text-on-surface-muted);
-}
-
-/* The user menu sits under its identity band in one white frame (popupRender), so the
-   menu drops its own shadow and corners, and its divider bleeds to the frame edges. */
-.user-menu-dropdown .ant-dropdown-menu {
-  box-shadow: none !important;
-  border-radius: 0 !important;
-}
-
-.user-menu-dropdown .ant-dropdown-menu-item-divider {
-  background-color: var(--color-surface-border-light) !important;
-  margin: 4px -4px !important;
 }
 
 /* A menu's selected item is bold like a Select's (antd sets menu items to normal weight). */
@@ -310,6 +313,11 @@ body .ant-input-textarea-show-count {
 .app-panel-surface .ant-input-number {
   background-color: var(--color-surface-white) !important;
   border-color: var(--color-surface-border) !important;
+}
+
+/* With a counter, the box is the wrapper: a filled square textarea would paint over its corners. */
+.app-panel-surface .ant-input-textarea-affix-wrapper > textarea.ant-input {
+  background-color: transparent !important;
 }
 
 /* That pin also hid antd's hover, focus and error borders. A hovered or focused field takes the
@@ -622,4 +630,32 @@ body .ant-input-textarea-show-count {
 .tk-field-warning::before {
   background-color: var(--color-warning);
   mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='64 64 896 896'%3E%3Cpath d='M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm-32 232c0-4.4 3.6-8 8-8h48c4.4 0 8 3.6 8 8v272c0 4.4-3.6 8-8 8h-48c-4.4 0-8-3.6-8-8V296zm32 440a48.01 48.01 0 010-96 48.01 48.01 0 010 96z'/%3E%3C/svg%3E");
+}
+
+/* Modals (BaseModal) animate in CSS rather than through antd's motion, whose prepare and start
+   steps held the first frame back by about 90ms: these start on the frame the modal mounts, and
+   a modal closes at once. Durations are MOTION.BASE_MS (dialog) and MOTION.FAST_MS (mask). */
+.app-modal {
+  --app-modal-drop: -24px;
+  /* Exponential ease-out: fast start, soft landing. */
+  animation: app-modal-drop-in 200ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.app-modal-root .ant-modal-mask {
+  animation: app-modal-fade-in 150ms ease-out both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-modal {
+    --app-modal-drop: 0px;
+  }
+}
+@keyframes app-modal-drop-in {
+  from {
+    opacity: 0;
+    transform: translateY(var(--app-modal-drop));
+  }
+}
+@keyframes app-modal-fade-in {
+  from {
+    opacity: 0;
+  }
 }

@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Build cluster bundle
-FROM node:26.10.0-alpine3.24 AS builder
+FROM node:26.13.0-alpine3.23 AS builder
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN --mount=type=cache,target=/root/.npm \

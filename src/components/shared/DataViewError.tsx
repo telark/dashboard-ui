@@ -1,8 +1,8 @@
 import React from 'react';
-import { Button } from 'antd';
-import { ExclamationCircleOutlined, ReloadOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS, HAIRLINE, FONT_SIZE, FONT_WEIGHT, RADIUS } from '../../constants';
-import { ConnectivityBanner } from '../display/banners';
+import { Button, Empty, Typography } from 'antd';
+import { AiOutlineApi, AiOutlineExclamationCircle } from 'react-icons/ai';
+import { EMPTY_ACTION_STYLE, EMPTY_CLASS } from '../../constants';
+import { CONNECTIVITY_CONSTANTS } from '../../constants/pages/connectivity';
 import { connectivityIssueFrom } from '../../api/client/health-interceptor';
 import type { ConnectivityIssue } from '../../api/client/health-interceptor';
 import { DATA_VIEW_ERROR_CONSTANTS as DVE } from './dataViewError.constants';
@@ -18,34 +18,7 @@ export interface DataViewErrorProps {
   connectivity?: ConnectivityIssue;
 }
 
-const layoutFor = (variant: DataViewErrorVariant): React.CSSProperties => {
-  if (variant === 'fullPage') {
-    return { flex: 1, minHeight: '100%', padding: DVE.LAYOUT.CARD.PADDING };
-  }
-  const config = variant === 'card' ? DVE.LAYOUT.CARD : DVE.LAYOUT.TABLE;
-  return {
-    minHeight: config.MIN_HEIGHT,
-    padding: config.PADDING,
-  };
-};
-
-const containerStyle = (variant: DataViewErrorVariant): React.CSSProperties => {
-  if (variant === 'fullPage') {
-    // Off scale, kept exact: borderRadius 0 (square corners, RADIUS has no zero).
-    return {
-      background: DEFAULT_COLORS.PAGE_BG,
-      borderRadius: 0,
-      border: 'none',
-      width: '100%',
-      height: '100%',
-    };
-  }
-  return {
-    background: DEFAULT_COLORS.PAGE_BG,
-    borderRadius: RADIUS.LG,
-    border: HAIRLINE.BORDER_SUBTLE,
-  };
-};
+const UNREACHABLE = CONNECTIVITY_CONSTANTS.UNREACHABLE;
 
 const DataViewError: React.FC<DataViewErrorProps> = ({
   variant,
@@ -55,64 +28,42 @@ const DataViewError: React.FC<DataViewErrorProps> = ({
   connectivity,
 }) => {
   // Classified here rather than at each call site, so every feature that renders
-  // an error state gets the status treatment for transient connectivity issues.
-  const issue = connectivity ?? connectivityIssueFrom(message);
-  if (issue) {
-    const banner = (
-      <ConnectivityBanner kind={issue.kind} serviceName={issue.serviceName} onRetry={onRetry} />
-    );
-    // fullPage owns the viewport, so the banner is centered in it instead of
-    // sitting flush under the sticky header; inline variants stay in place.
-    return variant === 'fullPage' ? (
-      <div
-        style={{
-          ...layoutFor(variant),
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: '100%',
-        }}
-      >
-        <div style={{ width: '100%', maxWidth: DVE.LAYOUT.BANNER_MAX_WIDTH }}>{banner}</div>
-      </div>
-    ) : (
-      banner
-    );
-  }
+  // an error state gets the same treatment for transient connectivity issues.
+  const copy =
+    (connectivity ?? connectivityIssueFrom(message))
+      ? {
+          Icon: AiOutlineApi,
+          title: UNREACHABLE.TITLE,
+          text: UNREACHABLE.MESSAGE,
+          retry: UNREACHABLE.RETRY_BUTTON,
+        }
+      : { Icon: AiOutlineExclamationCircle, title, text: message, retry: DVE.LABELS.RETRY_BUTTON };
 
-  return (
-    <div
-      role="alert"
-      style={{
-        ...layoutFor(variant),
-        ...containerStyle(variant),
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: DVE.LAYOUT.GAP,
-        textAlign: 'center',
-      }}
+  // The page empty state, not a card: in a page it centers below the toolbar like an
+  // empty list, and fullPage callers fill the pane with it.
+  const empty = (
+    <Empty
+      className={EMPTY_CLASS.PAGE}
+      image={<copy.Icon size={DVE.LAYOUT.ICON_SIZE} />}
+      description={
+        <>
+          <Typography.Title level={2}>{copy.title}</Typography.Title>
+          <Typography.Text>{copy.text}</Typography.Text>
+        </>
+      }
     >
-      <ExclamationCircleOutlined
-        style={{ fontSize: DVE.LAYOUT.ICON_SIZE, color: DEFAULT_COLORS.DANGER }}
-      />
-      <div
-        style={{
-          color: DEFAULT_COLORS.TEXT_PRIMARY,
-          fontSize: FONT_SIZE.LG,
-          fontWeight: FONT_WEIGHT.SEMIBOLD,
-        }}
-      >
-        {title}
-      </div>
-      <div style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: FONT_SIZE.BASE, maxWidth: 480 }}>
-        {message}
-      </div>
-      <Button type="primary" icon={<ReloadOutlined />} onClick={onRetry}>
-        {DVE.LABELS.RETRY_BUTTON}
+      <Button type="primary" onClick={onRetry} style={EMPTY_ACTION_STYLE}>
+        {copy.retry}
       </Button>
+    </Empty>
+  );
+
+  return variant === 'fullPage' ? (
+    <div style={{ flex: 1, minHeight: '100%', padding: DVE.LAYOUT.PADDING, display: 'flex' }}>
+      {empty}
     </div>
+  ) : (
+    empty
   );
 };
 

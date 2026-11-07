@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Empty, Tag, Typography } from 'antd';
 import type { TableColumnType } from 'antd';
-import { ReloadOutlined, SearchOutlined } from '@ant-design/icons';
+import { SearchOutlined } from '@ant-design/icons';
 import { AiOutlineFileText } from 'react-icons/ai';
 import {
   APP_ROUTES,
@@ -19,7 +19,6 @@ import { PageLayout } from '../../../../components/display/views';
 import { ListToolbar } from '../../../../components/display/toolbar';
 import { PageContainer } from '../../../../components/shared';
 import { LIST_PAGE } from '../../../../constants/shared/pages';
-import type { ToolbarButtonConfig } from '../../../../interfaces/layout/toolbar';
 import { FilterPanel } from '../../../../components/display/panels/filter';
 import type { FilterField } from '../../../../components/display/panels/filter/FilterPanel';
 import SortHeader from '../../../../components/display/table/Sort';
@@ -300,22 +299,11 @@ const ProtectionPlanReportsPage: React.FC<ProtectionPlanReportsPageProps> = memo
     // Set once the first load ends, so a refresh from the empty page keeps it instead of the table.
     const [loadedOnce, setLoadedOnce] = useState(false);
     if (!loading && !loadedOnce) setLoadedOnce(true);
-    const showEmptyPage =
-      loadedOnce &&
-      !error &&
-      !plansError &&
-      !(plansLoading && plans.length === 0) &&
-      rows.length === 0;
-    const refreshButton: ToolbarButtonConfig = {
-      key: 'refresh',
-      label: L.REFRESH,
-      icon: <ReloadOutlined />,
-      variant: 'default',
-      iconOnly: true,
-      loading,
-      onClick: refresh,
-    };
-
+    const loaded = loadedOnce && !(plansLoading && plans.length === 0);
+    // Mounted before the plans were known: a page load, so it waits behind the route's loader
+    // instead of switching to the one under the tabs. A later first visit loads under the tabs.
+    const [pageLoad] = useState(plansLoading);
+    const showEmptyPage = loaded && !error && !plansError && rows.length === 0;
     const truncated = reports.length >= REPORTS_LIST.LIMIT;
     const config: PageLayoutConfig<PlanReportMeta> = {
       title: PPC.LABELS.HEADER_TITLE,
@@ -343,7 +331,6 @@ const ProtectionPlanReportsPage: React.FC<ProtectionPlanReportsPageProps> = memo
                 icon: <SearchOutlined />,
                 variant: 'ghost',
               },
-              refreshButton,
             ],
           },
         ],
@@ -363,7 +350,8 @@ const ProtectionPlanReportsPage: React.FC<ProtectionPlanReportsPageProps> = memo
         pageSizeOptions: [...REPORTS_LIST.PAGE_SIZE_OPTIONS],
       },
       empty: <Empty description={L.NO_MATCH} />,
-      loading: loading || (plansLoading && plans.length === 0),
+      loaded,
+      fullPageLoading: pageLoad,
       error: error ?? plansError,
       onRetry: () => {
         if (plansError) onRetryPlans();
@@ -383,7 +371,7 @@ const ProtectionPlanReportsPage: React.FC<ProtectionPlanReportsPageProps> = memo
           <ListToolbar
             countSuffix={L.COUNT_SUFFIX}
             compactWidth={REPORTS_LIST.TOOLBAR_COMPACT_WIDTH}
-            toolbars={[{ buttons: [refreshButton] }]}
+            toolbars={[]}
           />
           <div style={{ marginTop: LIST_PAGE.CONTENT_OFFSET_PX }}>
             <Empty

@@ -109,7 +109,7 @@ const GroupHeader: React.FC<Props> = memo(({ item, groupBy }) => (
     {SEVERITIES_DESC.filter((s) => item.group.bySeverity[s]).map((s) => (
       <Tag
         key={s}
-        color={getPillColor(STATUS_COLORS.INSIGHT_SEVERITY[s])}
+        color={getPillColor(STATUS_COLORS.INSIGHT_SEVERITY_PILL[s])}
         className={`${TAG_CLASS.MEDIUM} ${TAG_CLASS.AS_IS}`}
       >
         {`${INSIGHT_SEVERITY_LABELS[s]} ${item.group.bySeverity[s]}`}

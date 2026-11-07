@@ -9,7 +9,7 @@ import { getScopeLabel } from '../../../../utils/role/scope';
 import type { Role } from '../../../../../roles/models';
 import { ACTION_PERMISSIONS, useCanGrantScopes, usePermission } from '../../../../../../auth/hooks';
 import { NoPermissionCard } from '../../../../../../../components/shared';
-import LockedRolePill from '../../../../../groups/components/display/role/LockedRolePill';
+import LockedRoleIcon from '../../../../../groups/components/display/role/LockedRoleIcon';
 import { SPACING } from '../../../../../../../constants';
 
 const VIEW_ROLES = ACTION_PERMISSIONS.roles.view;
@@ -113,7 +113,7 @@ const UserRoleSelectList: React.FC<UserRoleSelectListProps> = ({
                     : undefined
                 }
                 customContent={scopesContent}
-                protectionBadge={isRoleProtected(role) ? <LockedRolePill /> : undefined}
+                protectionBadge={isRoleProtected(role) ? <LockedRoleIcon /> : undefined}
                 itemStyles={{
                   base: {
                     ...ARC.LIST.ITEM.BASE,

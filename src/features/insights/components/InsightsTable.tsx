@@ -29,6 +29,7 @@ import TimeAgo from '../../../components/display/time/TimeAgo';
 import { INSIGHTS_UI } from '../constants/texts';
 import {
   CLUSTER_INSIGHTS,
+  INSIGHT_TRIAGE_PILL_STYLE,
   INSIGHT_KIND_LABELS,
   INSIGHT_ROW_STATE_LABELS,
   INSIGHT_SEVERITY_LABELS,
@@ -50,13 +51,14 @@ export type InsightColumnKey = keyof typeof CLUSTER_INSIGHTS.COLUMN_WIDTHS;
 
 const W = CLUSTER_INSIGHTS.COLUMN_WIDTHS;
 const C = INSIGHTS_UI.PAGE.COLUMNS;
-// Lowest priority last: dropped first when the table runs out of room.
+// Lowest priority last: dropped first when the table runs out of room. Category (Kind) and
+// Environment stay longest so a laptop still shows them; Namespace repeats the application's.
 const OPTIONAL_COLUMNS: InsightColumnKey[] = [
-  'NAMESPACE',
-  'STATE',
-  'TRIAGE',
   'KIND',
   'ENVIRONMENT',
+  'STATE',
+  'TRIAGE',
+  'NAMESPACE',
 ];
 const REQUIRED_WIDTH = W.SEVERITY + W.TITLE + W.APPLICATION + W.LAST_SEEN;
 // One Set per fitting count, so the result keeps its identity while the same columns fit.
@@ -89,8 +91,13 @@ export const fittingInsightColumns = (available: number): ReadonlySet<InsightCol
   return FITTING_COLUMNS[count];
 };
 
-const tag = (text: string, accent?: string): React.ReactNode => (
-  <Tag key={text} color={getPillColor(accent)} className={`${TAG_CLASS.MEDIUM} ${TAG_CLASS.AS_IS}`}>
+const tag = (text: string, accent?: string, style?: React.CSSProperties): React.ReactNode => (
+  <Tag
+    key={text}
+    color={getPillColor(accent)}
+    className={`${TAG_CLASS.MEDIUM} ${TAG_CLASS.AS_IS}`}
+    style={style}
+  >
     {text}
   </Tag>
 );
@@ -167,8 +174,16 @@ const INSIGHT_SORT_FIELDS: SortFieldConfig<InsightRow>[] = [
   { key: 'LAST_SEEN', type: 'date', getValue: (r) => r.lastSeenAt },
 ];
 
+// Environment sorts by the names shown, which only the page knows (rows carry ids).
+const environmentSortField = (names: Record<string, string>): SortFieldConfig<InsightRow> => ({
+  key: 'ENVIRONMENT',
+  type: 'string',
+  getValue: (r) =>
+    r.environments?.length ? r.environments.map((id) => names[id] ?? id).join(', ') : null,
+});
+
 const isSortable = (key: InsightColumnKey): boolean =>
-  INSIGHT_SORT_FIELDS.some((field) => field.key === key);
+  key === 'ENVIRONMENT' || INSIGHT_SORT_FIELDS.some((field) => field.key === key);
 
 const mostUrgentFirst = (a: InsightRow, b: InsightRow): number =>
   SEVERITY_RANK[b.severity] - SEVERITY_RANK[a.severity] ||
@@ -179,11 +194,20 @@ export const sortInsightRows = (
   rows: InsightRow[],
   sortKey: string | null,
   sortOrder: SortOrder,
+  environmentNames: Record<string, string>,
 ): InsightRow[] =>
-  sortData([...rows].sort(mostUrgentFirst), sortKey, sortOrder, INSIGHT_SORT_FIELDS);
+  sortData([...rows].sort(mostUrgentFirst), sortKey, sortOrder, [
+    ...INSIGHT_SORT_FIELDS,
+    environmentSortField(environmentNames),
+  ]);
 
+// Centered like a single tag: once the tags wrap, the row fills the cell.
 const chips = (nodes: React.ReactNode[]): React.ReactNode => (
-  <div style={{ display: 'inline-flex', flexWrap: 'wrap', gap: SPACING.XS }}>{nodes}</div>
+  <div
+    style={{ display: 'inline-flex', flexWrap: 'wrap', justifyContent: 'center', gap: SPACING.XS }}
+  >
+    {nodes}
+  </div>
 );
 
 interface ColumnSpec {
@@ -235,7 +259,7 @@ export const buildInsightColumns = ({
       label: C.SEVERITY,
       icon: <AiOutlineWarning />,
       render: (r) =>
-        tag(INSIGHT_SEVERITY_LABELS[r.severity], STATUS_COLORS.INSIGHT_SEVERITY[r.severity]),
+        tag(INSIGHT_SEVERITY_LABELS[r.severity], STATUS_COLORS.INSIGHT_SEVERITY_PILL[r.severity]),
     },
     {
       key: 'APPLICATION',
@@ -251,7 +275,7 @@ export const buildInsightColumns = ({
     },
     {
       key: 'KIND',
-      label: recommendations ? C.FAMILY : C.KIND,
+      label: recommendations ? C.CATEGORY : C.KIND,
       icon: <AiOutlineTag />,
       render: (r) => tag(INSIGHT_KIND_LABELS[r.kind] ?? r.kind),
     },
@@ -267,7 +291,11 @@ export const buildInsightColumns = ({
       icon: <AiOutlineFlag />,
       render: (r) =>
         r.triage ? (
-          tag(TRIAGE_LABELS[r.triage.state])
+          tag(
+            TRIAGE_LABELS[r.triage.state],
+            STATUS_COLORS.INSIGHT_TRIAGE[r.triage.state],
+            INSIGHT_TRIAGE_PILL_STYLE,
+          )
         ) : (
           <span style={mutedStyle}>{EMPTY_VALUE}</span>
         ),

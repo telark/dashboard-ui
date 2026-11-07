@@ -20,7 +20,7 @@ export const PROFILE_SECTION_CONSTANTS = {
     EMAIL: 'Email',
     MEMBER_SINCE: 'Member since',
     LAST_LOGIN: 'Last login',
-    STATUS: 'Status',
+    STATUS: 'Account status',
     AVATAR_UPDATE_SUCCESS: 'Profile photo updated.',
     AVATAR_UPDATE_ERROR: 'Failed to update profile photo.',
     EDIT_PROFILE_PANEL: {

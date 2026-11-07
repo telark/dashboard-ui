@@ -34,6 +34,8 @@ import {
   getPillColor,
   SPACING,
   MOTION,
+  KEYBOARD_TOOLTIP_TRIGGER,
+  TOOLTIP_TEXT_BUTTON,
 } from '../../../../../../constants';
 import type { PlanApprovalDecision, PlanTimeRange, ProtectionPlan } from '../../../models';
 import type { FormValues } from '../../create';
@@ -653,13 +655,14 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
       {/* Grid rows stretch every card to one height: the auto margin keeps this group at the bottom. */}
       <div style={BOTTOM_STYLE}>
         <div style={META_LINE_STYLE}>
-          <Tooltip title={targets.join(', ')}>
-            <span
-              tabIndex={0}
+          <Tooltip title={targets.join(', ')} trigger={KEYBOARD_TOOLTIP_TRIGGER}>
+            <button
+              type="button"
               aria-label={CARD_LABELS.SCOPE_TARGETS_LABEL(scopeValue, targets.join(', '))}
+              style={TOOLTIP_TEXT_BUTTON}
             >
               {scopeValue}
-            </span>
+            </button>
           </Tooltip>
           {CARD_LABELS.META_SEPARATOR}
           {PPC.LABELS.MODE_LABELS[plan.mode]}

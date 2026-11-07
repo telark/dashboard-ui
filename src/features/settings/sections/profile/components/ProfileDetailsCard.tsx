@@ -60,8 +60,6 @@ const profileRowLabelStyle: React.CSSProperties = {
   fontSize: FONT_SIZE.SM,
   fontWeight: FONT_WEIGHT.MEDIUM,
   color: DEFAULT_COLORS.TEXT_MUTED,
-  textTransform: 'uppercase',
-  letterSpacing: '0.02em',
   flexShrink: 0,
   minWidth: 100,
 };
@@ -142,6 +140,8 @@ const ProfileDetailsCard: React.FC<ProfileDetailsCardProps> = memo(({ user, onEd
             <Tag
               color={getPillColor(STATUS_COLORS.USER_STATE[user.status.phase])}
               className={TAG_CLASS.MEDIUM}
+              // White like the Members list's state pill (user decision, 2026-11-05).
+              style={{ color: DEFAULT_COLORS.PILL_TEXT }}
             >
               {user.status.phase}
             </Tag>

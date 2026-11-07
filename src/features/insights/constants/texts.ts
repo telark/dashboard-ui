@@ -167,7 +167,7 @@ export const INSIGHTS_UI = {
       APPLICATION: 'Application',
       NAMESPACE: 'Namespace',
       KIND: 'Kind',
-      FAMILY: 'Family',
+      CATEGORY: 'Category',
       STATE: 'State',
       TRIAGE: 'Triage',
       ENVIRONMENT: 'Environment',
@@ -188,7 +188,7 @@ export const INSIGHTS_UI = {
     },
     FILTER: {
       BY_KIND: 'Kind',
-      BY_FAMILY: 'Family',
+      BY_CATEGORY: 'Category',
       BY_SEVERITY: 'Severity',
       BY_STATE: 'State',
       BY_TRIAGE: 'Triage',

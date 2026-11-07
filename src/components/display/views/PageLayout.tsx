@@ -24,14 +24,15 @@ const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfi
     onRowClick,
     empty,
     loading = false,
+    loaded = true,
     fullPageLoading = false,
     error = null,
     onRetry,
   } = view;
   const dataState = useDataViewState({
-    loading,
+    loading: loading || !loaded,
     error,
-    hasData: Array.isArray(data) && data.length > 0,
+    hasData: loaded && Array.isArray(data) && data.length > 0,
   });
   const isReady = dataState.phase === 'empty' || dataState.phase === 'ready';
   const table = useMemo(
@@ -87,7 +88,10 @@ const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfi
     >
       {/* Kept without tabs too, so the toolbar sits at the same height on every list page. */}
       {tabs ?? <div aria-hidden style={{ height: LIST_PAGE.SUBHEADER_ROW_HEIGHT_PX }} />}
-      <ListToolbar {...listToolbar} />
+      <ListToolbar
+        {...listToolbar}
+        unreachable={dataState.phase === 'error' && Boolean(dataState.connectivity)}
+      />
       <div style={{ marginTop: LIST_PAGE.CONTENT_OFFSET_PX }}>
         {dataState.phase === 'error' ? (
           <DataViewError

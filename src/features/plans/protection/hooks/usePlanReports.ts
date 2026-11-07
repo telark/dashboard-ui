@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { App as AntdApp } from 'antd';
 import type { ExtendedAxiosError } from '../../../../api/client/normalize';
+import { connectivityIssueFrom } from '../../../../api/client/health-interceptor';
 import logger from '../../../../logging';
 import {
   downloadPlanReport,
@@ -147,9 +148,11 @@ export function useAllPlanReports(enabled: boolean): UseAllPlanReportsResult {
         setKept(keptData);
         setError(null);
       })
-      .catch(() => {
+      .catch((err: unknown) => {
         if (canceled) return;
-        setError(PPC.LABELS.REPORTS.LOAD_ERROR);
+        // A connectivity failure keeps its own text, so the page shows the shared unreachable state.
+        const text = err instanceof Error ? err.message : '';
+        setError(connectivityIssueFrom(text) ? text : PPC.LABELS.REPORTS.LOAD_ERROR);
       })
       .finally(() => {
         if (!canceled) setLoading(false);

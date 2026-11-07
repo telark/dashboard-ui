@@ -1,5 +1,7 @@
 import React, { memo } from 'react';
 import { Toolbar } from '../../../../components/display/toolbar';
+import { DataViewError } from '../../../../components/shared';
+import { userFacingMessage } from '../../../../api';
 import { PasskeyPanel, PasskeyCard, InsecureContextAlert } from '../../components';
 import { isWebAuthnSupported } from '../../utils/webauthn/core';
 import { DEFAULT_COLORS, SPACING, FONT_SIZE } from '../../../../constants';
@@ -8,7 +10,11 @@ import type { Passkey } from '../../models/passkeys';
 import type { FormInstance } from 'antd';
 import type { PasskeyPanelFormValues } from '../../hooks/passkeys/passkeyPanelState';
 
+// Each level grows into the settings pane, so the error state centers in what is left under the toolbar.
+const FILL_COLUMN: React.CSSProperties = { flex: 1, display: 'flex', flexDirection: 'column' };
+
 const CONTAINER_STYLE: React.CSSProperties = {
+  ...FILL_COLUMN,
   background: 'transparent',
   minHeight: 'auto',
   padding: SPACING.NONE,
@@ -42,6 +48,8 @@ const EMPTY_MESSAGE_STYLE: React.CSSProperties = {
 
 export interface PasskeysListPageProps {
   pageConfig: PasskeyListPageConfig;
+  error: string | null;
+  onRetry: () => void;
   passkeys: Passkey[];
   allPasskeys: Passkey[];
   searchTerm: string;
@@ -60,6 +68,8 @@ export interface PasskeysListPageProps {
 const PasskeysListPage: React.FC<PasskeysListPageProps> = memo(
   ({
     pageConfig,
+    error,
+    onRetry,
     passkeys,
     allPasskeys,
     searchTerm,
@@ -79,29 +89,39 @@ const PasskeysListPage: React.FC<PasskeysListPageProps> = memo(
       : 'No passkeys yet. Add one to get started.';
 
     return (
-      <div>
+      <div style={FILL_COLUMN}>
         <div style={CONTAINER_STYLE}>
           {!isWebAuthnSupported() && <InsecureContextAlert />}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.XXXL }}>
+          <div style={{ ...FILL_COLUMN, gap: SPACING.XXXL }}>
             <div style={TOOLBAR_ROW_STYLE}>
               <div />
               <Toolbar config={pageConfig.toolbarConfig} />
             </div>
 
-            <div style={CARD_GRID_STYLE}>
-              {passkeys.length === 0 ? (
-                <div style={EMPTY_MESSAGE_STYLE}>{emptyMessage}</div>
-              ) : (
-                passkeys.map((passkey) => (
-                  <PasskeyCard
-                    key={passkey.credentialId ?? passkey.id}
-                    passkey={passkey}
-                    onEdit={onEdit}
-                    onDelete={onConfirmDelete}
-                  />
-                ))
-              )}
-            </div>
+            {error ? (
+              <div style={{ ...FILL_COLUMN, justifyContent: 'center' }}>
+                <DataViewError
+                  variant="table"
+                  message={userFacingMessage(new Error(error))}
+                  onRetry={onRetry}
+                />
+              </div>
+            ) : (
+              <div style={CARD_GRID_STYLE}>
+                {passkeys.length === 0 ? (
+                  <div style={EMPTY_MESSAGE_STYLE}>{emptyMessage}</div>
+                ) : (
+                  passkeys.map((passkey) => (
+                    <PasskeyCard
+                      key={passkey.credentialId ?? passkey.id}
+                      passkey={passkey}
+                      onEdit={onEdit}
+                      onDelete={onConfirmDelete}
+                    />
+                  ))
+                )}
+              </div>
+            )}
           </div>
         </div>
 

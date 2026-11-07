@@ -1,16 +1,20 @@
 import React, { memo, useEffect, useMemo, useState } from 'react';
 import { Input, Typography } from 'antd';
 import SettingsCard from '../../../components/SettingsCard';
+import { SETTINGS_CONSTANTS } from '../../../constants';
 import {
   DEFAULT_COLORS,
+  FORM_LABEL_GAP,
   HAIRLINE,
   FONT_SIZE,
   INPUT_LIMITS,
   SPACING,
 } from '../../../../../constants';
+import { FieldError } from '../../../../../components/display/inputs';
 import { inputGuard } from '../../../../../utils/helpers/inputGuard';
 import { ABOUT_SECTION_CONSTANTS } from '../constants';
 
+const { CONTENT } = SETTINGS_CONSTANTS;
 const { LABELS, LICENSES_LIST } = ABOUT_SECTION_CONSTANTS;
 const searchGuard = inputGuard(INPUT_LIMITS.SEARCH.MAX);
 
@@ -29,6 +33,8 @@ const rowStyle: React.CSSProperties = {
   borderBottom: HAIRLINE.BORDER_SUBTLE,
   fontSize: FONT_SIZE.MD,
 };
+
+const lastRowStyle: React.CSSProperties = { ...rowStyle, borderBottom: 'none' };
 
 const nameCellStyle: React.CSSProperties = {
   color: DEFAULT_COLORS.TEXT_PRIMARY,
@@ -85,27 +91,25 @@ const LicensesCard: React.FC = memo(() => {
         placeholder={LABELS.LICENSES_SEARCH_PLACEHOLDER}
         value={search}
         onChange={(e) => setSearch(searchGuard.normalize(e.target.value))}
-        style={{ marginBottom: SPACING.MD }}
+        style={{
+          // The list is a block of its own; an error or empty line sits under the input like a field's.
+          marginBottom: filtered.length > 0 ? CONTENT.FIELD_GAP : FORM_LABEL_GAP,
+        }}
       />
       {loadFailed ? (
-        <div style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: FONT_SIZE.MD }}>
-          {LABELS.LICENSES_LOAD_ERROR}
-        </div>
+        <FieldError message={LABELS.LICENSES_LOAD_ERROR} />
       ) : (
         <div>
           {filtered.length === 0 && licenses != null ? (
-            <div
-              style={{
-                color: DEFAULT_COLORS.TEXT_MUTED,
-                fontSize: FONT_SIZE.MD,
-                padding: `${SPACING.SM}px 0`,
-              }}
-            >
+            <div style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: FONT_SIZE.MD }}>
               {LABELS.LICENSES_EMPTY}
             </div>
           ) : (
-            filtered.map((entry) => (
-              <div key={`${entry.name}@${entry.version}`} style={rowStyle}>
+            filtered.map((entry, index) => (
+              <div
+                key={`${entry.name}@${entry.version}`}
+                style={index < filtered.length - 1 ? rowStyle : lastRowStyle}
+              >
                 <span style={nameCellStyle}>
                   {entry.name}
                   <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}> {entry.version}</span>

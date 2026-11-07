@@ -32,6 +32,10 @@ const SettingsLayout: React.FC<SettingsLayoutProps> = memo(({ children }) => (
             padding: CONTENT_PADDING,
             boxSizing: 'border-box',
             width: '100%',
+            // Spans the pane, so a page empty state can grow into the rest of it and center there.
+            minHeight: HEADER_LAYOUT.MIN_HEIGHT,
+            display: 'flex',
+            flexDirection: 'column',
           }}
         >
           {children}

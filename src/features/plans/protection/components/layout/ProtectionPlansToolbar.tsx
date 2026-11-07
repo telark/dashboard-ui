@@ -23,6 +23,7 @@ interface ProtectionPlansToolbarProps {
   onViewModeChange: (mode: Exclude<PlanViewMode, 'plans'>) => void;
   // No plans yet: only Organize, to set up kinds, environments and tags first, and Create Plan.
   empty?: boolean;
+  unreachable: boolean;
 }
 
 const PHASE_PILLS: { key: PlanPhaseQuickFilter; label: string }[] = [
@@ -70,6 +71,7 @@ const ProtectionPlansToolbar: React.FC<ProtectionPlansToolbarProps> = ({
   totalCount,
   onViewModeChange,
   empty = false,
+  unreachable,
 }) => {
   const canCreate = usePermission(
     ACTION_PERMISSIONS.protectionPlans.create.scope,
@@ -153,6 +155,7 @@ const ProtectionPlansToolbar: React.FC<ProtectionPlansToolbarProps> = ({
       onOpenFilters={empty ? undefined : onOpenFilters}
       quickFilter={empty ? undefined : quickFilter}
       toolbars={toolbars}
+      unreachable={unreachable}
     />
   );
 };

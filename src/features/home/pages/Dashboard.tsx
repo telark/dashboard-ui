@@ -208,7 +208,7 @@ const Dashboard: React.FC = () => {
             viewAllTo={APP_ROUTES.APPLICATIONS}
             rows={appsView.recentRows}
             emptyText={T.RECENT_CHANGES.EMPTY}
-            emptyIcon={HOME_BOX_ICONS.RECENT_CHANGES}
+            emptyIcon={SuccessCheck}
             {...appsView.state}
           />
         </div>

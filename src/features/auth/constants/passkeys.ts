@@ -77,7 +77,6 @@ export const PASSKEYS_CONSTANTS = {
     DEVICE_NAME_REQUIRED: 'Device name is required',
   },
   LOGS: {
-    FAILED_TO_LOAD_PASSKEYS: 'Failed to load passkeys:',
     MISSING_DEVICE_NAME: 'Passkey record missing deviceName:',
     FAILED_TO_CREATE_ENROLL_LINK: 'Failed to create enrollment link:',
   },

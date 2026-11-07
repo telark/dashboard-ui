@@ -8,6 +8,7 @@ import {
   HOME_DASHBOARD_LAYOUT as L,
   HOME_DASHBOARD_STYLES as ST,
   HOME_DASHBOARD_TEXTS as T,
+  STORAGE_SETTINGS_ROUTE,
 } from '../../constants/dashboard';
 import type { NoAccess, StorageState } from '../../models';
 import DashboardBox from '../box/DashboardBox';
@@ -36,11 +37,10 @@ interface MeterProps {
 // A meter the viewer can't read, or that failed while the other loaded, says so on that line.
 const StorageMeter: React.FC<MeterProps> = ({ label, infos, count, noAccess }) => {
   const percent = infos?.consumedSpace.percent ?? 0;
+  const unavailable = noAccess ? S.NO_ACCESS : T.LOAD_FAILED;
   const amounts = infos
     ? `${mb(infos.consumedSpace.mb)} / ${mb(infos.totalPVCSpace.mb)} ${S.MB}${T.META_SEPARATOR}${count}`
-    : noAccess
-      ? S.NO_ACCESS
-      : T.LOAD_FAILED;
+    : unavailable;
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.XS }}>
       <div style={{ display: 'flex', alignItems: 'baseline', gap: SPACING.SM }}>
@@ -83,6 +83,7 @@ const StorageBox: React.FC<StorageBoxProps> = memo(
     <DashboardBox
       title={S.TITLE}
       icon={HOME_BOX_ICONS.STORAGE}
+      viewAllTo={STORAGE_SETTINGS_ROUTE}
       noAccess={snapshotsNoAccess && reportsNoAccess ? snapshotsNoAccess : undefined}
       loading={pending(snapshots, snapshotsNoAccess) || pending(reports, reportsNoAccess)}
       failed={unavailable(snapshots, snapshotsNoAccess) && unavailable(reports, reportsNoAccess)}

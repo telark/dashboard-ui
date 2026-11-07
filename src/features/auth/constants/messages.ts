@@ -13,7 +13,6 @@ export const AUTH_PERMISSIONS_LABELS = {
 };
 
 export const AUTH_ERROR_MESSAGES = {
-  FETCH_PASSKEYS_FAILED: 'Failed to fetch passkeys',
   CREATE_PASSKEY_FAILED: 'Failed to create passkey',
   UPDATE_PASSKEY_FAILED: 'Failed to update passkey',
   DELETE_PASSKEY_FAILED: 'Failed to delete passkey',

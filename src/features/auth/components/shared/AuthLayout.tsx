@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useLocation, useOutlet } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, domAnimation, LazyMotion, m } from 'framer-motion';
 import { ConfigProvider, theme as antdTheme } from 'antd';
 import { MOTION } from '../../../../constants';
 import { LIGHT_COMPONENTS, LIGHT_TOKENS } from '../../constants/theme';
@@ -51,20 +51,22 @@ export const AuthLayout: React.FC = () => {
         <AuthContainer leftPanel={<BrandPanel />} compactBanner={<CompactBanner />}>
           {/* mode="wait" lets the outgoing card finish before the next enters, so
               the two never overlap while the card height changes between pages. */}
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.div
-              key={location.pathname}
-              {...CARD_TRANSITION}
-              style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
-            >
-              {/* No Suspense boundary here: the route-level one in AppRoutes
-                  already covers this exact lazy(Login/Register) chunk. A second
-                  boundary around the same async wait doesn't protect against
-                  anything extra — it just flashes a second, different-looking
-                  spinner right after the first one on a cold load. */}
-              {outlet}
-            </motion.div>
-          </AnimatePresence>
+          <LazyMotion features={domAnimation}>
+            <AnimatePresence mode="wait" initial={false}>
+              <m.div
+                key={location.pathname}
+                {...CARD_TRANSITION}
+                style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
+              >
+                {/* No Suspense boundary here: the route-level one in AppRoutes
+                    already covers this exact lazy(Login/Register) chunk. A second
+                    boundary around the same async wait doesn't protect against
+                    anything extra — it just flashes a second, different-looking
+                    spinner right after the first one on a cold load. */}
+                {outlet}
+              </m.div>
+            </AnimatePresence>
+          </LazyMotion>
         </AuthContainer>
       </div>
     </ConfigProvider>

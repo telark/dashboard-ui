@@ -15,7 +15,7 @@ Fix only what was reported, with no side adjustments to opacity, spacing or colo
 
 ## Colors: surface first
 
-- Identify the surface the element renders on: the dark page and cards, or a light surface (slide-out panel, modal, dropdown, popover, tooltip). Portals such as dropdowns and popovers render outside the panel that opened them.
+- Identify the surface the element renders on: the page and cards (dark or light, by theme), or a light surface (slide-out panel, modal, dropdown, popover, tooltip). Portals such as dropdowns and popovers render outside the panel that opened them.
 - Pick from that surface's palette in `DEFAULT_COLORS` (the table in AGENTS.md). Text that seems missing but can be copied is white on white: a dark-surface token such as `TEXT_PRIMARY` used on a light surface.
 - If an antd component spans two surfaces (a `Select`'s control on the page, its dropdown portal on white), don't set its `colorText`; pin the portal side in `src/styles/antd.css` as the existing `.ant-select-dropdown` rules do.
 - If only autofilled inputs are white on white, the light surface is missing `color-scheme: light` (see `src/styles/index.css`); no other CSS reaches that color.
@@ -34,6 +34,7 @@ If a control has the wrong height, look for a `size` prop on it, an inline `heig
 - Anything tied to an animated width reads the measured width, not the toggle flag.
 - For "this should give way before that", put `flexShrink: 100000` and `minWidth: 0` on the less important sibling instead of adding a threshold.
 - A threshold you can't avoid comes from measuring what the content really needs, not from a constant in another component.
+- For an animation that feels slow or janky, measure before retuning it: from the click, sample frame gaps with `requestAnimationFrame` and log `animationstart`, `animationend` and long tasks. Modals were slow from antd's motion steps and janky from the mask blur, not from their duration.
 - For sub-second flashes, add temporary `logger.debug` calls with `performance.now()` at the suspected mount points, reproduce, read the log, then remove them. Two loading states in one wait must render identically (`FullPageLoader`, same label or none).
 
 ## Layout-shift check

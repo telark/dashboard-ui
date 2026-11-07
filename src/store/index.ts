@@ -22,6 +22,7 @@ import {
   permissionsPersistConfig,
   categoriesPersistConfig,
 } from './persistConfig';
+import { themeReducer } from '../features/theme/store';
 
 const persistedApplicationsReducer = persistReducer(applicationsPersistConfig, applicationsReducer);
 const persistedRetryReducer = persistReducer(retryPersistConfig, retryReducer);
@@ -51,6 +52,7 @@ const store = configureStore({
     notifications: notificationsReducer,
     protectionPlans: persistedProtectionPlansReducer,
     apiHealth: apiHealthReducer,
+    theme: themeReducer,
   },
   middleware: (getDefaultMiddleware) =>
     // Dev-only invariant checks walk the whole store per action; with a few

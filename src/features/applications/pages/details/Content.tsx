@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useRef, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, domAnimation, LazyMotion, m } from 'framer-motion';
 import { HEADER_LAYOUT, LIST_TOOLBAR, SPACING } from '../../../../constants';
 import { LIST_PAGE } from '../../../../constants/shared/pages';
 import type { Application } from '../../models';
@@ -52,23 +52,25 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
               minHeight: LIST_TOOLBAR.ROW_HEIGHT_PX,
             }}
           >
-            <AnimatePresence initial={false}>
-              {identityVisible ? (
-                <motion.div
-                  key="identity"
-                  initial={{ opacity: 0, y: -4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -4 }}
-                  transition={{
-                    duration: LIST_PAGE.DETAILS_NAME_REVEAL_DURATION_S,
-                    ease: 'easeOut',
-                  }}
-                  style={{ minWidth: 0 }}
-                >
-                  <ApplicationDetailsIdentity application={application} />
-                </motion.div>
-              ) : null}
-            </AnimatePresence>
+            <LazyMotion features={domAnimation}>
+              <AnimatePresence initial={false}>
+                {identityVisible ? (
+                  <m.div
+                    key="identity"
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    transition={{
+                      duration: LIST_PAGE.DETAILS_NAME_REVEAL_DURATION_S,
+                      ease: 'easeOut',
+                    }}
+                    style={{ minWidth: 0 }}
+                  >
+                    <ApplicationDetailsIdentity application={application} />
+                  </m.div>
+                ) : null}
+              </AnimatePresence>
+            </LazyMotion>
             {/* Spacer keeps the actions right-aligned whether or not the identity shows. */}
             <span style={{ flex: 1 }} />
             {actions}

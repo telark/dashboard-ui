@@ -11,7 +11,6 @@ import { NoPermissionCard, PageContainer } from '../../../../components/shared';
 import { LIST_PAGE } from '../../../../constants/shared/pages';
 import type { CreatePlanRouteState } from '../../../../interfaces/shared';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../constants/protectionPlans';
-import { applicationPlanValues } from '../utils/planFormValues';
 import type { PlansPageTab, PlanViewMode } from '../models';
 import ProtectionPlansListPage from './ProtectionPlansListPage';
 import ProtectionPlanReportsPage from './ProtectionPlanReportsPage';
@@ -42,21 +41,16 @@ const MainPage: React.FC = () => {
   }
   const tabs = useMemo(() => <ProtectionPlansTabs />, []);
 
-  // One-shot: open the create panel (prefilled for an application) once, then drop the state so
+  // One-shot: open the create panel once, then drop the state so
   // a reload or a return to this entry doesn't open it again.
   const location = useLocation();
   const navigate = useNavigate();
   const createRequest = (location.state as CreatePlanRouteState | null)?.createPlan;
   useEffect(() => {
     if (!createRequest) return;
-    const { application } = createRequest;
-    if (application) {
-      const takenNames = plans.map((plan) => plan.name);
-      createForm.setFieldsValue(applicationPlanValues(application, takenNames));
-    }
     openCreatePanel();
     navigate(location, { replace: true, state: null });
-  }, [createRequest, createForm, plans, openCreatePanel, navigate, location]);
+  }, [createRequest, openCreatePanel, navigate, location]);
 
   let page: React.ReactNode;
   if (viewMode !== 'plans') {

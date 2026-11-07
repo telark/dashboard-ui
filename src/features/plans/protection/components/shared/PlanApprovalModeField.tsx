@@ -4,6 +4,7 @@ import { PLAN_APPROVAL, PROTECTION_PLANS_CONSTANTS as PPC } from '../../constant
 import { CREATE_PANEL_TEXTS } from '../../constants/createPanel';
 import type { PlanApprovalMode } from '../../models';
 import { FORM_ITEM_CLASS } from '../create/types';
+import { FieldError } from '../../../../../components/display/inputs';
 import { SPACING } from '../../../../../constants';
 
 const { FORM } = PPC.CREATE_PAGE;
@@ -38,7 +39,7 @@ const PlanApprovalModeField: React.FC<PlanApprovalModeFieldProps> = ({ editMode 
         <Form.Item
           name="approvalMode"
           label={FORM.APPROVAL_MODE_LABEL}
-          extra={approvalHelp}
+          extra={<FieldError warning message={approvalHelp} />}
           style={{ marginBottom: SPACING.NONE }}
           className={FORM_ITEM_CLASS}
         >

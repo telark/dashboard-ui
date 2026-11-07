@@ -41,7 +41,7 @@ const PlanTaxonomyPage: React.FC<PlanTaxonomyPageProps> = ({ scope, onBack }) =>
   const [editPanelOpen, setEditPanelOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
 
-  const { categories, loading, error } = useCategories(scope);
+  const { categories, loaded, error, refetch } = useCategories(scope);
   const {
     sortKey,
     currentPage,
@@ -120,8 +120,9 @@ const PlanTaxonomyPage: React.FC<PlanTaxonomyPageProps> = ({ scope, onBack }) =>
         },
       },
       empty: <Empty description={L.EMPTY} />,
-      loading,
+      loaded,
       error,
+      onRetry: refetch,
     }),
     [
       L,
@@ -139,8 +140,9 @@ const PlanTaxonomyPage: React.FC<PlanTaxonomyPageProps> = ({ scope, onBack }) =>
       pageSize,
       setCurrentPage,
       setPageSize,
-      loading,
+      loaded,
       error,
+      refetch,
     ],
   );
 

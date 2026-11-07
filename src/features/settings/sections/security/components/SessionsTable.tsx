@@ -65,6 +65,8 @@ const rowStyle: React.CSSProperties = {
   alignItems: 'center',
 };
 
+const lastRowStyle: React.CSSProperties = { ...rowStyle, borderBottom: 'none' };
+
 const emptyRowStyle: React.CSSProperties = {
   padding: `${SPACING.XXL}px 0`,
   fontSize: FONT_SIZE.BASE,
@@ -121,12 +123,15 @@ const SessionsTable: React.FC<SessionsTableProps> = memo(
         {!loading &&
           !error &&
           sessions.length > 0 &&
-          sessions.map((session) => {
+          sessions.map((session, index) => {
             const expired = isSessionExpired(session.expiresTimestamp);
             const sessionName = session.metadata?.name;
             const isCurrent = sessionName === currentSessionName;
             return (
-              <div key={sessionName ?? session.createdTimestamp} style={rowStyle}>
+              <div
+                key={sessionName ?? session.createdTimestamp}
+                style={index < sessions.length - 1 ? rowStyle : lastRowStyle}
+              >
                 <span style={{ minWidth: 0 }}>
                   <div
                     style={{

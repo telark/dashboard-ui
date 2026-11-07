@@ -43,6 +43,8 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ nameValidator }) =>
             {...descriptionGuard.input}
             autoSize={{ minRows: 2, maxRows: 6 }}
             placeholder={FORM.DESCRIPTION_PLACEHOLDER}
+            // The counter sits beside Priority's label, so it needs no line of its own here.
+            style={{ marginBottom: SPACING.NONE }}
           />
         </Form.Item>
         <div style={FORM_FIELD_PAIR_STYLE}>

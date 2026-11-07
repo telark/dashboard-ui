@@ -6,6 +6,7 @@ import type { SelectOption, SelectOptionGroup } from '../../hooks/useScopeExclus
 import Section from '../../../../../components/display/sections/Section';
 import { FORM_ITEM_CLASS } from './types';
 import { SPACING } from '../../../../../constants';
+import { FieldError } from '../../../../../components/display/inputs';
 
 const { SECTIONS, FORM } = PPC.CREATE_PAGE;
 
@@ -148,7 +149,7 @@ const ScopeSection: React.FC<ScopeSectionProps> = ({
               <Form.Item
                 name="excludedKinds"
                 label={FORM.EXCLUDED_KINDS_LABEL}
-                extra={FORM.EXCLUSIONS_NAMESPACES_HINT}
+                extra={<FieldError warning message={FORM.EXCLUSIONS_NAMESPACES_HINT} />}
                 style={{ marginBottom: SPACING.NONE }}
                 className={FORM_ITEM_CLASS}
               >

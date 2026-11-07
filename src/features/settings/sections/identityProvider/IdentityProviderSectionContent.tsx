@@ -6,16 +6,13 @@ import BootstrapAccountSection from './BootstrapAccountSection';
 
 const { CONTENT } = SETTINGS_CONSTANTS;
 
+// A flex gap, not margins: the bootstrap card can render nothing and must leave no gap behind.
 const IdentityProviderSectionContent: React.FC = memo(() => (
-  <>
+  <div style={{ display: 'flex', flexDirection: 'column', gap: CONTENT.GAP_BETWEEN_CARDS }}>
     <OIDCSection />
-    <div style={{ marginTop: CONTENT.GAP_BETWEEN_CARDS }}>
-      <SelfRegistrationSection />
-    </div>
-    <div style={{ marginTop: CONTENT.GAP_BETWEEN_CARDS }}>
-      <BootstrapAccountSection />
-    </div>
-  </>
+    <SelfRegistrationSection />
+    <BootstrapAccountSection />
+  </div>
 ));
 
 IdentityProviderSectionContent.displayName = 'IdentityProviderSectionContent';

@@ -67,7 +67,7 @@ export const Step: React.FC<StepProps> = ({
         height: STEP_STRIP.NUMBER_SIZE_PX,
         borderRadius: '50%',
         background: done ? DEFAULT_COLORS.SUCCESS_TINT : DEFAULT_COLORS.CHIP_CUSTOM_BG,
-        color: done ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.TEXT_SECONDARY,
+        color: done ? DEFAULT_COLORS.SUCCESS_TEXT : DEFAULT_COLORS.TEXT_SECONDARY,
         fontSize: STEP_STRIP.NUMBER_FONT_SIZE_PX,
         fontWeight: FONT_WEIGHT.SEMIBOLD,
       }}

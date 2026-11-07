@@ -24,6 +24,9 @@ export const ROW_ICON_BUTTON_SIZE = 28;
 // Keyboard focus ring for the list row action buttons, which reset every style inline (index.css).
 export const ROW_ACTION_CLASS = 'tk-row-action';
 
+// A Tooltip opens on hover alone by default, so a keyboard user who focuses its trigger sees nothing.
+export const KEYBOARD_TOOLTIP_TRIGGER: ('hover' | 'focus')[] = ['hover', 'focus'];
+
 // How far the app's own buttons (toolbar, filter, search, row actions) dim when disabled.
 export const DISABLED_OPACITY = 0.6;
 

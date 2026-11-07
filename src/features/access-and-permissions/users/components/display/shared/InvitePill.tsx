@@ -11,16 +11,25 @@ const PILL = UC.LABELS.INVITE_PILL;
 const isPending = (invite: UserInvite): boolean => toTimestamp(invite.expiresAt) > Date.now();
 
 // An open link outranks the record of an earlier one being used.
-const pillFor = (invite?: UserInvite, acceptedAt?: string) => {
+export const pillFor = (
+  invite?: UserInvite,
+  acceptedAt?: string,
+): { text: string; accent?: string; tooltip: string; style?: React.CSSProperties } => {
   if (invite) {
     const when = formatDateTime(invite.expiresAt, TIME_FORMATS.DATE_TIME);
     return isPending(invite)
       ? { text: PILL.PENDING, accent: DEFAULT_COLORS.WARNING, tooltip: PILL.EXPIRES_AT(when) }
       : { text: PILL.EXPIRED, accent: DEFAULT_COLORS.WARNING, tooltip: PILL.EXPIRED_AT(when) };
   }
-  if (!acceptedAt) return null;
+  if (!acceptedAt) return { text: PILL.NOT_INVITED, tooltip: PILL.NOT_INVITED_TOOLTIP };
   const when = formatDateTime(acceptedAt, TIME_FORMATS.DATE_TIME);
-  return { text: PILL.ENROLLED, accent: DEFAULT_COLORS.SUCCESS, tooltip: PILL.ENROLLED_AT(when) };
+  return {
+    text: PILL.ENROLLED,
+    accent: DEFAULT_COLORS.SUCCESS,
+    tooltip: PILL.ENROLLED_AT(when),
+    // White on the green too (user decision, 2026-11-05).
+    style: { color: DEFAULT_COLORS.PILL_TEXT },
+  };
 };
 
 interface InvitePillProps {
@@ -30,12 +39,15 @@ interface InvitePillProps {
 
 const InvitePill: React.FC<InvitePillProps> = ({ invite, acceptedAt }) => {
   const pill = pillFor(invite, acceptedAt);
-  if (!pill) return null;
 
   return (
     <Tooltip title={pill.tooltip}>
       <span style={{ display: 'inline-flex', flexShrink: 0 }}>
-        <Tag color={getPillColor(pill.accent)} className={`${TAG_CLASS.MEDIUM} ${TAG_CLASS.AS_IS}`}>
+        <Tag
+          color={getPillColor(pill.accent)}
+          className={`${TAG_CLASS.MEDIUM} ${TAG_CLASS.AS_IS}`}
+          style={pill.style}
+        >
           {pill.text}
         </Tag>
       </span>

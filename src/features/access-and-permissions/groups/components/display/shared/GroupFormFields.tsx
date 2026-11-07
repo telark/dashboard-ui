@@ -1,6 +1,5 @@
 import React from 'react';
 import { Form, Input } from 'antd';
-import LabeledInput from '../../../../../../components/display/inputs/LabeledInput';
 import { GROUPS_CONSTANTS as GC } from '../../../constants';
 import CategorySelect from './CategorySelect';
 import type { AssignmentSelectOption } from '../../../../roles/models';
@@ -9,6 +8,10 @@ import { inputGuard } from '../../../../../../utils/helpers/inputGuard';
 
 const nameGuard = inputGuard(INPUT_LIMITS.GROUP_NAME.MAX, {
   required: `Please enter ${GC.LABELS.FORM.FIELDS.NAME_LABEL.toLowerCase()}`,
+});
+// Not multiline: the API refuses line breaks in a group's description, so they're dropped here.
+const descriptionGuard = inputGuard(INPUT_LIMITS.GROUP_DESCRIPTION.MAX, {
+  required: `Please enter ${GC.LABELS.FORM.FIELDS.DESCRIPTION_LABEL.toLowerCase()}`,
 });
 
 interface GroupFormFieldsProps {
@@ -41,14 +44,24 @@ const GroupFormFields: React.FC<GroupFormFieldsProps> = ({
           allowClear
         />
       </Form.Item>
-      <LabeledInput
+      <Form.Item
         name="description"
         label={GC.LABELS.FORM.FIELDS.DESCRIPTION_LABEL}
-        maxLength={INPUT_LIMITS.GROUP_DESCRIPTION.MAX}
         required
-        placeholder={GC.LABELS.FORM.FIELDS.DESCRIPTION_PLACEHOLDER}
-        marginBottom={16}
-      />
+        normalize={descriptionGuard.normalize}
+        rules={descriptionGuard.rules}
+        style={{ marginBottom: SPACING.LG }}
+        className="form-item-compact no-asterisk"
+      >
+        <Input.TextArea
+          {...descriptionGuard.input}
+          showCount
+          autoSize={{ minRows: 2, maxRows: 6 }}
+          placeholder={GC.LABELS.FORM.FIELDS.DESCRIPTION_PLACEHOLDER}
+          // The counter sits beside the next field's label, so it needs no line of its own here.
+          style={{ marginBottom: SPACING.NONE }}
+        />
+      </Form.Item>
       <Form.Item
         name="categoryRef"
         label={GC.LABELS.FORM.FIELDS.CATEGORY_LABEL}

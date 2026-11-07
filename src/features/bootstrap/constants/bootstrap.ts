@@ -10,7 +10,6 @@ export const BOOTSTRAP_CONSTANTS = {
   KIND_RECOVER: 'recover',
   KIND_REPLACE: 'replace',
   LAYOUT: {
-    ROW_GAP: 12,
     LINE_GAP: 4,
     BUTTON_GAP: 8,
     PAGE_GAP: 12,
@@ -46,8 +45,12 @@ export const BOOTSTRAP_TEXTS = {
   DENIED_MESSAGE: 'Request denied',
   CARD_TITLE: 'Bootstrap account',
   // Until the status loads, no wait is known: the chart sets it.
-  CARD_DESCRIPTION: (waitHours?: number) =>
-    `Break-glass recovers this account. Once pinned, each run opens a request that completes ${waitHours ? `after ${pluralize(waitHours, 'hour')}` : 'once its waiting period ends'} unless the account signs in or denies it. A passkey approval completes a replacement sooner.`,
+  CARD_DESCRIPTION: (waitHours?: number) => {
+    const wait = waitHours
+      ? `after ${pluralize(waitHours, 'hour')}`
+      : 'once its waiting period ends';
+    return `Break-glass recovers this account. Once pinned, each run opens a request that completes ${wait} unless the account signs in or denies it. A passkey approval completes a replacement sooner.`;
+  },
   PINNED_LABEL: 'Pinned account',
   // The exporter sends the email only to the bootstrap account itself.
   PINNED: (email: string | undefined, since: string) =>

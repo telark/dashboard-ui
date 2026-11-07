@@ -12,7 +12,7 @@ import type {
   RecommendationKind,
   LastRun,
 } from '../models';
-import { APP_ROUTE_PARAMS, APP_ROUTES, SIDEBAR_LAYOUT } from '../../../constants';
+import { APP_ROUTE_PARAMS, APP_ROUTES, DEFAULT_COLORS, SIDEBAR_LAYOUT } from '../../../constants';
 import { PAGE_CONTENT_LAYOUT } from '../../../constants/shared/pages';
 import { INSIGHTS_ERROR_MESSAGES } from './errors';
 import { INSIGHTS_UI } from './texts';
@@ -328,6 +328,7 @@ export const triageErrorMessage = (code?: string): string =>
   (code && INSIGHT_ERROR_MESSAGES[code]) || T.ERRORS.TRIAGE_FAILED;
 
 const P = INSIGHTS_UI.PAGE;
+const TITLE_MIN_PX = 200;
 
 export const CLUSTER_INSIGHTS = {
   POLL_MS: 15_000,
@@ -355,19 +356,21 @@ export const CLUSTER_INSIGHTS = {
   TOOLBAR_COMPACT_WIDTH: { DEFAULT: 760, BULK: 900, QUICK_FILTER: 1240 },
   // ?app= adds its filter chip (≈170 for a typical name) and the setup-review note (≈220).
   TOOLBAR_COMPACT_WIDTH_APP: { DEFAULT: 1000, BULK: 1240, QUICK_FILTER: 1500 },
-  TITLE_MIN_PX: 200,
+  TITLE_MIN_PX,
   // The content width at a 576px phone viewport (the rail and both gutters off it): below it
   // Severity leads, pinned, and the pager goes simple.
   PHONE_WIDTH_PX:
     576 - SIDEBAR_LAYOUT.WIDTH_COLLAPSED - 2 * PAGE_CONTENT_LAYOUT.PADDING_HORIZONTAL_AND_BOTTOM_PX,
+  // Measured 2026-11-06: the wider of the header and the widest cell, padding included. The title
+  // counts at its floor, so it gives way before an optional column drops.
   COLUMN_WIDTHS: {
     SEVERITY: 110,
-    TITLE: 300,
+    TITLE: TITLE_MIN_PX,
     APPLICATION: 150,
     NAMESPACE: 140,
-    KIND: 160,
+    KIND: 120,
     STATE: 100,
-    TRIAGE: 120,
+    TRIAGE: 124,
     ENVIRONMENT: 150,
     LAST_SEEN: 140,
   },
@@ -377,6 +380,8 @@ export const CLUSTER_INSIGHTS = {
   APP_PARAM: 'app',
   INSIGHT_PARAM: APP_ROUTE_PARAMS.INSIGHT,
   PANEL_WIDTH: 560,
+  // A quicker load shows no spinner, so the panel doesn't flash one before its content.
+  PANEL_SPINNER_DELAY_MS: 300,
   PANEL_WIDTH_EXPANDED: 900,
   // Per-viewer convenience only: the remembered Group by.
   GROUP_BY_STORAGE_KEY: 'insights.groupBy',
@@ -390,6 +395,9 @@ export const CLUSTER_INSIGHTS = {
     ENVIRONMENT: 'environment',
   },
 } as const;
+
+// White on the Acknowledged pill's green too (user decision, 2026-11-05).
+export const INSIGHT_TRIAGE_PILL_STYLE = { color: DEFAULT_COLORS.PILL_TEXT };
 
 export const INSIGHT_ROW_STATE_LABELS: Record<InsightRowState, string> = {
   open: P.STATE.OPEN,

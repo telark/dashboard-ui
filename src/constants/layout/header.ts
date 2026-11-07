@@ -6,6 +6,7 @@ export const HEADER_LAYOUT = {
   MIN_HEIGHT: 'calc(100vh - 55px)',
   LOGO: {
     SRC: '/telark-logo.svg',
+    SRC_ON_LIGHT: '/telark-logo-on-light.svg',
     ALT: 'telark',
     WIDTH: 96,
     HEIGHT: 22,
@@ -27,12 +28,16 @@ export const HEADER_CONSTANTS = {
     MENU: {
       WIDTH: 260,
       PLACEMENT: 'bottomRight' as const,
-      ROOT_CLASS: 'user-menu-dropdown',
+      // The menu sits under its identity band in one white frame (popupRender), so it drops its
+      // own shadow and corners, and its divider bleeds to the frame edges.
+      LIST_STYLE: { boxShadow: 'none', borderRadius: 0 },
+      DIVIDER_STYLE: { backgroundColor: DEFAULT_COLORS.SURFACE_BORDER_LIGHT, margin: '4px -4px' },
       TEXTS: {
         PROFILE: 'Profile',
         SECURITY: 'Security',
         MY_PERMISSIONS: 'My Permissions',
         LOGOUT: 'Logout',
+        BOOTSTRAP: 'Bootstrap',
       },
     },
     // The identity band above the menu items, the same SURFACE_SUBTLE band as the view panels' header.

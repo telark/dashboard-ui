@@ -27,12 +27,12 @@ export const IDENTITY_PROVIDER_CONSTANTS = {
   },
   SETUP: {
     CLIENT_TITLE: 'Google OAuth client',
-    CLIENT_HINT_START: 'Create a "Web application" OAuth client in the',
+    STEP_CREATE_START: 'Create a "Web application" OAuth client in the',
     CONSOLE_LINK: 'Google Cloud console',
-    CLIENT_HINT_END: ', add the redirect URI below, then paste the client ID.',
+    STEP_CREATE_END: '.',
+    STEP_REDIRECT: 'Add this authorized redirect URI to it:',
+    STEP_CLIENT_ID: 'Paste its client ID below.',
     GUIDE_LINK: 'Setup guide',
-    REDIRECT_URI_LABEL: 'Authorized redirect URI',
-    REDIRECT_URI_INFO: 'Add this address under "Authorized redirect URIs" on the OAuth client.',
     COPY_LABEL: 'Copy redirect URI',
     KEYS_TITLE: 'Signing keys',
   },
@@ -56,8 +56,6 @@ export const IDENTITY_PROVIDER_CONSTANTS = {
       'https://developers.google.com/identity/openid-connect/openid-connect#getcredentials',
   },
   LAYOUT: {
-    FIELD_GAP: 12,
-    ROW_GAP: 10,
     JWK_ROWS: 6,
   },
 } as const;

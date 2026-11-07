@@ -16,6 +16,7 @@ import {
   FONT_SIZE,
   FONT_WEIGHT,
   UNSTYLED_BUTTON,
+  KEYBOARD_TOOLTIP_TRIGGER,
 } from '../../../../constants';
 import { LIST_PAGE } from '../../../../constants/shared/pages';
 import { PageContainer } from '../../../../components/shared';
@@ -53,7 +54,7 @@ const iconTileStyle: React.CSSProperties = {
   borderRadius: RADIUS.LG,
   background: DEFAULT_COLORS.SURFACE_ELEVATED,
   border: SECTION_LAYOUT.SUBTLE_DIVIDER,
-  color: DEFAULT_COLORS.SUCCESS,
+  color: DEFAULT_COLORS.SUCCESS_TEXT,
 };
 
 // The help box matches the Home boxes: elevated surface, icon and title header, numbered steps.
@@ -180,7 +181,7 @@ const ApplicationsMainEmpty: React.FC<EmptyProps> = memo(({ excludedCount, onChe
                 <Step number={1} title={H.LABELS.TITLE}>
                   <span style={helperStyle}>
                     {H.LABELS.HELPER}
-                    <Tooltip title={<span>{labelKeys}</span>}>
+                    <Tooltip title={<span>{labelKeys}</span>} trigger={KEYBOARD_TOOLTIP_TRIGGER}>
                       <InfoCircleOutlined tabIndex={0} aria-label={DISCOVERY_LABELS_HINT} />
                     </Tooltip>
                   </span>
@@ -189,7 +190,7 @@ const ApplicationsMainEmpty: React.FC<EmptyProps> = memo(({ excludedCount, onChe
                   <span style={helperStyle}>{H.NAMESPACE.HELPER}</span>
                   <Link
                     to={DISCOVERY_SETTINGS_ROUTE}
-                    style={{ color: DEFAULT_COLORS.SUCCESS, fontSize: FONT_SIZE.SM }}
+                    style={{ color: DEFAULT_COLORS.SUCCESS_TEXT, fontSize: FONT_SIZE.SM }}
                   >
                     {M.OPEN_DISCOVERY_SETTINGS}
                   </Link>

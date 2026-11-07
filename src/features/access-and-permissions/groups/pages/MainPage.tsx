@@ -42,7 +42,7 @@ const MainPage: React.FC = () => {
   const [editCategoryPanelOpen, setEditCategoryPanelOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const { groups, loaded, error, refetch } = useFetchGroups();
-  const { categories, loading: categoriesLoading } = useCategories(
+  const { categories, loaded: categoriesLoaded } = useCategories(
     CATEGORIES_CONSTANTS.SCOPES.GROUPS,
   );
   const [searchTerm, setSearchTerm] = useState('');
@@ -236,8 +236,8 @@ const MainPage: React.FC = () => {
 
   const augmentedPageConfig = {
     ...pageConfig,
-    loading: !loaded || categoriesLoading,
-    fullPageLoading: !loaded,
+    loaded: loaded && categoriesLoaded,
+    fullPageLoading: !loaded || !categoriesLoaded,
     error,
     onRetry: refetch,
   };

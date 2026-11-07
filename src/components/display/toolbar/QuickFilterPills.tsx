@@ -53,7 +53,6 @@ const QuickFilterPills = <K extends string>({
           key={option.key}
           type="button"
           aria-pressed={isActive}
-          className={LIST_TOOLBAR.QUICK_FILTER_CLASS}
           onClick={() => onChange(option.key)}
           style={pillStyle(option.accent, isActive)}
         >

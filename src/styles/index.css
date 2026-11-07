@@ -36,6 +36,17 @@ body {
   color-scheme: dark;
 }
 
+html[data-theme='light'],
+html[data-theme='light'] body {
+  color-scheme: light;
+}
+
+/* Pages scroll in the content pane. A tooltip at the screen edge pokes out a few pixels, and a
+   window scrollbar for it would shrink and reflow the whole app for a moment. */
+html {
+  overflow-x: hidden;
+}
+
 /* Chrome paints autofilled text via a UA !important rule, which outranks every
    author rule, and picks its color from color-scheme — so under the dark root
    above it goes white. Light surfaces must declare their own scheme or their
@@ -113,13 +124,6 @@ h3 {
    their keyboard focus ring. */
 .tk-row-action:focus-visible {
   outline: 2px solid var(--color-info) !important;
-}
-
-/* Quick-filter pills (LIST_TOOLBAR.QUICK_FILTER_CLASS) reset every style inline too; the ring sits
-   off the pill so it reads on both the outline and the filled one. */
-.tk-quick-filter:focus-visible {
-  outline: 2px solid var(--color-text-secondary) !important;
-  outline-offset: 2px !important;
 }
 
 /* The panel's plain buttons (SLIDE_OUT.HEADER_BUTTON_CLASS) get the ring antd draws on the panel

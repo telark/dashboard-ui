@@ -312,6 +312,7 @@ const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
           totalCount={phaseCounts.all}
           onViewModeChange={onViewModeChange}
           empty={showEmptyPage}
+          unreachable={Boolean(connectivityIssueFrom(error))}
         />
 
         <div ref={gridRef} style={{ marginTop: LIST_PAGE.CONTENT_OFFSET_PX }}>

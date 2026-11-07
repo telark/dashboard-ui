@@ -2,8 +2,10 @@ import React, { memo, useCallback, useEffect, useState } from 'react';
 import { App as AntdApp, Tag } from 'antd';
 import { useLocation } from 'react-router-dom';
 import SettingsCard from '../../components/SettingsCard';
+import { SettingsHint, SettingsStack } from '../../components/SettingsFields';
 import { NoPermissionCard } from '../../../../components/shared';
-import { STATUS_COLORS, getPillColor, FONT_WEIGHT } from '../../../../constants';
+import { FieldError } from '../../../../components/display/inputs';
+import { STATUS_COLORS, getPillColor, FONT_WEIGHT, FORM_LABEL_GAP } from '../../../../constants';
 import { formatDateTime } from '../../../../utils/shared/time';
 import logger from '../../../../logging';
 import { ACTION_PERMISSIONS, useIsAdminOnAll } from '../../../auth/hooks';
@@ -21,6 +23,7 @@ import { SETTINGS_CONSTANTS } from '../../constants';
 import BreakGlassAlertsSetting from './BreakGlassAlertsSetting';
 
 const VIEW = ACTION_PERMISSIONS.bootstrap.view;
+const { CONTENT } = SETTINGS_CONSTANTS;
 // A long email breaks anywhere rather than widening the card.
 const hintStyle: React.CSSProperties = {
   fontSize: SETTINGS_CONSTANTS.CONTENT.HINT_FONT_SIZE,
@@ -47,17 +50,26 @@ const RequestRow: React.FC<{
   decide?: React.ReactNode;
 }> = ({ request, waitHours, decide }) => (
   <div style={{ display: 'flex', flexDirection: 'column', gap: C.LAYOUT.LINE_GAP }}>
-    <div
-      style={{ display: 'flex', alignItems: 'center', gap: C.LAYOUT.BUTTON_GAP, flexWrap: 'wrap' }}
-    >
-      <span style={{ fontWeight: FONT_WEIGHT.SEMIBOLD, overflowWrap: 'anywhere' }}>
-        {request.kind === C.KIND_REPLACE ? T.KIND_REPLACE(request.targetEmail) : T.KIND_RECOVER}
-      </span>
-      <Tag color={getPillColor(STATUS_COLORS.BOOTSTRAP_REQUEST[request.state])}>
-        {T.STATE[request.state]}
-      </Tag>
+    <div>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: C.LAYOUT.BUTTON_GAP,
+          flexWrap: 'wrap',
+        }}
+      >
+        <span style={{ fontWeight: FONT_WEIGHT.SEMIBOLD, overflowWrap: 'anywhere' }}>
+          {request.kind === C.KIND_REPLACE ? T.KIND_REPLACE(request.targetEmail) : T.KIND_RECOVER}
+        </span>
+        <Tag color={getPillColor(STATUS_COLORS.BOOTSTRAP_REQUEST[request.state])}>
+          {T.STATE[request.state]}
+        </Tag>
+      </div>
+      <div style={{ ...hintStyle, marginTop: CONTENT.CARD_TITLE_TO_DESCRIPTION_GAP_PX }}>
+        {requestLines(request, waitHours).join(T.LINE_SEPARATOR)}
+      </div>
     </div>
-    <div style={hintStyle}>{requestLines(request, waitHours).join(T.LINE_SEPARATOR)}</div>
     {decide}
   </div>
 );
@@ -113,15 +125,17 @@ const BootstrapAccountSection: React.FC = memo(() => {
     if (!failed && (!status || status.notifyAdmins === false)) return null;
     return (
       <SettingsCard title={T.REQUESTS_LABEL}>
-        {failed && <div style={hintStyle}>{T.LOAD_FAILED}</div>}
-        {status && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: C.LAYOUT.ROW_GAP }}>
-            {requests.length === 0 && <div style={hintStyle}>{T.NO_REQUESTS}</div>}
-            {requests.map((request) => (
-              <RequestRow key={request.id} request={request} waitHours={status.waitHours} />
-            ))}
-          </div>
-        )}
+        <SettingsStack>
+          {failed && <FieldError message={T.LOAD_FAILED} />}
+          {status && (
+            <SettingsStack>
+              {requests.length === 0 && <div style={hintStyle}>{T.NO_REQUESTS}</div>}
+              {requests.map((request) => (
+                <RequestRow key={request.id} request={request} waitHours={status.waitHours} />
+              ))}
+            </SettingsStack>
+          )}
+        </SettingsStack>
       </SettingsCard>
     );
   }
@@ -132,40 +146,56 @@ const BootstrapAccountSection: React.FC = memo(() => {
   const open = newest?.state === C.STATE.PENDING || newest?.state === C.STATE.APPROVED;
   return (
     <SettingsCard title={T.CARD_TITLE} description={T.CARD_DESCRIPTION(status?.waitHours)}>
-      {failed && <div style={hintStyle}>{T.LOAD_FAILED}</div>}
-      {status && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: C.LAYOUT.ROW_GAP }}>
-          <div>
-            <div style={{ fontWeight: FONT_WEIGHT.BOLD }}>{T.PINNED_LABEL}</div>
-            <div style={hintStyle}>
-              {status.pinnedAt
-                ? T.PINNED(status.email, formatDateTime(status.pinnedAt))
-                : T.NOT_PINNED}
+      <SettingsStack>
+        {failed && <FieldError message={T.LOAD_FAILED} />}
+        {status && (
+          <SettingsStack>
+            <div>
+              <div style={{ fontWeight: FONT_WEIGHT.BOLD }}>{T.PINNED_LABEL}</div>
+              <div
+                style={{
+                  marginTop: CONTENT.CARD_TITLE_TO_DESCRIPTION_GAP_PX,
+                  overflowWrap: 'anywhere',
+                }}
+              >
+                <SettingsHint>
+                  {status.pinnedAt
+                    ? T.PINNED(status.email, formatDateTime(status.pinnedAt))
+                    : T.NOT_PINNED}
+                </SettingsHint>
+              </div>
             </div>
-          </div>
-          <BreakGlassAlertsSetting stored={status.notifyAdmins !== false} onSaved={reload} />
-          <div style={{ fontWeight: FONT_WEIGHT.BOLD }}>{T.REQUESTS_LABEL}</div>
-          {requests.length === 0 && <div style={hintStyle}>{T.NO_REQUESTS}</div>}
-          {requests.map((request) => (
-            <RequestRow
-              key={request.id}
-              request={request}
-              waitHours={status.waitHours}
-              decide={
-                open && request === newest ? (
-                  <DecideButtons
-                    requestId={request.id}
-                    canApprove={request.state === C.STATE.PENDING}
-                    recovery={request.kind === C.KIND_RECOVER}
-                    deniedReason={isPinned ? undefined : T.READ_ONLY}
-                    onDecided={onDecided}
-                  />
-                ) : undefined
-              }
-            />
-          ))}
-        </div>
-      )}
+            <BreakGlassAlertsSetting stored={status.notifyAdmins !== false} onSaved={reload} />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: FORM_LABEL_GAP }}>
+              <div style={{ fontWeight: FONT_WEIGHT.BOLD }}>{T.REQUESTS_LABEL}</div>
+              {requests.length === 0 ? (
+                <div style={hintStyle}>{T.NO_REQUESTS}</div>
+              ) : (
+                <SettingsStack>
+                  {requests.map((request) => (
+                    <RequestRow
+                      key={request.id}
+                      request={request}
+                      waitHours={status.waitHours}
+                      decide={
+                        open && request === newest ? (
+                          <DecideButtons
+                            requestId={request.id}
+                            canApprove={request.state === C.STATE.PENDING}
+                            recovery={request.kind === C.KIND_RECOVER}
+                            deniedReason={isPinned ? undefined : T.READ_ONLY}
+                            onDecided={onDecided}
+                          />
+                        ) : undefined
+                      }
+                    />
+                  ))}
+                </SettingsStack>
+              )}
+            </div>
+          </SettingsStack>
+        )}
+      </SettingsStack>
     </SettingsCard>
   );
 });

@@ -1,5 +1,12 @@
 import { format, parse, subDays } from 'date-fns';
-import { DEFAULT_COLORS, SECTION_LAYOUT, STATUS_COLORS, TIME_FORMATS } from '../../../constants';
+import {
+  DEFAULT_COLORS,
+  PAGE_COLORS,
+  SECTION_LAYOUT,
+  STATUS_COLORS,
+  TIME_FORMATS,
+  type PageTheme,
+} from '../../../constants';
 import { toDateKey, toZonedTime } from '../../../utils/shared/time';
 import type { Application } from '../../applications/models';
 import type { ProtectionPlan } from '../../plans/protection/models';
@@ -12,23 +19,26 @@ const SEVERITY_KEYS: SeverityKey[] = [...KNOWN_SEVERITIES, 'other'];
 const PLAN_EVENT_KEYS: PlanEventKey[] = ['created', 'started', 'terminated'];
 
 // Shared G2 styling so every chart sits on the box surface with the same quiet chrome.
-export const CHART_THEME = { type: 'classicDark', view: { viewFill: 'transparent' } };
+export const chartTheme = (pageTheme: PageTheme) => ({
+  type: pageTheme === 'dark' ? 'classicDark' : 'classic',
+  view: { viewFill: 'transparent' },
+});
 
-export const CHART_AXIS_LABEL = {
+export const chartAxisLabel = (pageTheme: PageTheme) => ({
   title: false,
   line: false,
   tick: false,
-  labelFill: DEFAULT_COLORS.TEXT_MUTED,
+  labelFill: PAGE_COLORS[pageTheme].TEXT_MUTED,
   labelFillOpacity: 1,
   labelFontSize: C.AXIS_FONT_SIZE_PX,
-};
+});
 
-export const CHART_LEGEND = {
+export const chartLegend = (pageTheme: PageTheme) => ({
   itemMarker: 'circle',
-  itemLabelFill: DEFAULT_COLORS.TEXT_MUTED,
+  itemLabelFill: PAGE_COLORS[pageTheme].TEXT_MUTED,
   itemLabelFillOpacity: 1,
   itemLabelFontSize: C.LEGEND_FONT_SIZE_PX,
-};
+});
 
 export const CHART_TOOLTIP_CSS = {
   '.g2-tooltip': {

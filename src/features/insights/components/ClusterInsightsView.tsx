@@ -18,7 +18,14 @@ import {
   SearchOutlined,
   UndoOutlined,
 } from '@ant-design/icons';
-import { DEFAULT_COLORS, FONT_SIZE, INPUT_LIMITS, SPACING } from '../../../constants';
+import {
+  DEFAULT_COLORS,
+  FONT_SIZE,
+  Icons,
+  INPUT_LIMITS,
+  LINE_HEIGHT,
+  SPACING,
+} from '../../../constants';
 import { PageLayout } from '../../../components/display/views';
 import { FilterPanel } from '../../../components/display/panels/filter';
 import type { FilterField } from '../../../components/display/panels/filter/FilterPanel';
@@ -79,6 +86,9 @@ const BULK_PERMISSION = ACTION_PERMISSIONS.insights.bulk;
 const GROUP_ROW_PREFIX = 'group:';
 const DEFAULT_SORT_COLUMN = 'SEVERITY';
 const SEVERITIES: InsightSeverity[] = ['critical', 'warning', 'info'];
+// A view mounting beside a mounted one is a tab's first visit and loads under the tabs; the first
+// is the page's own load, which stays behind the route's loader instead of switching loaders.
+let mountedViews = 0;
 
 const options = <V extends string>(labels: Record<V, string>) =>
   (Object.keys(labels) as V[]).map((value) => ({ value, label: labels[value] }));
@@ -199,7 +209,7 @@ const EmptyInsights: React.FC<{
             <span style={mutedStyle}>{P.ANALYZER_OFF}</span>
             <Link
               to={CLUSTER_INSIGHTS.ANALYZER_SETTINGS_ROUTE}
-              style={{ color: DEFAULT_COLORS.SUCCESS }}
+              style={{ color: DEFAULT_COLORS.SUCCESS_TEXT }}
             >
               {P.OPEN_SETTINGS}
             </Link>
@@ -231,12 +241,17 @@ const EmptyInsights: React.FC<{
   }
   return (
     <Empty
+      // Same image as the other list tables' empty state; marginTop 22 is off scale, kept exact.
+      image={
+        <Icons.Insights size={64} style={{ color: DEFAULT_COLORS.ICON_MUTED, marginTop: 22 }} />
+      }
       description={
         <div
           style={{
             display: 'flex',
             flexDirection: 'column',
-            gap: SPACING.XS,
+            gap: SPACING.XXS,
+            lineHeight: LINE_HEIGHT.SNUG,
             alignItems: 'center',
           }}
         >
@@ -324,6 +339,13 @@ const ClusterInsightsView: React.FC<Props> = memo(({ tab, active, tabs, appNote,
     [category, filters, q, appFilter],
   );
   const { page, receivedAt, loading, error, refresh } = useClusterInsights(query, active);
+  const [pageLoad] = useState(() => mountedViews === 0);
+  useEffect(() => {
+    mountedViews += 1;
+    return () => {
+      mountedViews -= 1;
+    };
+  }, []);
   // Triage the analyzer accepted but the list index has not picked up yet (its next refresh);
   // applied until the list agrees or a page arrives TRIAGE_PENDING_MS later (the analyzer may
   // have cleared it meanwhile).
@@ -364,9 +386,13 @@ const ClusterInsightsView: React.FC<Props> = memo(({ tab, active, tabs, appNote,
     [handleSort],
   );
 
+  const environmentNames = useMemo(
+    () => Object.fromEntries(environments.map((e) => [e.id, e.name])),
+    [environments],
+  );
   const sortedRows = useMemo(
-    () => sortInsightRows(items, sortKey, sortOrder),
-    [items, sortKey, sortOrder],
+    () => sortInsightRows(items, sortKey, sortOrder, environmentNames),
+    [items, sortKey, sortOrder, environmentNames],
   );
   const grouped = useMemo(
     () =>
@@ -431,10 +457,6 @@ const ClusterInsightsView: React.FC<Props> = memo(({ tab, active, tabs, appNote,
     [groupBy],
   );
 
-  const environmentNames = useMemo(
-    () => Object.fromEntries(environments.map((e) => [e.id, e.name])),
-    [environments],
-  );
   // Keyed on the fitting columns, not the width: a resize that keeps them skips the table.
   const visibleColumns = fittingInsightColumns(width);
   const phoneWidth = width > 0 && width < CLUSTER_INSIGHTS.PHONE_WIDTH_PX ? width : 0;
@@ -602,7 +624,7 @@ const ClusterInsightsView: React.FC<Props> = memo(({ tab, active, tabs, appNote,
       },
       {
         key: K.KIND,
-        label: incidents ? P.FILTER.BY_KIND : P.FILTER.BY_FAMILY,
+        label: incidents ? P.FILTER.BY_KIND : P.FILTER.BY_CATEGORY,
         type: 'multiSelect',
         multiSelectOptions: kindOptions(incidents ? INCIDENT_KINDS : RECOMMENDATION_KINDS),
       },
@@ -849,7 +871,9 @@ const ClusterInsightsView: React.FC<Props> = memo(({ tab, active, tabs, appNote,
       simple: phoneWidth > 0,
     },
     empty,
-    loading,
+    // The hook's loading is true only until the first page or error, never on a poll.
+    loaded: !loading,
+    fullPageLoading: pageLoad,
     error,
     onRetry: refresh,
   };

@@ -1,13 +1,14 @@
 import React, { memo } from 'react';
+import { SETTINGS_CONSTANTS } from '../../constants';
 import SnapshotStorageSection from './SnapshotStorageSection';
 import ReportStorageSection from './ReportStorageSection';
 
-const SECTION_GAP_PX = 12;
+const { CONTENT } = SETTINGS_CONSTANTS;
 
 const StorageSectionContent: React.FC = memo(() => (
   <>
     <SnapshotStorageSection />
-    <div style={{ marginTop: SECTION_GAP_PX }}>
+    <div style={{ marginTop: CONTENT.GAP_BETWEEN_CARDS }}>
       <ReportStorageSection />
     </div>
   </>

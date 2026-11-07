@@ -99,6 +99,9 @@ export const GROUPS_CONSTANTS = {
     PANELS: {
       VIEW: {
         TITLE: 'Group Details',
+        DESCRIPTION_PREVIEW_CHARS: 100,
+        SHOW_MORE: 'Show more',
+        SHOW_LESS: 'Show less',
         TABS: {
           MEMBERS: 'Members',
           ROLES: 'Roles',
