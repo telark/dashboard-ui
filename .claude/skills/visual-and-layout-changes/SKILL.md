@@ -34,6 +34,7 @@ If a control has the wrong height, look for a `size` prop on it, an inline `heig
 - Anything tied to an animated width reads the measured width, not the toggle flag.
 - For "this should give way before that", put `flexShrink: 100000` and `minWidth: 0` on the less important sibling instead of adding a threshold.
 - A threshold you can't avoid comes from measuring what the content really needs, not from a constant in another component.
+- For an animation that feels slow or janky, measure before retuning it: from the click, sample frame gaps with `requestAnimationFrame` and log `animationstart`, `animationend` and long tasks. Modals were slow from antd's motion steps and janky from the mask blur, not from their duration.
 - For sub-second flashes, add temporary `logger.debug` calls with `performance.now()` at the suspected mount points, reproduce, read the log, then remove them. Two loading states in one wait must render identically (`FullPageLoader`, same label or none).
 
 ## Layout-shift check

@@ -40,10 +40,15 @@ const BaseModal: React.FC<BaseModalProps> = ({
         width={width}
         zIndex={FRAME.Z_INDEX}
         centered
+        // No antd motion: antd.css animates the modal and mask from the frame they mount.
+        transitionName=""
+        maskTransitionName=""
+        rootClassName={FRAME.ROOT_CLASS_NAME}
         destroyOnHidden
         closable={closable}
         keyboard={closable}
-        mask={{ blur: true, closable }}
+        // No blur: re-blurring the page each frame held the open animation to about 15 fps.
+        mask={{ closable }}
         getContainer={getContainer}
         className={`${FRAME.CLASS_NAME} ${PANEL_SURFACE_CLASS}`}
         styles={{

@@ -631,3 +631,31 @@ html[data-theme='light'] {
   background-color: var(--color-warning);
   mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='64 64 896 896'%3E%3Cpath d='M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm-32 232c0-4.4 3.6-8 8-8h48c4.4 0 8 3.6 8 8v272c0 4.4-3.6 8-8 8h-48c-4.4 0-8-3.6-8-8V296zm32 440a48.01 48.01 0 010-96 48.01 48.01 0 010 96z'/%3E%3C/svg%3E");
 }
+
+/* Modals (BaseModal) animate in CSS rather than through antd's motion, whose prepare and start
+   steps held the first frame back by about 90ms: these start on the frame the modal mounts, and
+   a modal closes at once. Durations are MOTION.BASE_MS (dialog) and MOTION.FAST_MS (mask). */
+.app-modal {
+  --app-modal-drop: -24px;
+  /* Exponential ease-out: fast start, soft landing. */
+  animation: app-modal-drop-in 200ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.app-modal-root .ant-modal-mask {
+  animation: app-modal-fade-in 150ms ease-out both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-modal {
+    --app-modal-drop: 0px;
+  }
+}
+@keyframes app-modal-drop-in {
+  from {
+    opacity: 0;
+    transform: translateY(var(--app-modal-drop));
+  }
+}
+@keyframes app-modal-fade-in {
+  from {
+    opacity: 0;
+  }
+}

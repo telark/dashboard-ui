@@ -18,7 +18,14 @@ import {
   SearchOutlined,
   UndoOutlined,
 } from '@ant-design/icons';
-import { DEFAULT_COLORS, FONT_SIZE, INPUT_LIMITS, SPACING } from '../../../constants';
+import {
+  DEFAULT_COLORS,
+  FONT_SIZE,
+  Icons,
+  INPUT_LIMITS,
+  LINE_HEIGHT,
+  SPACING,
+} from '../../../constants';
 import { PageLayout } from '../../../components/display/views';
 import { FilterPanel } from '../../../components/display/panels/filter';
 import type { FilterField } from '../../../components/display/panels/filter/FilterPanel';
@@ -234,12 +241,17 @@ const EmptyInsights: React.FC<{
   }
   return (
     <Empty
+      // Same image as the other list tables' empty state; marginTop 22 is off scale, kept exact.
+      image={
+        <Icons.Insights size={64} style={{ color: DEFAULT_COLORS.ICON_MUTED, marginTop: 22 }} />
+      }
       description={
         <div
           style={{
             display: 'flex',
             flexDirection: 'column',
-            gap: SPACING.XS,
+            gap: SPACING.XXS,
+            lineHeight: LINE_HEIGHT.SNUG,
             alignItems: 'center',
           }}
         >
