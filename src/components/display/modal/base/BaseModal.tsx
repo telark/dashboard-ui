@@ -13,6 +13,9 @@ import { ActionTitle } from '../../text';
 
 const { FRAME } = MODAL_CHROME;
 
+// A modal rendered in place sits inside its trigger, such as a clickable table row.
+const stopPropagation = (e: React.MouseEvent) => e.stopPropagation();
+
 const BaseModal: React.FC<BaseModalProps> = ({
   open,
   onCancel,
@@ -35,7 +38,14 @@ const BaseModal: React.FC<BaseModalProps> = ({
       <Modal
         open={open}
         onCancel={onCancel}
-        title={null}
+        // In antd's slot because only that slot names the dialog (aria-labelledby).
+        title={
+          title && (
+            <div onClick={stopPropagation}>
+              <ActionTitle title={title} />
+            </div>
+          )
+        }
         footer={null}
         width={width}
         zIndex={FRAME.Z_INDEX}
@@ -53,18 +63,17 @@ const BaseModal: React.FC<BaseModalProps> = ({
         className={`${FRAME.CLASS_NAME} ${PANEL_SURFACE_CLASS}`}
         styles={{
           container: {
-            padding: SPACING.NONE,
+            padding: FRAME.PADDING,
             borderRadius: FRAME.BORDER_RADIUS,
             overflow: 'hidden',
           },
-          body: { padding: FRAME.PADDING },
+          header: { marginBottom: MODAL_CHROME.CONTENT.gap },
+          body: { padding: SPACING.NONE },
           close: MODAL_CHROME.CLOSE,
           wrapper: offsetRight ? { paddingRight: offsetRight } : undefined,
         }}
       >
-        {/* A modal rendered in place sits inside its trigger, such as a clickable table row. */}
-        <div onClick={(e) => e.stopPropagation()} style={MODAL_CHROME.CONTENT}>
-          {title && <ActionTitle title={title} />}
+        <div onClick={stopPropagation} style={MODAL_CHROME.CONTENT}>
           {description && <div style={MODAL_CHROME.MESSAGE}>{description}</div>}
           {children}
           {footer && <div style={PANEL_FOOTER.DIALOG}>{footer}</div>}
