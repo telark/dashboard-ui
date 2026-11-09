@@ -1,0 +1,12 @@
+{
+  "minLines": 10,
+  "minTokens": 100,
+  "format": [
+    "typescript",
+    "tsx"
+  ],
+  "threshold": 0.5,
+  "reporters": [
+    "console"
+  ]
+}

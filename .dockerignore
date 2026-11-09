@@ -31,3 +31,11 @@ coverage/
 .claude/
 .code-review-graph/
 .DS_Store
+
+# Tests (the image only needs what vite build imports)
+coverage/
+src/test/
+**/*.test.ts
+**/*.test.tsx
+vitest.config.ts
+.jscpd.json

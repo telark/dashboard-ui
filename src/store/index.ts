@@ -1,4 +1,4 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { persistReducer, persistStore } from 'redux-persist';
 import { applicationsReducer } from '../features/applications/store';
 import { protectionPlansReducer } from '../features/plans/protection/store';
@@ -37,23 +37,25 @@ const persistedGlobalConfigReducer = persistReducer(globalConfigPersistConfig, g
 const persistedCategoriesReducer = persistReducer(categoriesPersistConfig, categoriesReducer);
 const persistedPermissionsReducer = persistReducer(permissionsPersistConfig, permissionsReducer);
 
+export const rootReducer = combineReducers({
+  applications: persistedApplicationsReducer,
+  retry: persistedRetryReducer,
+  globalconfig: persistedGlobalConfigReducer,
+  groups: persistedGroupsReducer,
+  users: persistedUsersReducer,
+  categories: persistedCategoriesReducer,
+  roles: persistedRolesReducer,
+  passkeys: passkeyReducer,
+  permissions: persistedPermissionsReducer,
+  authConfig: authConfigReducer,
+  notifications: notificationsReducer,
+  protectionPlans: persistedProtectionPlansReducer,
+  apiHealth: apiHealthReducer,
+  theme: themeReducer,
+});
+
 const store = configureStore({
-  reducer: {
-    applications: persistedApplicationsReducer,
-    retry: persistedRetryReducer,
-    globalconfig: persistedGlobalConfigReducer,
-    groups: persistedGroupsReducer,
-    users: persistedUsersReducer,
-    categories: persistedCategoriesReducer,
-    roles: persistedRolesReducer,
-    passkeys: passkeyReducer,
-    permissions: persistedPermissionsReducer,
-    authConfig: authConfigReducer,
-    notifications: notificationsReducer,
-    protectionPlans: persistedProtectionPlansReducer,
-    apiHealth: apiHealthReducer,
-    theme: themeReducer,
-  },
+  reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
     // Dev-only invariant checks walk the whole store per action; with a few
     // applications of history they stall the main thread for 100–300ms each.
