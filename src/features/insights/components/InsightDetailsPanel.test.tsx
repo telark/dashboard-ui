@@ -147,8 +147,8 @@ describe('insight details panel', () => {
     expect(
       screen.queryAllByRole('button', {
         name: new RegExp(`^(${T.ACKNOWLEDGE}|${T.DISMISS}|${T.REOPEN})$`),
-      }).length,
-    ).toBe(actions.length);
+      }),
+    ).toHaveLength(actions.length);
   });
 
   it('sends a triage and reads the insight again', async () => {

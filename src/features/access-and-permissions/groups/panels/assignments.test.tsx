@@ -1,6 +1,8 @@
 import type React from 'react';
+import { screen } from '@testing-library/react';
+import { expect, it, vi } from 'vitest';
 import { Endpoints } from '../../../../constants';
-import { mockEmptyLists, permissionsSeed, mockList } from '../../../../test';
+import { mockEmptyLists, permissionsSeed, mockList, renderApp } from '../../../../test';
 import {
   describeAssignmentPanel,
   renderAssignmentPanel,
@@ -76,4 +78,12 @@ describeAssignmentPanel<User>({
       <AttachMemberPanel open onClose={onClose} group={group} />
     ));
   },
+});
+
+it('opens no member panel without a group', () => {
+  mockEmptyLists('exporter', [Endpoints.ROLES.GET_ALL, Endpoints.USERS.GET_ALL]);
+
+  renderApp(<AttachMemberPanel open onClose={vi.fn()} group={null} />);
+
+  expect(screen.queryByText(L.PANELS.ASSIGN_MEMBERS.TITLE)).not.toBeInTheDocument();
 });

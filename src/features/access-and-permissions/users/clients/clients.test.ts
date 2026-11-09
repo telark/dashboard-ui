@@ -1,3 +1,4 @@
+import { expect, it } from 'vitest';
 import { Endpoints } from '../../../../constants';
 import { describeClients } from '../../../../test';
 import { describeVoidClients } from '../../../../test/contracts/voidClients';
@@ -12,6 +13,7 @@ import {
   updateUser,
 } from '.';
 import { fetchUsernames } from './fetch';
+import { USER_ERROR_MESSAGES } from '../constants';
 
 const USER_ID = 'user-1';
 const CREATE_INPUT = { username: 'sre_oncall', fullname: 'Sre Oncall', email: 'test@example.com' };
@@ -105,3 +107,7 @@ describeVoidClients('users', [
     call: () => revokeUserEnrollLink(USER_ID),
   },
 ]);
+
+it('refuses to delete a user without an id', async () => {
+  await expect(deleteUser('')).rejects.toThrow(USER_ERROR_MESSAGES.CLIENT.DELETE_USER_MISSING_ID);
+});

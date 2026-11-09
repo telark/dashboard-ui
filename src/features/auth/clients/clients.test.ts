@@ -1,5 +1,6 @@
-import { Endpoints } from '../../../constants';
-import { describeClients } from '../../../test';
+import { expect, it } from 'vitest';
+import { Endpoints, HTTP_HEADERS, REQUEST_CONFIG } from '../../../constants';
+import { describeClients, mockEndpoint } from '../../../test';
 import {
   createEnrollLink,
   createPasskey,
@@ -176,3 +177,12 @@ describeClients('auth', [
     response: { message: 'ok' },
   },
 ]);
+
+it('marks a change so the backend accepts it as coming from the app', async () => {
+  const mock = mockEndpoint('auth', Endpoints.AUTH.LOGOUT, { success: true, message: 'ok' });
+  const header = HTTP_HEADERS.CUSTOM.REQUESTED_WITH;
+
+  await logout('legacy-token');
+
+  expect(mock.calls[0].headers.get(header)).toBe(REQUEST_CONFIG.DEFAULT_HEADERS[header]);
+});

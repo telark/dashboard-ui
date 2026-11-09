@@ -1,5 +1,6 @@
+import { expect, it } from 'vitest';
 import { Endpoints } from '../../../constants';
-import { describeClients } from '../../../test';
+import { describeClients, mockEmptyEndpoint } from '../../../test';
 import { describeVoidClients } from '../../../test/contracts/voidClients';
 import {
   finishAssertion,
@@ -47,3 +48,11 @@ describeVoidClients('bootstrap', [
     body: { notifyAdmins: true },
   },
 ]);
+
+it('sends an opt-out of the break-glass alerts as false', async () => {
+  const mock = mockEmptyEndpoint('auth', Endpoints.AUTH.BREAK_GLASS_ALERTS);
+
+  await setBreakGlassAlerts(false);
+
+  expect(mock.calls[0].body).toEqual({ notifyAdmins: false });
+});

@@ -49,7 +49,7 @@ export const installBrowserStubs = (): void => {
   // A closing slide-out panel animates its frame out, and jsdom has no Web Animations API.
   Element.prototype.animate = function animate() {
     const animation = { onfinish: null } as Animation;
-    queueMicrotask(() => animation.onfinish?.call(animation, new Event('finish') as never));
+    queueMicrotask(() => animation.onfinish?.(new Event('finish') as never));
     return animation;
   };
   // The app hands a downloaded blob to the browser through an object URL.

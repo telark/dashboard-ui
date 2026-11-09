@@ -17,6 +17,8 @@ interface AppRenderOptions {
 
 // antd's CSS transitions never end in jsdom, so a closing modal would stay mounted.
 const TEST_THEME = { token: { motion: false } };
+// Each click's wave is a React root of its own that cleanup can't unmount, and it outlived jsdom.
+const NO_WAVE = { disabled: true };
 const LOCATION_TEST_ID = 'test-location';
 
 const LocationProbe = () => {
@@ -28,7 +30,7 @@ const createWrapper = ({ route = '/', path }: AppRenderOptions) =>
   function AppWrapper({ children }: PropsWithChildren) {
     return (
       <Provider store={store}>
-        <ConfigProvider theme={TEST_THEME}>
+        <ConfigProvider theme={TEST_THEME} wave={NO_WAVE}>
           <AntdApp>
             <MemoryRouter initialEntries={[route]}>
               {path ? (

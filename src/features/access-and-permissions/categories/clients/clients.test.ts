@@ -1,5 +1,6 @@
-import { Endpoints } from '../../../../constants';
-import { describeClients } from '../../../../test';
+import { expect, it } from 'vitest';
+import { Endpoints, HTTP_HEADERS } from '../../../../constants';
+import { describeClients, mockEndpoint } from '../../../../test';
 import { describeVoidClients } from '../../../../test/contracts/voidClients';
 import { describeSilentClients } from '../../../../test/helpers/silentClients';
 import { createCategory, deleteCategory, fetchCategoriesByScope, updateCategory } from '.';
@@ -49,3 +50,11 @@ describeVoidClients('categories', [
     call: () => deleteCategory(CATEGORY_ID),
   },
 ]);
+
+it('leaves an ordinary category fetch out of silent mode', async () => {
+  const mock = mockEndpoint('exporter', Endpoints.CATEGORIES.GET_BY_SCOPE(SCOPE), {});
+
+  await fetchCategoriesByScope(SCOPE);
+
+  expect(mock.calls[0].headers.has(HTTP_HEADERS.CUSTOM.SILENT_NETWORK)).toBe(false);
+});

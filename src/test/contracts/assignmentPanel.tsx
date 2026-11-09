@@ -52,7 +52,12 @@ const mockAssignedRecord = <TRecord extends object>(
       return HttpResponse.json({ data: current });
     }),
   );
-  return { save, failSave: () => void mockNetworkError('exporter', routes.patch) };
+  return {
+    save,
+    failSave: () => {
+      mockNetworkError('exporter', routes.patch);
+    },
+  };
 };
 
 /** Renders a panel whose record saves the way the server does. */

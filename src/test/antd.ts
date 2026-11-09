@@ -21,18 +21,27 @@ export const searchList = async (user: UserEvent, placeholder: string, text: str
   await user.paste(text);
 };
 
+/** Runs a step per item, one at a time, because user-event interactions can't overlap. */
+export const inOrder = <TItem>(
+  items: readonly TItem[],
+  step: (item: TItem) => Promise<unknown>,
+): Promise<void> =>
+  items.reduce<Promise<void>>(async (previous, item) => {
+    await previous;
+    await step(item);
+  }, Promise.resolve());
+
 /** Pastes into labeled fields, in order. A value replaces what the field held. */
-export const fillFields = async (
+export const fillFields = (
   user: UserEvent,
   fields: Readonly<Record<string, string>>,
-): Promise<void> => {
-  for (const [label, value] of Object.entries(fields)) {
+): Promise<void> =>
+  inOrder(Object.entries(fields), async ([label, value]) => {
     const field = await screen.findByLabelText(label);
     await user.clear(field);
     await user.click(field);
     if (value) await user.paste(value);
-  }
-};
+  });
 
 const matchesOption = (text: string | null, option: TextMatch): boolean =>
   option instanceof RegExp ? option.test(text ?? '') : text === option;

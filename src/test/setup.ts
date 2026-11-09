@@ -1,4 +1,3 @@
-import { setImmediate as nextMacrotask } from 'node:timers/promises';
 import '@testing-library/jest-dom/vitest';
 import { cleanup, configure } from '@testing-library/react';
 import { MotionGlobalConfig } from 'framer-motion';
@@ -22,8 +21,4 @@ afterEach(() => {
   sessionStorage.clear();
 });
 
-afterAll(async () => {
-  server.close();
-  // React's final effect flush sits on setImmediate and needs window: let it run before teardown.
-  await nextMacrotask();
-});
+afterAll(() => server.close());

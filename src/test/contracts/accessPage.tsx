@@ -15,6 +15,7 @@ import { findPanel } from '../helpers/panel';
 import { renderApp } from '../render';
 import { permissionsSeed } from '../store';
 import { describeListPage } from './listPage';
+import { inOrder } from '../antd';
 
 const REFUSED_REASON = 'Refused by a policy';
 
@@ -210,9 +211,9 @@ export const describeAccessPage = <TItem extends { id: string }>(
       const items = [contract.build(), contract.build()];
       const { user } = renderPage(items);
       await pickMenuItem(user, bulkDelete.more, bulkDelete.select);
-      for (const item of items) {
-        await user.click(within(await findRow(contract.label(item))).getByRole('checkbox'));
-      }
+      await inOrder(items, async (item) =>
+        user.click(within(await findRow(contract.label(item))).getByRole('checkbox')),
+      );
       await clickAction(user, bulkDelete.action);
       return { items, user };
     };

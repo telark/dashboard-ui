@@ -41,11 +41,11 @@ export interface WebAuthnMock {
 /** Stands in for the authenticator, which jsdom doesn't have. */
 export const installWebAuthn = (): WebAuthnMock => {
   const mock: WebAuthnMock = {
-    get: vi.fn(async () => credential(new AssertionResponseStub())),
-    create: vi.fn(async () => credential(new AttestationResponseStub())),
+    get: vi.fn(() => Promise.resolve(credential(new AssertionResponseStub()))),
+    create: vi.fn(() => Promise.resolve(credential(new AttestationResponseStub()))),
   };
   setGlobal('isSecureContext', true);
-  setGlobal('PublicKeyCredential', class PublicKeyCredentialStub {});
+  setGlobal('PublicKeyCredential', vi.fn());
   setGlobal('AuthenticatorAssertionResponse', AssertionResponseStub);
   setGlobal('AuthenticatorAttestationResponse', AttestationResponseStub);
   setCredentials(mock);

@@ -41,7 +41,7 @@ const BaseModal: React.FC<BaseModalProps> = ({
         // In antd's slot because only that slot names the dialog (aria-labelledby).
         title={
           title && (
-            <div onClick={stopPropagation}>
+            <div role="presentation" onClick={stopPropagation}>
               <ActionTitle title={title} />
             </div>
           )
@@ -73,7 +73,7 @@ const BaseModal: React.FC<BaseModalProps> = ({
           wrapper: offsetRight ? { paddingRight: offsetRight } : undefined,
         }}
       >
-        <div onClick={stopPropagation} style={MODAL_CHROME.CONTENT}>
+        <div role="presentation" onClick={stopPropagation} style={MODAL_CHROME.CONTENT}>
           {description && <div style={MODAL_CHROME.MESSAGE}>{description}</div>}
           {children}
           {footer && <div style={PANEL_FOOTER.DIALOG}>{footer}</div>}
