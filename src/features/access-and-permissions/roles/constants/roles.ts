@@ -150,6 +150,7 @@ export const ROLES_CONSTANTS = {
   VALIDITY: {
     TITLE: 'Validity',
     SUBTITLE: 'Define when and how long this role is valid.',
+    EXPIRED: '(expired)',
     TYPE_LABEL: 'Validity Type',
     EXPIRATION_MODEL_LABEL: 'Expiration Model',
     EXPIRATION_MODEL_OPTIONS: {
@@ -234,6 +235,7 @@ export const ROLES_CONSTANTS = {
     LOCAL_VALUE_CLEAR_MS: 100,
   },
   ERROR_MESSAGES: {
+    FORM_SUBMIT_FAILED: '[RoleForm] Submit failed',
     CLIENT: {
       FETCH_ROLES_FAILED: '[APIClient] Failed to fetch roles:',
       FETCH_ROLE_DETAILS_FAILED: (id: string) =>
