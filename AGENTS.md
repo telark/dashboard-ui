@@ -20,6 +20,7 @@ dashboard-ui is the operator-facing SPA for telark (React 19, TypeScript 7, Vite
 | `src/routes/AppRoutes.tsx` | Routes and the route-level `Suspense` |
 | `src/styles/` | `index.css` (global font, `color-scheme`, scrollbar gutter), `antd.css` (surface-scoped antd overrides) |
 | `src/logging/` | The project logger |
+| `src/test/` | Test harness: setup, `renderApp`, MSW helpers, antd interactions, shared contracts and factories |
 | `src/App.tsx` | Root `ConfigProvider`: the global antd theme tokens |
 | `scripts/generate-licenses.mjs` | Writes `public/licenses.json`; runs as part of every build script |
 | `Dockerfile`, `nginx/` | Production image; built by the telark repo's pipeline, not from here |
@@ -227,6 +228,20 @@ Verify each step against its success criterion before moving on. Strong criteria
 - The details pages (Applications, Protection plans) share that position: an empty subheader slot, then a sticky row on the list toolbar's padding and height, so the first card lands where a list's content does. The row's main verb is outlined, never a filled primary, rarer actions sit in More, and the summary is one card on `SummaryColumns` with every moment through `DateAndAge`.
 - Avoid layout shift: widths shouldn't depend on content that changes between pages or loads (ellipsize instead); render nothing rather than a placeholder that later widens (as `ListToolbar` does before the first count); and render optional flex children conditionally, because a zero-width child still takes a `gap`.
 
+## Testing
+
+Vitest on jsdom, with Testing Library, user-event, MSW and V8 coverage. `npm test` runs once, `npm run test:watch` watches, `npm run test:coverage` enforces the 40% floor on lines, statements, functions and branches over all of `src`, and `npm run check:duplication` (jscpd, SonarCloud's 10-line and 100-token block) fails above 0.5% duplicated lines, for `src` and for the test code alone.
+
+- Test what a user sees and does: find elements by role, label or text, act through `user`, and assert what is on screen or what the app sent. Don't assert on component state, hook internals or class names, and don't write snapshots, because those break on refactors and pass on real bugs.
+- Mock only the network and what the browser lacks. Declare the API with `mockEndpoint(service, Endpoints.X, body)`, `mockList`, `mockEmptyEndpoint`, `mockServerError`, `mockNetworkError`, `mockPendingEndpoint` or `mockEmptyLists` (`src/test/api.ts`) and read what was sent from the returned `calls`. Never mock axios, a client, a hook or a slice of this app. An endpoint no test declared fails the request and prints its URL.
+- `renderApp` and `renderAppHook` (`src/test/render.tsx`) give the real store singleton (the code under test imports it), a router and antd's `App`, reset the store on each render, and seed an Owner on every scope unless `seed` says otherwise (`permissionsSeed(level, deny)`). Prefer letting a page load its data through MSW. Assert navigation with `currentLocation()`, never by mocking the router.
+- Reuse before writing. `describeClients`, `describeListPage` and the other contracts in `src/test/contracts/` cover what clients, list pages, access pages, plan actions and settings sections share, `createFactory` builds typed records (`src/test/factories/<domain>.ts`), `src/test/antd.ts` holds the antd interactions (`clickButton`, `fillFields`, `selectOption`, `pickSelectOption`, `searchList`, `findDialog`), and `src/test/helpers/` holds the rest (menus, panels, dialogs, a signed-in user, per-feature API mocks). Cases that differ only by data go in one `it.each` table, and a flow two features share becomes a generic helper or contract in `src/test/`, because copied test code fails the duplication check.
+- DOM access that antd forces (a Select's portal, for example) belongs in `src/test/`. `eslint-plugin-testing-library` forbids it in `*.test.*` files, along with unawaited events and `container` queries.
+- Expected text comes from the feature's constants, not a copied string, so a copy change doesn't fail tests that aren't about copy.
+- An antd icon is `role="img"` with its own `aria-label`, so a Search button's accessible name is "search Search". `clickButton` allows for that; a raw `getByRole('button', { name })` needs a regex.
+- Tests use the in-cluster API URLs (`__IN_CLUSTER__` is true in `vitest.config.ts`), because jsdom enforces CORS and the dev ports are cross-origin. jsdom measures nothing, so `getBoundingClientRect` reports a desktop width. `setLayoutWidth` exercises compact layouts.
+- Test files sit beside their source as `Name.test.ts(x)`. No sleeps: wait with `findBy*` or `waitFor`, and use fake timers only for time the code under test owns, such as a poller.
+
 ## Logging
 
 - Log through the project logger (`import logger from '<relative path>/logging'`, then `logger.debug`, `info`, `warn` or `error`), not `console.*`. `no-console` is an error everywhere except `src/logging/**` and `k6/**`; keep it that way. The logger applies levels, environment gating and persistence that console calls bypass.
@@ -249,8 +264,8 @@ SonarCloud scans this repo, and these rules fired on 0.2.0 and were fixed. Don't
 
 ## Verification & done criteria
 
-- After every change set, run `npm run check-all` (`tsc --noEmit`, then `eslint .`) and fix every error. Before handing off, run `npm run check-all-and-build`, which adds the build and is what CI (`.github/workflows/ci.yaml`, on every pull request) and the telark build pipeline run on this repo, through telark's shared `ui-gate` action. The `verify-ui-change` skill has the details.
-- Two toolchain shims stay until their plugins catch up. `tsc` is TypeScript 7 (`@typescript/native` in `package.json`), while `typescript` is the TS 6 compatibility package, because typescript-eslint can't load TS 7 yet. The `overrides` entry lets eslint-plugin-react 7.37 run on ESLint 10, and `eslint.config.mjs` pins its React version because `'detect'` uses an API ESLint 10 removed. When those plugins support the new majors, go back to a plain `typescript` and `'detect'` and drop the override.
+- After every change set, run `npm run check-all` (`tsc --noEmit`, then `eslint .`) and fix every error. Before handing off, run `npm run check-all-and-build`, which adds the tests with their coverage floor, the duplication check and the build, and is what CI (`.github/workflows/ci.yaml`, on every pull request) and the telark build pipeline run on this repo, through telark's shared `ui-gate` action. The `verify-ui-change` skill has the details.
+- Two toolchain shims stay until their plugins catch up. `tsc` is TypeScript 7 (`@typescript/native` in `package.json`), while `typescript` is the TS 6 compatibility package, because typescript-eslint can't load TS 7 yet. The `overrides` entry lets eslint-plugin-react 7.37 run on ESLint 10, and `eslint.config.mjs` pins its React version because `'detect'` uses an API ESLint 10 removed. When those plugins support the new majors, go back to a plain `typescript` and `'detect'` and drop the override. The `minimatch@^10` override lifts the minimatch of ESLint and typescript-eslint to 11 for GHSA-g3hv-75wg-m249 (they call only `minimatch()` and `Minimatch#match`), so drop it once both depend on minimatch 11.
 - Fix causes, not rules: no `eslint-disable` comments, and no CLI flags or config edits that bypass `eslint.config.mjs`, `tsconfig.json` or `.prettierrc`, because the checked-in configs are what CI runs. If output is unclear, read the config.
 - Don't add warnings. Fix the auto-fixable ones (prettier) in code you touched, and leave pre-existing warnings elsewhere alone.
 - No check covers what renders; for visual changes, ask the user for a screenshot.
@@ -261,7 +276,7 @@ Done means:
 - The change follows the naming and structure of the surrounding files, and no string or config value is defined outside `constants/`.
 - No new `any`, no `console.*`, and no dead code, commented-out blocks, unused imports or TODOs left behind.
 - Every new or modified function has a cognitive complexity of 12 or less (no lint rule enforces this; judge it while reading).
-- The repo has no test runner or test files today. If you add or touch tests and one asserted wrong behavior, flag it explicitly instead of silently changing it.
+- New or changed logic ships with a test. If a test asserted wrong behavior, flag it explicitly instead of silently changing it.
 - `npm run check-all-and-build` passes with zero errors.
 
 ## Skills index

@@ -82,6 +82,10 @@ Open the dashboard at `http://localhost:3000`, not `127.0.0.1`: the session is a
 | `npm run serve`               | Preview a build                               |
 | `npm run lint:f`              | Autofix lint issues                           |
 | `npm run format`              | Format the codebase                           |
+| `npm test`                    | Run the tests once                            |
+| `npm run test:watch`          | Run the tests in watch mode                   |
+| `npm run test:coverage`       | Run the tests and enforce the coverage floor  |
+| `npm run check:duplication`   | Fail above 0.5% duplicated lines              |
 | `npm run check-all`           | Type-check and lint                           |
 | `npm run check-all-and-build` | Full validation used by CI and the UI build pipeline |
 

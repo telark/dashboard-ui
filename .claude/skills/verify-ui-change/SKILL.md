@@ -11,7 +11,8 @@ Goal: the change passes the same gate the telark build pipeline runs on this rep
 
 ```sh
 npm run check-all            # tsc --noEmit, then eslint .
-npm run check-all-and-build  # the above, then generate:licenses and vite build (the pipeline gate)
+npm test                     # the tests, once (npm run test:coverage adds the 40% floor)
+npm run check-all-and-build  # check-all, the tests with coverage, the duplication check, then generate:licenses and vite build (the pipeline gate)
 ```
 
 Run `check-all` after every change set and `check-all-and-build` before handing off. The bar is zero errors.
