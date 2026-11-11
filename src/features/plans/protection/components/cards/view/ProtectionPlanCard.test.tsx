@@ -1,6 +1,6 @@
 import { screen, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import { APP_ROUTES, CARD_TEXTS, Endpoints } from '../../../../../../constants';
+import { APP_ROUTES, CARD_TEXTS, DEFAULT_COLORS, Endpoints } from '../../../../../../constants';
 import { mockEndpoint, renderApp, pickMenuItem, clickButton } from '../../../../../../test';
 import { describePlanActions } from '../../../../../../test/contracts/planActions';
 import { buildPlan, buildPlanReport, FUTURE_RANGE } from '../../../../../../test/factories/plans';
@@ -72,6 +72,20 @@ describe('protection plan card', () => {
     renderCard(buildPlan(overrides));
 
     expect(await screen.findByText(text, { exact: false })).toBeInTheDocument();
+  });
+
+  it.each<[ProtectionPlan['phase'], string, boolean]>([
+    ['active', DEFAULT_COLORS.PILL_TEXT, true],
+    ['scheduled', DEFAULT_COLORS.TEXT_MUTED, false],
+    ['terminated', DEFAULT_COLORS.TEXT_MUTED, false],
+    ['canceled', DEFAULT_COLORS.TEXT_MUTED, false],
+  ])('draws the %s pill in its own text color and fill', async (phase, color, filled) => {
+    renderCard(buildPlan({ phase }));
+
+    const pill = await screen.findByText(PPC.LABELS.PHASE_LABELS[phase]);
+
+    expect(pill).toHaveStyle({ color });
+    expect(pill.style.backgroundColor !== '').toBe(filled);
   });
 
   it('names the namespaces a plan covers', async () => {

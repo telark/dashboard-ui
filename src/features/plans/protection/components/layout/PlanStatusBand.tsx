@@ -5,11 +5,9 @@ import {
   DEFAULT_COLORS,
   FONT_SIZE,
   SPACING,
-  STATUS_COLORS,
   TAG_CLASS,
   TIME_FORMATS,
   TOOLBAR_CONTROL,
-  getPillColor,
 } from '../../../../../constants';
 import { useMediaQuery } from '../../../../../hooks/layout';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
@@ -17,8 +15,9 @@ import TimeRemaining from '../../../../../components/display/time/TimeRemaining'
 import { formatDateTime, getTimeZone } from '../../../../../utils/shared/time';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
 import type { PlanHealth, PlanMode, PlanTimeRange, ProtectionPlan } from '../../models';
-import { liveWindow, planPhaseLabel } from '../../utils/phaseRules';
+import { liveWindow } from '../../utils/phaseRules';
 import PlanHealthStatus from '../shared/PlanHealthStatus';
+import PlanPhaseTag from '../shared/PlanPhaseTag';
 
 const { CARD, PHASE_INFO } = PPC.LABELS;
 
@@ -114,13 +113,12 @@ const PlanStatusBand: React.FC<PlanStatusBandProps> = ({
 }) => {
   // Where the toolbar beside it drops its labels, the mode keeps its icon and says it on hover.
   const compact = useMediaQuery(TOOLBAR_CONTROL.COMPACT_QUERY);
-  const phaseAccent = STATUS_COLORS.PLAN_PHASE[plan.phase] ?? STATUS_COLORS.PLAN_PHASE.draft;
   const modeLabel = PPC.LABELS.MODE_LABELS[plan.mode];
   const timing = timingText(plan);
   return (
     <span style={STATUS_STYLE}>
       <span style={LEAD_STYLE}>
-        <Tag color={getPillColor(phaseAccent)}>{planPhaseLabel(plan)}</Tag>
+        <PlanPhaseTag plan={plan} />
         <Tooltip title={compact ? modeLabel : undefined}>
           <Tag
             className={`${TAG_CLASS.ICON} ${TAG_CLASS.OUTLINE}`}
