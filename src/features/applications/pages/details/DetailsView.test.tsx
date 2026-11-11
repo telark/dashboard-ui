@@ -27,6 +27,8 @@ const { renderDetails, openDetails } = detailsPage<Application>({
   mockRecord: mockApplicationDetails,
   loadedText: UI.SECTIONS.OVERVIEW.TITLE,
 });
+const forceSyncButton = () =>
+  screen.getByRole('button', { name: new RegExp(UI.CARD.ACTIONS.FORCE_SYNC) });
 
 describe('application details', () => {
   const application = buildApplication();
@@ -64,6 +66,28 @@ describe('application details', () => {
 
     await waitFor(() => expect(sync.calls).toHaveLength(1));
   });
+
+  it('keeps the page in place when a force sync starts', async () => {
+    const { user } = await openDetails(application);
+    mockEndpoint('discovery', Endpoints.SYNC.APPLICATION(application.name), {
+      data: { jobId: 'job' },
+    });
+    const overview = screen.getByText(UI.SECTIONS.OVERVIEW.TITLE);
+
+    await clickButton(user, UI.CARD.ACTIONS.FORCE_SYNC);
+
+    await waitFor(() => expect(forceSyncButton()).toBeDisabled());
+    expect(overview).toBeInTheDocument();
+  });
+
+  it.each(['queued', 'running'] as const)(
+    'shows a %s force sync as in progress after a reload',
+    async (phase) => {
+      await openDetails(buildApplication({ lastForceSync: { jobId: 'job', phase } }));
+
+      expect(forceSyncButton()).toBeDisabled();
+    },
+  );
 
   it('reports a failed force sync', async () => {
     const { user } = await openDetails(application);
@@ -119,9 +143,7 @@ describe('application details', () => {
   it('disables actions the viewer may not take', async () => {
     await openDetails(application, permissionsSeed('ReadOnly'));
 
-    expect(
-      screen.getByRole('button', { name: new RegExp(UI.CARD.ACTIONS.FORCE_SYNC) }),
-    ).toBeDisabled();
+    expect(forceSyncButton()).toBeDisabled();
     expect(screen.getByRole('button', { name: new RegExp(UI.CARD.ACTIONS.EDIT) })).toBeDisabled();
   });
 });

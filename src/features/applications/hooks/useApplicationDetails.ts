@@ -18,17 +18,16 @@ export function useApplicationDetails(name?: string) {
   useEffect(() => {
     if (!name) return;
     void dispatch(fetchApplicationDetailsThunk(name));
-
-    const intervalMs = isSyncing ? APPLICATIONS_SYNC_ACTIVE_POLL_MS : POLL_INTERVAL_MS;
-    const stopPolling = pollWhileVisible(
-      () => void dispatch(fetchApplicationDetailsThunk(name)),
-      intervalMs,
-    );
-
     return () => {
-      stopPolling();
       dispatch(clearDetails());
     };
+  }, [dispatch, name]);
+
+  // Separate from the load above: a sync starting or ending changes the poll rate, never the page.
+  useEffect(() => {
+    if (!name) return;
+    const intervalMs = isSyncing ? APPLICATIONS_SYNC_ACTIVE_POLL_MS : POLL_INTERVAL_MS;
+    return pollWhileVisible(() => void dispatch(fetchApplicationDetailsThunk(name)), intervalMs);
   }, [dispatch, isSyncing, name]);
 
   const refresh = useCallback(() => {

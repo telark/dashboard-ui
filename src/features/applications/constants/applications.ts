@@ -2,7 +2,8 @@ import { APP_ROUTES, DEFAULT_COLORS } from '../../../constants';
 import { LIST_PAGE } from '../../../constants/shared/pages';
 import { SHARED_DETAILS_CONSTANTS } from '../../../constants/shared/details';
 
-export const APPLICATIONS_SYNC_ACTIVE_POLL_MS = 5000;
+// A force sync usually ends in about a second: a slower poll shows it running after it finished.
+export const APPLICATIONS_SYNC_ACTIVE_POLL_MS = 2000;
 export const APPLICATIONS_DISCOVERY_STATUS_POLL_MS = 5000;
 // A multiple of CARD_LAYOUT.CARDS_PER_ROW, so the grid's last row is full.
 export const APPLICATIONS_PAGE_SIZE = 12;
