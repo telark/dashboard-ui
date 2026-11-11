@@ -7,9 +7,6 @@ export const ROLES_CONSTANTS = {
   LABELS: {
     HEADER_TITLE: 'Roles',
     HEADER_SUBTITLE: 'Manage existing roles',
-    BREADCRUMBS: {
-      CATEGORIES: 'Categories',
-    },
     MESSAGES: {
       CREATED: (name: string) => `Role "${name}" created`,
       UPDATED: (name: string) => `Role "${name}" updated`,
@@ -80,7 +77,6 @@ export const ROLES_CONSTANTS = {
       SEARCH: { PLACEHOLDER: 'Search by name, description...', BUTTON_LABEL: 'Search' },
       CREATE: { BUTTON_LABEL: 'Create Role' },
       COUNT_SUFFIX: { one: 'role', other: 'roles' },
-      CATEGORIES_COUNT_SUFFIX: { one: 'category', other: 'categories' },
       MORE: 'More',
       BULK: {
         SELECT: 'Bulk',
@@ -89,7 +85,6 @@ export const ROLES_CONSTANTS = {
     },
     EMPTY: {
       NO_ROLES_FOUND: 'No roles found',
-      NO_CATEGORIES_FOUND: 'No categories found',
     },
     PAGINATION: {
       SHOW_ROWS: 'Show rows',

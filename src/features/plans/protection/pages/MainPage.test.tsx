@@ -23,7 +23,7 @@ import {
   PLANS_PAGE_TAB_PARAM,
 } from '../constants/protectionPlans';
 import { CATEGORIES_CONSTANTS as CC } from '../../../access-and-permissions/categories/constants';
-import { labelsFor } from '../../../access-and-permissions/categories/constants/categories';
+import { categoriesPageRoute } from '../../../access-and-permissions/categories/utils';
 import { ACTION_PERMISSIONS } from '../../../auth/hooks';
 import type { PlanReportMeta, ProtectionPlan } from '../models';
 import MainPage from './MainPage';
@@ -114,12 +114,16 @@ describe('protection plans list', () => {
     );
   });
 
-  it('opens the taxonomy manager from the organize menu', async () => {
+  it.each([
+    [L.TAXONOMY.KINDS, CC.SCOPES.PLAN_KINDS],
+    [L.TAXONOMY.ENVIRONMENTS, CC.SCOPES.PLAN_ENVIRONMENTS],
+    [L.TAXONOMY.TAGS, CC.SCOPES.PLAN_TAGS],
+  ])('opens %s on the categories page from the organize menu', async (item, scope) => {
     const { user } = await renderPlans([ACTIVE]);
 
-    await pickMenuItem(user, L.TAXONOMY.BUTTON, L.TAXONOMY.KINDS);
+    await pickMenuItem(user, L.TAXONOMY.BUTTON, item);
 
-    expect(await screen.findByText(labelsFor(CC.SCOPES.PLAN_KINDS).EMPTY)).toBeInTheDocument();
+    expect(currentLocation()).toBe(categoriesPageRoute(scope));
   });
 });
 

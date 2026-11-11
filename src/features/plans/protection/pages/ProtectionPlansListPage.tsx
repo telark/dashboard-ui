@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { LIST_PAGE } from '../../../../constants/shared/pages';
 import { getCardGridColumns } from '../../../../constants';
 import { useElementWidth } from '../../../../hooks/layout';
-import type { PlanPhase, PlanPhaseQuickFilter, PlanViewMode, ProtectionPlan } from '../models';
+import type { PlanPhase, PlanPhaseQuickFilter, ProtectionPlan } from '../models';
 import { ProtectionPlanCard, ProtectionPlansToolbar, NoProtectionPlansState } from '../components';
 import ProtectionPlansEmptyPage from './ProtectionPlansEmptyPage';
 import { FilterPanel } from '../../../../components/display/panels/filter';
@@ -41,7 +41,6 @@ interface ProtectionPlansListPageProps {
   loading: boolean;
   error: string | null;
   onRetry: () => void;
-  onViewModeChange: (mode: Exclude<PlanViewMode, 'plans'>) => void;
   tabs?: React.ReactNode;
 }
 
@@ -76,17 +75,7 @@ const uniqueValues = (
 };
 
 const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
-  ({
-    plans,
-    searchValue,
-    onSearchChange,
-    onCreatePlanClick,
-    loading,
-    error,
-    onRetry,
-    onViewModeChange,
-    tabs,
-  }) => {
+  ({ plans, searchValue, onSearchChange, onCreatePlanClick, loading, error, onRetry, tabs }) => {
     const hasData = plans.length > 0;
     const timedOut = useLoadingTimeout({ isLoading: loading, hasError: Boolean(error), hasData });
     const dispatch: AppDispatch = useDispatch();
@@ -310,7 +299,6 @@ const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
           onPhaseQuickFilterChange={handlePhaseQuickFilterChange}
           phaseCounts={phaseCounts}
           totalCount={phaseCounts.all}
-          onViewModeChange={onViewModeChange}
           empty={showEmptyPage}
           unreachable={Boolean(connectivityIssueFrom(error))}
         />

@@ -8,6 +8,14 @@ const SCOPES = {
 
 export type CategoryScope = (typeof SCOPES)[keyof typeof SCOPES];
 
+const PAGE_TABS: { value: CategoryScope; label: string; featureName: string }[] = [
+  { value: SCOPES.GROUPS, label: 'Groups', featureName: 'Group categories' },
+  { value: SCOPES.ROLES, label: 'Roles', featureName: 'Role categories' },
+  { value: SCOPES.PLAN_KINDS, label: 'Plan kinds', featureName: 'Plan kinds' },
+  { value: SCOPES.PLAN_ENVIRONMENTS, label: 'Plan environments', featureName: 'Plan environments' },
+  { value: SCOPES.PLAN_TAGS, label: 'Plan tags', featureName: 'Plan tags' },
+];
+
 const TYPES = {
   BUILT_IN: 'built-in',
   CUSTOM: 'custom',
@@ -119,6 +127,11 @@ export const CATEGORIES_CONSTANTS = {
   SCOPES,
   TYPES,
   LABELS,
+  PAGE: {
+    SUBTITLE: 'Organize groups, roles and protection plans.',
+    TYPE_PARAM: 'type',
+    TABS: PAGE_TABS,
+  },
   KEYS: {
     NAME: 'name',
     TYPE: 'type',
@@ -134,6 +147,7 @@ export const CATEGORIES_CONSTANTS = {
       CREATED: 180,
       ACTIONS: 120,
     },
+    TOOLBAR_COMPACT_WIDTH: { DEFAULT: 760, BULK: 760 },
   },
   ERROR_MESSAGES: {
     CLIENT: {

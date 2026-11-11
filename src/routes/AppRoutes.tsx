@@ -43,6 +43,9 @@ const UsersMainPage = lazy(() => import('../features/access-and-permissions/user
 const GroupsMainPage = lazy(
   () => import('../features/access-and-permissions/groups/pages/MainPage'),
 );
+const CategoriesPage = lazy(
+  () => import('../features/access-and-permissions/categories/pages/CategoriesPage'),
+);
 const SettingsPage = lazy(() =>
   import('../features/settings').then((m) => ({ default: m.SettingsPage })),
 );
@@ -186,6 +189,20 @@ const AppRoutes: React.FC = () => {
                   <GroupsMainPage />
                 </FeatureErrorBoundary>
               </PermissionGate>
+            </ProtectedRoute>
+          }
+        />
+        {/* No route gate: each type's tab shows its own no-access state. */}
+        <Route
+          path={APP_ROUTES.CATEGORIES}
+          element={
+            <ProtectedRoute>
+              <FeatureErrorBoundary
+                key={APP_ROUTES.CATEGORIES}
+                featureName={MENU_LABELS.CATEGORIES}
+              >
+                <CategoriesPage />
+              </FeatureErrorBoundary>
             </ProtectedRoute>
           }
         />

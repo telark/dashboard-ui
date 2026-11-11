@@ -39,6 +39,7 @@ export const APP_ROUTES = {
   ROLES: '/roles',
   USERS: '/members',
   GROUPS: '/groups',
+  CATEGORIES: '/categories',
   // settings
   SETTINGS: '/settings',
   PASSKEYS: '/settings/security/passkeys',

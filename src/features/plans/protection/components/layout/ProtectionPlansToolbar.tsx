@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FlagOutlined, SearchOutlined, TagOutlined } from '@ant-design/icons';
 import { DEFAULT_COLORS, Icons, STATUS_COLORS } from '../../../../../constants';
 import {
@@ -9,7 +10,10 @@ import {
 import { usePermission, ACTION_PERMISSIONS } from '../../../../auth/hooks';
 import type { ToolbarButtonConfig, ToolbarConfig } from '../../../../../interfaces/layout/toolbar';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
-import type { PlanPhase, PlanPhaseQuickFilter, PlanViewMode } from '../../models';
+import { CATEGORIES_CONSTANTS as CC } from '../../../../access-and-permissions/categories/constants';
+import type { CategoryScope } from '../../../../access-and-permissions/categories/constants';
+import { categoriesPageRoute } from '../../../../access-and-permissions/categories/utils';
+import type { PlanPhase, PlanPhaseQuickFilter } from '../../models';
 
 interface ProtectionPlansToolbarProps {
   searchValue: string;
@@ -20,7 +24,6 @@ interface ProtectionPlansToolbarProps {
   onPhaseQuickFilterChange: (next: PlanPhaseQuickFilter) => void;
   phaseCounts: Record<PlanPhaseQuickFilter, number>;
   totalCount: number;
-  onViewModeChange: (mode: Exclude<PlanViewMode, 'plans'>) => void;
   // No plans yet: only Organize, to set up kinds, environments and tags first, and Create Plan.
   empty?: boolean;
   unreachable: boolean;
@@ -69,10 +72,10 @@ const ProtectionPlansToolbar: React.FC<ProtectionPlansToolbarProps> = ({
   onPhaseQuickFilterChange,
   phaseCounts,
   totalCount,
-  onViewModeChange,
   empty = false,
   unreachable,
 }) => {
+  const navigate = useNavigate();
   const canCreate = usePermission(
     ACTION_PERMISSIONS.protectionPlans.create.scope,
     ACTION_PERMISSIONS.protectionPlans.create.level,
@@ -87,11 +90,11 @@ const ProtectionPlansToolbar: React.FC<ProtectionPlansToolbarProps> = ({
       variant: 'default',
       dropdown: {
         items: [
-          { key: 'kinds', label: PPC.LABELS.TAXONOMY.KINDS },
-          { key: 'environments', label: PPC.LABELS.TAXONOMY.ENVIRONMENTS },
-          { key: 'tags', label: PPC.LABELS.TAXONOMY.TAGS },
+          { key: CC.SCOPES.PLAN_KINDS, label: PPC.LABELS.TAXONOMY.KINDS },
+          { key: CC.SCOPES.PLAN_ENVIRONMENTS, label: PPC.LABELS.TAXONOMY.ENVIRONMENTS },
+          { key: CC.SCOPES.PLAN_TAGS, label: PPC.LABELS.TAXONOMY.TAGS },
         ],
-        onItemClick: (key) => onViewModeChange(key as Exclude<PlanViewMode, 'plans'>),
+        onItemClick: (key) => navigate(categoriesPageRoute(key as CategoryScope)),
       },
     };
     const search: ToolbarConfig = {
@@ -124,7 +127,7 @@ const ProtectionPlansToolbar: React.FC<ProtectionPlansToolbarProps> = ({
       ],
     };
     return empty ? [{ buttons: [organize] }, create] : [search, create];
-  }, [canCreate, empty, onCreatePlanClick, onSearchChange, onViewModeChange, searchValue]);
+  }, [canCreate, empty, navigate, onCreatePlanClick, onSearchChange, searchValue]);
 
   const quickFilter = (compact: boolean) =>
     compact ? (

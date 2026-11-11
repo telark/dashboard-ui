@@ -6,7 +6,6 @@ export type ScopeType = 'applications' | 'namespaces';
 export type PlanMode = 'audit' | 'enforce';
 export type PlanTimeMode = 'permanent' | 'time_range' | 'repeating';
 export type PlanHealth = 'unknown' | 'healthy' | 'drifted' | 'degraded';
-export type PlanViewMode = 'plans' | 'kinds' | 'environments' | 'tags';
 export type ViolationResult = 'pass' | 'fail' | 'warn' | 'error' | 'skip';
 export type PlanReportFormat = 'html' | 'md' | 'json' | 'csv';
 export type PlanReportTrigger = 'end' | 'cancel' | 'manual' | 'window';

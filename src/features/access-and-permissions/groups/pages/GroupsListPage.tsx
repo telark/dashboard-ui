@@ -7,7 +7,7 @@ import {
   AttachRolePanel,
   AttachMemberPanel,
 } from '../panels';
-import { AddCategoryPanel, EditCategoryPanel } from '../../categories/panels';
+import { AddCategoryPanel } from '../../categories/panels';
 import { CATEGORIES_CONSTANTS } from '../../categories/constants';
 import ActionConfirmModal from '../../../../components/display/modal/confirm/ActionConfirmModal';
 import { FilterPanel } from '../../../../components/display/panels/filter';
@@ -15,12 +15,11 @@ import { buildGroupFilterFields } from '../config/groupFilterConfig';
 import { GROUPS_CONSTANTS as GC } from '../constants';
 import { DEFAULT_COLORS, HEADER_LAYOUT } from '../../../../constants';
 import type { Group } from '../models';
-import type { Category } from '../../categories/models';
 import type { FormInstance } from 'antd';
 import type { PageLayoutConfig } from '../../../../interfaces/layout/page';
 
 interface GroupsListPageProps {
-  pageConfig: PageLayoutConfig<Group | Category>;
+  pageConfig: PageLayoutConfig<Group>;
   createPanelOpen: boolean;
   editPanelOpen: boolean;
   viewPanelOpen: boolean;
@@ -39,11 +38,8 @@ interface GroupsListPageProps {
   selectedCount: number;
   isDeleting: boolean;
   addCategoryPanelOpen: boolean;
-  editCategoryPanelOpen: boolean;
-  editingCategory: Category | null;
   onCloseCreatePanel: () => void;
   onCloseAddCategoryPanel: () => void;
-  onCloseEditCategoryPanel: () => void;
   onCloseEditPanel: () => void;
   onCloseViewPanel: () => void;
   onCloseAttachRolePanel: () => void;
@@ -79,11 +75,8 @@ const GroupsListPage: React.FC<GroupsListPageProps> = memo(
     selectedCount,
     isDeleting,
     addCategoryPanelOpen,
-    editCategoryPanelOpen,
-    editingCategory,
     onCloseCreatePanel,
     onCloseAddCategoryPanel,
-    onCloseEditCategoryPanel,
     onCloseEditPanel,
     onCloseViewPanel,
     onCloseAttachRolePanel,
@@ -128,13 +121,6 @@ const GroupsListPage: React.FC<GroupsListPageProps> = memo(
             open={addCategoryPanelOpen}
             onClose={onCloseAddCategoryPanel}
             scope={CATEGORIES_CONSTANTS.SCOPES.GROUPS}
-          />
-        )}
-        {editCategoryPanelOpen && (
-          <EditCategoryPanel
-            open={editCategoryPanelOpen}
-            onClose={onCloseEditCategoryPanel}
-            editingCategory={editingCategory}
           />
         )}
         {viewPanelOpen && viewingGroup && (

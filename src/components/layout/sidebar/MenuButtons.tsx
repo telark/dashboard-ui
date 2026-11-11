@@ -11,6 +11,7 @@ const APPLICATION_ICON = <Icons.Application />;
 const INSIGHTS_ICON = <Icons.Insights />;
 const USER_ICON = <Icons.User />;
 const GROUP_ICON = <Icons.Group />;
+const CATEGORIES_ICON = <Icons.Category />;
 const PROTECTION_PLANS_ICON = <Icons.ProtectionPlans />;
 const SETTINGS_ICON = <Icons.Settings />;
 
@@ -126,6 +127,24 @@ export const RolesMenuButton: React.FC<MenuButtonProps> = memo(({ isCollapsed = 
 });
 
 RolesMenuButton.displayName = 'RolesMenuButton';
+
+export const CategoriesMenuButton: React.FC<MenuButtonProps> = memo(({ isCollapsed = false }) => {
+  const location = useLocation();
+  const pathname = location.pathname;
+
+  return (
+    <SidebarButton
+      text={MENU_LABELS.CATEGORIES}
+      railLabel={MENU_RAIL_LABELS.CATEGORIES}
+      icon={CATEGORIES_ICON}
+      active={pathname.startsWith(APP_ROUTES.CATEGORIES)}
+      route={APP_ROUTES.CATEGORIES}
+      isCollapsed={isCollapsed}
+    />
+  );
+});
+
+CategoriesMenuButton.displayName = 'CategoriesMenuButton';
 
 export const ProtectionPlansMenuButton: React.FC<MenuButtonProps> = memo(
   ({ isCollapsed = false }) => {

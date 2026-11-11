@@ -6,12 +6,8 @@ import { ROLES_CONSTANTS as RC } from '../../../../roles/constants';
 import { CATEGORIES_CONSTANTS as CC, labelsFor } from '../../../constants';
 import type { CategoryScope } from '../../../constants';
 import { useCategoryDeleteModal, CategoryDeleteModal } from '../../delete';
+import { useCategoryPermissions } from '../../../hooks';
 import type { Category } from '../../../models';
-import {
-  usePermission,
-  ACTION_PERMISSIONS,
-} from '../../../../../auth/hooks/permissions/permissionEngine';
-import type { PermissionLevel } from '../../../../../auth/models/permissions';
 
 interface CategoryActionsColumnProps {
   record: Category;
@@ -19,34 +15,6 @@ interface CategoryActionsColumnProps {
   onDelete?: (record: Category) => void;
   scope: CategoryScope;
 }
-
-type PermissionEntry = { scope: string; level: PermissionLevel; deny: string };
-
-const PERMISSIONS_BY_SCOPE: Record<
-  CategoryScope,
-  { edit: PermissionEntry; delete: PermissionEntry }
-> = {
-  [CC.SCOPES.GROUPS]: {
-    edit: ACTION_PERMISSIONS.groups.editCategory,
-    delete: ACTION_PERMISSIONS.groups.deleteCategory,
-  },
-  [CC.SCOPES.ROLES]: {
-    edit: ACTION_PERMISSIONS.roles.editCategory,
-    delete: ACTION_PERMISSIONS.roles.deleteCategory,
-  },
-  [CC.SCOPES.PLAN_KINDS]: {
-    edit: ACTION_PERMISSIONS.protectionPlans.editCategory,
-    delete: ACTION_PERMISSIONS.protectionPlans.deleteCategory,
-  },
-  [CC.SCOPES.PLAN_ENVIRONMENTS]: {
-    edit: ACTION_PERMISSIONS.protectionPlans.editCategory,
-    delete: ACTION_PERMISSIONS.protectionPlans.deleteCategory,
-  },
-  [CC.SCOPES.PLAN_TAGS]: {
-    edit: ACTION_PERMISSIONS.protectionPlans.editCategory,
-    delete: ACTION_PERMISSIONS.protectionPlans.deleteCategory,
-  },
-};
 
 export const CategoryActionsColumn: React.FC<CategoryActionsColumnProps> = ({
   record,
@@ -58,9 +26,8 @@ export const CategoryActionsColumn: React.FC<CategoryActionsColumnProps> = ({
   const { deleteModalOpen, isDeleting, openDeleteModal, closeDeleteModal, handleConfirmDelete } =
     useCategoryDeleteModal(record);
 
-  const { edit, delete: del } = PERMISSIONS_BY_SCOPE[scope];
-  const hasEditPermission = usePermission(edit.scope, edit.level, edit.deny);
-  const hasDeletePermission = usePermission(del.scope, del.level, del.deny);
+  const { canEdit: hasEditPermission, canDelete: hasDeletePermission } =
+    useCategoryPermissions(scope);
   const L = labelsFor(scope);
 
   const showEdit = !isBuiltIn && !!onEdit;

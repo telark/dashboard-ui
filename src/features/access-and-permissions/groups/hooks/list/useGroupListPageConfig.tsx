@@ -9,39 +9,28 @@ import { Icons } from '../../../../../constants';
 import { selectGroupsCategories } from '../../../categories/store/selectors/categorySelectors';
 import Columns from '../../components/display/list/Columns';
 import { generateActionsColumn } from '../../../../../components/display/table/utils';
-import { CATEGORIES_CONSTANTS } from '../../../categories/constants';
-import CategoryColumns from '../../../categories/components/display/list/CategoryColumns';
-import { CategoryActionsColumn } from '../../../categories/components/display/list/CategoryActionsColumn';
 import { GroupActionsColumn } from '../../components/display/list/GroupActionsColumn';
 import { useGroupListConfig } from '../../config/groupListConfig';
 import { usePermission, ACTION_PERMISSIONS } from '../../../../auth/hooks';
-import { useCategoryListView } from '../../../categories/hooks';
 import { deduplicateCategoriesByName } from '../../../categories/utils/helpers';
 import { useUsers } from '../../../users/hooks';
 import { useUsernamesByIds } from '../../../../../hooks/useUsernamesByIds';
 import type { Group } from '../../models';
-import type { Category } from '../../../categories/models';
 
 const GroupIcon = Icons.Group;
 
-type ViewMode = 'groups' | 'categories';
-
 // Table props stay stable (PageLayout re-renders the table only when one changes), so opening a
 // panel, which re-renders this page, leaves the table alone.
-const rowKey = (record: Group | Category) => record.id;
-const emptyState = (description: string) => (
+const rowKey = (record: Group) => record.id;
+const GROUPS_EMPTY = (
   <Empty
-    description={description}
+    description={GC.LABELS.EMPTY.NO_GROUPS_FOUND}
     // Off scale, kept exact: marginTop 22 (XL to XXL).
     image={<GroupIcon size={64} style={{ color: DEFAULT_COLORS.ICON_MUTED, marginTop: 22 }} />}
   />
 );
-const GROUPS_EMPTY = emptyState(GC.LABELS.EMPTY.NO_GROUPS_FOUND);
-const CATEGORIES_EMPTY = emptyState(GC.LABELS.EMPTY.NO_CATEGORIES_FOUND);
 
 interface UseGroupListPageConfigOptions {
-  viewMode: ViewMode;
-  setViewMode: (mode: ViewMode) => void;
   sortKey: string | null;
   handleSort: (key: string) => void;
   selectedGroups: React.Key[];
@@ -57,8 +46,6 @@ interface UseGroupListPageConfigOptions {
   onCreateGroupClick: () => void;
   canCreateGroup?: boolean;
   onAddCategoryClick?: () => void;
-  onEditCategory?: (category: Category) => void;
-  categories: Category[] | undefined;
   selectedGroupsCount?: number;
   onBulkDeleteClick?: () => void;
   onAttachRoleClick?: () => void;
@@ -77,9 +64,6 @@ interface UseGroupListPageConfigOptions {
 }
 
 export const useGroupListPageConfig = ({
-  viewMode,
-  setViewMode,
-  categories,
   sortKey,
   handleSort,
   selectedGroups,
@@ -95,7 +79,6 @@ export const useGroupListPageConfig = ({
   onCreateGroupClick,
   canCreateGroup = true,
   onAddCategoryClick,
-  onEditCategory,
   selectedGroupsCount = 0,
   onBulkDeleteClick,
   onAttachRoleClick,
@@ -111,7 +94,7 @@ export const useGroupListPageConfig = ({
   onRemoveFilterChip,
   hasActiveFilters,
   onClearAllFilters,
-}: UseGroupListPageConfigOptions): PageLayoutConfig<Group | Category> => {
+}: UseGroupListPageConfigOptions): PageLayoutConfig<Group> => {
   const reduxCategories = useSelector(selectGroupsCategories);
   const { users } = useUsers();
 
@@ -119,22 +102,6 @@ export const useGroupListPageConfig = ({
     () => deduplicateCategoriesByName(reduxCategories),
     [reduxCategories],
   );
-
-  const uniqueCategories = useMemo(
-    () => deduplicateCategoriesByName(categories || []),
-    [categories],
-  );
-
-  const {
-    sortKey: categorySortKey,
-    currentPage: categoryCurrentPage,
-    pageSize: categoryPageSize,
-    setCurrentPage: setCategoryCurrentPage,
-    setPageSize: setCategoryPageSize,
-    handleSort: handleCategorySort,
-    sortedCategories,
-    paginatedCategories,
-  } = useCategoryListView({ categories: uniqueCategories });
 
   const canAddRole = usePermission(
     ACTION_PERMISSIONS.groups.attachRole.scope,
@@ -175,8 +142,6 @@ export const useGroupListPageConfig = ({
     ACTION_PERMISSIONS.groups.addCategory.deny,
   );
   const { listToolbar } = useGroupListConfig({
-    viewMode,
-    onViewModeChange: setViewMode,
     onCreateGroupClick,
     canCreateGroup,
     onAddCategoryClick,
@@ -194,7 +159,6 @@ export const useGroupListPageConfig = ({
     onSearchChange,
     onSearchSubmit,
     totalCount: sortedGroups.length,
-    categoriesCount: sortedCategories.length,
     pageCount: paginatedGroups.length,
     bulkMode,
     onToggleBulkMode,
@@ -222,70 +186,28 @@ export const useGroupListPageConfig = ({
         categories: uniqueReduxCategories,
         users: users || [],
         usernamesById,
-      }) as TableColumnType<Group | Category>[],
+      }) as TableColumnType<Group>[],
     [sortKey, uniqueReduxCategories, handleSort, users, usernamesById],
   );
 
-  const categoryColumns = useMemo(
-    () =>
-      CategoryColumns({
-        activeSortKey: categorySortKey ?? 'creationDate',
-        onSort: handleCategorySort,
-      }) as TableColumnType<Group | Category>[],
-    [categorySortKey, handleCategorySort],
-  );
-
-  const breadcrumbs = useMemo(() => {
-    if (viewMode === 'categories') {
-      return [
-        { label: GC.LABELS.BREADCRUMBS.GROUPS, onClick: () => setViewMode('groups') },
-        { label: GC.LABELS.BREADCRUMBS.CATEGORIES },
-      ];
-    }
-    return [];
-  }, [viewMode, setViewMode]);
-
-  const isGroupsView = viewMode === 'groups';
-
   const columns = useMemo(
-    () =>
-      isGroupsView
-        ? [
-            ...groupColumns,
-            generateActionsColumn<Group | Category>(
-              GC.KEYS.ACTIONS,
-              GC.SIZES.COLUMNS.ACTIONS,
-              (record) => <GroupActionsColumn record={record as Group} onEdit={handleEditClick} />,
-            ),
-          ]
-        : [
-            ...categoryColumns,
-            generateActionsColumn<Group | Category>(
-              CATEGORIES_CONSTANTS.KEYS.ACTIONS,
-              CATEGORIES_CONSTANTS.SIZES.COLUMNS.ACTIONS,
-              (record) => (
-                <CategoryActionsColumn
-                  record={record as Category}
-                  onEdit={onEditCategory}
-                  scope="groups"
-                />
-              ),
-            ),
-          ],
-    [isGroupsView, groupColumns, categoryColumns, handleEditClick, onEditCategory],
+    () => [
+      ...groupColumns,
+      generateActionsColumn<Group>(GC.KEYS.ACTIONS, GC.SIZES.COLUMNS.ACTIONS, (record) => (
+        <GroupActionsColumn record={record} onEdit={handleEditClick} />
+      )),
+    ],
+    [groupColumns, handleEditClick],
   );
 
   const data = useMemo(
-    () =>
-      (isGroupsView ? paginatedGroups : paginatedCategories).filter(
-        (item): item is Group | Category => item != null,
-      ),
-    [isGroupsView, paginatedGroups, paginatedCategories],
+    () => paginatedGroups.filter((item): item is Group => item != null),
+    [paginatedGroups],
   );
 
   const rowSelection = useMemo(
     () =>
-      isGroupsView && bulkMode
+      bulkMode
         ? {
             selectedRowKeys: selectedGroups,
             onChange: (keys: React.Key[]) => {
@@ -293,71 +215,44 @@ export const useGroupListPageConfig = ({
             },
           }
         : undefined,
-    [isGroupsView, bulkMode, selectedGroups, setSelectedGroups],
-  );
-
-  const onRowClick = useMemo(
-    () =>
-      isGroupsView ? (record: Group | Category) => handleViewGroup(record as Group) : undefined,
-    [isGroupsView, handleViewGroup],
+    [bulkMode, selectedGroups, setSelectedGroups],
   );
 
   return useMemo(
     () => ({
       title: GC.LABELS.HEADER_TITLE,
       subtitle: GC.LABELS.HEADER_SUBTITLE,
-      breadcrumbs,
       listToolbar,
       columns,
       data,
       rowKey,
-      pagination: isGroupsView
-        ? {
-            currentPage,
-            pageSize,
-            total: sortedGroups.length,
-            onPageChange: (page: number) => setCurrentPage(page),
-            onPageSizeChange: (size: number) => {
-              setPageSize(size);
-              setCurrentPage(1);
-            },
-            pageSizeOptions: [10, 20, 50, 100],
-            showRowsLabel: GC.LABELS.PAGINATION.SHOW_ROWS,
-          }
-        : {
-            currentPage: categoryCurrentPage,
-            pageSize: categoryPageSize,
-            total: sortedCategories.length,
-            onPageChange: (page: number) => setCategoryCurrentPage(page),
-            onPageSizeChange: (size: number) => {
-              setCategoryPageSize(size);
-              setCategoryCurrentPage(1);
-            },
-            pageSizeOptions: [10, 20, 50, 100],
-            showRowsLabel: GC.LABELS.PAGINATION.SHOW_ROWS,
-          },
+      pagination: {
+        currentPage,
+        pageSize,
+        total: sortedGroups.length,
+        onPageChange: (page: number) => setCurrentPage(page),
+        onPageSizeChange: (size: number) => {
+          setPageSize(size);
+          setCurrentPage(1);
+        },
+        pageSizeOptions: [10, 20, 50, 100],
+        showRowsLabel: GC.LABELS.PAGINATION.SHOW_ROWS,
+      },
       rowSelection,
-      onRowClick,
-      empty: isGroupsView ? GROUPS_EMPTY : CATEGORIES_EMPTY,
+      onRowClick: handleViewGroup,
+      empty: GROUPS_EMPTY,
     }),
     [
-      breadcrumbs,
       listToolbar,
-      isGroupsView,
       columns,
       data,
       currentPage,
       pageSize,
       sortedGroups.length,
-      categoryCurrentPage,
-      categoryPageSize,
-      sortedCategories.length,
       rowSelection,
-      onRowClick,
+      handleViewGroup,
       setCurrentPage,
       setPageSize,
-      setCategoryCurrentPage,
-      setCategoryPageSize,
     ],
   );
 };

@@ -3,39 +3,29 @@ import { Empty } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { PageLayout } from '../../../../components/display/views';
 import { generateActionsColumn } from '../../../../components/display/table/utils';
+import { DEFAULT_COLORS, Icons, MENU_LABELS } from '../../../../constants';
 import type { PageLayoutConfig } from '../../../../interfaces/layout/page';
-import {
-  CATEGORIES_CONSTANTS as CC,
-  labelsFor,
-} from '../../../access-and-permissions/categories/constants';
-import type { CategoryScope } from '../../../access-and-permissions/categories/constants';
-import {
-  useCategories,
-  useCategoryListView,
-} from '../../../access-and-permissions/categories/hooks';
-import CategoryColumns from '../../../access-and-permissions/categories/components/display/list/CategoryColumns';
-import { CategoryActionsColumn } from '../../../access-and-permissions/categories/components/display/list/CategoryActionsColumn';
-import {
-  AddCategoryPanel,
-  EditCategoryPanel,
-} from '../../../access-and-permissions/categories/panels';
-import type { Category } from '../../../access-and-permissions/categories/models';
-import { usePermission, ACTION_PERMISSIONS } from '../../../auth/hooks';
-import { PROTECTION_PLANS_CONSTANTS as PPC } from '../constants/protectionPlans';
+import { CATEGORIES_CONSTANTS as CC, labelsFor } from '../constants';
+import type { CategoryScope } from '../constants';
+import { useCategories, useCategoryListView, useCategoryPermissions } from '../hooks';
+import CategoryColumns from '../components/display/list/CategoryColumns';
+import { CategoryActionsColumn } from '../components/display/list/CategoryActionsColumn';
+import { AddCategoryPanel, EditCategoryPanel } from '../panels';
+import type { Category } from '../models';
 
-const VIEW_LABELS: Partial<Record<CategoryScope, string>> = {
-  [CC.SCOPES.PLAN_KINDS]: PPC.LABELS.TAXONOMY.KINDS,
-  [CC.SCOPES.PLAN_ENVIRONMENTS]: PPC.LABELS.TAXONOMY.ENVIRONMENTS,
-};
+// Off scale, kept exact: marginTop 22 (XL to XXL).
+const EMPTY_ICON = (
+  <Icons.Category size={64} style={{ color: DEFAULT_COLORS.ICON_MUTED, marginTop: 22 }} />
+);
 
-interface PlanTaxonomyPageProps {
+interface CategoryListPageProps {
   scope: CategoryScope;
-  onBack: () => void;
+  scopeLabel: string;
+  tabs: React.ReactNode;
 }
 
-const PlanTaxonomyPage: React.FC<PlanTaxonomyPageProps> = ({ scope, onBack }) => {
+const CategoryListPage: React.FC<CategoryListPageProps> = ({ scope, scopeLabel, tabs }) => {
   const L = labelsFor(scope);
-  const viewLabel = VIEW_LABELS[scope] ?? PPC.LABELS.TAXONOMY.TAGS;
 
   const [addPanelOpen, setAddPanelOpen] = useState(false);
   const [editPanelOpen, setEditPanelOpen] = useState(false);
@@ -53,11 +43,7 @@ const PlanTaxonomyPage: React.FC<PlanTaxonomyPageProps> = ({ scope, onBack }) =>
     paginatedCategories,
   } = useCategoryListView({ categories });
 
-  const canAdd = usePermission(
-    ACTION_PERMISSIONS.protectionPlans.addCategory.scope,
-    ACTION_PERMISSIONS.protectionPlans.addCategory.level,
-    ACTION_PERMISSIONS.protectionPlans.addCategory.deny,
-  );
+  const { canAdd } = useCategoryPermissions(scope);
 
   const openAdd = useCallback(() => setAddPanelOpen(true), []);
   const closeAdd = useCallback(() => setAddPanelOpen(false), []);
@@ -72,13 +58,13 @@ const PlanTaxonomyPage: React.FC<PlanTaxonomyPageProps> = ({ scope, onBack }) =>
 
   const config: PageLayoutConfig<Category> = useMemo(
     () => ({
-      title: '',
-      subtitle: PPC.LABELS.HEADER_SUBTITLE,
-      breadcrumbs: [{ label: PPC.LABELS.HEADER_TITLE, onClick: onBack }, { label: viewLabel }],
+      title: MENU_LABELS.CATEGORIES,
+      subtitle: CC.PAGE.SUBTITLE,
+      tabs,
       listToolbar: {
         totalCount: sortedCategories.length,
         countSuffix: { one: L.RESOURCE_TYPE, other: L.PLURAL },
-        compactWidth: PPC.LABELS.TOOLBAR_COMPACT_WIDTH,
+        compactWidth: CC.SIZES.TOOLBAR_COMPACT_WIDTH,
         toolbars: [
           {
             buttons: [
@@ -101,7 +87,7 @@ const PlanTaxonomyPage: React.FC<PlanTaxonomyPageProps> = ({ scope, onBack }) =>
         ...CategoryColumns({
           activeSortKey: sortKey ?? CC.KEYS.CREATED_AT,
           onSort: handleSort,
-          scopeLabel: L.PLURAL,
+          scopeLabel,
         }).map((c) => (c.key === CC.KEYS.NAME ? { ...c, title: L.COLUMNS.NAME } : c)),
         generateActionsColumn<Category>(CC.KEYS.ACTIONS, CC.SIZES.COLUMNS.ACTIONS, (record) => (
           <CategoryActionsColumn record={record} onEdit={openEdit} scope={scope} />
@@ -119,16 +105,16 @@ const PlanTaxonomyPage: React.FC<PlanTaxonomyPageProps> = ({ scope, onBack }) =>
           setCurrentPage(1);
         },
       },
-      empty: <Empty description={L.EMPTY} />,
+      empty: <Empty description={L.EMPTY} image={EMPTY_ICON} />,
       loaded,
       error,
       onRetry: refetch,
     }),
     [
       L,
-      viewLabel,
-      onBack,
+      tabs,
       scope,
+      scopeLabel,
       canAdd,
       openAdd,
       openEdit,
@@ -161,4 +147,4 @@ const PlanTaxonomyPage: React.FC<PlanTaxonomyPageProps> = ({ scope, onBack }) =>
   );
 };
 
-export default PlanTaxonomyPage;
+export default CategoryListPage;

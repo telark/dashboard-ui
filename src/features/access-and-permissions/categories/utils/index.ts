@@ -1,1 +1,6 @@
-export { mapCategoriesToOptions, getCategoryName, deduplicateCategoriesByName } from './helpers';
+export {
+  categoriesPageRoute,
+  mapCategoriesToOptions,
+  getCategoryName,
+  deduplicateCategoriesByName,
+} from './helpers';

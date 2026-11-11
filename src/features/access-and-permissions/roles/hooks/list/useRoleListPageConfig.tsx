@@ -6,9 +6,6 @@ import { ROLES_CONSTANTS as RC } from '../../constants';
 import { DEFAULT_COLORS, Icons } from '../../../../../constants';
 import { useCategories } from '../../../categories/hooks';
 import { CATEGORIES_CONSTANTS } from '../../../categories/constants';
-import { useCategoryListView } from '../../../categories/hooks';
-import CategoryColumns from '../../../categories/components/display/list/CategoryColumns';
-import { CategoryActionsColumn } from '../../../categories/components/display/list/CategoryActionsColumn';
 import { Columns } from '../../components/display/list/Columns';
 import { generateActionsColumn } from '../../../../../components/display/table/utils';
 import { RoleActionsColumn } from '../../components/display/list/RoleActionsColumn';
@@ -16,32 +13,24 @@ import { useRoleListConfig } from '../../config/roleListConfig';
 import { usePermission, ACTION_PERMISSIONS } from '../../../../auth/hooks';
 import { canDeleteRole } from '../../utils';
 import type { Role } from '../../models';
-import type { Category } from '../../../categories/models';
 import { useUsers } from '../../../users/hooks';
 import { useFetchGroups } from '../../../groups/hooks';
 import { useUsernamesByIds } from '../../../../../hooks/useUsernamesByIds';
 
 const RoleIcon = Icons.Role;
 
-type ViewMode = 'roles' | 'categories';
-
 // Table props stay stable (PageLayout re-renders the table only when one changes), so opening a
 // panel, which re-renders this page, leaves the table alone.
-const rowKey = (record: Role | Category) => record.id;
-const emptyState = (description: string) => (
+const rowKey = (record: Role) => record.id;
+const ROLES_EMPTY = (
   <Empty
-    description={description}
+    description={RC.LABELS.EMPTY.NO_ROLES_FOUND}
     // Off scale, kept exact: marginTop 22 (XL to XXL).
     image={<RoleIcon size={64} style={{ color: DEFAULT_COLORS.ICON_MUTED, marginTop: 22 }} />}
   />
 );
-const ROLES_EMPTY = emptyState(RC.LABELS.EMPTY.NO_ROLES_FOUND);
-const CATEGORIES_EMPTY = emptyState(RC.LABELS.EMPTY.NO_CATEGORIES_FOUND);
 
 interface UseRoleListPageConfigOptions {
-  viewMode: ViewMode;
-  setViewMode: (mode: ViewMode) => void;
-  categories: Category[];
   sortKey: string | null;
   handleSort: (key: string) => void;
   sortOrder: 'asc' | 'desc';
@@ -62,7 +51,6 @@ interface UseRoleListPageConfigOptions {
   canCreateRole?: boolean;
   onFilterClick?: () => void;
   onAddCategoryClick?: () => void;
-  onEditCategory?: (category: Category) => void;
   searchValue: string;
   onSearchChange: (value: string) => void;
   onSearchSubmit?: () => void;
@@ -74,9 +62,6 @@ interface UseRoleListPageConfigOptions {
 }
 
 export const useRoleListPageConfig = ({
-  viewMode,
-  setViewMode,
-  categories: roleCategories,
   sortKey,
   handleSort,
   sortOrder,
@@ -97,7 +82,6 @@ export const useRoleListPageConfig = ({
   canCreateRole = true,
   onFilterClick,
   onAddCategoryClick,
-  onEditCategory,
   searchValue,
   onSearchChange,
   onSearchSubmit,
@@ -106,18 +90,7 @@ export const useRoleListPageConfig = ({
   onRemoveFilterChip,
   hasActiveFilters,
   onClearAllFilters,
-}: UseRoleListPageConfigOptions): PageLayoutConfig<Role | Category> => {
-  const {
-    sortKey: categorySortKey,
-    currentPage: categoryCurrentPage,
-    pageSize: categoryPageSize,
-    setCurrentPage: setCategoryCurrentPage,
-    setPageSize: setCategoryPageSize,
-    handleSort: handleCategorySort,
-    sortedCategories,
-    paginatedCategories,
-  } = useCategoryListView({ categories: roleCategories });
-
+}: UseRoleListPageConfigOptions): PageLayoutConfig<Role> => {
   const canViewRoleCategories = usePermission(
     ACTION_PERMISSIONS.roles.viewCategories.scope,
     ACTION_PERMISSIONS.roles.viewCategories.level,
@@ -137,10 +110,7 @@ export const useRoleListPageConfig = ({
     const selected = new Set(selectedRoles);
     return sortedRoles.some((role) => selected.has(role.id) && !canDeleteRole(role));
   }, [selectedRoles, sortedRoles]);
-  const isRolesView = viewMode === 'roles';
   const { listToolbar } = useRoleListConfig({
-    viewMode,
-    onViewModeChange: setViewMode,
     searchValue,
     onSearchChange,
     onSearchSubmit,
@@ -150,7 +120,7 @@ export const useRoleListPageConfig = ({
     onAddCategoryClick,
     canViewRoleCategories,
     canAddRoleCategory,
-    totalCount: isRolesView ? sortedRoles.length : sortedCategories.length,
+    totalCount: sortedRoles.length,
     pageCount: paginatedRoles.length,
     selectedRolesCount: selectedRoles.length,
     bulkMode,
@@ -197,134 +167,64 @@ export const useRoleListPageConfig = ({
     [sortKey, handleSort, sortOrder, categories, users, usernamesById],
   );
 
-  const roleColumns = useMemo(() => Columns(ctx) as TableColumnType<Role | Category>[], [ctx]);
-
-  const categoryColumns = useMemo(
-    () =>
-      CategoryColumns({
-        activeSortKey: (categorySortKey ?? 'creationDate') as string,
-        onSort: handleCategorySort as (key: string) => void,
-      }) as TableColumnType<Role | Category>[],
-    [categorySortKey, handleCategorySort],
-  );
-
-  const breadcrumbs = useMemo(() => {
-    if (viewMode === 'categories') {
-      return [
-        { label: RC.LABELS.HEADER_TITLE, onClick: () => setViewMode('roles') },
-        { label: RC.LABELS.BREADCRUMBS.CATEGORIES },
-      ];
-    }
-    return [];
-  }, [viewMode, setViewMode]);
+  const roleColumns = useMemo(() => Columns(ctx) as TableColumnType<Role>[], [ctx]);
 
   const columns = useMemo(
-    () =>
-      isRolesView
-        ? [
-            ...roleColumns,
-            generateActionsColumn<Role | Category>(
-              RC.KEYS.ACTIONS,
-              RC.SIZES.COLUMNS.ACTIONS,
-              (record) => (
-                <RoleActionsColumn
-                  record={record as Role}
-                  onEdit={handleEditRole}
-                  getUsage={getUsage}
-                />
-              ),
-            ),
-          ]
-        : [
-            ...categoryColumns,
-            generateActionsColumn<Role | Category>(
-              CATEGORIES_CONSTANTS.KEYS.ACTIONS,
-              CATEGORIES_CONSTANTS.SIZES.COLUMNS.ACTIONS,
-              (record) => (
-                <CategoryActionsColumn
-                  record={record as Category}
-                  onEdit={onEditCategory}
-                  scope="roles"
-                />
-              ),
-            ),
-          ],
-    [isRolesView, roleColumns, categoryColumns, handleEditRole, getUsage, onEditCategory],
+    () => [
+      ...roleColumns,
+      generateActionsColumn<Role>(RC.KEYS.ACTIONS, RC.SIZES.COLUMNS.ACTIONS, (record) => (
+        <RoleActionsColumn record={record} onEdit={handleEditRole} getUsage={getUsage} />
+      )),
+    ],
+    [roleColumns, handleEditRole, getUsage],
   );
 
   const rowSelection = useMemo(
     () =>
-      isRolesView && bulkMode
+      bulkMode
         ? {
             selectedRowKeys: selectedRoles,
             onChange: (keys: React.Key[]) => setSelectedRoles(keys),
           }
         : undefined,
-    [isRolesView, bulkMode, selectedRoles, setSelectedRoles],
-  );
-
-  const onRowClick = useMemo(
-    () => (isRolesView ? (record: Role | Category) => handleViewRole(record as Role) : undefined),
-    [isRolesView, handleViewRole],
+    [bulkMode, selectedRoles, setSelectedRoles],
   );
 
   return useMemo(
     () => ({
       title: RC.LABELS.HEADER_TITLE,
       subtitle: RC.LABELS.HEADER_SUBTITLE,
-      breadcrumbs,
       listToolbar,
       columns,
-      data: (isRolesView ? paginatedRoles : paginatedCategories) as (Role | Category)[],
+      data: paginatedRoles,
       rowKey,
-      pagination: isRolesView
-        ? {
-            currentPage,
-            pageSize,
-            total: sortedRoles.length,
-            onPageChange: (page: number) => setCurrentPage(page),
-            onPageSizeChange: (size: number) => {
-              setPageSize(size);
-              setCurrentPage(1);
-            },
-            pageSizeOptions: [10, 20, 50, 100],
-            showRowsLabel: RC.LABELS.PAGINATION.SHOW_ROWS,
-          }
-        : {
-            currentPage: categoryCurrentPage,
-            pageSize: categoryPageSize,
-            total: sortedCategories.length,
-            onPageChange: (page: number) => setCategoryCurrentPage(page),
-            onPageSizeChange: (size: number) => {
-              setCategoryPageSize(size);
-              setCategoryCurrentPage(1);
-            },
-            pageSizeOptions: [10, 20, 50, 100],
-            showRowsLabel: RC.LABELS.PAGINATION.SHOW_ROWS,
-          },
+      pagination: {
+        currentPage,
+        pageSize,
+        total: sortedRoles.length,
+        onPageChange: (page: number) => setCurrentPage(page),
+        onPageSizeChange: (size: number) => {
+          setPageSize(size);
+          setCurrentPage(1);
+        },
+        pageSizeOptions: [10, 20, 50, 100],
+        showRowsLabel: RC.LABELS.PAGINATION.SHOW_ROWS,
+      },
       rowSelection,
-      onRowClick,
-      empty: isRolesView ? ROLES_EMPTY : CATEGORIES_EMPTY,
+      onRowClick: handleViewRole,
+      empty: ROLES_EMPTY,
     }),
     [
-      breadcrumbs,
       listToolbar,
-      isRolesView,
       columns,
       paginatedRoles,
-      paginatedCategories,
       currentPage,
       pageSize,
       sortedRoles.length,
-      categoryCurrentPage,
-      categoryPageSize,
-      sortedCategories.length,
       rowSelection,
-      onRowClick,
+      handleViewRole,
       setCurrentPage,
       setPageSize,
-      setCategoryCurrentPage,
-      setCategoryPageSize,
     ],
   );
 };

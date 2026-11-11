@@ -1,15 +1,16 @@
 import React from 'react';
 import { Tooltip } from 'antd';
 import type { MenuProps } from 'antd';
+import { useNavigate } from 'react-router-dom';
 import { Icons } from '../../../../constants';
 import { GROUPS_CONSTANTS as GC } from '../constants';
 import { getManageCategoriesButtonConfig } from '../../categories/config';
 import { CATEGORIES_CONSTANTS } from '../../categories/constants';
+import { categoriesPageRoute } from '../../categories/utils';
 import {
   CheckSquareOutlined,
   DeleteOutlined,
   EllipsisOutlined,
-  PlusOutlined,
   SearchOutlined,
   SettingOutlined,
 } from '@ant-design/icons';
@@ -30,8 +31,6 @@ const MANAGE_KEYS = {
 } as const;
 
 interface UseGroupListConfigProps {
-  viewMode?: 'groups' | 'categories';
-  onViewModeChange?: (mode: 'groups' | 'categories') => void;
   onCreateGroupClick?: () => void;
   canCreateGroup?: boolean;
   onAddCategoryClick?: () => void;
@@ -49,7 +48,6 @@ interface UseGroupListConfigProps {
   onSearchChange: (value: string) => void;
   onSearchSubmit?: () => void;
   totalCount: number;
-  categoriesCount: number;
   pageCount: number;
   bulkMode: boolean;
   onToggleBulkMode: () => void;
@@ -118,8 +116,6 @@ const buildMoreButton = (
 });
 
 export const useGroupListConfig = ({
-  viewMode = 'groups',
-  onViewModeChange,
   onCreateGroupClick,
   canCreateGroup = true,
   onAddCategoryClick,
@@ -137,7 +133,6 @@ export const useGroupListConfig = ({
   onSearchChange,
   onSearchSubmit,
   totalCount,
-  categoriesCount,
   pageCount,
   bulkMode,
   onToggleBulkMode,
@@ -147,6 +142,8 @@ export const useGroupListConfig = ({
   hasActiveFilters,
   onClearAllFilters,
 }: UseGroupListConfigProps): { listToolbar: ListToolbarProps } => {
+  const navigate = useNavigate();
+
   const bulkActions: ToolbarConfig = React.useMemo(
     () => ({
       buttons: [
@@ -219,7 +216,7 @@ export const useGroupListConfig = ({
       ],
     };
     const categoriesButton = getManageCategoriesButtonConfig({
-      onViewCategories: () => onViewModeChange?.('categories'),
+      onViewCategories: () => navigate(categoriesPageRoute(CATEGORIES_CONSTANTS.SCOPES.GROUPS)),
       onAddCategory: () => onAddCategoryClick?.(),
       canViewCategories: canViewGroupCategories,
       canAddCategory: canAddGroupCategory,
@@ -244,38 +241,17 @@ export const useGroupListConfig = ({
     canAddGroupCategory,
     canCreateGroup,
     canViewGroupCategories,
+    navigate,
     onAddCategoryClick,
     onCreateGroupClick,
     onSearchChange,
     onSearchSubmit,
     onToggleBulkMode,
-    onViewModeChange,
     searchValue,
   ]);
 
-  const listToolbar: ListToolbarProps = React.useMemo(() => {
-    if (viewMode === 'categories') {
-      return {
-        totalCount: categoriesCount,
-        countSuffix: GC.LABELS.TOOLBAR.CATEGORIES_COUNT_SUFFIX,
-        compactWidth: GC.SIZES.TOOLBAR_COMPACT_WIDTH,
-        toolbars: [
-          {
-            buttons: [
-              {
-                key: 'add-category',
-                label: CATEGORIES_CONSTANTS.LABELS.TOOLBAR.MANAGE_CATEGORIES.ADD_CATEGORY,
-                icon: <PlusOutlined />,
-                variant: 'primary',
-                onClick: () => onAddCategoryClick?.(),
-                disabled: !canAddGroupCategory,
-              },
-            ],
-          },
-        ],
-      };
-    }
-    return {
+  const listToolbar: ListToolbarProps = React.useMemo(
+    () => ({
       totalCount,
       countSuffix: GC.LABELS.TOOLBAR.COUNT_SUFFIX,
       compactWidth: GC.SIZES.TOOLBAR_COMPACT_WIDTH,
@@ -289,25 +265,22 @@ export const useGroupListConfig = ({
       selection: { pageCount, selectedCount: selectedGroupsCount },
       bulkActions,
       toolbars: groupToolbars,
-    };
-  }, [
-    bulkActions,
-    bulkMode,
-    canAddGroupCategory,
-    categoriesCount,
-    filterChips,
-    groupToolbars,
-    hasActiveFilters,
-    onAddCategoryClick,
-    onClearAllFilters,
-    onFilterClick,
-    onRemoveFilterChip,
-    overflowChipsCount,
-    pageCount,
-    selectedGroupsCount,
-    totalCount,
-    viewMode,
-  ]);
+    }),
+    [
+      bulkActions,
+      bulkMode,
+      filterChips,
+      groupToolbars,
+      hasActiveFilters,
+      onClearAllFilters,
+      onFilterClick,
+      onRemoveFilterChip,
+      overflowChipsCount,
+      pageCount,
+      selectedGroupsCount,
+      totalCount,
+    ],
+  );
 
   return { listToolbar };
 };

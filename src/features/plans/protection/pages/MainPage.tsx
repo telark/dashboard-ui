@@ -4,30 +4,20 @@ import { useProtectionPlans } from '../hooks/useProtectionPlans';
 import { usePlanPanelState } from '../hooks/usePlanPanelState';
 import CreatePlanPanel from '../components/panels/CreatePlanPanel';
 import ProtectionPlansTabs, { readPlansPageTab } from '../components/layout/ProtectionPlansTabs';
-import { CATEGORIES_CONSTANTS as CC } from '../../../access-and-permissions/categories/constants';
-import type { CategoryScope } from '../../../access-and-permissions/categories/constants';
 import { usePermission, ACTION_PERMISSIONS } from '../../../auth/hooks';
 import { NoPermissionCard, PageContainer } from '../../../../components/shared';
 import { LIST_PAGE } from '../../../../constants/shared/pages';
 import type { CreatePlanRouteState } from '../../../../interfaces/shared';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../constants/protectionPlans';
-import type { PlansPageTab, PlanViewMode } from '../models';
+import type { PlansPageTab } from '../models';
 import ProtectionPlansListPage from './ProtectionPlansListPage';
 import ProtectionPlanReportsPage from './ProtectionPlanReportsPage';
-import PlanTaxonomyPage from './PlanTaxonomyPage';
 
 const { viewReports } = ACTION_PERMISSIONS.protectionPlans;
-
-const TAXONOMY_SCOPES: Record<Exclude<PlanViewMode, 'plans'>, CategoryScope> = {
-  kinds: CC.SCOPES.PLAN_KINDS,
-  environments: CC.SCOPES.PLAN_ENVIRONMENTS,
-  tags: CC.SCOPES.PLAN_TAGS,
-};
 
 const MainPage: React.FC = () => {
   const { plans, loaded, error, refetch } = useProtectionPlans();
   const [searchTerm, setSearchTerm] = useState('');
-  const [viewMode, setViewMode] = useState<PlanViewMode>('plans');
   const { createPanelOpen, createForm, openCreatePanel, closeCreatePanel } = usePlanPanelState();
   const canViewReports = usePermission(viewReports.scope, viewReports.level, viewReports.deny);
   const [searchParams] = useSearchParams();
@@ -52,59 +42,45 @@ const MainPage: React.FC = () => {
     navigate(location, { replace: true, state: null });
   }, [createRequest, openCreatePanel, navigate, location]);
 
-  let page: React.ReactNode;
-  if (viewMode !== 'plans') {
-    page = (
-      <PlanTaxonomyPage scope={TAXONOMY_SCOPES[viewMode]} onBack={() => setViewMode('plans')} />
-    );
-  } else {
-    page = (
-      <>
-        {visited.has('plans') ? (
-          <div style={{ display: tab === 'plans' ? undefined : 'none' }}>
-            <ProtectionPlansListPage
-              plans={plans}
-              searchValue={searchTerm}
-              onSearchChange={setSearchTerm}
-              onCreatePlanClick={openCreatePanel}
-              loading={!loaded}
-              error={error}
-              onRetry={refetch}
-              onViewModeChange={setViewMode}
-              tabs={tabs}
-            />
-          </div>
-        ) : null}
-        {visited.has('reports') ? (
-          <div style={{ display: tab === 'reports' ? undefined : 'none' }}>
-            {canViewReports ? (
-              <ProtectionPlanReportsPage
-                plans={plans}
-                plansLoading={!loaded}
-                plansError={error}
-                onRetryPlans={refetch}
-                tabs={tabs}
-                active={tab === 'reports'}
-              />
-            ) : (
-              <PageContainer
-                title={PPC.LABELS.HEADER_TITLE}
-                subtitle={PPC.LABELS.HEADER_SUBTITLE}
-                gap={LIST_PAGE.CONTENT_GAP_PX}
-              >
-                {tabs}
-                <NoPermissionCard featureName={PPC.LABELS.TABS.REPORTS} permission={viewReports} />
-              </PageContainer>
-            )}
-          </div>
-        ) : null}
-      </>
-    );
-  }
-
   return (
     <>
-      {page}
+      {visited.has('plans') ? (
+        <div style={{ display: tab === 'plans' ? undefined : 'none' }}>
+          <ProtectionPlansListPage
+            plans={plans}
+            searchValue={searchTerm}
+            onSearchChange={setSearchTerm}
+            onCreatePlanClick={openCreatePanel}
+            loading={!loaded}
+            error={error}
+            onRetry={refetch}
+            tabs={tabs}
+          />
+        </div>
+      ) : null}
+      {visited.has('reports') ? (
+        <div style={{ display: tab === 'reports' ? undefined : 'none' }}>
+          {canViewReports ? (
+            <ProtectionPlanReportsPage
+              plans={plans}
+              plansLoading={!loaded}
+              plansError={error}
+              onRetryPlans={refetch}
+              tabs={tabs}
+              active={tab === 'reports'}
+            />
+          ) : (
+            <PageContainer
+              title={PPC.LABELS.HEADER_TITLE}
+              subtitle={PPC.LABELS.HEADER_SUBTITLE}
+              gap={LIST_PAGE.CONTENT_GAP_PX}
+            >
+              {tabs}
+              <NoPermissionCard featureName={PPC.LABELS.TABS.REPORTS} permission={viewReports} />
+            </PageContainer>
+          )}
+        </div>
+      ) : null}
       <CreatePlanPanel open={createPanelOpen} onClose={closeCreatePanel} form={createForm} />
     </>
   );
