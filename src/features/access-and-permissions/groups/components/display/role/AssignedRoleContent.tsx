@@ -1,7 +1,11 @@
 import React from 'react';
 import { ATTACHED_ROLES_CONSTANTS as ARC } from '../../../constants';
 import { isRoleProtected, getRoleScopesContent } from '../../../../roles/utils';
-import { truncateText, CapitalizeFirstLetter } from '../../../../../../utils/helpers/format';
+import {
+  truncateText,
+  CapitalizeFirstLetter,
+  SentenceCase,
+} from '../../../../../../utils/helpers/format';
 import { getScopeLabel } from '../../../../users/utils/role/scope';
 import type { Role } from '../../../../roles/models';
 import LockedRoleIcon from './LockedRoleIcon';
@@ -21,7 +25,7 @@ const AssignedRoleContent: React.FC<AssignedRoleContentProps> = ({ role, fromGro
     </div>
     {role.description && (
       <span style={ARC.LIST.ROLE_DESCRIPTION}>
-        {CapitalizeFirstLetter(truncateText(role.description, 100))}
+        {SentenceCase(truncateText(role.description, 100))}
       </span>
     )}
     {getRoleScopesContent(role, {

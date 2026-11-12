@@ -358,6 +358,9 @@ export const FILTER_PANEL_CONFIG = {
 
 export const VIEW = {
   TAB_DETAILS_LABEL: 'Details',
+  DESCRIPTION_PREVIEW_CHARS: 100,
+  SHOW_MORE: 'Show more',
+  SHOW_LESS: 'Show less',
   // The tab bar joins the header band: cancels CONTAINER's gap.
   TABS: { marginTop: -20 },
   // Carries the header band to the panel edges, through the body's padding.

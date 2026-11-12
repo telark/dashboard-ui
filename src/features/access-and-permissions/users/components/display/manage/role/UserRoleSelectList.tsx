@@ -3,7 +3,11 @@ import { Checkbox, Form } from 'antd';
 import { SelectableListItem } from '../../../../../../../components/display/list';
 import { USERS_CONSTANTS as UC } from '../../../../constants';
 import { isRoleProtected, getRoleScopesContent } from '../../../../../roles/utils';
-import { truncateText, CapitalizeFirstLetter } from '../../../../../../../utils/helpers/format';
+import {
+  truncateText,
+  CapitalizeFirstLetter,
+  SentenceCase,
+} from '../../../../../../../utils/helpers/format';
 import { ATTACHED_ROLES_CONSTANTS as ARC } from '../../../../../groups/constants';
 import { getScopeLabel } from '../../../../utils/role/scope';
 import type { Role } from '../../../../../roles/models';
@@ -108,9 +112,7 @@ const UserRoleSelectList: React.FC<UserRoleSelectListProps> = ({
                 disabledReason={reason}
                 name={CapitalizeFirstLetter(role.name)}
                 description={
-                  role.description
-                    ? CapitalizeFirstLetter(truncateText(role.description, 100))
-                    : undefined
+                  role.description ? SentenceCase(truncateText(role.description, 100)) : undefined
                 }
                 customContent={scopesContent}
                 protectionBadge={isRoleProtected(role) ? <LockedRoleIcon /> : undefined}

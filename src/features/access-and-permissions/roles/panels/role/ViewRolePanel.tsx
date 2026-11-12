@@ -1,5 +1,6 @@
 import React from 'react';
 import ViewPanel from '../../../../../components/display/panels/view/ViewPanel';
+import ViewPanelDescription from '../../../../../components/display/panels/view/ViewPanelDescription';
 import { useViewRolePanelData, useCanChangeRoleProtection } from '../../hooks';
 import { useRoleViewTabs } from '../../hooks/panels/role/useRoleViewTabs';
 import { canModifyRole } from '../../utils';
@@ -27,7 +28,7 @@ const ViewRolePanel: React.FC<ViewRolePanelProps> = ({ open, onClose, role, onEd
       onClose={onClose}
       title={RC.LABELS.PANELS.VIEW.TITLE}
       name={name}
-      description={description}
+      description={description ? <ViewPanelDescription text={description} /> : undefined}
       details={details}
       tabs={tabs}
       width={520}

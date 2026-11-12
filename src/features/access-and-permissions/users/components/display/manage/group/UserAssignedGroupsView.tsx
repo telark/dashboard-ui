@@ -3,7 +3,7 @@ import { AssignedItemsList } from '../../../../../shared';
 import { USERS_CONSTANTS as UC } from '../../../../constants';
 import { Icons, DEFAULT_COLORS } from '../../../../../../../constants';
 import { ATTACHED_MEMBERS_CONSTANTS as AMC } from '../../../../../groups/constants';
-import { CapitalizeFirstLetter } from '../../../../../../../utils/helpers/format';
+import { CapitalizeFirstLetter, SentenceCase } from '../../../../../../../utils/helpers/format';
 import type { Group } from '../../../../../groups/models';
 
 const GroupIcon = Icons.Group;
@@ -25,7 +25,7 @@ const renderGroupContent = (group: Group): React.ReactNode => (
       <div style={AMC.LIST.MEMBER_NAME}>{CapitalizeFirstLetter(group.name)}</div>
       {group.description && (
         <div style={AMC.LIST.GROUP_DESCRIPTION} title={group.description}>
-          {CapitalizeFirstLetter(group.description)}
+          {SentenceCase(group.description)}
         </div>
       )}
     </div>

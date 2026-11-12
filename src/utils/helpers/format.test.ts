@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CapitalizeFirstLetter, pluralize, truncateText } from './format';
+import { CapitalizeFirstLetter, SentenceCase, pluralize, truncateText } from './format';
 
 describe('format helpers', () => {
   it.each([
@@ -8,6 +8,14 @@ describe('format helpers', () => {
     ['SRE on-call', 'Sre On-call'],
   ])('CapitalizeFirstLetter(%j) is %j', (input, expected) => {
     expect(CapitalizeFirstLetter(input)).toBe(expected);
+  });
+
+  it.each([
+    ['', ''],
+    ['grants API access for CI jobs', 'Grants API access for CI jobs'],
+    ['Top-level authority', 'Top-level authority'],
+  ])('SentenceCase(%j) is %j', (input, expected) => {
+    expect(SentenceCase(input)).toBe(expected);
   });
 
   it.each([

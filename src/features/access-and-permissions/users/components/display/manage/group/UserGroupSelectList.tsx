@@ -6,7 +6,7 @@ import {
   ATTACHED_MEMBERS_CONSTANTS as AMC,
   ATTACHED_ROLES_CONSTANTS as ARC,
 } from '../../../../../groups/constants';
-import { CapitalizeFirstLetter } from '../../../../../../../utils/helpers/format';
+import { CapitalizeFirstLetter, SentenceCase } from '../../../../../../../utils/helpers/format';
 import type { Group } from '../../../../../groups/models';
 import { SPACING } from '../../../../../../../constants';
 
@@ -78,9 +78,7 @@ const UserGroupSelectList: React.FC<UserGroupSelectListProps> = ({
                 disabled={Boolean(reason)}
                 disabledReason={reason}
                 name={CapitalizeFirstLetter(group.name)}
-                description={
-                  group.description ? CapitalizeFirstLetter(group.description) : undefined
-                }
+                description={group.description ? SentenceCase(group.description) : undefined}
                 itemStyles={{
                   base: {
                     ...AMC.LIST.ITEM.BASE,
