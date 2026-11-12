@@ -11,7 +11,7 @@ This repository holds the dashboard SPA only. The services it calls, the Helm ch
 | Applications | Browse discovered applications and their workloads, the plans that cover them, change history and rollback, and Insights for each app |
 | Protection plans | Create, schedule, approve, cancel, and reactivate plans; see health, admission decisions, and reports (download or delete any report, and keep a plan's reports when deleting it); run them in repeating weekly windows; organize kinds, environments and tags |
 | Insights | Incident cards and setup recommendations, updated live |
-| Administration | Members, groups, and access roles |
+| Administration | Members, groups, access roles, and the categories that organize groups, roles and plans |
 | Settings | Profile, appearance, security, authentication (Google SSO, self-registration and the bootstrap account's break-glass requests), Insights and the local AI runtime, discovery scope, and snapshot and report storage |
 | Break-glass approval | `/break-glass#request=<id>`, the link break-glass prints: the bootstrap account approves or denies a request with a passkey, without signing in |
 
@@ -82,6 +82,10 @@ Open the dashboard at `http://localhost:3000`, not `127.0.0.1`: the session is a
 | `npm run serve`               | Preview a build                               |
 | `npm run lint:f`              | Autofix lint issues                           |
 | `npm run format`              | Format the codebase                           |
+| `npm test`                    | Run the tests once                            |
+| `npm run test:watch`          | Run the tests in watch mode                   |
+| `npm run test:coverage`       | Run the tests and enforce the coverage floor  |
+| `npm run check:duplication`   | Fail above 0.5% duplicated lines              |
 | `npm run check-all`           | Type-check and lint                           |
 | `npm run check-all-and-build` | Full validation used by CI and the UI build pipeline |
 

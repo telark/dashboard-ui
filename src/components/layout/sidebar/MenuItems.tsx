@@ -8,6 +8,7 @@ import {
   UsersMenuButton,
   GroupsMenuButton,
   RolesMenuButton,
+  CategoriesMenuButton,
   ProtectionPlansMenuButton,
   SettingsMenuButton,
 } from './MenuButtons';
@@ -35,6 +36,7 @@ const MenuItems = memo(({ isCollapsed = false }: MenuItemsProps) => {
       <UsersMenuButton isCollapsed={isCollapsed} />
       <GroupsMenuButton isCollapsed={isCollapsed} />
       <RolesMenuButton isCollapsed={isCollapsed} />
+      <CategoriesMenuButton isCollapsed={isCollapsed} />
       <SettingsMenuButton isCollapsed={isCollapsed} />
     </nav>
   );

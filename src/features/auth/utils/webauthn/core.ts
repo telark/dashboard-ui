@@ -154,11 +154,9 @@ export const authenticateWithPasskey = async (
       convertRequestOptions(options),
     )) as globalThis.PublicKeyCredential | null;
 
-    if (!credential) {
-      throw new Error(LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.NO_CREDENTIAL_FOUND);
+    if (credential) {
+      return convertCredential(credential);
     }
-
-    return convertCredential(credential);
   } catch (error) {
     if (error instanceof Error) {
       const errorMap: Record<string, string> = {
@@ -185,6 +183,9 @@ export const authenticateWithPasskey = async (
     }
     throw new Error(LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.AUTHENTICATION_FAILED, { cause: error });
   }
+
+  // Past the try: its catch remaps by error.name and would replace this message.
+  throw new Error(LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.NO_CREDENTIAL_FOUND);
 };
 
 export const registerPasskey = async (
@@ -199,11 +200,9 @@ export const registerPasskey = async (
     const credential = (await globalThis.navigator.credentials.create(
       creationOptions,
     )) as globalThis.PublicKeyCredential | null;
-    if (!credential) {
-      throw new Error(LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.REGISTRATION_CANCELED);
+    if (credential) {
+      return convertCredential(credential);
     }
-
-    return convertCredential(credential);
   } catch (error) {
     if (error instanceof Error) {
       const errorMap: Record<string, string> = {
@@ -224,6 +223,8 @@ export const registerPasskey = async (
     }
     throw new Error(LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.REGISTRATION_FAILED, { cause: error });
   }
+
+  throw new Error(LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.REGISTRATION_CANCELED);
 };
 
 export { browserHasCredential } from './validation';

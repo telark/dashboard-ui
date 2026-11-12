@@ -126,7 +126,6 @@ const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, 
         duplicatePlanThunk({ planId: plan.id, overrides: payload }),
       ).unwrap();
       message.success(PPC.LABELS.ACTIONS.DUPLICATE_SUCCESS);
-      handleClose();
       navigate(
         APP_ROUTES.PROTECTION_PLAN_DETAILS.replace(':name', encodeURIComponent(created.name)),
       );

@@ -6,11 +6,14 @@ import tsPlugin from '@typescript-eslint/eslint-plugin';
 import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import prettierPlugin from 'eslint-plugin-prettier';
+import testingLibraryPlugin from 'eslint-plugin-testing-library';
+import jestDomPlugin from 'eslint-plugin-jest-dom';
+import vitestPlugin from '@vitest/eslint-plugin';
 import reactPkg from 'react/package.json' with { type: 'json' };
 
 export default [
   {
-    ignores: ['dist/**', 'node_modules/**'],
+    ignores: ['dist/**', 'node_modules/**', 'coverage/**'],
   },
   js.configs.recommended,
   {
@@ -74,6 +77,20 @@ export default [
     files: ['src/logging/**/*.{ts,tsx}'],
     rules: {
       'no-console': 'off',
+    },
+  },
+  {
+    // Only the test files: DOM access an antd widget forces lives in the src/test helpers.
+    files: ['src/**/*.test.{ts,tsx}'],
+    plugins: {
+      'testing-library': testingLibraryPlugin,
+      'jest-dom': jestDomPlugin,
+      vitest: vitestPlugin,
+    },
+    rules: {
+      ...testingLibraryPlugin.configs['flat/react'].rules,
+      ...jestDomPlugin.configs['flat/recommended'].rules,
+      ...vitestPlugin.configs.recommended.rules,
     },
   },
   {

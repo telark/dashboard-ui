@@ -37,4 +37,7 @@ export const SECURITY_SECTION_CONSTANTS = {
       CANCEL: 'Cancel',
     },
   },
+  LOGS: {
+    CURRENT_SESSION_FAILED: 'Failed to find which session is this device:',
+  },
 } as const;

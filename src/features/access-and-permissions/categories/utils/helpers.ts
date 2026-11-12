@@ -1,5 +1,10 @@
-import { EMPTY_VALUE } from '../../../../constants';
+import { APP_ROUTES, EMPTY_VALUE } from '../../../../constants';
+import { CATEGORIES_CONSTANTS as CC } from '../constants';
+import type { CategoryScope } from '../constants';
 import type { Category } from '../models';
+
+export const categoriesPageRoute = (scope: CategoryScope): string =>
+  `${APP_ROUTES.CATEGORIES}?${CC.PAGE.TYPE_PARAM}=${scope}`;
 
 export const mapCategoriesToOptions = (categories: Category[]) => {
   return categories.map((category) => ({

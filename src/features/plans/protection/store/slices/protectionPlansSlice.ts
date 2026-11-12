@@ -64,10 +64,11 @@ const protectionPlansSlice = createSlice({
       })
       .addCase(fetchProtectionPlanDetailsThunk.pending, (state) => {
         state.detailsLoading = true;
-        state.detailsError = null;
       })
       .addCase(fetchProtectionPlanDetailsThunk.fulfilled, (state, action) => {
         state.detailsLoading = false;
+        // Cleared here, not on pending: each poll would flip the error page off and back on.
+        state.detailsError = null;
         state.details = action.payload;
         state.plans = state.plans.map((p) => (p.id === action.payload.id ? action.payload : p));
       })

@@ -5,10 +5,6 @@ export const GROUPS_CONSTANTS = {
   LABELS: {
     HEADER_TITLE: 'Groups',
     HEADER_SUBTITLE: 'Manage existing groups',
-    BREADCRUMBS: {
-      GROUPS: 'Groups',
-      CATEGORIES: 'Categories',
-    },
     MESSAGES: {
       CREATED: (name: string) => `Group "${name}" created`,
       UPDATED: (name: string) => `Group "${name}" updated`,
@@ -99,9 +95,6 @@ export const GROUPS_CONSTANTS = {
     PANELS: {
       VIEW: {
         TITLE: 'Group Details',
-        DESCRIPTION_PREVIEW_CHARS: 100,
-        SHOW_MORE: 'Show more',
-        SHOW_LESS: 'Show less',
         TABS: {
           MEMBERS: 'Members',
           ROLES: 'Roles',
@@ -158,7 +151,6 @@ export const GROUPS_CONSTANTS = {
         BUTTON_LABEL: 'Manage',
       },
       COUNT_SUFFIX: { one: 'group', other: 'groups' },
-      CATEGORIES_COUNT_SUFFIX: { one: 'category', other: 'categories' },
       MORE: 'More',
       BULK: {
         SELECT: 'Bulk',
@@ -167,7 +159,6 @@ export const GROUPS_CONSTANTS = {
     },
     EMPTY: {
       NO_GROUPS_FOUND: 'No Groups Found',
-      NO_CATEGORIES_FOUND: 'No categories found',
     },
     PAGINATION: {
       SHOW_ROWS: 'Show rows',

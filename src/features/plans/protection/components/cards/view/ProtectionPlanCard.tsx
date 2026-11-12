@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useMemo, useState } from 'react';
-import { App as AntdApp, Button, Dropdown, Form, Tag, Tooltip } from 'antd';
+import { App as AntdApp, Button, Dropdown, Form, Tooltip } from 'antd';
 import type { MenuProps } from 'antd';
 import {
   CheckCircleOutlined,
@@ -31,7 +31,6 @@ import {
   TRUNCATE_STYLE,
   getCardMenuButtonStyle,
   getCardShellStyle,
-  getPillColor,
   SPACING,
   MOTION,
   KEYBOARD_TOOLTIP_TRIGGER,
@@ -60,6 +59,7 @@ import {
 import { getCurrentUser } from '../../../../../auth/utils';
 import { usePermission, ACTION_PERMISSIONS } from '../../../../../auth/hooks';
 import { ActionConfirmModal } from '../../../../../../components/display/modal';
+import PlanPhaseTag from '../../shared/PlanPhaseTag';
 import ReactivatePlanModal from '../../shared/ReactivatePlanModal';
 import DeletePlanModal from '../../shared/DeletePlanModal';
 import ApprovalDecisionModal from '../../shared/ApprovalDecisionModal';
@@ -75,7 +75,6 @@ import {
   isReportNotStarted,
   liveWindow,
   permissionTooltip,
-  planPhaseLabel,
 } from '../../../utils/phaseRules';
 import { formatRepeatRule } from '../../../utils/repeatRule';
 import { formatWindowRange } from '../../../utils/windowRange';
@@ -323,10 +322,8 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
     [updatedAt, plan.createdAt],
   );
 
-  const phaseLabel = planPhaseLabel(plan);
   const canCancel = CANCELLABLE_PHASES.includes(plan.phase);
 
-  const phaseAccent = STATUS_COLORS.PLAN_PHASE[plan.phase] ?? DEFAULT_COLORS.NEUTRAL;
   const health = plan.health ?? 'unknown';
   // Health only shows while the plan is running; a canceled plan's last known
   // health would otherwise light the card up green.
@@ -570,7 +567,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
           </div>
 
           <div style={CORNER_STYLE}>
-            <Tag color={getPillColor(phaseAccent)}>{phaseLabel}</Tag>
+            <PlanPhaseTag plan={plan} />
             {running && (
               <HealthIndicator
                 label={PPC.LABELS.HEALTH_LABELS[health]}

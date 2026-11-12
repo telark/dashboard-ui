@@ -13,6 +13,7 @@ import {
   AiOutlineAlert,
   AiOutlineSetting,
   AiOutlineSafetyCertificate,
+  AiOutlineTags,
 } from 'react-icons/ai';
 import { BsFillCpuFill, BsMemory, BsKey, BsIntersect } from 'react-icons/bs';
 import { TbUserKey } from 'react-icons/tb';
@@ -27,6 +28,7 @@ export const Icons = {
   Bridge: AiOutlineApi,
   User: AiOutlineUser,
   Group: AiOutlineTeam,
+  Category: AiOutlineTags,
   ProtectionPlans: AiOutlineSafetyCertificate,
   Settings: AiOutlineSetting,
   Passkey: BsKey,

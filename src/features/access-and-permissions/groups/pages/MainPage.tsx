@@ -15,11 +15,8 @@ import { applyGroupFilters, mapCategoriesToFilterOptions } from '../utils';
 import { SLIDE_OUT } from '../../../../constants';
 import { noop } from '../../../../utils/helpers/noop';
 import type { Group } from '../models';
-import type { Category } from '../../categories/models';
 import GroupsEmptyPage from './GroupsEmptyPage';
 import GroupsListPage from './GroupsListPage';
-
-type ViewMode = 'groups' | 'categories';
 
 const MainPage: React.FC = () => {
   const canCreateGroup = usePermission(
@@ -37,10 +34,7 @@ const MainPage: React.FC = () => {
     ACTION_PERMISSIONS.groups.delete.level,
     ACTION_PERMISSIONS.groups.delete.deny,
   );
-  const [viewMode, setViewMode] = useState<ViewMode>('groups');
   const [addCategoryPanelOpen, setAddCategoryPanelOpen] = useState(false);
-  const [editCategoryPanelOpen, setEditCategoryPanelOpen] = useState(false);
-  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const { groups, loaded, error, refetch } = useFetchGroups();
   const { categories, loaded: categoriesLoaded } = useCategories(
     CATEGORIES_CONSTANTS.SCOPES.GROUPS,
@@ -171,14 +165,6 @@ const MainPage: React.FC = () => {
 
   const onAddCategoryClick = useCallback(() => setAddCategoryPanelOpen(true), []);
   const closeAddCategoryPanel = useCallback(() => setAddCategoryPanelOpen(false), []);
-  const openEditCategoryPanel = useCallback((category: Category) => {
-    setEditingCategory(category);
-    setEditCategoryPanelOpen(true);
-  }, []);
-  const closeEditCategoryPanel = useCallback(() => {
-    setEditCategoryPanelOpen(false);
-    setEditingCategory(null);
-  }, []);
 
   const shouldShowEmpty = useMemo(
     () => Array.isArray(groups) && groups.length === 0 && !error && loaded,
@@ -186,9 +172,6 @@ const MainPage: React.FC = () => {
   );
 
   const pageConfig = useGroupListPageConfig({
-    viewMode,
-    setViewMode,
-    categories,
     sortKey,
     handleSort,
     selectedGroups,
@@ -204,7 +187,6 @@ const MainPage: React.FC = () => {
     onCreateGroupClick: openCreatePanel,
     canCreateGroup,
     onAddCategoryClick,
-    onEditCategory: openEditCategoryPanel,
     selectedGroupsCount: selectedCount,
     onBulkDeleteClick: handleBulkDeleteClick,
     onAttachRoleClick: handleAttachRoleClick,
@@ -222,7 +204,7 @@ const MainPage: React.FC = () => {
     onClearAllFilters: handleFilterReset,
   });
 
-  if (shouldShowEmpty && viewMode === 'groups') {
+  if (shouldShowEmpty) {
     return (
       <GroupsEmptyPage
         createPanelOpen={createPanelOpen}
@@ -263,8 +245,6 @@ const MainPage: React.FC = () => {
       selectedCount={selectedCount}
       isDeleting={isDeleting}
       addCategoryPanelOpen={addCategoryPanelOpen}
-      editCategoryPanelOpen={editCategoryPanelOpen}
-      editingCategory={editingCategory}
       onCloseCreatePanel={closeCreatePanel}
       onCloseEditPanel={closeEditPanel}
       onCloseViewPanel={closeViewPanel}
@@ -272,7 +252,6 @@ const MainPage: React.FC = () => {
       onCloseAttachMemberPanel={closeAttachMemberPanel}
       onCloseFilterPanel={closeFilterPanel}
       onCloseAddCategoryPanel={closeAddCategoryPanel}
-      onCloseEditCategoryPanel={closeEditCategoryPanel}
       onCloseBulkDeleteModal={handleCloseBulkDeleteModal}
       onConfirmBulkDelete={handleConfirmBulkDelete}
       onViewPanelEdit={canEditGroup ? handleViewPanelEdit : undefined}

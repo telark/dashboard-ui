@@ -35,7 +35,7 @@ export interface RoleFormValues {
 export interface RoleFormProps {
   form: FormInstance<RoleFormValues>;
   initialValues: RoleFormValues;
-  onSubmit: (values: RoleFormValues) => void;
+  onSubmit: (values: RoleFormValues) => Promise<void>;
   roles: Role[];
   isEditMode?: boolean;
   currentName?: string;

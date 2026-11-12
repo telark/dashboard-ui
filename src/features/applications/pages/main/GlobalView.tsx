@@ -16,12 +16,14 @@ import {
   loadApplicationsSilent,
 } from '../../utils/management/state';
 import {
+  APPLICATIONS_ERROR_MESSAGES,
   APPLICATIONS_PAGE_SIZE,
   APPLICATIONS_SYNC_ACTIVE_POLL_MS,
   APPLICATIONS_UI,
   SYNC_STATUS_VALUE,
 } from '../../constants';
 import { POLL_INTERVAL_MS } from '../../../../constants';
+import logger from '../../../../logging';
 import { pollWhileVisible } from '../../../../utils/helpers/poll';
 import ApplicationsMainEmpty from './Empty';
 import ApplicationsSuccess from './Success';
@@ -210,11 +212,11 @@ const ApplicationsGlobalView: React.FC = memo(() => {
   }, [dispatch]);
 
   useEffect(() => {
-    (async () => {
-      if (hasTriggeredInitialLoad.current) return;
-      hasTriggeredInitialLoad.current = true;
-      await handleLoadApplications();
-    })();
+    if (hasTriggeredInitialLoad.current) return;
+    hasTriggeredInitialLoad.current = true;
+    handleLoadApplications().catch((error: unknown) =>
+      logger.error(APPLICATIONS_ERROR_MESSAGES.CLIENT.FETCH_APPLICATIONS_FAILED, error),
+    );
   }, [handleLoadApplications]);
 
   const anySyncing = useMemo(

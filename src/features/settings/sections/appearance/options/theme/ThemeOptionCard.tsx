@@ -61,14 +61,7 @@ const ThemeOptionCard: React.FC = memo(() => {
     <SettingsCard
       title={LABELS.THEME_CARD_TITLE}
       description={LABELS.THEME_CARD_DESCRIPTION}
-      titleBadge={
-        <Tag
-          color={getPillColor(DEFAULT_COLORS.SUCCESS)}
-          style={{ color: DEFAULT_COLORS.PILL_TEXT }}
-        >
-          {LABELS.NEW_BADGE}
-        </Tag>
-      }
+      titleBadge={<Tag color={getPillColor(DEFAULT_COLORS.SUCCESS)}>{LABELS.NEW_BADGE}</Tag>}
       headerAction={
         <Segmented
           aria-label={LABELS.THEME_CARD_TITLE}

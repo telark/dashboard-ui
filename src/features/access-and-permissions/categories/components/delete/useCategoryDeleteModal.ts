@@ -5,6 +5,8 @@ import { App as AntdApp } from 'antd';
 import { deleteCategory } from '../../clients';
 import { fetchCategoriesByScopeThunk } from '../../store';
 import { labelsFor } from '../../constants';
+import { HTTP_STATUS } from '../../../../../constants';
+import type { ExtendedAxiosError } from '../../../../../api/client/normalize';
 import type { Category } from '../../models';
 import type { AppDispatch } from '../../../../../store';
 
@@ -43,8 +45,14 @@ export const useCategoryDeleteModal = (category: Category | null): UseCategoryDe
       message.success(labelsFor(category.scope).MESSAGES.DELETED);
       setDeleteModalOpen(false);
       await dispatch(fetchCategoriesByScopeThunk(category.scope));
-    } catch {
-      message.error(labelsFor(category.scope).MESSAGES.DELETE_FAILED);
+    } catch (error) {
+      const { normalized } = error as ExtendedAxiosError;
+      // A 409 says how many items still use the category, which the generic text can't.
+      message.error(
+        normalized?.status === HTTP_STATUS.CONFLICT
+          ? normalized.message
+          : labelsFor(category.scope).MESSAGES.DELETE_FAILED,
+      );
     } finally {
       setIsDeleting(false);
     }

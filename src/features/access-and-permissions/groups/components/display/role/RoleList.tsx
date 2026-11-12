@@ -4,7 +4,11 @@ import { SelectableListItem } from '../../../../../../components/display/list';
 import { GROUPS_CONSTANTS as GC, ATTACHED_ROLES_CONSTANTS as ARC } from '../../../constants';
 import { ROLES_CONSTANTS as RC } from '../../../../roles/constants';
 import { isRoleProtected, getRoleScopesContent } from '../../../../roles/utils';
-import { truncateText, CapitalizeFirstLetter } from '../../../../../../utils/helpers/format';
+import {
+  truncateText,
+  CapitalizeFirstLetter,
+  SentenceCase,
+} from '../../../../../../utils/helpers/format';
 import type { Role } from '../../../../roles/models';
 import { ACTION_PERMISSIONS, useCanGrantScopes, usePermission } from '../../../../../auth/hooks';
 import { NoPermissionCard } from '../../../../../../components/shared';
@@ -96,9 +100,7 @@ const RoleList: React.FC<RoleListProps> = ({ roles, loading, allRoles, blockedRe
                   value={role.id}
                   name={CapitalizeFirstLetter(role.name)}
                   description={
-                    role.description
-                      ? CapitalizeFirstLetter(truncateText(role.description, 100))
-                      : undefined
+                    role.description ? SentenceCase(truncateText(role.description, 100)) : undefined
                   }
                   customContent={scopesContent}
                   protectionBadge={isRoleProtected(role) ? <LockedRoleIcon /> : undefined}

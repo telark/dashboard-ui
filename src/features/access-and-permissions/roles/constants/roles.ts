@@ -7,9 +7,6 @@ export const ROLES_CONSTANTS = {
   LABELS: {
     HEADER_TITLE: 'Roles',
     HEADER_SUBTITLE: 'Manage existing roles',
-    BREADCRUMBS: {
-      CATEGORIES: 'Categories',
-    },
     MESSAGES: {
       CREATED: (name: string) => `Role "${name}" created`,
       UPDATED: (name: string) => `Role "${name}" updated`,
@@ -80,7 +77,6 @@ export const ROLES_CONSTANTS = {
       SEARCH: { PLACEHOLDER: 'Search by name, description...', BUTTON_LABEL: 'Search' },
       CREATE: { BUTTON_LABEL: 'Create Role' },
       COUNT_SUFFIX: { one: 'role', other: 'roles' },
-      CATEGORIES_COUNT_SUFFIX: { one: 'category', other: 'categories' },
       MORE: 'More',
       BULK: {
         SELECT: 'Bulk',
@@ -89,7 +85,6 @@ export const ROLES_CONSTANTS = {
     },
     EMPTY: {
       NO_ROLES_FOUND: 'No roles found',
-      NO_CATEGORIES_FOUND: 'No categories found',
     },
     PAGINATION: {
       SHOW_ROWS: 'Show rows',
@@ -150,6 +145,7 @@ export const ROLES_CONSTANTS = {
   VALIDITY: {
     TITLE: 'Validity',
     SUBTITLE: 'Define when and how long this role is valid.',
+    EXPIRED: '(expired)',
     TYPE_LABEL: 'Validity Type',
     EXPIRATION_MODEL_LABEL: 'Expiration Model',
     EXPIRATION_MODEL_OPTIONS: {
@@ -234,6 +230,7 @@ export const ROLES_CONSTANTS = {
     LOCAL_VALUE_CLEAR_MS: 100,
   },
   ERROR_MESSAGES: {
+    FORM_SUBMIT_FAILED: '[RoleForm] Submit failed',
     CLIENT: {
       FETCH_ROLES_FAILED: '[APIClient] Failed to fetch roles:',
       FETCH_ROLE_DETAILS_FAILED: (id: string) =>

@@ -134,6 +134,7 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
           >
             {compareMode ? (
               <span
+                role="none"
                 className={LIST_TOOLBAR.BULK_SELECT_CLASS}
                 style={{ display: 'inline-flex', alignItems: 'center', flexShrink: 0 }}
                 onClick={(e) => e.stopPropagation()}

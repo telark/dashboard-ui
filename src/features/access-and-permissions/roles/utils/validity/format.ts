@@ -1,11 +1,8 @@
+import { ROLES_CONSTANTS as RC } from '../../constants';
 import type { Role } from '../../models';
 import { toTimestamp } from '../../../../../utils/shared/time';
 
 const formatTimeRemaining = (milliseconds: number): string => {
-  if (milliseconds <= 0) {
-    return 'expired';
-  }
-
   const totalMinutes = Math.floor(milliseconds / (1000 * 60));
   const totalHours = Math.floor(totalMinutes / 60);
   const days = Math.floor(totalHours / 24);
@@ -29,6 +26,9 @@ const formatTimeRemaining = (milliseconds: number): string => {
   return `${totalMinutes}m`;
 };
 
+const formatExpiresIn = (milliseconds: number): string =>
+  milliseconds <= 0 ? RC.VALIDITY.EXPIRED : `(expires in ${formatTimeRemaining(milliseconds)})`;
+
 export interface ValidityFormatResult {
   label: string;
   expiresIn?: string;
@@ -44,16 +44,14 @@ export const formatValidity = (validity: Role['validity'], record: Role): Validi
     if (validity.expiresAt) {
       const expiresAt = toTimestamp(validity.expiresAt);
       const remaining = expiresAt - now;
-      const timeRemaining = formatTimeRemaining(remaining);
-      return { label: 'Temporary', expiresIn: `(expires in ${timeRemaining})` };
+      return { label: 'Temporary', expiresIn: formatExpiresIn(remaining) };
     }
 
     if (validity.durationHours) {
       const startTime = toTimestamp(record.lastUpdateDate || record.creationDate);
       const expirationTime = startTime + validity.durationHours * 60 * 60 * 1000;
       const remaining = expirationTime - now;
-      const timeRemaining = formatTimeRemaining(remaining);
-      return { label: 'Temporary', expiresIn: `(expires in ${timeRemaining})` };
+      return { label: 'Temporary', expiresIn: formatExpiresIn(remaining) };
     }
 
     return { label: 'Temporary' };

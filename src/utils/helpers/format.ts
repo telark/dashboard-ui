@@ -9,6 +9,9 @@ export const CapitalizeFirstLetter = (str: string) => {
     .join(' ');
 };
 
+// Descriptions keep the case they were typed in, so "API" stays "API".
+export const SentenceCase = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
+
 // The interceptor stores the server's own message on normalized; axios's
 // error.message is only "Request failed with status code N".
 export const extractErrorMessage = (error: unknown, fallback: string): string => {

@@ -26,6 +26,12 @@ export const STATUS_COLORS = {
     draft: NEUTRAL,
     pending_approval: WARNING,
   },
+  // The phases plan cards draw as outlines, like the Upcoming protection badge on application cards.
+  PLAN_PHASE_OUTLINE: {
+    scheduled: TEXT_MUTED,
+    terminated: TEXT_MUTED,
+    canceled: TEXT_MUTED,
+  } as Readonly<Record<string, string | undefined>>,
   PLAN_HEALTH: {
     unknown: NEUTRAL,
     healthy: SUCCESS,

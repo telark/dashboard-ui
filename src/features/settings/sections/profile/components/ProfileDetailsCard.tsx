@@ -140,8 +140,6 @@ const ProfileDetailsCard: React.FC<ProfileDetailsCardProps> = memo(({ user, onEd
             <Tag
               color={getPillColor(STATUS_COLORS.USER_STATE[user.status.phase])}
               className={TAG_CLASS.MEDIUM}
-              // White like the Members list's state pill (user decision, 2026-11-05).
-              style={{ color: DEFAULT_COLORS.PILL_TEXT }}
             >
               {user.status.phase}
             </Tag>

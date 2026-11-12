@@ -30,26 +30,29 @@ export const useSessionExpirationCheck = ({
       return String(error);
     };
 
-    const checkSessionExpiration = async () => {
-      try {
-        const validationResult = await validateSession();
-        if (validationResult.isExpired) {
-          onSessionExpired(validationResult.duplicateCookie === true);
-        }
-        lastErrorSignatureRef.current = null;
-      } catch (error) {
-        const axiosError = error as { normalized?: { status: number } };
-        const isSessionExpiredError =
-          axiosError.normalized?.status === HTTP_STATUS.GONE ||
-          (error as { response?: { status: number } })?.response?.status === HTTP_STATUS.GONE;
-        if (isSessionExpiredError || !isDevelopment()) {
-          return;
-        }
-        const signature = errorSignature(error);
-        if (signature === lastErrorSignatureRef.current) return;
-        lastErrorSignatureRef.current = signature;
-        logger.error('Error checking session expiration:', error);
+    const onCheckError = (error: unknown): void => {
+      const axiosError = error as { normalized?: { status: number } };
+      const isSessionExpiredError =
+        axiosError.normalized?.status === HTTP_STATUS.GONE ||
+        (error as { response?: { status: number } })?.response?.status === HTTP_STATUS.GONE;
+      if (isSessionExpiredError || !isDevelopment()) {
+        return;
       }
+      const signature = errorSignature(error);
+      if (signature === lastErrorSignatureRef.current) return;
+      lastErrorSignatureRef.current = signature;
+      logger.error('Error checking session expiration:', error);
+    };
+
+    const checkSessionExpiration = (): void => {
+      validateSession()
+        .then((validationResult) => {
+          if (validationResult.isExpired) {
+            onSessionExpired(validationResult.duplicateCookie === true);
+          }
+          lastErrorSignatureRef.current = null;
+        })
+        .catch(onCheckError);
     };
 
     checkSessionExpiration();
@@ -62,15 +65,12 @@ export const useSessionExpirationCheck = ({
     // The check's own request goes through the API client, so it raises this event too.
     globalThis.addEventListener(ACCOUNT_SUSPENDED_EVENT, onAccountSuspended);
     // A refused event stream asks for the check now.
-    const onSessionCheck = (): void => {
-      void checkSessionExpiration();
-    };
-    globalThis.addEventListener(SESSION_CHECK_EVENT, onSessionCheck);
+    globalThis.addEventListener(SESSION_CHECK_EVENT, checkSessionExpiration);
 
     return () => {
       globalThis.clearInterval(intervalId);
       globalThis.removeEventListener(ACCOUNT_SUSPENDED_EVENT, onAccountSuspended);
-      globalThis.removeEventListener(SESSION_CHECK_EVENT, onSessionCheck);
+      globalThis.removeEventListener(SESSION_CHECK_EVENT, checkSessionExpiration);
     };
   }, [isAuthenticated, isAuthRoute, onSessionExpired, onAccountSuspended]);
 };

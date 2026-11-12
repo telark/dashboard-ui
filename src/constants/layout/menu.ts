@@ -7,6 +7,7 @@ export const MENU_LABELS = {
   USERS: 'Members',
   GROUPS: 'Groups',
   ROLES: 'Roles',
+  CATEGORIES: 'Categories',
   PROTECTION_PLANS: 'Protection plans',
   SETTINGS: 'Settings',
   OPERATIONS: 'Operations',
@@ -22,5 +23,6 @@ export const MENU_RAIL_LABELS = {
   USERS: MENU_LABELS.USERS,
   GROUPS: MENU_LABELS.GROUPS,
   ROLES: MENU_LABELS.ROLES,
+  CATEGORIES: MENU_LABELS.CATEGORIES,
   SETTINGS: MENU_LABELS.SETTINGS,
 } as const;

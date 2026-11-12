@@ -48,7 +48,8 @@ export function usePlanDetails(name?: string) {
   const notFound = !!name && loaded && !loading && !planFromList && !details;
 
   return {
-    details: details ?? planFromList,
+    // A failed fetch must not hide behind the list entry, or the page never shows the error.
+    details: details ?? (detailsError ? null : planFromList),
     loading: detailsLoading,
     error: detailsError,
     refresh,

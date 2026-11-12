@@ -7,9 +7,10 @@ import {
   ProtectionSection,
 } from '../sections';
 import RoleProtectionView from '../view/RoleProtectionView';
-import { ROLES_CONSTANTS as RC } from '../../../constants';
+import { ROLES_CONSTANTS as RC, ROLES_ERROR_MESSAGES } from '../../../constants';
 import type { RoleFormValues, RoleFormProps } from '../../../models';
 import { SPACING } from '../../../../../../constants';
+import logger from '../../../../../../logging';
 
 // One tree in both modes: swapping the wrappers on expand remounted every section.
 // Off scale, kept exact: gap 18 (LG to XL).
@@ -31,12 +32,19 @@ const RoleForm: React.FC<RoleFormProps> = ({
   expanded = false,
   protectionReadOnly = false,
 }) => {
+  // onSubmit has shown the refusal and skipped closing the panel, so the rejection ends here.
+  const handleFinish = (values: RoleFormValues) => {
+    onSubmit(values).catch((error: unknown) => {
+      logger.error(ROLES_ERROR_MESSAGES.FORM_SUBMIT_FAILED, error);
+    });
+  };
+
   const formContent = (
     <div style={{ width: '100%' }}>
       <Form<RoleFormValues>
         layout="vertical"
         form={form}
-        onFinish={onSubmit}
+        onFinish={handleFinish}
         initialValues={initialValues}
       >
         <Form.Item

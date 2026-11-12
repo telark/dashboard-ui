@@ -17,12 +17,9 @@ import { noop } from '../../../../utils/helpers/noop';
 import { CreateRolePanel } from '../panels';
 import { ROLES_CONSTANTS as RPC } from '../constants';
 import type { Role, RoleFormValues } from '../models';
-import type { Category } from '../../categories/models';
 import type { FormInstance } from 'antd';
 import RolesEmptyPage from './RolesEmptyPage';
 import RolesListPage from './RolesListPage';
-
-type ViewMode = 'roles' | 'categories';
 
 const MainPage: React.FC = () => {
   const { roles, loaded, error, refetch } = useRoles();
@@ -37,10 +34,7 @@ const MainPage: React.FC = () => {
     ACTION_PERMISSIONS.roles.edit.deny,
   );
   const [searchTerm, setSearchTerm] = useState('');
-  const [viewMode, setViewMode] = useState<ViewMode>('roles');
   const [addCategoryPanelOpen, setAddCategoryPanelOpen] = useState(false);
-  const [editCategoryPanelOpen, setEditCategoryPanelOpen] = useState(false);
-  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
 
   const { categories } = useCategories(CATEGORIES_CONSTANTS.SCOPES.ROLES);
   const uniqueCategories = useMemo(
@@ -117,19 +111,7 @@ const MainPage: React.FC = () => {
     }
   }, [viewingRole, closeViewPanel, openEditPanel]);
 
-  const openEditCategoryPanel = useCallback((category: Category) => {
-    setEditingCategory(category);
-    setEditCategoryPanelOpen(true);
-  }, []);
-  const closeEditCategoryPanel = useCallback(() => {
-    setEditCategoryPanelOpen(false);
-    setEditingCategory(null);
-  }, []);
-
   const pageConfig = useRoleListPageConfig({
-    viewMode,
-    setViewMode,
-    categories: uniqueCategories,
     sortKey,
     handleSort,
     sortOrder: sortOrder ?? 'desc',
@@ -146,7 +128,6 @@ const MainPage: React.FC = () => {
     paginatedRoles,
     handleViewRole,
     handleEditRole: canEditRole ? handleEditRole : noop,
-    onEditCategory: openEditCategoryPanel,
     onCreateRoleClick: openCreatePanel,
     canCreateRole,
     onFilterClick: openFilterPanel,
@@ -201,15 +182,12 @@ const MainPage: React.FC = () => {
       createForm={createForm}
       filterPanelOpen={filterPanelOpen}
       addCategoryPanelOpen={addCategoryPanelOpen}
-      editCategoryPanelOpen={editCategoryPanelOpen}
-      editingCategory={editingCategory}
       onCloseCreatePanel={closeCreatePanel}
       onCloseEditPanel={closeEditPanel}
       onCloseViewPanel={closeViewPanel}
       appliedFilters={appliedFilters}
       onCloseFilterPanel={closeFilterPanel}
       onCloseAddCategoryPanel={() => setAddCategoryPanelOpen(false)}
-      onCloseEditCategoryPanel={closeEditCategoryPanel}
       handleFilterChange={handleFilterChange}
       handleFilterApply={handleFilterApply}
       handleFilterReset={handleFilterReset}

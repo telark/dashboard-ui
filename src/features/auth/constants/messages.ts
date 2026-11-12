@@ -53,6 +53,9 @@ export const AUTH_SUCCESS_MESSAGES = {
 
 export const AUTH_CONSTANTS = {
   SESSION: {
+    LOGS: {
+      LIST_FAILED: 'Failed to load sessions:',
+    },
     VALIDATION: {
       NOT_SIGNED_IN_ERROR: 'Not signed in',
       FETCH_ERROR: 'Failed to fetch session details',

@@ -1,15 +1,16 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   CheckSquareOutlined,
   DeleteOutlined,
   EllipsisOutlined,
-  PlusOutlined,
   SearchOutlined,
 } from '@ant-design/icons';
 import { ROLES_CONSTANTS as RC } from '../constants';
 import { Icons } from '../../../../constants';
 import { getManageCategoriesButtonConfig } from '../../categories/config';
 import { CATEGORIES_CONSTANTS } from '../../categories/constants';
+import { categoriesPageRoute } from '../../categories/utils';
 import type {
   FilterChip,
   ListToolbarProps,
@@ -18,11 +19,7 @@ import type {
 
 const RoleIcon = Icons.Role;
 
-type ViewMode = 'roles' | 'categories';
-
 interface UseRoleListConfigProps {
-  viewMode?: ViewMode;
-  onViewModeChange?: (mode: ViewMode) => void;
   searchValue: string;
   onSearchChange: (value: string) => void;
   onSearchSubmit?: () => void;
@@ -54,8 +51,6 @@ const bulkDeleteTooltip = (canDelete: boolean, hasProtected: boolean): string | 
 };
 
 export const useRoleListConfig = ({
-  viewMode = 'roles',
-  onViewModeChange,
   searchValue,
   onSearchChange,
   onSearchSubmit,
@@ -79,7 +74,7 @@ export const useRoleListConfig = ({
   hasActiveFilters,
   onClearAllFilters,
 }: UseRoleListConfigProps): { listToolbar: ListToolbarProps } => {
-  const isCategoriesView = viewMode === 'categories';
+  const navigate = useNavigate();
 
   const bulkActions: ToolbarConfig = React.useMemo(
     () => ({
@@ -100,20 +95,6 @@ export const useRoleListConfig = ({
   );
 
   const toolbars: ToolbarConfig[] = React.useMemo(() => {
-    const addCategory: ToolbarConfig = {
-      buttons: [
-        {
-          key: 'add-category',
-          label: CATEGORIES_CONSTANTS.LABELS.TOOLBAR.MANAGE_CATEGORIES.ADD_CATEGORY,
-          icon: <PlusOutlined />,
-          variant: 'primary',
-          onClick: () => onAddCategoryClick?.(),
-          disabled: !canAddRoleCategory,
-        },
-      ],
-    };
-    if (isCategoriesView) return [addCategory];
-
     const search: ToolbarConfig = {
       search: {
         placeholder: RC.LABELS.TOOLBAR.SEARCH.PLACEHOLDER,
@@ -132,7 +113,7 @@ export const useRoleListConfig = ({
     };
     // Category management is secondary to the role list, so it sits behind More.
     const manageCategories = getManageCategoriesButtonConfig({
-      onViewCategories: () => onViewModeChange?.('categories'),
+      onViewCategories: () => navigate(categoriesPageRoute(CATEGORIES_CONSTANTS.SCOPES.ROLES)),
       onAddCategory: () => onAddCategoryClick?.(),
       canViewCategories: canViewRoleCategories,
       canAddCategory: canAddRoleCategory,
@@ -189,7 +170,6 @@ export const useRoleListConfig = ({
     };
     return bulkMode ? [search, exitBulk, create] : [search, create, more];
   }, [
-    isCategoriesView,
     bulkMode,
     onToggleBulkMode,
     searchValue,
@@ -197,22 +177,11 @@ export const useRoleListConfig = ({
     onSearchSubmit,
     onCreateRoleClick,
     canCreateRole,
-    onViewModeChange,
+    navigate,
     onAddCategoryClick,
     canViewRoleCategories,
     canAddRoleCategory,
   ]);
-
-  if (isCategoriesView) {
-    return {
-      listToolbar: {
-        totalCount,
-        countSuffix: RC.LABELS.TOOLBAR.CATEGORIES_COUNT_SUFFIX,
-        compactWidth: RC.SIZES.TOOLBAR_COMPACT_WIDTH,
-        toolbars,
-      },
-    };
-  }
 
   return {
     listToolbar: {

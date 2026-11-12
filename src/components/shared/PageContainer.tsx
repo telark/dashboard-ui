@@ -93,6 +93,8 @@ const PageContainer: React.FC<PageContainerProps> = memo(
       style={{
         position: 'relative',
         minHeight: HEADER_LAYOUT.MIN_HEIGHT,
+        // The pane is a flex column: a shrunk box leaves its content past the bottom padding.
+        flexShrink: 0,
         background: DEFAULT_COLORS.PAGE_BG,
         padding: PAGE_CONTENT_LAYOUT.PADDING,
         boxSizing: 'border-box',

@@ -29,7 +29,6 @@ import TimeAgo from '../../../components/display/time/TimeAgo';
 import { INSIGHTS_UI } from '../constants/texts';
 import {
   CLUSTER_INSIGHTS,
-  INSIGHT_TRIAGE_PILL_STYLE,
   INSIGHT_KIND_LABELS,
   INSIGHT_ROW_STATE_LABELS,
   INSIGHT_SEVERITY_LABELS,
@@ -91,13 +90,8 @@ export const fittingInsightColumns = (available: number): ReadonlySet<InsightCol
   return FITTING_COLUMNS[count];
 };
 
-const tag = (text: string, accent?: string, style?: React.CSSProperties): React.ReactNode => (
-  <Tag
-    key={text}
-    color={getPillColor(accent)}
-    className={`${TAG_CLASS.MEDIUM} ${TAG_CLASS.AS_IS}`}
-    style={style}
-  >
+const tag = (text: string, accent?: string): React.ReactNode => (
+  <Tag key={text} color={getPillColor(accent)} className={`${TAG_CLASS.MEDIUM} ${TAG_CLASS.AS_IS}`}>
     {text}
   </Tag>
 );
@@ -291,11 +285,7 @@ export const buildInsightColumns = ({
       icon: <AiOutlineFlag />,
       render: (r) =>
         r.triage ? (
-          tag(
-            TRIAGE_LABELS[r.triage.state],
-            STATUS_COLORS.INSIGHT_TRIAGE[r.triage.state],
-            INSIGHT_TRIAGE_PILL_STYLE,
-          )
+          tag(TRIAGE_LABELS[r.triage.state], STATUS_COLORS.INSIGHT_TRIAGE[r.triage.state])
         ) : (
           <span style={mutedStyle}>{EMPTY_VALUE}</span>
         ),

@@ -5,6 +5,7 @@ import { getCurrentSessionName } from '../../../../../features/auth/utils/sessio
 import { validateSession } from '../../../../../features/auth/utils/session/validation';
 import { handleUserLogout } from '../../../../../features/auth/utils/logout/logout';
 import { SECURITY_SECTION_CONSTANTS } from '../constants';
+import logger from '../../../../../logging';
 import type { SessionDetails } from '../../../../../features/auth/models/session';
 
 const { LABELS } = SECURITY_SECTION_CONSTANTS;
@@ -57,9 +58,13 @@ export const useSessionRevoke = ({
 
   useEffect(() => {
     let canceled = false;
-    getCurrentSessionName().then((name) => {
-      if (!canceled) setCurrentSessionName(name);
-    });
+    getCurrentSessionName()
+      .then((name) => {
+        if (!canceled) setCurrentSessionName(name);
+      })
+      .catch((error: unknown) =>
+        logger.error(SECURITY_SECTION_CONSTANTS.LOGS.CURRENT_SESSION_FAILED, error),
+      );
     return () => {
       canceled = true;
     };

@@ -191,9 +191,9 @@ interface PillSurface {
 // INFO is too light for a solid fill, so its pill uses the declared INFO_STRONG.
 const PILL_NEUTRAL = '#374151';
 
-// White fails AA on these light fills, so their text is dark (user decision, 2026-10-16).
+// White fails AA on these light fills, so their text is dark (user decision, 2026-10-16). The green is
+// the exception: every SUCCESS pill has white text, though it is 2.1:1 (user decision, 2026-11-11).
 const PILL_DARK_TEXT_FILLS: ReadonlySet<string> = new Set([
-  DEFAULT_COLORS.SUCCESS,
   DEFAULT_COLORS.WARNING,
   MUTED_FILL,
   DEFAULT_COLORS.NEUTRAL,
