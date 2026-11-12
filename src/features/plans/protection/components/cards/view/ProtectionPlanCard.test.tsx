@@ -74,17 +74,18 @@ describe('protection plan card', () => {
     expect(await screen.findByText(text, { exact: false })).toBeInTheDocument();
   });
 
-  it.each<[ProtectionPlan['phase'], string, boolean]>([
-    ['active', DEFAULT_COLORS.PILL_TEXT, true],
-    ['scheduled', DEFAULT_COLORS.TEXT_MUTED, false],
-    ['terminated', DEFAULT_COLORS.TEXT_MUTED, false],
-    ['canceled', DEFAULT_COLORS.TEXT_MUTED, false],
-  ])('draws the %s pill in its own text color and fill', async (phase, color, filled) => {
+  // A filled pill's text color comes from the app theme (getPillTextColor), which the harness doesn't mount.
+  it.each<[ProtectionPlan['phase'], boolean]>([
+    ['active', true],
+    ['scheduled', false],
+    ['terminated', false],
+    ['canceled', false],
+  ])('draws the %s pill in its own text color and fill', async (phase, filled) => {
     renderCard(buildPlan({ phase }));
 
     const pill = await screen.findByText(PPC.LABELS.PHASE_LABELS[phase]);
 
-    expect(pill).toHaveStyle({ color });
+    expect(pill.style.color === DEFAULT_COLORS.TEXT_MUTED).toBe(!filled);
     expect(pill.style.backgroundColor !== '').toBe(filled);
   });
 

@@ -15,15 +15,7 @@ const PlanPhaseTag: React.FC<{ plan: ProtectionPlan }> = ({ plan }) => {
     );
   }
   const accent = STATUS_COLORS.PLAN_PHASE[plan.phase] ?? DEFAULT_COLORS.NEUTRAL;
-  return (
-    // White on Active's green is a user decision: the fill alone would pick dark text.
-    <Tag
-      color={getPillColor(accent)}
-      style={plan.phase === 'active' ? { color: DEFAULT_COLORS.PILL_TEXT } : undefined}
-    >
-      {label}
-    </Tag>
-  );
+  return <Tag color={getPillColor(accent)}>{label}</Tag>;
 };
 
 export default PlanPhaseTag;

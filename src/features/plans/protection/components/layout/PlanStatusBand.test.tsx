@@ -9,15 +9,15 @@ import type { ProtectionPlan } from '../../models';
 import PlanStatusBand from './PlanStatusBand';
 
 describe('plan status band', () => {
-  it.each<[ProtectionPlan['phase'], string, boolean]>([
-    ['active', DEFAULT_COLORS.PILL_TEXT, true],
-    ['canceled', DEFAULT_COLORS.TEXT_MUTED, false],
-  ])('draws the %s pill like the plan card', async (phase, color, filled) => {
+  it.each<[ProtectionPlan['phase'], boolean]>([
+    ['active', true],
+    ['canceled', false],
+  ])('draws the %s pill like the plan card', async (phase, filled) => {
     renderApp(<PlanStatusBand plan={buildPlan({ phase })} notInForce={0} onJumpToHealth={noop} />);
 
     const pill = await screen.findByText(PPC.LABELS.PHASE_LABELS[phase]);
 
-    expect(pill).toHaveStyle({ color });
+    expect(pill.style.color === DEFAULT_COLORS.TEXT_MUTED).toBe(!filled);
     expect(pill.style.backgroundColor !== '').toBe(filled);
   });
 });

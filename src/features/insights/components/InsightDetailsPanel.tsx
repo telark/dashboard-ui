@@ -33,7 +33,6 @@ import { RESOLVES_ON_ITS_OWN } from '../constants/guidance';
 import {
   CLUSTER_INSIGHTS,
   INSIGHT_CONFIDENCE_LABELS,
-  INSIGHT_TRIAGE_PILL_STYLE,
   INSIGHT_KIND_LABELS,
   INSIGHT_PARAM_LABELS,
   INSIGHT_ROW_STATE_LABELS,
@@ -86,13 +85,8 @@ const unsetButton: React.CSSProperties = { all: 'unset', cursor: 'pointer' };
 // Shown in the context card, so Details does not repeat them.
 const FACT_PARAMS = new Set(['message', 'namespace', 'workload', 'kind']);
 
-const chip = (text: string, accent?: string, style?: React.CSSProperties) => (
-  <Tag
-    key={text}
-    color={getPillColor(accent)}
-    className={`${TAG_CLASS.MEDIUM} ${TAG_CLASS.AS_IS}`}
-    style={style}
-  >
+const chip = (text: string, accent?: string) => (
+  <Tag key={text} color={getPillColor(accent)} className={`${TAG_CLASS.MEDIUM} ${TAG_CLASS.AS_IS}`}>
     {text}
   </Tag>
 );
@@ -290,13 +284,7 @@ const Summary: React.FC<{
             )}
             {chip(INSIGHT_KIND_LABELS[insight.kind] ?? insight.kind)}
             {chip(INSIGHT_ROW_STATE_LABELS[state])}
-            {triaged
-              ? chip(
-                  triageLabel,
-                  STATUS_COLORS.INSIGHT_TRIAGE[triaged.state],
-                  INSIGHT_TRIAGE_PILL_STYLE,
-                )
-              : null}
+            {triaged ? chip(triageLabel, STATUS_COLORS.INSIGHT_TRIAGE[triaged.state]) : null}
           </>
         }
         facts={
