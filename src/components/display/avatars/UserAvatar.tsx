@@ -30,20 +30,15 @@ const UserAvatar: React.FC<UserAvatarProps> = ({ avatar, username, size = 40, st
           setAvatarSrc(cached);
           return;
         }
-        try {
-          const styleModule = await loadAvatarStyle(avatarStyle);
-          if (styleModule) {
-            const generated = createAvatar(styleModule, {
-              seed,
-              size: size * 2,
-            }).toDataUri();
-            generatedAvatars.set(cacheKey, generated);
-            setAvatarSrc(generated);
-          } else {
-            setAvatarSrc(undefined);
-          }
-        } catch (error) {
-          logger.error('Failed to load avatar style:', error);
+        const styleModule = await loadAvatarStyle(avatarStyle);
+        if (styleModule) {
+          const generated = createAvatar(styleModule, {
+            seed,
+            size: size * 2,
+          }).toDataUri();
+          generatedAvatars.set(cacheKey, generated);
+          setAvatarSrc(generated);
+        } else {
           setAvatarSrc(undefined);
         }
       } else {
@@ -51,7 +46,10 @@ const UserAvatar: React.FC<UserAvatarProps> = ({ avatar, username, size = 40, st
       }
     };
 
-    generateAvatar();
+    generateAvatar().catch((error: unknown) => {
+      logger.error('Failed to load avatar style:', error);
+      setAvatarSrc(undefined);
+    });
   }, [avatarStyle, seed, size, cacheKey]);
 
   return (

@@ -127,7 +127,7 @@ const AnimationWrapper: React.FC<AnimationWrapperProps> = React.memo(
 
     return (
       <ConfigProvider theme={PANEL_THEME}>
-        <div ref={backdropRef} onClick={onClose} style={SLIDE_OUT.BACKDROP} />
+        <div ref={backdropRef} role="none" onClick={onClose} style={SLIDE_OUT.BACKDROP} />
         <div
           ref={panelRef}
           tabIndex={-1}

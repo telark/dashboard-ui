@@ -37,7 +37,6 @@ export const generateColumn = <V = unknown, T = unknown>(
   return {
     title: (
       <SortHeader
-        key={`${key}-${isActive ? 'active' : 'inactive'}-${activeSortKey}`}
         label={label}
         align={align}
         leftIcon={icon}

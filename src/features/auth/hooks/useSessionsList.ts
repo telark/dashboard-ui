@@ -8,6 +8,8 @@ import {
 import { getCurrentSessionName, isSignedIn } from '../utils/session/token';
 import { getCurrentUser } from '../utils/session/user';
 import type { SessionDetails } from '../models/session';
+import { AUTH_CONSTANTS } from '../constants/messages';
+import logger from '../../../logging';
 
 export interface UseSessionsListResult {
   sessions: SessionDetails[];
@@ -87,6 +89,7 @@ export const useSessionsList = (): UseSessionsListResult => {
           setError(e);
         }
       })
+      .catch((error: unknown) => logger.error(AUTH_CONSTANTS.SESSION.LOGS.LIST_FAILED, error))
       .finally(() => {
         if (!canceled) setLoading(false);
       });

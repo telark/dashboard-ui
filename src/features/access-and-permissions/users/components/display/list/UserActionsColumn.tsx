@@ -62,7 +62,7 @@ const EnrollLinkAction: React.FC<EnrollLinkActionProps> = ({ record }) => {
 
   return (
     // Adds no box: it only catches the clicks that bubble up from the portals.
-    <span style={{ display: 'contents' }} onClick={stopRowClick}>
+    <span role="none" style={{ display: 'contents' }} onClick={stopRowClick}>
       <RowIconButton
         icon={<LinkOutlined />}
         label={ENROLL.MENU}

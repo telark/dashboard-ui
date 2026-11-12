@@ -18,7 +18,9 @@ const RulesItem: React.FC<RulesItemProps> = ({ ruleLabel, formattedKey, isChecke
   );
 
   return (
+    // The checkbox is the keyboard path; a click anywhere on the row is a mouse shortcut to it.
     <div
+      role="none"
       style={{
         // Off scale, kept exact: padding 14 (MD to LG).
         display: 'flex',
