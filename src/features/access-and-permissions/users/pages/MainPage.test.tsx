@@ -72,6 +72,22 @@ describe('users page list', () => {
     });
   });
 
+  const PILL = L.INVITE_PILL;
+  it.each([
+    ['no link and no sign-in', {}, PILL.NOT_INVITED],
+    ['a sign-in without a link', { lastLoginAt: '2026-11-10T09:30:00Z' }, PILL.SIGNED_IN],
+    [
+      'a used link',
+      { inviteAcceptedAt: '2026-11-05T12:40:48Z', lastLoginAt: '2026-11-10T09:30:00Z' },
+      PILL.ENROLLED,
+    ],
+  ])('shows the invite pill for %s', async (_, status, pill) => {
+    const target = buildUser({ status: { phase: 'active', ...status } });
+    renderUsers([target]);
+
+    expect(within(await findRow(target.username)).getByText(pill)).toBeInTheDocument();
+  });
+
   it('shows a read-only viewer the page with its actions disabled', async () => {
     const target = buildUser();
     renderUsers([target, buildUser()], permissionsSeed('ReadOnly'));

@@ -12,7 +12,7 @@ const USER_SORT_FIELDS: SortFieldConfig<User>[] = [
   {
     key: 'invite',
     type: 'string',
-    getValue: ({ status }) => pillFor(status.invite, status.inviteAcceptedAt).text,
+    getValue: ({ status }) => pillFor(status).text,
   },
   { key: 'creationDate', type: 'date' },
 ];

@@ -64,6 +64,8 @@ export const USERS_CONSTANTS = {
       ENROLLED: 'Enrolled',
       NOT_INVITED: 'Not invited',
       NOT_INVITED_TOOLTIP: 'This member has no open enrollment link.',
+      SIGNED_IN: 'Signed in',
+      SIGNED_IN_AT: (when: string) => `Last sign-in ${when}`,
       EXPIRES_AT: (when: string) => `Expires ${when}`,
       EXPIRED_AT: (when: string) => `Expired ${when}`,
       ENROLLED_AT: (when: string) => `Enrolled ${when}`,
