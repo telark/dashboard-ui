@@ -19,7 +19,7 @@
     "@dicebear/open-peeps": "^9.2.4",
     "@dicebear/personas": "^9.2.4",
     "@dicebear/pixel-art": "^9.2.4",
-    "@reduxjs/toolkit": "^2.13.0",
+    "@reduxjs/toolkit": "^2.14.0",
     "antd": "^6.7.0",
     "axios": "^1.21.0",
     "date-fns": "^4.4.0",
