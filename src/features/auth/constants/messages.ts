@@ -33,11 +33,11 @@ export const AUTH_ERROR_MESSAGES = {
     NOT_FOUND_MESSAGE:
       'No passkeys were found in this browser. This can happen after you clear browser data or switch devices.',
     NOT_FOUND_DESCRIPTION:
-      'Select Try Again to use a passkey on another device or in a password manager. Lost your passkey? Ask your administrator for a new enrollment link. If you are the only administrator, run the break-glass enroll command from the install notes.',
+      'Select Try Again to use a passkey on another device or in a password manager. Lost your passkey? Ask your administrator for a new enrollment link. If you are the only administrator, run the telark auth enroll command from the install notes.',
     GENERAL_MESSAGE:
       'Could not sign in with your passkey. This can happen if you canceled the prompt or the passkey is no longer available.',
     GENERAL_DESCRIPTION:
-      'Select Try Again and confirm the passkey prompt. Lost your passkey? Ask your administrator for a new enrollment link. If you are the only administrator, run the break-glass enroll command from the install notes.',
+      'Select Try Again and confirm the passkey prompt. Lost your passkey? Ask your administrator for a new enrollment link. If you are the only administrator, run the telark auth enroll command from the install notes.',
     BUTTONS: {
       RETRY: 'Try Again',
       REMOVE: 'I lost my passkey',

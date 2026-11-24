@@ -12,11 +12,13 @@ import { installWebAuthn, removeWebAuthn, type WebAuthnMock } from '../../../tes
 import { AUTH_ERROR_MESSAGES } from '../../auth/constants';
 import { BOOTSTRAP_CONSTANTS as C, BOOTSTRAP_TEXTS as T } from '../constants/bootstrap';
 import type { BootstrapAction } from '../models/bootstrap';
-import BreakGlass from './BreakGlass';
+import AuthRequest from './AuthRequest';
 
 const REQUEST = 'req-1';
+// Spelled out on purpose: every approval link opens this path.
+const PAGE_PATH = '/auth/request';
 const route = (kind?: string) =>
-  `${APP_ROUTES.BREAK_GLASS}#${C.FRAGMENT_REQUEST}=${REQUEST}${kind ? `&${C.FRAGMENT_KIND}=${kind}` : ''}`;
+  `${APP_ROUTES.AUTH_REQUEST}#${C.FRAGMENT_REQUEST}=${REQUEST}${kind ? `&${C.FRAGMENT_KIND}=${kind}` : ''}`;
 
 const mockCeremony = (action: BootstrapAction) => {
   mockEndpoint('auth', Endpoints.BOOTSTRAP.ASSERT_START(REQUEST), {
@@ -29,17 +31,17 @@ const mockCeremony = (action: BootstrapAction) => {
   });
 };
 
-describe('break-glass page', () => {
+describe('auth request page', () => {
   let webauthn: WebAuthnMock;
   afterEach(() => removeWebAuthn());
 
   const setup = (at = route()) => {
     webauthn = installWebAuthn();
-    return renderApp(<BreakGlass />, { route: at });
+    return renderApp(<AuthRequest />, { route: at });
   };
 
   it('explains how to open the page without a request', () => {
-    setup(APP_ROUTES.BREAK_GLASS);
+    setup(APP_ROUTES.AUTH_REQUEST);
 
     expect(screen.getByText(T.PAGE_NO_REQUEST)).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: T.APPROVE })).not.toBeInTheDocument();
@@ -49,7 +51,7 @@ describe('break-glass page', () => {
     setup();
 
     expect(await screen.findByText(T.PAGE_SUBTITLE)).toBeInTheDocument();
-    await waitFor(() => expect(currentLocation()).toBe(APP_ROUTES.BREAK_GLASS));
+    await waitFor(() => expect(currentLocation()).toBe(PAGE_PATH));
     expect(screen.getByRole('button', { name: T.APPROVE })).toBeInTheDocument();
   });
 
@@ -80,7 +82,7 @@ describe('break-glass page', () => {
 
   it('shows why the buttons are off without passkey support', async () => {
     removeWebAuthn();
-    renderApp(<BreakGlass />, { route: route() });
+    renderApp(<AuthRequest />, { route: route() });
 
     expect(
       await screen.findByText(AUTH_ERROR_MESSAGES.PASSKEYS_INSECURE_CONTEXT.TITLE),

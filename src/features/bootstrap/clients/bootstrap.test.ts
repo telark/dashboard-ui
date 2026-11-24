@@ -2,12 +2,7 @@ import { expect, it } from 'vitest';
 import { Endpoints } from '../../../constants';
 import { describeClients, mockEmptyEndpoint } from '../../../test';
 import { describeVoidClients } from '../../../test/contracts/voidClients';
-import {
-  finishAssertion,
-  getBootstrapStatus,
-  setBreakGlassAlerts,
-  startAssertion,
-} from './bootstrap';
+import { finishAssertion, getBootstrapStatus, setAuthAlerts, startAssertion } from './bootstrap';
 
 const REQUEST = 'req-1';
 
@@ -41,18 +36,20 @@ describeClients('bootstrap', [
 
 describeVoidClients('bootstrap', [
   {
-    name: 'setBreakGlassAlerts',
+    name: 'setAuthAlerts',
     service: 'auth',
-    endpoint: Endpoints.AUTH.BREAK_GLASS_ALERTS,
-    call: () => setBreakGlassAlerts(true),
+    endpoint: Endpoints.AUTH.AUTH_ALERTS,
+    call: () => setAuthAlerts(true),
     body: { notifyAdmins: true },
   },
 ]);
 
-it('sends an opt-out of the break-glass alerts as false', async () => {
-  const mock = mockEmptyEndpoint('auth', Endpoints.AUTH.BREAK_GLASS_ALERTS);
+it('sends an opt-out of the auth alerts as false to auth/alerts', async () => {
+  const mock = mockEmptyEndpoint('auth', Endpoints.AUTH.AUTH_ALERTS);
 
-  await setBreakGlassAlerts(false);
+  await setAuthAlerts(false);
 
   expect(mock.calls[0].body).toEqual({ notifyAdmins: false });
+  // Spelled out on purpose: the auth service serves this route.
+  expect(mock.calls[0].url.pathname).toBe('/api/auth/api/v1/auth/alerts');
 });

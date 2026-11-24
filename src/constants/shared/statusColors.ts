@@ -100,7 +100,7 @@ export const STATUS_COLORS = {
     active: SUCCESS,
     suspended: DANGER,
   } as Readonly<Record<string, string>>,
-  // A pending break-glass request waits on the bootstrap account, so it is the one that asks for attention.
+  // A pending auth request waits on the bootstrap account, so it is the one that asks for attention.
   BOOTSTRAP_REQUEST: {
     pending: WARNING,
     approved: SUCCESS,

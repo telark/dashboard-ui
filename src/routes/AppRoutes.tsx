@@ -28,7 +28,7 @@ const Dashboard = lazy(() => import('../features/home/pages/Dashboard'));
 const Login = lazy(() => import('../features/auth/pages/flow/Login'));
 const Register = lazy(() => import('../features/auth/pages/flow/Register'));
 const GoogleCallback = lazy(() => import('../features/auth/pages/flow/GoogleCallback'));
-const BreakGlass = lazy(() => import('../features/bootstrap/pages/BreakGlass'));
+const AuthRequest = lazy(() => import('../features/bootstrap/pages/AuthRequest'));
 
 // resources
 const ApplicationsGlobalView = lazy(() => import('../features/applications/pages/main/GlobalView'));
@@ -71,11 +71,11 @@ const AppRoutes: React.FC = () => {
       <Routes location={location}>
         {/* One layout instance spans both auth routes, so the brand panel is not
             remounted when navigating between login and register. A signed-in browser keeps
-            the break-glass approval page, which never touches its session. */}
+            the auth request approval page, which never touches its session. */}
         <Route
           element={
             isAuthenticated &&
-            location.pathname !== APP_ROUTES.BREAK_GLASS &&
+            location.pathname !== APP_ROUTES.AUTH_REQUEST &&
             !isEnrollLink(location.pathname, location.search, location.hash) ? (
               <Navigate to={APP_ROUTES.HOME} replace />
             ) : (
@@ -85,7 +85,7 @@ const AppRoutes: React.FC = () => {
         >
           <Route path={APP_ROUTES.LOGIN} element={<Login />} />
           <Route path={APP_ROUTES.REGISTER} element={<Register />} />
-          <Route path={APP_ROUTES.BREAK_GLASS} element={<BreakGlass />} />
+          <Route path={APP_ROUTES.AUTH_REQUEST} element={<AuthRequest />} />
         </Route>
         <Route path={APP_ROUTES.GOOGLE_CALLBACK} element={<GoogleCallback />} />
         <Route
