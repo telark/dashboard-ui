@@ -25,4 +25,4 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Type-check, lint and build
-        uses: telark/telark/.github/actions/ui-gate@f450870d67105d41e028cfd7fa8f4eb1d43db1e8 # last pinned SHA commit of feat/v0-2-0
+        uses: telark/telark/.github/actions/ui-gate@4d8e6649979ed81402f13b86c99c234fb5fef8da # last pinned SHA commit of main
