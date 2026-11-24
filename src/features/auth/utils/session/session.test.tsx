@@ -8,12 +8,12 @@ import {
   SESSION_CHECK_EVENT,
 } from '../../../../constants';
 import { STORAGE_KEYS } from '../../../../constants/store/store';
-import { mockEmptyEndpoint, mockEndpoint, renderAppHook } from '../../../../test';
+import { mockEndpoint, renderAppHook } from '../../../../test';
 import { buildUser } from '../../../../test/factories/users';
 import { inDays, signIn } from '../../../../test/helpers/session';
 import { AUTH_CONSTANTS } from '../../constants/messages';
 import { useSessionExpirationCheck } from './expiration';
-import { dropLegacySessionToken, getCurrentSessionName, isSignedIn } from './token';
+import { getCurrentSessionName, isSignedIn } from './token';
 import { getCurrentUser, removeCurrentUser, setCurrentUser } from './user';
 import { validateSession } from './validation';
 
@@ -60,28 +60,6 @@ describe('session name', () => {
     mockSelf({}, 500);
 
     await expect(getCurrentSessionName()).resolves.toBeNull();
-  });
-});
-
-describe('legacy session token', () => {
-  it('revokes a pre-cookie token and drops the stored user', async () => {
-    localStorage.setItem(STORAGE_KEYS.SESSION_TOKEN, 'old-token');
-    signIn();
-    const logout = mockEmptyEndpoint('auth', Endpoints.AUTH.LOGOUT);
-
-    dropLegacySessionToken();
-
-    expect(localStorage.getItem(STORAGE_KEYS.SESSION_TOKEN)).toBeNull();
-    expect(isSignedIn()).toBe(false);
-    await waitFor(() => expect(logout.calls).toHaveLength(1));
-  });
-
-  it('does nothing without a legacy token', () => {
-    signIn();
-
-    dropLegacySessionToken();
-
-    expect(isSignedIn()).toBe(true);
   });
 });
 

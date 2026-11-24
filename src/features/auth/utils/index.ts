@@ -24,7 +24,7 @@ export {
 export { isSessionExpired, validateSession } from './session/validation';
 export { useSessionExpirationCheck } from './session/expiration';
 export type { UseSessionExpirationCheckOptions } from './session/expiration';
-export { isSignedIn, getCurrentSessionName, dropLegacySessionToken } from './session/token';
+export { isSignedIn, getCurrentSessionName } from './session/token';
 
 export { handleAuthError } from './shared/errors';
 

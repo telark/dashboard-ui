@@ -85,7 +85,7 @@ describeClients('auth', [
     name: 'logout',
     service: 'auth',
     endpoint: Endpoints.AUTH.LOGOUT,
-    call: () => logout('legacy-token'),
+    call: () => logout(),
     response: { success: true, message: 'ok' },
   },
   {
@@ -182,7 +182,7 @@ it('marks a change so the backend accepts it as coming from the app', async () =
   const mock = mockEndpoint('auth', Endpoints.AUTH.LOGOUT, { success: true, message: 'ok' });
   const header = HTTP_HEADERS.CUSTOM.REQUESTED_WITH;
 
-  await logout('legacy-token');
+  await logout();
 
   expect(mock.calls[0].headers.get(header)).toBe(REQUEST_CONFIG.DEFAULT_HEADERS[header]);
 });

@@ -5,7 +5,6 @@ import { PersistGate } from 'redux-persist/integration/react';
 import store, { persistor } from './store';
 import App from './App';
 import { dropForeignPermissions } from './features/auth/hooks';
-import { dropLegacySessionToken } from './features/auth/utils';
 import { registerHealthInterceptors, selectServiceHealth } from './api';
 import { applyLayoutVariables } from './constants';
 import { applyStoredTheme } from './features/theme';
@@ -14,7 +13,6 @@ import './styles/antd.css';
 
 applyStoredTheme();
 applyLayoutVariables();
-dropLegacySessionToken();
 
 registerHealthInterceptors({
   getServiceHealth: (name) => selectServiceHealth(store.getState(), name),
