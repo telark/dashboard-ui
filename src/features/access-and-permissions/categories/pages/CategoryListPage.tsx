@@ -34,6 +34,7 @@ const CategoryListPage: React.FC<CategoryListPageProps> = ({ scope, scopeLabel, 
   const { categories, loaded, error, refetch } = useCategories(scope);
   const {
     sortKey,
+    sortOrder,
     currentPage,
     pageSize,
     setCurrentPage,
@@ -86,6 +87,7 @@ const CategoryListPage: React.FC<CategoryListPageProps> = ({ scope, scopeLabel, 
       columns: [
         ...CategoryColumns({
           activeSortKey: sortKey ?? CC.KEYS.CREATED_AT,
+          sortOrder,
           onSort: handleSort,
           scopeLabel,
         }).map((c) => (c.key === CC.KEYS.NAME ? { ...c, title: L.COLUMNS.NAME } : c)),
@@ -119,6 +121,7 @@ const CategoryListPage: React.FC<CategoryListPageProps> = ({ scope, scopeLabel, 
       openAdd,
       openEdit,
       sortKey,
+      sortOrder,
       handleSort,
       sortedCategories.length,
       paginatedCategories,

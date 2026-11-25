@@ -28,7 +28,7 @@ import {
 } from '../../../../../components/shared';
 import { ACTION_PERMISSIONS } from '../../../../auth/hooks';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
-import type { PlanRepeat, ProtectionPlan } from '../../models';
+import type { PlanPhase, PlanRepeat, ProtectionPlan } from '../../models';
 import { formatRepeatRule } from '../../utils/repeatRule';
 import DetailsView from './DetailsView';
 
@@ -173,6 +173,16 @@ describe('plan details summary', () => {
     await openDetails(buildPlan(overrides));
 
     expect(await screen.findByText(text, { exact: false })).toBeInTheDocument();
+  });
+
+  it.each<[PlanPhase, string, string]>([
+    ['canceled', L.DETAIL_PAGE.FIELDS.CANCELED, L.DETAIL_PAGE.FIELDS.TERMINATED],
+    ['terminated', L.DETAIL_PAGE.FIELDS.TERMINATED, L.DETAIL_PAGE.FIELDS.CANCELED],
+  ])('names the end of a %s plan in its timeline', async (phase, shown, hidden) => {
+    await openDetails(buildPlan({ phase, terminatedAt: '2026-02-02T10:00:00Z' }));
+
+    expect(await screen.findAllByText(shown)).not.toHaveLength(0);
+    expect(screen.queryByText(hidden)).not.toBeInTheDocument();
   });
 });
 

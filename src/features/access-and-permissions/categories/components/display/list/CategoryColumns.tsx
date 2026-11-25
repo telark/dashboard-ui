@@ -61,7 +61,7 @@ const CategoryColumns = (ctx: CategoryColumnsContext) => {
         render: (value: string) => {
           const isBuiltIn = value === CC.TYPES.BUILT_IN;
           return (
-            <Tag className={TAG_CLASS.MEDIUM}>
+            <Tag className={`${TAG_CLASS.MEDIUM} ${TAG_CLASS.AS_IS}`}>
               {isBuiltIn ? CC.LABELS.TYPES.BUILT_IN : CC.LABELS.TYPES.CUSTOM}
             </Tag>
           );
@@ -76,7 +76,7 @@ const CategoryColumns = (ctx: CategoryColumnsContext) => {
         icon: <AiOutlineTag />,
         width: CC.SIZES.COLUMNS.SCOPE,
         render: (value: string) => (
-          <Tag className={TAG_CLASS.MEDIUM}>{ctx.scopeLabel ?? value}</Tag>
+          <Tag className={`${TAG_CLASS.MEDIUM} ${TAG_CLASS.AS_IS}`}>{ctx.scopeLabel ?? value}</Tag>
         ),
       },
       ctx,

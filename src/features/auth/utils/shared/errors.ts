@@ -6,6 +6,7 @@ import type {
 import { AUTH_ERROR_MESSAGES } from '../../constants';
 import { AUTH_REFUSAL_CODES, ERROR_MESSAGES, HTTP_STATUS } from '../../../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/login';
+import { REGISTER_CONSTANTS } from '../../constants/register';
 import { selectSelfRegistrationEnabled } from '../../store';
 import store from '../../../../store';
 import logger from '../../../../logging';
@@ -165,6 +166,12 @@ const showInfoMessage = (messageApi: MessageApi, content: string): void => {
 export const handleAuthError = (error: unknown, messageApi: MessageApi): void => {
   const authError = error as AuthErrorShape;
   const errorMsg = extractErrorMessage(authError);
+
+  // Auth's own text for this refusal is lowercase, so it is shown in the app's words.
+  if (authError.normalized?.code === AUTH_REFUSAL_CODES.EMAIL_RESERVED) {
+    showErrorMessage(messageApi, REGISTER_CONSTANTS.MESSAGES.EMAIL_RESERVED);
+    return;
+  }
 
   if (isNoPasskeysError(authError, errorMsg)) {
     showInfoMessage(messageApi, LOGIN_CONSTANTS.MESSAGES.NO_PASSKEYS);

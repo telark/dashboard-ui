@@ -467,11 +467,21 @@ const ClusterInsightsView: React.FC<Props> = memo(({ tab, active, tabs, appNote,
         visible: visibleColumns,
         environmentNames,
         activeSortKey: sortKey ?? '',
+        sortOrder,
         onSort,
         renderGroup,
         phoneWidth,
       }),
-    [category, visibleColumns, environmentNames, sortKey, onSort, renderGroup, phoneWidth],
+    [
+      category,
+      visibleColumns,
+      environmentNames,
+      sortKey,
+      sortOrder,
+      onSort,
+      renderGroup,
+      phoneWidth,
+    ],
   );
 
   // Panel target: the row on screen, or a location learned from a lookup or another finding.

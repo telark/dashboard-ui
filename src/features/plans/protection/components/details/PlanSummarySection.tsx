@@ -254,12 +254,14 @@ function timelineRows(plan: ProtectionPlan, nameOf: NameOf): KeyValueGridRow[] {
     label,
     value: <Moment date={date} actor={actor} nameOf={nameOf} />,
   });
+  // A cancel ends the plan too and stamps the same fields.
+  const endLabel = plan.phase === 'canceled' ? FIELDS.CANCELED : FIELDS.TERMINATED;
   return [
     moment('created', FIELDS.CREATED, plan.createdAt, plan.createdBy),
     ...(plan.startedAt ? [moment('started', FIELDS.STARTED, plan.startedAt, plan.startedBy)] : []),
     moment('updated', FIELDS.UPDATED, plan.lastUpdatedAt, plan.lastUpdatedBy),
     ...(plan.terminatedAt
-      ? [moment('terminated', FIELDS.TERMINATED, plan.terminatedAt, plan.terminatedBy)]
+      ? [moment('terminated', endLabel, plan.terminatedAt, plan.terminatedBy)]
       : []),
     ...approvalRows(plan, nameOf),
     {

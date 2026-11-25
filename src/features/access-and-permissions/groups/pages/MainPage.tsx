@@ -66,6 +66,7 @@ const MainPage: React.FC = () => {
 
   const {
     sortKey,
+    sortOrder,
     selectedGroups,
     currentPage,
     pageSize,
@@ -173,6 +174,7 @@ const MainPage: React.FC = () => {
 
   const pageConfig = useGroupListPageConfig({
     sortKey,
+    sortOrder,
     handleSort,
     selectedGroups,
     setSelectedGroups,

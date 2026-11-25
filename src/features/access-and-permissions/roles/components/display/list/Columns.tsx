@@ -22,11 +22,17 @@ import { ValidityDisplay } from '../../../../../../components/display/validity';
 export const Columns = ({
   onSort,
   activeSortKey,
+  sortOrder,
   categories = [],
   users = [],
   usernamesById = {},
 }: Omit<ColumnsArgs, 'onView' | 'onEdit' | 'onDelete'>): TableColumnType<Role>[] => {
   const isBuiltIn = (record: Role) => record.type === RPC.TYPE.BUILT_IN;
+  const sortCtx = {
+    activeSortKey: activeSortKey as string,
+    sortOrder,
+    onSort: onSort as (key: string) => void,
+  };
 
   const getUserById = (userId?: string) => {
     if (!userId) return null;
@@ -45,7 +51,7 @@ export const Columns = ({
           </span>
         ),
       },
-      { activeSortKey: activeSortKey as string, onSort: onSort as (key: string) => void },
+      sortCtx,
     ),
     generateColumn(
       {
@@ -57,7 +63,7 @@ export const Columns = ({
           <Tag className={TAG_CLASS.MEDIUM}>{record.type ?? RPC.LABELS.CUSTOM_TYPE}</Tag>
         ),
       },
-      { activeSortKey: activeSortKey as string, onSort: onSort as (key: string) => void },
+      sortCtx,
     ),
     generateColumn(
       {
@@ -67,7 +73,7 @@ export const Columns = ({
         width: RPC.SIZES.COLUMNS.STATUS,
         render: (status: string) => <Tag className={TAG_CLASS.MEDIUM}>{status}</Tag>,
       },
-      { activeSortKey: activeSortKey as string, onSort: onSort as (key: string) => void },
+      sortCtx,
     ),
     generateColumn(
       {
@@ -81,7 +87,7 @@ export const Columns = ({
           return <TimeAgo date={record.creationDate} />;
         },
       },
-      { activeSortKey: activeSortKey as string, onSort: onSort as (key: string) => void },
+      sortCtx,
     ),
     generateColumn(
       {
@@ -104,7 +110,7 @@ export const Columns = ({
           );
         },
       },
-      { activeSortKey: activeSortKey as string, onSort: onSort as (key: string) => void },
+      sortCtx,
     ),
     generateColumn(
       {
@@ -119,7 +125,7 @@ export const Columns = ({
           return <TimeAgo date={record.lastUpdateDate} />;
         },
       },
-      { activeSortKey: activeSortKey as string, onSort: onSort as (key: string) => void },
+      sortCtx,
     ),
     generateColumn(
       {
@@ -137,7 +143,7 @@ export const Columns = ({
           );
         },
       },
-      { activeSortKey: activeSortKey as string, onSort: onSort as (key: string) => void },
+      sortCtx,
     ),
     generateColumn(
       {
@@ -152,7 +158,7 @@ export const Columns = ({
           return <Tag className={TAG_CLASS.MEDIUM}>{categoryName}</Tag>;
         },
       },
-      { activeSortKey: activeSortKey as string, onSort: onSort as (key: string) => void },
+      sortCtx,
     ),
     generateColumn(
       {
@@ -166,7 +172,7 @@ export const Columns = ({
           return <Tag className={TAG_CLASS.MEDIUM}>{record.version || EMPTY_VALUE}</Tag>;
         },
       },
-      { activeSortKey: activeSortKey as string, onSort: onSort as (key: string) => void },
+      sortCtx,
     ),
   ];
 };

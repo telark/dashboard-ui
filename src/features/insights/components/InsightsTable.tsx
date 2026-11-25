@@ -216,6 +216,7 @@ interface BuildArgs {
   visible: ReadonlySet<InsightColumnKey>;
   environmentNames: Record<string, string>;
   activeSortKey: string;
+  sortOrder: SortOrder;
   onSort: (key: string) => void;
   renderGroup: (item: InsightGroupItem) => React.ReactNode;
   // The table's width on a phone, else 0: Severity then leads and stays pinned while the rest
@@ -228,6 +229,7 @@ export const buildInsightColumns = ({
   visible,
   environmentNames,
   activeSortKey,
+  sortOrder,
   onSort,
   renderGroup,
   phoneWidth,
@@ -315,7 +317,7 @@ export const buildInsightColumns = ({
         ...fitting.filter((s) => s.key !== 'SEVERITY'),
       ]
     : fitting;
-  const ctx = { activeSortKey, onSort };
+  const ctx = { activeSortKey, sortOrder, onSort };
   // Like the other tables: the title column is left-aligned, the rest centered. A group
   // header spans the whole row from the first column.
   return shown.map(({ key, label, icon, render }, index) => ({

@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { Empty, type TableColumnType } from 'antd';
 import type { PageLayoutConfig } from '../../../../../interfaces/layout/page';
 import type { FilterChip } from '../../../../../interfaces/layout/toolbar';
+import type { SortOrder } from '../../../../../utils/layout/sort';
 import { GROUPS_CONSTANTS as GC } from '../../constants';
 import { DEFAULT_COLORS } from '../../../../../constants';
 import { Icons } from '../../../../../constants';
@@ -32,6 +33,7 @@ const GROUPS_EMPTY = (
 
 interface UseGroupListPageConfigOptions {
   sortKey: string | null;
+  sortOrder: SortOrder;
   handleSort: (key: string) => void;
   selectedGroups: React.Key[];
   setSelectedGroups: (keys: React.Key[]) => void;
@@ -65,6 +67,7 @@ interface UseGroupListPageConfigOptions {
 
 export const useGroupListPageConfig = ({
   sortKey,
+  sortOrder,
   handleSort,
   selectedGroups,
   setSelectedGroups,
@@ -182,12 +185,13 @@ export const useGroupListPageConfig = ({
     () =>
       Columns({
         activeSortKey: sortKey ?? 'creationDate',
+        sortOrder,
         onSort: handleSort,
         categories: uniqueReduxCategories,
         users: users || [],
         usernamesById,
       }) as TableColumnType<Group>[],
-    [sortKey, uniqueReduxCategories, handleSort, users, usernamesById],
+    [sortKey, sortOrder, uniqueReduxCategories, handleSort, users, usernamesById],
   );
 
   const columns = useMemo(

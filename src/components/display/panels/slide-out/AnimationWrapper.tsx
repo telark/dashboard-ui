@@ -130,6 +130,9 @@ const AnimationWrapper: React.FC<AnimationWrapperProps> = React.memo(
         <div ref={backdropRef} role="none" onClick={onClose} style={SLIDE_OUT.BACKDROP} />
         <div
           ref={panelRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label={title}
           tabIndex={-1}
           className={PANEL_SURFACE_CLASS}
           style={{

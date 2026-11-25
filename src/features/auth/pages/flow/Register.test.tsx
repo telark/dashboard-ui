@@ -1,7 +1,7 @@
 import { screen, waitFor } from '@testing-library/react';
 import type { UserEvent } from '@testing-library/user-event';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { APP_ROUTES, Endpoints, HTTP_HEADERS } from '../../../../constants';
+import { APP_ROUTES, AUTH_REFUSAL_CODES, Endpoints, HTTP_HEADERS } from '../../../../constants';
 import { STORAGE_KEYS } from '../../../../constants/store/store';
 import {
   clickButton,
@@ -84,18 +84,26 @@ describe('register page', () => {
     expect(start.calls).toHaveLength(0);
   });
 
-  it('shows the server refusal as a toast', async () => {
-    mockEndpoint(
-      'auth',
-      Endpoints.AUTH.REGISTER.START,
-      { message: 'user already exists' },
-      { status: 409 },
-    );
+  it.each([
+    {
+      shown: 'as the server words it',
+      status: 409,
+      body: { message: 'user already exists' },
+      expected: 'user already exists',
+    },
+    {
+      shown: 'in the app words for a reserved email',
+      status: 403,
+      body: { message: 'this email is reserved', code: AUTH_REFUSAL_CODES.EMAIL_RESERVED },
+      expected: REGISTER_CONSTANTS.MESSAGES.EMAIL_RESERVED,
+    },
+  ])('shows the server refusal $shown', async ({ status, body, expected }) => {
+    mockEndpoint('auth', Endpoints.AUTH.REGISTER.START, body, { status });
     const { user } = renderRegister();
 
     await submitDevice(user, ALL_FIELDS);
 
-    expect(await screen.findByText('user already exists')).toBeInTheDocument();
+    expect(await screen.findByText(expected)).toBeInTheDocument();
   });
 
   it('replaces the form when self-registration is off and offers the way back', async () => {
