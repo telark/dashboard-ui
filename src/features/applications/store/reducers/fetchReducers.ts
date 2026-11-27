@@ -28,19 +28,21 @@ function applyForceSyncStateFromApplications(state: ApplicationsState, apps: App
   if (!state.syncStatus) state.syncStatus = {};
   if (!state.syncCompletedAt) state.syncCompletedAt = {};
   if (!state.syncLastError) state.syncLastError = {};
-  for (const app of apps || []) {
-    const block = app?.lastForceSync;
-    if (!app?.name || !block?.phase) continue;
-    if (state.syncing?.[app.name]) continue;
-    const mapped: SyncStatusValue | null = mapPhaseToSyncStatus(block.phase);
-    if (!mapped) continue;
-    state.syncStatus[app.name] = mapped;
-    if (block.completedAt) state.syncCompletedAt[app.name] = block.completedAt;
-    if (block.phase === FORCE_SYNC_PHASE.FAILED && block.error) {
-      state.syncLastError[app.name] = block.error;
-    } else if (block.phase === FORCE_SYNC_PHASE.COMPLETED) {
-      delete state.syncLastError[app.name];
-    }
+  for (const app of apps || []) applyForceSyncState(state, app);
+}
+
+function applyForceSyncState(state: ApplicationsState, app: Application | undefined): void {
+  const block = app?.lastForceSync;
+  if (!app?.name || !block?.phase) return;
+  if (state.syncing?.[app.name]) return;
+  const mapped: SyncStatusValue | null = mapPhaseToSyncStatus(block.phase);
+  if (!mapped) return;
+  state.syncStatus[app.name] = mapped;
+  if (block.completedAt) state.syncCompletedAt[app.name] = block.completedAt;
+  if (block.phase === FORCE_SYNC_PHASE.FAILED && block.error) {
+    state.syncLastError[app.name] = block.error;
+  } else if (block.phase === FORCE_SYNC_PHASE.COMPLETED) {
+    delete state.syncLastError[app.name];
   }
 }
 
@@ -74,27 +76,12 @@ export const handleFetchApplicationsFulfilled = (
   applyForceSyncStateFromApplications(state, action.payload);
 };
 
-export const handleFetchApplicationsSilentFulfilled = (
-  state: ApplicationsState,
-  action: PayloadAction<Application[]>,
-) => {
-  state.loading = false;
-  state.loaded = true;
-  state.applications = keepUnchanged(state.applications, action.payload, (app) => app.name);
-  state.error = null;
-  applyForceSyncStateFromApplications(state, action.payload);
-};
-
 export const handleFetchApplicationsRejected = (
   state: ApplicationsState,
   action: PayloadAction<unknown>,
 ) => {
   state.loading = false;
   state.error = String(action.payload || STORE_ERRORS.FETCH_APPLICATIONS);
-};
-
-export const handleFetchApplicationsSilentPending = (state: ApplicationsState) => {
-  void state;
 };
 
 export const handleFetchApplicationsSilentRejected = (

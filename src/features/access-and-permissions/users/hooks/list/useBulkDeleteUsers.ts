@@ -55,9 +55,9 @@ export const useBulkDeleteUsers = ({
       });
 
       setSelectedUsers([]);
-    } catch (rejection) {
+    } catch (error) {
       message.error({
-        content: rejectionMessage(rejection, UC.LABELS.ACTIONS.BULK_DELETE_FAILED),
+        content: rejectionMessage(error, UC.LABELS.ACTIONS.BULK_DELETE_FAILED),
         key: loadingKey,
       });
     } finally {

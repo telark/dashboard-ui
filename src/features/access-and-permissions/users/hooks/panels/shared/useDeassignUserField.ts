@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { App as AntdApp } from 'antd';
 import type { FormInstance } from 'antd';
-import { useDeassignModal } from '../../../../shared';
+import { useDeassignModal, applySelectionChange } from '../../../../shared';
 import { updateUserThunk } from '../../../store';
 import type { AppDispatch } from '../../../../../../store';
 import store from '../../../../../../store';
@@ -10,7 +10,6 @@ import { fetchMyPermissionsThunk } from '../../../../../auth/store/thunks/fetchT
 import type { User } from '../../../models';
 import { rejectionMessage } from '../../../../../../utils/helpers/format';
 import { fetchFreshUserIds } from '../../../utils';
-import { applySelectionChange } from '../../../../shared';
 
 type AssignmentField = 'roleRefs' | 'groupRefs';
 
@@ -49,9 +48,9 @@ export const useDeassignUserField = <T extends { id: string; name: string }>({
         form.setFieldsValue({ [fieldName]: current.filter((id) => id !== item.id) });
         onAfterDeassign?.();
         message.success(successMessage(item.name));
-      } catch (rejection) {
-        message.error(rejectionMessage(rejection, failMessage));
-        throw new Error(failMessage, { cause: rejection });
+      } catch (error) {
+        message.error(rejectionMessage(error, failMessage));
+        throw new Error(failMessage, { cause: error });
       }
     },
     [user, form, dispatch, fieldName, successMessage, failMessage, onAfterDeassign, message],

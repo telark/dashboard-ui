@@ -46,10 +46,8 @@ const RoleList: React.FC<RoleListProps> = ({ roles, loading, allRoles, blockedRe
         return;
       }
 
-      const roleIdsOnScreen = roles.map((r) => r.id);
-      const preservedSelections = currentSelectedRoles.filter(
-        (id) => !roleIdsOnScreen.includes(id),
-      );
+      const roleIdsOnScreen = new Set(roles.map((r) => r.id));
+      const preservedSelections = currentSelectedRoles.filter((id) => !roleIdsOnScreen.has(id));
 
       form.setFieldsValue({
         roleRefs: Array.from(new Set([...preservedSelections, ...checkedValues])),

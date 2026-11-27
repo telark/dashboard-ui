@@ -15,6 +15,7 @@ import {
 } from '../../../../components/display/toolbar';
 import type { FilterChip, ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 import { APPLICATIONS_UI } from '../../constants';
+import { syncBlockedTooltip } from '../../utils/syncTooltip';
 import { ACTION_PERMISSIONS, usePermission } from '../../../auth/hooks';
 
 const MORE_MENU_KEYS = {
@@ -141,11 +142,11 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
             if (!syncBlocked) onBulkForceSync();
           },
           disabled: syncBlocked,
-          tooltip: !canForceSync
-            ? APPLICATIONS_UI.CARD.ACTIONS.FORCE_SYNC_PERMISSION_DENIED_TOOLTIP
-            : bulkForceSyncDisabled
-              ? APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP
-              : undefined,
+          tooltip: syncBlockedTooltip(
+            canForceSync,
+            APPLICATIONS_UI.CARD.ACTIONS.FORCE_SYNC_PERMISSION_DENIED_TOOLTIP,
+            bulkForceSyncDisabled,
+          ),
         },
         {
           key: 'bulkReset',
@@ -225,6 +226,15 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
     return bulkMode ? [search, exitBulk] : [search, more];
   }, [bulkMode, handleMoreMenuClick, onSearchChange, onToggleBulkMode, searchValue]);
 
+  const renderQuickFilter = (compact: boolean) => (
+    <HealthPills
+      active={healthQuickFilter || 'all'}
+      counts={healthCounts}
+      compact={compact}
+      onChange={onHealthQuickFilterChange}
+    />
+  );
+
   return (
     <ListToolbar
       countSuffix={APPLICATIONS_UI.TOOLBAR_COUNT_SUFFIX}
@@ -245,14 +255,7 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
       }}
       bulkActions={bulkActions}
       unreachable={unreachable}
-      quickFilter={(compact) => (
-        <HealthPills
-          active={healthQuickFilter || 'all'}
-          counts={healthCounts}
-          compact={compact}
-          onChange={onHealthQuickFilterChange}
-        />
-      )}
+      quickFilter={renderQuickFilter}
       toolbars={toolbars}
     />
   );

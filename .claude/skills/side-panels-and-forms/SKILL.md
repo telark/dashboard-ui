@@ -24,7 +24,7 @@ These already apply `PANEL_SURFACE_CLASS`, the light `PANEL_THEME_TOKENS`, the s
 - Surface: everything inside is on white, so use `SURFACE_*` and `TEXT_ON_SURFACE*` colors; dark-surface text tokens render invisible here.
 - Width: panels can expand and collapse with an animated width. Layout inside that depends on width reads `useElementWidth`, not the expand flag.
 - Motion: `AnimationWrapper` paints its frame on the click and renders the body and footer a frame later, so a heavy form never holds the panel back. Durations and curves live in `SLIDE_OUT` (enter, `EXIT`, and `NO_MOTION` under `prefers-reduced-motion`). A closed panel slides out inert, so nothing waits for it. Effects that run on open set values through the form instance, which works before the fields mount.
-- Keyboard: the panel takes focus when it opens, so Tab goes to its header first. Header icon buttons are plain buttons with an `aria-label` and `SLIDE_OUT.HEADER_BUTTON_CLASS` (the slate focus ring); a new one needs both.
+- Keyboard: the frame is a modal dialog named by the panel title, and the panel takes focus when it opens, so Tab goes to its header first. Header icon buttons are plain buttons with an `aria-label` and `SLIDE_OUT.HEADER_BUTTON_CLASS` (the slate focus ring); a new one needs both.
 - Host page: opening a panel re-renders the page that hosts it, so the page's table props must not change with it (AGENTS.md → Tables & lists).
 - Theme: the frame's `ConfigProvider` takes `PANEL_THEME` (fixed css-var key), whose common controls `PanelThemePrewarm` styles while the app is idle. Don't inline a theme object there.
 

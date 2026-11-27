@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { BUTTON_COLORS } from '../../../constants';
+import { BUTTON_COLORS, TIME_CONFIGS } from '../../../constants';
 import type { Role } from '../../../features/access-and-permissions/roles/models';
 import { formatValidity } from '../../../features/access-and-permissions/roles/utils/validity/format';
-import { TIME_CONFIGS } from '../../../constants';
 
 interface ValidityDisplayProps {
   validity: Role['validity'];

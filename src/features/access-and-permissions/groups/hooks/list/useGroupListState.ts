@@ -1,5 +1,4 @@
-import React from 'react';
-import { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { useSortState, sortData } from '../../../../../utils/layout/sort';
 import type { SortFieldConfig, SortOrder } from '../../../../../utils/layout/sort';
 import type { Group } from '../../models';

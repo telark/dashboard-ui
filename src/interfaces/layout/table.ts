@@ -1,5 +1,6 @@
 import type React from 'react';
 import type { TableColumnsType, TableProps } from 'antd';
+import type { SortOrder } from '../../utils/layout/sort';
 
 export interface DataTableProps<T> {
   columns: TableColumnsType<T>;
@@ -24,6 +25,7 @@ export interface SortHeaderProps {
 
 export interface GenerateColumnCtx {
   activeSortKey: string;
+  sortOrder: SortOrder;
   onSort: (key: string) => void;
 }
 

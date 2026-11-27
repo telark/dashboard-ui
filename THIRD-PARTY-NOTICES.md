@@ -16,21 +16,21 @@ For at least three years after we last distribute an image version, Telark will 
 
 ## Alpine package notices
 
-The copyright and license notices of the permissive Alpine packages in the image, from each package's upstream source at the version installed in `nginx:1.31.6-alpine3.24-slim` (Alpine 3.24.2). The GPL, LGPL and MPL texts, and the Apache License 2.0, are under License texts. Regenerate this section when the base image changes ([docs/PUBLISHING.md](https://github.com/telark/telark/blob/main/docs/PUBLISHING.md#notices-of-the-alpine-packages-and-rust-crates)).
+The copyright and license notices of the permissive Alpine packages in the image, from each package's upstream source at the version installed in the image (Alpine 3.24.4, from `nginx:1.31.10-alpine3.24-slim`). The GPL, LGPL and MPL texts, and the Apache License 2.0, are under License texts. Regenerate this section when the base image changes ([docs/PUBLISHING.md](https://github.com/telark/telark/blob/main/docs/PUBLISHING.md#notices-of-the-alpine-packages-and-rust-crates)).
 
 | Packages (origin) | Version | License | Notice |
 |---|---|---|---|
 | alpine-keys | 2.6-r0 | MIT | Alpine Linux's own files, no copyright line |
-| alpine-release (alpine-base) | 3.24.2-r0 | MIT | Alpine Linux's own files, no copyright line |
-| ca-certificates-bundle (ca-certificates) | 20260909-r0 | MPL-2.0 AND MIT | MPL-2.0 under License texts, MIT part below |
+| alpine-release (alpine-base) | 3.24.4-r0 | MIT | Alpine Linux's own files, no copyright line |
+| ca-certificates-bundle (ca-certificates) | 20261020-r0 | MPL-2.0 AND MIT | MPL-2.0 under License texts, MIT part below |
 | gettext-envsubst, libintl (gettext) | 1.0-r0 | GPL-3.0-or-later, LGPL-2.1-or-later | under License texts; gettext's MIT part (tree-sitter in gettext-tools) isn't in the image |
-| libcrypto3, libssl3 (openssl) | 3.5.8-r0 | Apache-2.0 | Apache License 2.0 under License texts |
-| musl, musl-utils | 1.2.6-r2 | MIT AND BSD-2-Clause AND GPL-2.0-or-later | below |
-| pcre2 | 10.48-r0 | BSD-3-Clause | below, with the bundled sljit (BSD-2-Clause) |
-| tzdata | 2026d-r0 | public domain | none needed |
-| zlib | 1.3.2-r0 | Zlib | below |
+| libcrypto3, libssl3 (openssl) | 3.5.9-r1 | Apache-2.0 | Apache License 2.0 under License texts |
+| musl, musl-utils | 1.2.6-r3 | MIT AND BSD-2-Clause AND GPL-2.0-or-later | below |
+| pcre2 | 10.49-r0 | BSD-3-Clause | below, with the bundled sljit (BSD-2-Clause) |
+| tzdata | 2026f-r0 | public domain | none needed |
+| zlib | 1.4-r0 | Zlib | below |
 
-### ca-certificates 20260909 (`c_rehash.c`, MIT)
+### ca-certificates 20261020 (`c_rehash.c`, MIT)
 
 ```text
 Copyright (c) 2013-2014 Timo Teräs <timo.teras@iki.fi>
@@ -256,7 +256,7 @@ permissive licensing, and of not having licensing issues being an
 obstacle to adoption, that text has been removed.
 ```
 
-### pcre2 10.48
+### pcre2 10.49
 
 ```text
 PCRE2 Licence
@@ -365,7 +365,7 @@ includes package A, the condition is not imposed on package B unless it uses
 PCRE2 independently.
 ```
 
-### sljit (in pcre2 10.48)
+### sljit (in pcre2 10.49)
 
 ```text
 /*
@@ -395,7 +395,7 @@ PCRE2 independently.
  */
 ```
 
-### zlib 1.3.2
+### zlib 1.4
 
 ```text
 Copyright notice:

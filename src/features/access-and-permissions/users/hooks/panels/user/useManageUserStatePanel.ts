@@ -66,9 +66,9 @@ export const useManageUserStatePanel = ({
         message.success(UC.LABELS.MESSAGES.UPDATED(editingUser.fullname));
         form.resetFields();
         onClose();
-      } catch (rejection) {
-        message.error(rejectionMessage(rejection, UC.LABELS.MESSAGES.UPDATE_FAILED));
-        throw rejection;
+      } catch (error) {
+        message.error(rejectionMessage(error, UC.LABELS.MESSAGES.UPDATE_FAILED));
+        throw error;
       } finally {
         setSubmitting(false);
       }

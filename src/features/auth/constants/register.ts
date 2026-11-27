@@ -26,6 +26,9 @@ export const REGISTER_CONSTANTS = {
     ENROLL_RETRY:
       'Your passkey was not saved. Select Register Passkey to try again. This link works until a passkey is saved with it or it expires.',
   },
+  MESSAGES: {
+    EMAIL_RESERVED: 'This email is reserved for an administrator. Ask the operator to enroll it.',
+  },
   // Auth's message for a refused link (ErrEnrollTokenInvalid), at register start and at the finish.
   ERROR_PATTERNS: {
     ENROLL_LINK_REFUSED: 'invalid or expired enrollment token',

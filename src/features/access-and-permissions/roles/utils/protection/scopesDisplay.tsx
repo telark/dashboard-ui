@@ -1,6 +1,5 @@
 import React from 'react';
-import type { Role } from '../../models';
-import type { ScopeAndPermissions } from '../../models';
+import type { Role, ScopeAndPermissions } from '../../models';
 
 export interface ScopesDisplayOptions {
   scopesAndPermissions: ScopeAndPermissions[];

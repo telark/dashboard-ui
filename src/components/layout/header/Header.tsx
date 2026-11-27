@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { NotificationBell } from '../../../features/notifications/components';
 import { useResolvedTheme } from '../../../features/theme';
 import SidebarToggleButton from './SidebarToggleButton';
+import ThemeToggleButton from './ThemeToggleButton';
 import {
   APP_ROUTES,
   DEFAULT_COLORS,
@@ -66,6 +67,7 @@ const Header: React.FC = () => {
       <div
         style={{ marginRight: SPACING.XL, display: 'flex', alignItems: 'center', gap: SPACING.XS }}
       >
+        <ThemeToggleButton />
         <Tooltip title={HEADER_LAYOUT.DOCS_LABEL}>
           <Button
             type="text"

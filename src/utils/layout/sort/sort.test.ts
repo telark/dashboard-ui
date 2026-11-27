@@ -25,6 +25,13 @@ const FIELDS: SortFieldConfig<Row>[] = [
   { key: 'derived', type: 'string', getValue: (row) => row.name?.at(-2) },
   { key: 'comparator', type: 'custom', compare: (x, y) => (x.size ?? 0) - (y.size ?? 0) },
   { key: 'odd', type: 'unknown' as SortFieldConfig<Row>['type'], getValue: (row) => row.name },
+  // Text order of a number, and an object read as its JSON.
+  { key: 'sizeText', type: 'string', getValue: (row) => row.size },
+  {
+    key: 'objectText',
+    type: 'string',
+    getValue: (row) => (row.name ? { name: row.name } : undefined),
+  },
 ];
 
 describe('sortData', () => {
@@ -37,6 +44,8 @@ describe('sortData', () => {
     ['derived', 'asc', [a, b, blank]],
     ['comparator', 'asc', [blank, a, b]],
     ['odd', 'asc', [a, b, blank]],
+    ['sizeText', 'asc', [b, a, blank]],
+    ['objectText', 'asc', [a, b, blank]],
   ])('sorts by %s %s', (key, order, expected) => {
     expect(sortData(rows, key, order, FIELDS)).toEqual(expected);
   });

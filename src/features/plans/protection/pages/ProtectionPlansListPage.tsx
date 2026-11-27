@@ -44,7 +44,7 @@ interface ProtectionPlansListPageProps {
   tabs?: React.ReactNode;
 }
 
-const QUICK_FILTER_KEYS: PlanPhaseQuickFilter[] = [
+const QUICK_FILTER_KEYS: ReadonlySet<PlanPhaseQuickFilter> = new Set([
   'all',
   'active',
   'scheduled',
@@ -52,7 +52,7 @@ const QUICK_FILTER_KEYS: PlanPhaseQuickFilter[] = [
   'canceled',
   'terminated',
   'failed',
-];
+]);
 
 // The thunk already rejected with the extracted server message; re-wrapping it
 // in an Error only hides it behind userFacingMessage's generic fallback.
@@ -151,7 +151,7 @@ const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
 
     const handlePhaseQuickFilterChange = useCallback(
       (next: PlanPhaseQuickFilter) => {
-        if (QUICK_FILTER_KEYS.includes(next)) dispatch(setPhaseQuickFilter(next));
+        if (QUICK_FILTER_KEYS.has(next)) dispatch(setPhaseQuickFilter(next));
       },
       [dispatch],
     );

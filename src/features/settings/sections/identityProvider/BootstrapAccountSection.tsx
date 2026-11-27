@@ -20,7 +20,7 @@ import {
   type BootstrapStatus,
 } from '../../../bootstrap';
 import { SETTINGS_CONSTANTS } from '../../constants';
-import BreakGlassAlertsSetting from './BreakGlassAlertsSetting';
+import AuthAlertsSetting from './AuthAlertsSetting';
 
 const VIEW = ACTION_PERMISSIONS.bootstrap.view;
 const { CONTENT } = SETTINGS_CONSTANTS;
@@ -165,7 +165,7 @@ const BootstrapAccountSection: React.FC = memo(() => {
                 </SettingsHint>
               </div>
             </div>
-            <BreakGlassAlertsSetting stored={status.notifyAdmins !== false} onSaved={reload} />
+            <AuthAlertsSetting stored={status.notifyAdmins !== false} onSaved={reload} />
             <div style={{ display: 'flex', flexDirection: 'column', gap: FORM_LABEL_GAP }}>
               <div style={{ fontWeight: FONT_WEIGHT.BOLD }}>{T.REQUESTS_LABEL}</div>
               {requests.length === 0 ? (

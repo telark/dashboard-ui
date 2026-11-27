@@ -65,8 +65,8 @@ const ApplicationChangeLogSection: React.FC<ApplicationChangeLogSectionProps> = 
       const groups: { dayKey: string; entries: ApplicationChangeLogEntry[] }[] = [];
       for (const e of lim) {
         const dayKey = toDateKey(e.detectedAt);
-        const last = groups[groups.length - 1];
-        if (!last || last.dayKey !== dayKey) {
+        const last = groups.at(-1);
+        if (last?.dayKey !== dayKey) {
           groups.push({ dayKey, entries: [e] });
         } else {
           last.entries.push(e);

@@ -1,5 +1,4 @@
-import React from 'react';
-import { createElement, useState, useCallback } from 'react';
+import React, { createElement, useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { App as AntdApp } from 'antd';
 import { FancySpinner } from '../../../../../components/animation';
@@ -57,9 +56,9 @@ export const useBulkDeleteGroups = ({
       });
 
       setSelectedGroups([]);
-    } catch (rejection) {
+    } catch (error) {
       message.error({
-        content: rejectionMessage(rejection, GC.LABELS.ACTIONS.BULK_DELETE_FAILED),
+        content: rejectionMessage(error, GC.LABELS.ACTIONS.BULK_DELETE_FAILED),
         key: loadingKey,
       });
     } finally {

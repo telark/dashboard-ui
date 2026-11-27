@@ -1,8 +1,8 @@
-import { screen, waitFor } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { Endpoints } from '../../../../constants';
-import { searchList } from '../../../../test';
-import { describeAccessPage } from '../../../../test/contracts/accessPage';
+import { permissionsSeed, searchList } from '../../../../test';
+import { describeAccessPage, findRow } from '../../../../test/contracts/accessPage';
 import { buildRole } from '../../../../test/factories/roles';
 import { mockRolesPage, renderRoles } from '../../../../test/helpers/accessPages';
 import { ROLES_CONSTANTS } from '../constants';
@@ -48,5 +48,31 @@ describe('roles page search', () => {
 
     await waitFor(() => expect(screen.queryByText(dropped.name)).not.toBeInTheDocument());
     expect(screen.getByText(kept.name)).toBeInTheDocument();
+  });
+});
+
+describe('roles row actions', () => {
+  it.each([
+    [
+      'a viewer without the permission',
+      permissionsSeed('ReadOnly'),
+      {},
+      RL.ACTIONS.DELETE_PERMISSION_DENIED_TOOLTIP,
+    ],
+    [
+      'a role protected from deletion',
+      permissionsSeed(),
+      { protection: { preventDeletion: true } },
+      RL.ACTIONS.DELETE_DISABLED_TOOLTIP,
+    ],
+  ])('tells %s why Delete is off', async (_, seed, overrides, reason) => {
+    const role = buildRole({ name: 'locked_lead', ...overrides });
+    const { user } = renderRoles([role], seed);
+
+    await user.hover(
+      within(await findRow(role.name)).getByRole('button', { name: RL.ACTIONS.DELETE }),
+    );
+
+    expect(await screen.findByRole('tooltip')).toHaveTextContent(reason);
   });
 });

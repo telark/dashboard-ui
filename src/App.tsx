@@ -66,7 +66,7 @@ const AppContent: React.FC = () => {
     location.pathname === APP_ROUTES.LOGIN ||
     location.pathname === APP_ROUTES.REGISTER ||
     location.pathname === APP_ROUTES.GOOGLE_CALLBACK ||
-    location.pathname === APP_ROUTES.BREAK_GLASS;
+    location.pathname === APP_ROUTES.AUTH_REQUEST;
   const isAuthenticated = isSignedIn();
   const [showSessionExpiredModal, setShowSessionExpiredModal] = useState(false);
   const [duplicateSessionCookie, setDuplicateSessionCookie] = useState(false);

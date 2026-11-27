@@ -21,9 +21,9 @@ export const useRoleActions = () => {
         const result = await dispatch(createRoleThunk(data)).unwrap();
         message.success(RC.LABELS.MESSAGES.CREATED(data.name));
         return result;
-      } catch (rejection) {
-        message.error(rejectionMessage(rejection, RC.LABELS.MESSAGES.CREATE_FAILED));
-        throw new Error(RC.LABELS.MESSAGES.CREATE_FAILED, { cause: rejection });
+      } catch (error) {
+        message.error(rejectionMessage(error, RC.LABELS.MESSAGES.CREATE_FAILED));
+        throw new Error(RC.LABELS.MESSAGES.CREATE_FAILED, { cause: error });
       } finally {
         setSubmitting(false);
       }
@@ -65,9 +65,9 @@ export const useRoleActions = () => {
         await dispatch(deleteRoleThunk(roleId)).unwrap();
         store.dispatch(fetchMyPermissionsThunk());
         message.success(RC.LABELS.MESSAGES.DELETED);
-      } catch (rejection) {
-        message.error(rejectionMessage(rejection, RC.LABELS.MESSAGES.DELETE_FAILED));
-        throw new Error(RC.LABELS.MESSAGES.DELETE_FAILED, { cause: rejection });
+      } catch (error) {
+        message.error(rejectionMessage(error, RC.LABELS.MESSAGES.DELETE_FAILED));
+        throw new Error(RC.LABELS.MESSAGES.DELETE_FAILED, { cause: error });
       }
     },
     [dispatch, message],

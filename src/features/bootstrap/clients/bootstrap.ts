@@ -12,8 +12,8 @@ export const getBootstrapStatus = async (): Promise<BootstrapStatus> => {
   return response.data;
 };
 
-export const setBreakGlassAlerts = async (notifyAdmins: boolean): Promise<void> => {
-  const { path, method } = Endpoints.AUTH.BREAK_GLASS_ALERTS;
+export const setAuthAlerts = async (notifyAdmins: boolean): Promise<void> => {
+  const { path, method } = Endpoints.AUTH.AUTH_ALERTS;
   await Client<unknown>(authApiClient, path, { method, data: { notifyAdmins } });
 };
 

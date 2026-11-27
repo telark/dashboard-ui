@@ -9,12 +9,14 @@ const COLUMN_TITLE_STYLE: React.CSSProperties = {
 };
 
 // A summary column: its title, then its rows.
-function ColumnShell(props: {
-  title: string;
-  // Shown on the title's line, at the opposite side.
-  aside?: React.ReactNode;
-  children: React.ReactNode;
-}): React.ReactElement {
+function ColumnShell(
+  props: Readonly<{
+    title: string;
+    // Shown on the title's line, at the opposite side.
+    aside?: React.ReactNode;
+    children: React.ReactNode;
+  }>,
+): React.ReactElement {
   const { title, aside, children } = props;
   return (
     <div style={{ minWidth: 0 }}>

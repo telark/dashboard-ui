@@ -154,9 +154,6 @@ const Login: React.FC = () => {
               background: DEFAULT_COLORS.SUCCESS,
               borderColor: DEFAULT_COLORS.SUCCESS,
               color: BUTTON_CONFIGS.PRIMARY_BUTTON.TEXT_COLOR,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
               gap: SPACING.SM,
             }}
           >
@@ -193,9 +190,6 @@ const Login: React.FC = () => {
               background: GOOGLE_BRAND_COLORS.BUTTON_BG,
               borderColor: GOOGLE_BRAND_COLORS.BUTTON_BORDER,
               color: GOOGLE_BRAND_COLORS.BUTTON_TEXT,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
               gap: SPACING.SM,
             }}
             icon={!googleLoading ? <GoogleIcon /> : undefined}

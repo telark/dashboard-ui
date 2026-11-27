@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react';
 import type { UserEvent } from '@testing-library/user-event';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { Endpoints } from '../../../constants';
 import type { StoreSeed } from '../../../test';
 import {
@@ -26,6 +26,7 @@ import type { GlobalConfigModel } from '../../globalconfig/store/globalConfigSli
 import AIInsightsSectionContent from './aiInsights/AIInsightsSectionContent';
 import { DiscoveryBehaviorSection, StorageSectionContent } from './insightsGovernance';
 import { INSIGHTS_GOVERNANCE_CONSTANTS as GOV } from './insightsGovernance/constants';
+import AuthAlertsSetting from './identityProvider/AuthAlertsSetting';
 import IdentityProviderSectionContent from './identityProvider/IdentityProviderSectionContent';
 import OIDCSection from './identityProvider/OIDCSection';
 import SelfRegistrationSection from './identityProvider/SelfRegistrationSection';
@@ -76,6 +77,22 @@ describeSettingsSave({
   savedMessage: GOV.MESSAGES.SAVE_SUCCESS,
   failure: { status: 500, message: GOV.MESSAGES.SAVE_FAILED },
   readOnlySeed: READ_ONLY,
+});
+
+describe('discovery namespaces', () => {
+  it('folds the excluded namespaces past five into a count', async () => {
+    const excluded = ['payments', 'orders', 'billing', 'checkout', 'search', 'ops', 'monitoring'];
+    mockEndpoint('exporter', Endpoints.GLOBALCONFIG.GET, {
+      data: { excludedNamespaces: excluded },
+    });
+    mockEndpoint('discovery', Endpoints.NAMESPACES.GET, { data: excluded });
+
+    renderApp(<DiscoveryBehaviorSection />, {
+      seed: seedGlobalConfig({ excludedNamespaces: excluded }),
+    });
+
+    expect(await screen.findByText('+2')).toBeInTheDocument();
+  });
 });
 
 const mockStorageReads = () => {
@@ -138,6 +155,21 @@ describeSettingsSave({
   expectedBody: { enabled: true },
   savedMessage: IDP.MESSAGES.SELF_REGISTRATION_SAVED,
   failure: { status: 400, body: { message: 'refused' }, message: 'refused' },
+});
+
+describeSettingsSave({
+  name: 'Auth alerts',
+  element: <AuthAlertsSetting stored onSaved={vi.fn()} />,
+  service: 'auth',
+  endpoint: Endpoints.AUTH.AUTH_ALERTS,
+  change: async (user) => user.click(await toggleSwitch(0)()),
+  expectedBody: { notifyAdmins: false },
+  savedMessage: BOOTSTRAP_TEXTS.ALERTS_SAVED,
+  failure: {
+    status: 403,
+    body: { message: 'bootstrap account only' },
+    message: 'bootstrap account only',
+  },
 });
 
 const timezoneUser = buildUser({ settings: { timezone: 'Europe/Paris', region: 'FR' } });

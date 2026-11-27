@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Build cluster bundle
-FROM node:26.13.0-alpine3.23 AS builder
+FROM node:26.13.1-alpine3.23 AS builder
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN --mount=type=cache,target=/root/.npm \
@@ -10,13 +10,15 @@ COPY . .
 RUN npm run build:cluster
 
 # Stage 2: Serve via NGINX
-FROM nginx:1.31.7-alpine3.24-slim
+FROM nginx:1.31.10-alpine3.24-slim
 
 LABEL org.opencontainers.image.title="telark-ui" \
       org.opencontainers.image.licenses="Elastic-2.0" \
       org.opencontainers.image.source="https://github.com/telark/dashboard-ui"
 
-RUN rm -f /etc/nginx/conf.d/default.conf \
+# The base image predates Alpine's zlib 1.4 fix.
+RUN apk upgrade --no-cache zlib \
+    && rm -f /etc/nginx/conf.d/default.conf \
     && chown -R nginx:nginx \
         /var/cache/nginx \
         /var/log/nginx \

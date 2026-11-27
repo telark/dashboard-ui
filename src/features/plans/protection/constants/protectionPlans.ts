@@ -163,6 +163,7 @@ export const PROTECTION_PLANS_CONSTANTS = {
         UPDATED: 'Last updated',
         STARTED: 'Started',
         TERMINATED: 'Terminated',
+        CANCELED: 'Canceled',
         PARTICIPANTS: 'Participants',
         REASON: 'Reason',
         APPLICATIONS: 'Applications',

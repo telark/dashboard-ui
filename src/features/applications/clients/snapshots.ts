@@ -74,41 +74,35 @@ function extractRawSnapshotRows(data: unknown): unknown[] {
   return [];
 }
 
+// The exporter sends ids, sizes and percents as strings or numbers.
+const textOf = (value: unknown): string => {
+  if (typeof value === 'string') return value;
+  return typeof value === 'number' ? String(value) : '';
+};
+
+const optionalText = (value: unknown): string | undefined =>
+  typeof value === 'string' ? value : undefined;
+
+const nonEmptyText = (value: unknown): string | undefined =>
+  typeof value === 'string' && value !== '' ? value : undefined;
+
 function mapExporterRowToSummary(row: unknown): ApplicationSnapshotSummary | null {
   if (row == null || typeof row !== 'object') return null;
   const o = row as Record<string, unknown>;
-  const rawId = o.id;
-  let id: string;
-  if (typeof rawId === 'string' && rawId.length > 0) id = rawId;
-  else if (rawId != null && String(rawId).length > 0) id = String(rawId);
-  else return null;
+  const id = textOf(o.id);
+  if (!id) return null;
 
-  const scope = typeof o.scope === 'string' ? o.scope : SNAPSHOT_SCOPE_APPS;
-  const namespace = typeof o.namespace === 'string' ? o.namespace : '';
-  const rawGen = o.generation;
-  let generation = 0;
-  if (typeof rawGen === 'number' && !Number.isNaN(rawGen)) generation = rawGen;
-  else if (rawGen != null) {
-    const n = Number(rawGen);
-    if (!Number.isNaN(n)) generation = n;
-  }
-
-  const fileSize = o.fileSize ?? o.size;
-  let size = '';
-  if (typeof fileSize === 'string') size = fileSize;
-  else if (fileSize != null) size = String(fileSize);
-
-  const consumedRaw = o.pvcUsedPercent ?? o.consumed;
-  let consumed = '';
-  if (typeof consumedRaw === 'string') consumed = consumedRaw;
-  else if (consumedRaw != null) consumed = String(consumedRaw);
-
-  const pvcTotal = typeof o.pvcTotal === 'string' ? o.pvcTotal : undefined;
-  const pvcAvailable = typeof o.pvcAvailable === 'string' ? o.pvcAvailable : undefined;
-  const severity = typeof o.severity === 'string' ? o.severity : undefined;
-  const path = typeof o.path === 'string' && o.path.length > 0 ? o.path : undefined;
-  const takenAtRaw = o.takenAt ?? o.taken_at;
-  const takenAt = typeof takenAtRaw === 'string' && takenAtRaw.length > 0 ? takenAtRaw : undefined;
+  const scope = optionalText(o.scope) ?? SNAPSHOT_SCOPE_APPS;
+  const namespace = optionalText(o.namespace) ?? '';
+  const rawGeneration = Number(o.generation);
+  const generation = Number.isNaN(rawGeneration) ? 0 : rawGeneration;
+  const size = textOf(o.fileSize ?? o.size);
+  const consumed = textOf(o.pvcUsedPercent ?? o.consumed);
+  const pvcTotal = optionalText(o.pvcTotal);
+  const pvcAvailable = optionalText(o.pvcAvailable);
+  const severity = optionalText(o.severity);
+  const path = nonEmptyText(o.path);
+  const takenAt = nonEmptyText(o.takenAt ?? o.taken_at);
 
   return {
     id,

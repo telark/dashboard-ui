@@ -17,7 +17,7 @@ const readLink = (hash: string) => {
 };
 
 // Public, and it never stores a session: a sign-in by the bootstrap account would cancel the request.
-const BreakGlass: React.FC = () => {
+const AuthRequest: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   // Kept in state: the link leaves the address bar right away. A link pasted into this tab
@@ -33,7 +33,7 @@ const BreakGlass: React.FC = () => {
   const passkeysAvailable = isWebAuthnSupported();
 
   useEffect(() => {
-    if (location.hash) navigate(APP_ROUTES.BREAK_GLASS, { replace: true });
+    if (location.hash) navigate(APP_ROUTES.AUTH_REQUEST, { replace: true });
   }, [location.hash, navigate]);
 
   const outcome = decided === C.ACTION.APPROVE ? T.PAGE_APPROVED : T.PAGE_DENIED;
@@ -70,4 +70,4 @@ const BreakGlass: React.FC = () => {
   );
 };
 
-export default BreakGlass;
+export default AuthRequest;

@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { Empty } from 'antd';
 import type { PageLayoutConfig } from '../../../../../interfaces/layout/page';
 import type { FilterChip } from '../../../../../interfaces/layout/toolbar';
+import type { SortOrder } from '../../../../../utils/layout/sort';
 import { USERS_CONSTANTS as UC } from '../../constants';
 import { DEFAULT_COLORS, Icons } from '../../../../../constants';
 import type { RootState } from '../../../../../store';
@@ -31,6 +32,7 @@ const USERS_EMPTY = (
 
 interface UseUserListPageConfigOptions {
   sortKey: string | null;
+  sortOrder: SortOrder;
   handleSort: (key: string) => void;
   selectedUsers: React.Key[];
   setSelectedUsers: (keys: React.Key[]) => void;
@@ -64,6 +66,7 @@ interface UseUserListPageConfigOptions {
 
 export const useUserListPageConfig = ({
   sortKey,
+  sortOrder,
   handleSort,
   selectedUsers,
   setSelectedUsers,
@@ -167,8 +170,8 @@ export const useUserListPageConfig = ({
   const groups = useSelector((state: RootState) => state.groups.groups);
 
   const ctx = useMemo(
-    () => ({ activeSortKey: sortKey ?? UC.KEYS.CREATION_DATE, onSort: handleSort }),
-    [sortKey, handleSort],
+    () => ({ activeSortKey: sortKey ?? UC.KEYS.CREATION_DATE, sortOrder, onSort: handleSort }),
+    [sortKey, sortOrder, handleSort],
   );
 
   const userColumns = useMemo(

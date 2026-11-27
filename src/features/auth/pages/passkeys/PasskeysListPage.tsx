@@ -60,7 +60,6 @@ export interface PasskeysListPageProps {
   selectedPasskey: Passkey | null;
   onClosePanel: () => void;
   form: FormInstance<PasskeyPanelFormValues>;
-  formSyncKey: number;
   submitting: boolean;
   onSubmit: (values: Record<string, unknown>) => Promise<void>;
 }
@@ -80,7 +79,6 @@ const PasskeysListPage: React.FC<PasskeysListPageProps> = memo(
     selectedPasskey,
     onClosePanel,
     form,
-    formSyncKey,
     submitting,
     onSubmit,
   }) => {
@@ -134,7 +132,6 @@ const PasskeysListPage: React.FC<PasskeysListPageProps> = memo(
           submitting={submitting}
           onSubmit={onSubmit}
           form={form}
-          formSyncKey={formSyncKey}
         />
       </div>
     );

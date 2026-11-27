@@ -13,7 +13,7 @@ import type { ProtectionPlan } from '../../plans/protection/models';
 import { HOME_CHART_LAYOUT as C, HOME_CHART_TEXTS as CT } from '../constants/dashboard';
 import type { ActivityChartData, ActivityEvent, PlanEventKey, SeverityKey } from '../models';
 
-const KNOWN_SEVERITIES: SeverityKey[] = ['critical', 'high', 'medium', 'low'];
+const KNOWN_SEVERITIES: ReadonlySet<SeverityKey> = new Set(['critical', 'high', 'medium', 'low']);
 const SEVERITY_KEYS: SeverityKey[] = [...KNOWN_SEVERITIES, 'other'];
 
 const PLAN_EVENT_KEYS: PlanEventKey[] = ['created', 'started', 'terminated'];
@@ -91,7 +91,7 @@ const dailyActivity = <K extends string>(
 // Severities outside the backend's four are kept under "other" rather than dropped.
 const bucketSeverity = (severity: string): SeverityKey => {
   const key = severity.toLowerCase() as SeverityKey;
-  return KNOWN_SEVERITIES.includes(key) ? key : 'other';
+  return KNOWN_SEVERITIES.has(key) ? key : 'other';
 };
 
 export const changeActivityData = (apps: Application[]): ActivityChartData =>

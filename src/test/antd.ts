@@ -80,5 +80,9 @@ export const selectOption = async (user: UserEvent, label: TextMatch, option: Te
 };
 
 /** The open modal, to scope queries (`within`) away from the page behind it. */
-export const findDialog = (name?: TextMatch): Promise<HTMLElement> =>
-  screen.findByRole('dialog', name === undefined ? {} : { name });
+export const findDialog = async (name?: TextMatch): Promise<HTMLElement> => {
+  if (name !== undefined) return screen.findByRole('dialog', { name });
+  // A slide-out panel is a dialog too, and a modal opened over it renders after it.
+  const dialogs = await screen.findAllByRole('dialog');
+  return dialogs[dialogs.length - 1];
+};

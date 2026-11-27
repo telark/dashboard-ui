@@ -30,9 +30,9 @@ export const useGroupMutations = () => {
         message.success(GC.LABELS.MESSAGES.CREATED(data.name));
         await dispatch(fetchGroupDetailsThunk(result.id));
         return result;
-      } catch (rejection) {
-        message.error(rejectionMessage(rejection, GC.LABELS.MESSAGES.CREATE_FAILED));
-        throw new Error(GC.LABELS.MESSAGES.CREATE_FAILED, { cause: rejection });
+      } catch (error) {
+        message.error(rejectionMessage(error, GC.LABELS.MESSAGES.CREATE_FAILED));
+        throw new Error(GC.LABELS.MESSAGES.CREATE_FAILED, { cause: error });
       } finally {
         setSubmitting(false);
       }
@@ -53,9 +53,9 @@ export const useGroupMutations = () => {
         message.success(GC.LABELS.MESSAGES.UPDATED(result.name));
         await dispatch(fetchGroupDetailsThunk(id));
         return result;
-      } catch (rejection) {
-        message.error(rejectionMessage(rejection, GC.LABELS.MESSAGES.UPDATE_FAILED));
-        throw new Error(GC.LABELS.MESSAGES.UPDATE_FAILED, { cause: rejection });
+      } catch (error) {
+        message.error(rejectionMessage(error, GC.LABELS.MESSAGES.UPDATE_FAILED));
+        throw new Error(GC.LABELS.MESSAGES.UPDATE_FAILED, { cause: error });
       } finally {
         setSubmitting(false);
       }
@@ -69,9 +69,9 @@ export const useGroupMutations = () => {
         await dispatch(deleteGroupThunk(groupId)).unwrap();
         store.dispatch(fetchMyPermissionsThunk());
         message.success(GC.LABELS.MESSAGES.DELETED);
-      } catch (rejection) {
-        message.error(rejectionMessage(rejection, GC.LABELS.MESSAGES.DELETE_FAILED));
-        throw new Error(GC.LABELS.MESSAGES.DELETE_FAILED, { cause: rejection });
+      } catch (error) {
+        message.error(rejectionMessage(error, GC.LABELS.MESSAGES.DELETE_FAILED));
+        throw new Error(GC.LABELS.MESSAGES.DELETE_FAILED, { cause: error });
       }
     },
     [dispatch, message],

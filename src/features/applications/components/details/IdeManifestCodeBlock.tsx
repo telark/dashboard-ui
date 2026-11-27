@@ -17,92 +17,53 @@ function readJsonStringEnd(input: string, start: number): number {
 }
 
 type JsonTok = 'text' | 'key' | 'string' | 'number' | 'keyword' | 'punct';
+// `at` is the token's offset in the input, so it also keys its span.
+type JsonToken = { t: JsonTok; s: string; at: number };
+type JsonState = { stack: Array<'object' | 'array'>; prevSig: string | null };
 
-function tokenizeJson(input: string): Array<{ t: JsonTok; s: string }> {
-  const out: Array<{ t: JsonTok; s: string }> = [];
-  const stack: Array<'object' | 'array'> = [];
+const JSON_KEYWORDS = ['true', 'false', 'null'];
+
+const runEnd = (input: string, i: number, char: RegExp): number => {
+  let j = i;
+  while (j < input.length && char.test(input[j])) j++;
+  return j;
+};
+
+// A string is a key when it opens an object entry: right after `{` or `,` inside an object.
+function readJsonString(input: string, i: number, state: JsonState): JsonToken {
+  const isKey = state.stack.at(-1) === 'object' && (state.prevSig === '{' || state.prevSig === ',');
+  state.prevSig = '"';
+  return { t: isKey ? 'key' : 'string', s: input.slice(i, readJsonStringEnd(input, i)), at: i };
+}
+
+function readJsonPunct(c: string, i: number, state: JsonState): JsonToken {
+  if (c === '{') state.stack.push('object');
+  else if (c === '[') state.stack.push('array');
+  else if (c === '}' || c === ']') state.stack.pop();
+  state.prevSig = c;
+  return { t: 'punct', s: c, at: i };
+}
+
+function readJsonToken(input: string, i: number, state: JsonState): JsonToken {
+  const c = input[i];
+  if (/[ \n\r\t]/.test(c))
+    return { t: 'text', s: input.slice(i, runEnd(input, i, /[ \n\r\t]/)), at: i };
+  if (c === '"') return readJsonString(input, i, state);
+  if ('{}[]:,'.includes(c)) return readJsonPunct(c, i, state);
+  if (/[-0-9]/.test(c))
+    return { t: 'number', s: input.slice(i, runEnd(input, i, /[0-9.eE+-]/)), at: i };
+  const keyword = JSON_KEYWORDS.find((k) => input.startsWith(k, i));
+  return { t: keyword ? 'keyword' : 'text', s: keyword ?? c, at: i };
+}
+
+function tokenizeJson(input: string): JsonToken[] {
+  const out: JsonToken[] = [];
+  const state: JsonState = { stack: [], prevSig: null };
   let i = 0;
-  let prevSig: '{' | '}' | '[' | ']' | ':' | ',' | '"' | null = null;
-
   while (i < input.length) {
-    const c = input[i];
-    if (c === ' ' || c === '\n' || c === '\r' || c === '\t') {
-      let j = i;
-      while (j < input.length && /[ \n\r\t]/.test(input[j])) j++;
-      out.push({ t: 'text', s: input.slice(i, j) });
-      i = j;
-      continue;
-    }
-    if (c === '"') {
-      const isKey =
-        stack.length > 0 &&
-        stack[stack.length - 1] === 'object' &&
-        (prevSig === '{' || prevSig === ',');
-      const end = readJsonStringEnd(input, i);
-      const str = input.slice(i, end);
-      out.push({ t: isKey ? 'key' : 'string', s: str });
-      prevSig = '"';
-      i = end;
-      continue;
-    }
-    if (c === '{') {
-      stack.push('object');
-      out.push({ t: 'punct', s: c });
-      prevSig = '{';
-      i++;
-      continue;
-    }
-    if (c === '}') {
-      stack.pop();
-      out.push({ t: 'punct', s: c });
-      prevSig = '}';
-      i++;
-      continue;
-    }
-    if (c === '[') {
-      stack.push('array');
-      out.push({ t: 'punct', s: c });
-      prevSig = '[';
-      i++;
-      continue;
-    }
-    if (c === ']') {
-      stack.pop();
-      out.push({ t: 'punct', s: c });
-      prevSig = ']';
-      i++;
-      continue;
-    }
-    if (c === ':' || c === ',') {
-      out.push({ t: 'punct', s: c });
-      prevSig = c;
-      i++;
-      continue;
-    }
-    if (/[-0-9]/.test(c)) {
-      let j = i;
-      while (j < input.length && /[0-9.eE+-]/.test(input[j])) j++;
-      out.push({ t: 'number', s: input.slice(i, j) });
-      i = j;
-      continue;
-    }
-    if (input.startsWith('true', i)) {
-      out.push({ t: 'keyword', s: 'true' });
-      i += 4;
-      continue;
-    }
-    if (input.startsWith('false', i)) {
-      out.push({ t: 'keyword', s: 'false' });
-      i += 5;
-      continue;
-    }
-    if (input.startsWith('null', i)) {
-      out.push({ t: 'keyword', s: 'null' });
-      i += 4;
-      continue;
-    }
-    out.push({ t: 'text', s: c });
-    i++;
+    const tok = readJsonToken(input, i, state);
+    out.push(tok);
+    i += tok.s.length;
   }
   return out;
 }
@@ -124,81 +85,56 @@ function colorForJsonToken(t: JsonTok): string {
   }
 }
 
+const YAML_KEYWORD = /^(\b(?:true|false|null|yes|no|on|off)\b)/;
+const YAML_NUMBER = /^([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)/;
+const YAML_SPECIAL = /["']|\b(?:true|false|null|yes|no|on|off)\b|[-+]?\d/;
+
+// Where the quoted string opening at `i` ends: after its closing quote, or at the end of the value.
+function yamlQuotedEnd(value: string, i: number): number {
+  if (value[i] === "'") {
+    const end = value.indexOf("'", i + 1);
+    return end === -1 ? value.length : end + 1;
+  }
+  let j = i + 1;
+  while (j < value.length) {
+    if (value[j] === '\\') {
+      j += 2;
+      continue;
+    }
+    if (value[j] === '"') return j + 1;
+    j++;
+  }
+  return value.length;
+}
+
+// The next colored part of a YAML value: a quoted string, a keyword, a number, or plain text up to
+// the next of those (the rest of the value when none follows).
+function readYamlPart(value: string, i: number): { color: string; s: string } {
+  const ch = value[i];
+  if (ch === '"' || ch === "'") {
+    return { color: IDE.string, s: value.slice(i, yamlQuotedEnd(value, i)) };
+  }
+  const tail = value.slice(i);
+  const kw = YAML_KEYWORD.exec(tail);
+  if (kw) return { color: IDE.keyword, s: kw[1] };
+  const num = YAML_NUMBER.exec(tail);
+  if (num) return { color: IDE.number, s: num[1] };
+  const nextSpecial = tail.search(YAML_SPECIAL);
+  return { color: IDE.text, s: nextSpecial > 0 ? tail.slice(0, nextSpecial) : tail };
+}
+
 function highlightYamlValue(value: string, key: number): React.ReactNode {
   if (value === '') return null;
   const nodes: React.ReactNode[] = [];
   let i = 0;
-  let part = 0;
   while (i < value.length) {
-    const ch = value[i];
-    if (ch === '"') {
-      let j = i + 1;
-      while (j < value.length) {
-        if (value[j] === '\\') {
-          j += 2;
-          continue;
-        }
-        if (value[j] === '"') break;
-        j++;
-      }
-      const slice = j < value.length ? value.slice(i, j + 1) : value.slice(i);
-      nodes.push(
-        <span key={`v-${key}-${part++}`} style={{ color: IDE.string }}>
-          {slice}
-        </span>,
-      );
-      i = j < value.length ? j + 1 : value.length;
-      continue;
-    }
-    if (ch === "'") {
-      const end = value.indexOf("'", i + 1);
-      const slice = end === -1 ? value.slice(i) : value.slice(i, end + 1);
-      nodes.push(
-        <span key={`v-${key}-${part++}`} style={{ color: IDE.string }}>
-          {slice}
-        </span>,
-      );
-      i = end === -1 ? value.length : end + 1;
-      continue;
-    }
-    const tail = value.slice(i);
-    const kw = tail.match(/^(\b(?:true|false|null|yes|no|on|off)\b)/);
-    if (kw) {
-      nodes.push(
-        <span key={`v-${key}-${part++}`} style={{ color: IDE.keyword }}>
-          {kw[1]}
-        </span>,
-      );
-      i += kw[1].length;
-      continue;
-    }
-    const num = tail.match(/^([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)/);
-    if (num) {
-      nodes.push(
-        <span key={`v-${key}-${part++}`} style={{ color: IDE.number }}>
-          {num[1]}
-        </span>,
-      );
-      i += num[1].length;
-      continue;
-    }
-    const nextSpecial = tail.search(/["']|\b(?:true|false|null|yes|no|on|off)\b|[-+]?\d/);
-    if (nextSpecial <= 0) {
-      nodes.push(
-        <span key={`v-${key}-${part}`} style={{ color: IDE.text }}>
-          {tail}
-        </span>,
-      );
-      break;
-    }
-    if (nextSpecial > 0) {
-      nodes.push(
-        <span key={`v-${key}-${part++}`} style={{ color: IDE.text }}>
-          {tail.slice(0, nextSpecial)}
-        </span>,
-      );
-      i += nextSpecial;
-    }
+    const { color, s } = readYamlPart(value, i);
+    nodes.push(
+      <span key={`v-${key}-${nodes.length}`} style={{ color }}>
+        {s}
+      </span>,
+    );
+    i += s.length;
   }
   return <>{nodes}</>;
 }
@@ -253,8 +189,8 @@ const IdeManifestCodeBlock: React.FC<IdeManifestCodeBlockProps> = memo(
   ({ code, language, containerMaxHeight = 'min(60vh, 480px)', flatTop = false }) => {
     const highlighted = useMemo(() => {
       if (language === 'json') {
-        return tokenizeJson(code).map((tok, idx) => (
-          <span key={`j-${idx}`} style={{ color: colorForJsonToken(tok.t) }}>
+        return tokenizeJson(code).map((tok) => (
+          <span key={`j-${tok.at}`} style={{ color: colorForJsonToken(tok.t) }}>
             {tok.s}
           </span>
         ));

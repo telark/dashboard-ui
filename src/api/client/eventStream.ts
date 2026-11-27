@@ -15,7 +15,10 @@ const COMMENT_CONNECTED = ': connected';
 const BLOCK_END = '\n\n';
 
 // A retry can't fix these: the session is gone or refused, and the app's session check runs at once.
-const FINAL_STATUSES: readonly number[] = [HTTP_STATUS.UNAUTHORIZED, HTTP_STATUS.FORBIDDEN];
+const FINAL_STATUSES: ReadonlySet<number> = new Set([
+  HTTP_STATUS.UNAUTHORIZED,
+  HTTP_STATUS.FORBIDDEN,
+]);
 
 export interface EventStreamHandlers {
   onEvent: (name: string, data: string) => void;
@@ -127,7 +130,7 @@ export const keepEventStream = async (
     const status = await attemptStream(url, onEvent, onOpen, signal);
     if (signal.aborted) return;
     onConnected(false);
-    if (status !== undefined && FINAL_STATUSES.includes(status)) {
+    if (status !== undefined && FINAL_STATUSES.has(status)) {
       globalThis.dispatchEvent(new Event(SESSION_CHECK_EVENT));
       return;
     }

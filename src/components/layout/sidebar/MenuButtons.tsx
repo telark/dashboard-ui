@@ -1,7 +1,13 @@
 import React, { memo } from 'react';
 import { useLocation } from 'react-router-dom';
 import SidebarButton from '../../display/buttons/SideBarButton';
-import { Icons, APP_ROUTES, MENU_LABELS, MENU_RAIL_LABELS } from '../../../constants';
+import {
+  Icons,
+  APP_ROUTES,
+  MENU_LABELS,
+  MENU_NEW_ITEMS,
+  MENU_RAIL_LABELS,
+} from '../../../constants';
 import { useAttentionInsights } from '../../../features/insights/hooks';
 
 // Stable icon elements keep SidebarButton's memo, so a navigation re-renders only two buttons.
@@ -140,6 +146,7 @@ export const CategoriesMenuButton: React.FC<MenuButtonProps> = memo(({ isCollaps
       active={pathname.startsWith(APP_ROUTES.CATEGORIES)}
       route={APP_ROUTES.CATEGORIES}
       isCollapsed={isCollapsed}
+      isNew={MENU_NEW_ITEMS.CATEGORIES}
     />
   );
 });

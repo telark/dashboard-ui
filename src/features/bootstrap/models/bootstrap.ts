@@ -21,7 +21,7 @@ export interface BootstrapStatus {
   pinnedAt?: string;
   // An older exporter omits it: Admins on ALL are alerted.
   notifyAdmins?: boolean;
-  // Hours with no sign-in by the bootstrap account that complete a request (chart: app.security.breakGlass.waitHours).
+  // Hours with no sign-in by the bootstrap account that complete a request (chart: app.auth.request.waitHours).
   waitHours: number;
   requests?: BootstrapRequest[];
 }

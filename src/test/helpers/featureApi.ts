@@ -1,6 +1,7 @@
 import type { JsonBodyType } from 'msw';
 import { Endpoints, HTTP_STATUS } from '../../constants';
 import { CATEGORIES_CONSTANTS } from '../../features/access-and-permissions/categories/constants';
+import type { User } from '../../features/access-and-permissions/users/models';
 import type {
   Application,
   DiscoveryCycleStatus,
@@ -82,14 +83,16 @@ export const mockPlanForm = ({
   plans = [],
   applications = [],
   namespaces = ['payments', 'ops'],
+  users = [],
 }: {
   plans?: ProtectionPlan[];
   applications?: Application[];
   namespaces?: string[];
+  users?: User[];
 } = {}) => {
   mockPlanTaxonomies();
   mockPlansList(plans);
-  mockEmptyLists('exporter', [Endpoints.USERS.GET_ALL]);
+  mockList('exporter', Endpoints.USERS.GET_ALL, users);
   mockEndpoint('exporter', Endpoints.APPLICATIONS.GET_ALL, {
     status: HTTP_STATUS.SUCCESS,
     data: { items: applications },

@@ -15,7 +15,7 @@ import { ROLE_CATEGORY as CATEGORY, mockRolesPage } from '../../../../../test/he
 import { pressIn, switchFor } from '../../../../../test/helpers/accessForms';
 import { findPanel } from '../../../../../test/helpers/panel';
 import { pickSelectOption } from '../../../../../test/antd';
-import { ROLES_CONSTANTS as RC } from '../../constants';
+import { ROLES_CONSTANTS as RC, formatRuleKey, getScopeRules } from '../../constants';
 import type { Role, RoleFormValues } from '../../models';
 import CreateRolePanel from './CreateRolePanel';
 
@@ -96,6 +96,21 @@ describe('create role panel', () => {
       scope: 'groups',
       level: 'Owner',
       rules: [],
+    });
+  });
+
+  it('sends a rule blocked in a scope', async () => {
+    const [rule] = getScopeRules('applications', 'ReadOnly');
+    const body = await postedRole(async ({ user, panel }) => {
+      const [applicationsRules] = within(panel).getAllByText(RC.SCOPE.RULES.BLOCK_CERTAIN_RULES);
+      await user.click(applicationsRules);
+      await user.click(await within(panel).findByLabelText(rule.label));
+    });
+
+    expect(body.scopesAndPermissions).toContainEqual({
+      scope: 'applications',
+      level: 'ReadOnly',
+      rules: [formatRuleKey('applications', rule.key)],
     });
   });
 

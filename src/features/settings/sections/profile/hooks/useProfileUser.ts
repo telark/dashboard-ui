@@ -9,11 +9,11 @@ export interface UseProfileUserResult {
 }
 
 export function useProfileUser(): UseProfileUserResult {
-  const [currentUser, setCurrentUserState] = useState<User | null>(() => getCurrentUser());
+  const [currentUser, setCurrentUser] = useState<User | null>(() => getCurrentUser());
 
   const refetch = useCallback((updatedUser?: User) => {
     if (updatedUser != null) {
-      setCurrentUserState(updatedUser);
+      setCurrentUser(updatedUser);
       return Promise.resolve();
     }
     const initial = getCurrentUser();
@@ -21,7 +21,7 @@ export function useProfileUser(): UseProfileUserResult {
     return new Promise<void>((resolve) => {
       fetchCurrentUserDetails(
         (user) => {
-          setCurrentUserState(user);
+          setCurrentUser(user);
           resolve();
         },
         () => resolve(),
@@ -35,7 +35,7 @@ export function useProfileUser(): UseProfileUserResult {
     let canceled = false;
     fetchCurrentUserDetails(
       (user) => {
-        if (!canceled) setCurrentUserState(user);
+        if (!canceled) setCurrentUser(user);
       },
       () => {},
     );

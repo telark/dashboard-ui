@@ -157,36 +157,40 @@ const SnapshotStorageSection: React.FC = memo(() => {
     [savingSnapshotsMax, snapshotsHasChanges, canEditSnapshotStorage, lowering, saveSnapshotsMax],
   );
 
+  let storage: React.ReactNode = null;
+  if (!canViewSnapshotStorage) {
+    storage = <SettingsHint>{C.LABELS.SNAPSHOT_STORAGE_NO_ACCESS}</SettingsHint>;
+  } else if (snapshotInfosLoading) {
+    storage = <SettingsHint>{C.LABELS.SNAPSHOT_STORAGE_LOADING}</SettingsHint>;
+  } else if (snapshotInfos) {
+    storage = (
+      <>
+        <SettingsField label={C.LABELS.SNAPSHOT_STORAGE_USAGE_LABEL}>
+          <SnapshotStorageBar
+            percentUsed={snapshotInfos.consumedSpace.percent ?? 0}
+            metricsLine={`${snapshotInfos.consumedSpace.mb.toFixed(2)} MB / ${snapshotInfos.totalPVCSpace.mb.toFixed(2)} MB`}
+          />
+        </SettingsField>
+        <SettingsDetails
+          items={[
+            { label: C.LABELS.SNAPSHOT_STORAGE_CONSUMED, value: consumedLine },
+            { label: C.LABELS.SNAPSHOT_STORAGE_AVAILABLE, value: availableLine },
+            {
+              label: C.LABELS.SNAPSHOT_STORAGE_TOTAL_SNAPSHOTS,
+              value: snapshotInfos.totalSnapshots,
+            },
+          ]}
+        />
+      </>
+    );
+  }
   return (
     <SettingsCard
       title={C.LABELS.SNAPSHOT_STORAGE_TITLE}
       description={C.LABELS.SNAPSHOT_STORAGE_DESCRIPTION}
     >
       <SettingsStack>
-        {!canViewSnapshotStorage ? (
-          <SettingsHint>{C.LABELS.SNAPSHOT_STORAGE_NO_ACCESS}</SettingsHint>
-        ) : snapshotInfosLoading ? (
-          <SettingsHint>{C.LABELS.SNAPSHOT_STORAGE_LOADING}</SettingsHint>
-        ) : snapshotInfos ? (
-          <>
-            <SettingsField label={C.LABELS.SNAPSHOT_STORAGE_USAGE_LABEL}>
-              <SnapshotStorageBar
-                percentUsed={snapshotInfos.consumedSpace.percent ?? 0}
-                metricsLine={`${snapshotInfos.consumedSpace.mb.toFixed(2)} MB / ${snapshotInfos.totalPVCSpace.mb.toFixed(2)} MB`}
-              />
-            </SettingsField>
-            <SettingsDetails
-              items={[
-                { label: C.LABELS.SNAPSHOT_STORAGE_CONSUMED, value: consumedLine },
-                { label: C.LABELS.SNAPSHOT_STORAGE_AVAILABLE, value: availableLine },
-                {
-                  label: C.LABELS.SNAPSHOT_STORAGE_TOTAL_SNAPSHOTS,
-                  value: snapshotInfos.totalSnapshots,
-                },
-              ]}
-            />
-          </>
-        ) : null}
+        {storage}
         <SettingsField
           label={C.LABELS.SNAPSHOTS_MAX_PER_APP_LABEL}
           info={C.LABELS.SNAPSHOTS_MAX_PER_APP_HINT}

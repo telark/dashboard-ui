@@ -7,7 +7,6 @@ export const HTTP_HEADERS = {
   CUSTOM: {
     SILENT_404: 'X-Silent-404',
     SILENT_NETWORK: 'X-Silent-Network',
-    SESSION_TOKEN: 'X-Session-Token',
     REQUESTED_WITH: 'X-Requested-With',
     DEVICE_NAME: 'X-Device-Name',
     DEVICE_TYPE: 'X-Device-Type',

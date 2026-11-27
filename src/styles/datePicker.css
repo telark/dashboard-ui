@@ -25,17 +25,17 @@
 }
 
 /* Clear button */
-.custom-date-picker-wrapper .ant-picker-clear {
-  color: var(--color-text-on-surface-disabled) !important;
+#root .custom-date-picker-wrapper .ant-picker-clear {
+  color: var(--color-text-on-surface-disabled);
 }
 
-.custom-date-picker-wrapper .ant-picker-clear:hover {
-  color: var(--color-text-on-surface-muted) !important;
+#root .custom-date-picker-wrapper .ant-picker-clear:hover {
+  color: var(--color-text-on-surface-muted);
 }
 
 /* Suffix icon color */
-.custom-date-picker-wrapper .ant-picker-suffix {
-  color: var(--color-text-on-surface-disabled) !important;
+#root .custom-date-picker-wrapper .ant-picker-suffix {
+  color: var(--color-text-on-surface-disabled);
 }
 
 /* Hide scrollbar in time picker columns */

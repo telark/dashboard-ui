@@ -26,3 +26,7 @@ export const MENU_RAIL_LABELS = {
   CATEGORIES: MENU_LABELS.CATEGORIES,
   SETTINGS: MENU_LABELS.SETTINGS,
 } as const;
+
+// Items that wear the "New" tag in the expanded sidebar, each read by its own button's isNew:
+// drop the entry and that prop once it is no longer new.
+export const MENU_NEW_ITEMS = { CATEGORIES: true } as const;

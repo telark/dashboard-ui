@@ -29,7 +29,7 @@ export interface ColumnsArgs {
   onDelete?: (r: Role) => void;
   onSort: (key: RolesSortKey) => void;
   activeSortKey: RolesSortKey;
-  sortOrder?: 'asc' | 'desc';
+  sortOrder: 'asc' | 'desc';
   categories?: Category[];
   users?: User[];
   usernamesById?: Record<string, string>;

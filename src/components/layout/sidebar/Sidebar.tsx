@@ -54,6 +54,7 @@ const Sidebar = memo(() => {
           style={{
             position: 'absolute',
             inset: 0,
+            overflowX: 'hidden',
             overflowY: 'auto',
             paddingTop: SIDEBAR_LAYOUT.CONTENT_TOP_PADDING,
             opacity: isSettingsRoute ? 0 : 1,
@@ -67,6 +68,7 @@ const Sidebar = memo(() => {
           style={{
             position: 'absolute',
             inset: 0,
+            overflowX: 'hidden',
             overflowY: 'auto',
             paddingTop: SIDEBAR_LAYOUT.CONTENT_TOP_PADDING,
             opacity: isSettingsRoute ? 1 : 0,

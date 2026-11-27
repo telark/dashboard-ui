@@ -6,6 +6,7 @@ import { USERS_CONSTANTS as UC } from '../constants';
 import type { User } from '../models';
 import { applyUserFilters } from './filter/applyUserFilters';
 import { userLockReason } from './user/protection';
+import { removalBlockedReason } from './assignment/blocked';
 import {
   arraysEqual,
   filterBySearchTerm,
@@ -195,5 +196,16 @@ describe('userLockReason', () => {
     ['anyone else', buildUser(), null, undefined],
   ])('reads %s', (_, target, who, expected) => {
     expect(userLockReason(target, who)).toBe(expected);
+  });
+});
+
+describe('removalBlockedReason', () => {
+  const DENIED = UC.LABELS.ACTIONS.REMOVE_ROLE_DISABLED_TOOLTIP;
+  it.each([
+    { bootstrap: true, allowed: true, expected: UC.LABELS.ACTIONS.BOOTSTRAP_LOCKED_TOOLTIP },
+    { bootstrap: false, allowed: false, expected: DENIED },
+    { bootstrap: undefined, allowed: true, expected: undefined },
+  ])('bootstrap $bootstrap, allowed $allowed', ({ bootstrap, allowed, expected }) => {
+    expect(removalBlockedReason(bootstrap, allowed, DENIED)).toBe(expected);
   });
 });

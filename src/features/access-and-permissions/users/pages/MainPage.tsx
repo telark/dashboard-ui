@@ -83,6 +83,7 @@ const MainPage: React.FC = () => {
 
   const {
     sortKey,
+    sortOrder,
     selectedUsers,
     currentPage,
     pageSize,
@@ -142,6 +143,7 @@ const MainPage: React.FC = () => {
 
   const pageConfig = useUserListPageConfig({
     sortKey,
+    sortOrder,
     handleSort,
     selectedUsers,
     setSelectedUsers,

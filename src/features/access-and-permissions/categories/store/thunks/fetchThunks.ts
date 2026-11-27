@@ -3,8 +3,7 @@ import { fetchCategoriesByScope } from '../../clients';
 import { extractErrorMessage } from '../../../../../utils/helpers/format';
 import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../../../constants/store/store';
 import logger from '../../../../../logging';
-import type { Category } from '../../models';
-import type { CategoryListResponse } from '../../models';
+import type { Category, CategoryListResponse } from '../../models';
 
 const mapCategoriesData = (response: CategoryListResponse): Category[] => {
   return response.data?.items || [];

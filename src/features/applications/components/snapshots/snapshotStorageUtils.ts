@@ -1,6 +1,6 @@
 /** Parse "12%" or "12 %" style strings from snapshot API. */
 export function parseConsumedPercent(consumed: string): number | null {
-  const m = consumed.trim().match(/^(\d+(?:\.\d+)?)\s*%$/);
+  const m = /^(\d+(?:\.\d+)?)\s*%$/.exec(consumed.trim());
   if (!m) return null;
   const n = Number(m[1]);
   if (Number.isNaN(n)) return null;

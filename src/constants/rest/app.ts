@@ -27,8 +27,8 @@ export const APP_ROUTES = {
   LOGIN: '/login',
   REGISTER: '/register',
   GOOGLE_CALLBACK: '/auth/google/callback',
-  // A break-glass request's approval page: public, so the bootstrap account approves without a sign-in.
-  BREAK_GLASS: '/break-glass',
+  // An auth request's approval page: public, so the bootstrap account approves without a sign-in.
+  AUTH_REQUEST: '/auth/request',
   // resources
   APPLICATIONS: '/applications',
   APPLICATION_DETAILS: '/applications/:name',

@@ -28,7 +28,7 @@ import {
 } from '../../../../../components/shared';
 import { ACTION_PERMISSIONS } from '../../../../auth/hooks';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
-import type { PlanRepeat, ProtectionPlan } from '../../models';
+import type { PlanPhase, PlanRepeat, ProtectionPlan } from '../../models';
 import { formatRepeatRule } from '../../utils/repeatRule';
 import DetailsView from './DetailsView';
 
@@ -174,6 +174,16 @@ describe('plan details summary', () => {
 
     expect(await screen.findByText(text, { exact: false })).toBeInTheDocument();
   });
+
+  it.each<[PlanPhase, string, string]>([
+    ['canceled', L.DETAIL_PAGE.FIELDS.CANCELED, L.DETAIL_PAGE.FIELDS.TERMINATED],
+    ['terminated', L.DETAIL_PAGE.FIELDS.TERMINATED, L.DETAIL_PAGE.FIELDS.CANCELED],
+  ])('names the end of a %s plan in its timeline', async (phase, shown, hidden) => {
+    await openDetails(buildPlan({ phase, terminatedAt: '2026-02-02T10:00:00Z' }));
+
+    expect(await screen.findAllByText(shown)).not.toHaveLength(0);
+    expect(screen.queryByText(hidden)).not.toBeInTheDocument();
+  });
 });
 
 describe('plan details sections', () => {
@@ -205,6 +215,17 @@ describe('plan details sections', () => {
     ).toBeInTheDocument();
   });
 
+  it('says so when the cluster reports no policy for the plan', async () => {
+    mockPlanDetails(plan);
+    mockEndpoint('discovery', Endpoints.PROTECTION_PLANS.STATUS(plan.id), {
+      data: buildPlanStatus({ planId: plan.id, policies: [] }),
+    });
+
+    renderDetails(plan);
+
+    expect(await screen.findByText(L.HEALTH_DETAIL.EMPTY)).toBeInTheDocument();
+  });
+
   it('asks the server again when the health check is refreshed', async () => {
     mockPlanDetails(plan);
     const status = mockEndpoint('discovery', Endpoints.PROTECTION_PLANS.STATUS(plan.id), {
@@ -230,6 +251,22 @@ describe('plan details sections', () => {
     expect(await screen.findByText(violation.message)).toBeInTheDocument();
     await pickSelectOption(user, screen.getByRole('combobox'), L.VIOLATION_RESULT_LABELS.pass);
     await waitFor(() => expect(list.calls.at(-1)?.url.searchParams.get('result')).toBe('pass'));
+  });
+
+  it('lists the decisions that carry no time', async () => {
+    const undated = [
+      buildPlanViolation({ message: 'Blocked a scale', timestamp: undefined }),
+      buildPlanViolation({ message: 'Blocked a patch', timestamp: undefined }),
+    ];
+    mockPlanDetails(plan);
+    mockEndpoint('discovery', Endpoints.PROTECTION_PLANS.VIOLATIONS(plan.id), {
+      data: { planId: plan.id, total: 2, retentionWindow: '30d', violations: undated },
+    });
+
+    renderDetails(plan);
+
+    expect(await screen.findByText(undated[1].message)).toBeInTheDocument();
+    expect(screen.getByText(undated[0].message)).toBeInTheDocument();
   });
 
   describe('reports', () => {

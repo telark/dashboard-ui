@@ -17,6 +17,16 @@ interface RoleActionsColumnProps {
   getUsage?: (roleId: string) => { users: number; groups: number };
 }
 
+// An enabled action names itself; a disabled one says why: no permission, or the role can't take it.
+const actionTooltip = (
+  enabled: boolean,
+  permitted: boolean,
+  texts: { allowed: string; denied: string; disabled: string },
+): string => {
+  if (enabled) return texts.allowed;
+  return permitted ? texts.disabled : texts.denied;
+};
+
 export const RoleActionsColumn: React.FC<RoleActionsColumnProps> = ({
   record,
   onEdit,
@@ -83,26 +93,22 @@ export const RoleActionsColumn: React.FC<RoleActionsColumnProps> = ({
       <RowIconButton
         icon={<EditOutlined />}
         label={RC.LABELS.ACTIONS.EDIT}
-        tooltip={
-          canEdit
-            ? RC.LABELS.ACTIONS.EDIT
-            : !hasEditPermission
-              ? RC.LABELS.ACTIONS.EDIT_PERMISSION_DENIED_TOOLTIP
-              : RC.LABELS.ACTIONS.EDIT_DISABLED_TOOLTIP
-        }
+        tooltip={actionTooltip(canEdit, hasEditPermission, {
+          allowed: RC.LABELS.ACTIONS.EDIT,
+          denied: RC.LABELS.ACTIONS.EDIT_PERMISSION_DENIED_TOOLTIP,
+          disabled: RC.LABELS.ACTIONS.EDIT_DISABLED_TOOLTIP,
+        })}
         disabled={!canEdit}
         onClick={handleEditClick}
       />
       <RowIconButton
         icon={<DeleteOutlined />}
         label={RC.LABELS.ACTIONS.DELETE}
-        tooltip={
-          canDelete
-            ? RC.LABELS.ACTIONS.DELETE
-            : !hasDeletePermission
-              ? RC.LABELS.ACTIONS.DELETE_PERMISSION_DENIED_TOOLTIP
-              : RC.LABELS.ACTIONS.DELETE_DISABLED_TOOLTIP
-        }
+        tooltip={actionTooltip(canDelete, hasDeletePermission, {
+          allowed: RC.LABELS.ACTIONS.DELETE,
+          denied: RC.LABELS.ACTIONS.DELETE_PERMISSION_DENIED_TOOLTIP,
+          disabled: RC.LABELS.ACTIONS.DELETE_DISABLED_TOOLTIP,
+        })}
         disabled={!canDelete}
         onClick={handleDeleteClick}
       />

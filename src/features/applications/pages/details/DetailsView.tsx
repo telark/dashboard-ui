@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useMemo, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import FullPageLoader from '../../../../components/display/views/FullPageLoader';
 import { APPLICATION_DETAILS_CONSTANTS, SYNC_STATUS_VALUE } from '../../constants';
 import { useApplicationDetails } from '../../hooks';
@@ -9,16 +9,14 @@ import { DataViewError, PageContainer } from '../../../../components/shared';
 import { APPLICATIONS_UI } from '../../constants/texts';
 import { APP_ROUTES, HEADER_LAYOUT } from '../../../../constants';
 import { LIST_PAGE } from '../../../../constants/shared/pages';
-import { useDispatch } from 'react-redux';
 import type { AppDispatch, RootState } from '../../../../store';
-import { fetchApplicationSnapshotsThunk } from '../../store';
+import { fetchApplicationSnapshotsThunk, resetApplicationThunk } from '../../store';
 import {
   EditApplicationPanel,
   ManageRollbacksPanel,
   ManageSnapshotsPanel,
 } from '../../components/panels';
 import { App as AntdApp, Form } from 'antd';
-import { resetApplicationThunk } from '../../store';
 import { forceSyncApplication } from '../../utils/management/sync';
 import { hasActiveRollback } from '../../utils/rollbacks';
 import ApplicationResetModal from '../../components/reset/ApplicationResetModal';
@@ -52,11 +50,9 @@ const ApplicationDetailsView: React.FC = memo(() => {
   const isSyncing = syncingFlag || syncStatus === SYNC_STATUS_VALUE.SYNCING;
   const activeRollback = hasActiveRollback(details?.rollbacks);
   const rollbackDisabled = isSyncing || activeRollback;
-  const rollbackDisabledReason: 'sync' | 'activeRollback' | null = isSyncing
-    ? 'sync'
-    : activeRollback
-      ? 'activeRollback'
-      : null;
+  let rollbackDisabledReason: 'sync' | 'activeRollback' | null = null;
+  if (isSyncing) rollbackDisabledReason = 'sync';
+  else if (activeRollback) rollbackDisabledReason = 'activeRollback';
 
   const canReadSnapshotFiles = usePermission(
     viewSnapshotManifest.scope,

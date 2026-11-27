@@ -96,7 +96,7 @@ const AnimationWrapper: React.FC<AnimationWrapperProps> = React.memo(
     useScrollLock(open);
     const reduceMotion = useMediaQuery(SIDEBAR_LAYOUT.REDUCED_MOTION_QUERY);
     const backdropRef = useRef<HTMLDivElement>(null);
-    const panelRef = useRef<HTMLDivElement>(null);
+    const panelRef = useRef<HTMLDialogElement>(null);
 
     useLayoutEffect(() => {
       const backdrop = backdropRef.current;
@@ -128,8 +128,11 @@ const AnimationWrapper: React.FC<AnimationWrapperProps> = React.memo(
     return (
       <ConfigProvider theme={PANEL_THEME}>
         <div ref={backdropRef} role="none" onClick={onClose} style={SLIDE_OUT.BACKDROP} />
-        <div
+        <dialog
           ref={panelRef}
+          open
+          aria-modal="true"
+          aria-label={title}
           tabIndex={-1}
           className={PANEL_SURFACE_CLASS}
           style={{
@@ -153,7 +156,7 @@ const AnimationWrapper: React.FC<AnimationWrapperProps> = React.memo(
           />
 
           <PanelBody footer={footer}>{children}</PanelBody>
-        </div>
+        </dialog>
 
         <style>
           {SLIDE_OUT.KEYFRAMES.SLIDE_IN_RIGHT}

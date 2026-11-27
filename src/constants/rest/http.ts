@@ -20,6 +20,7 @@ export const ERROR_CODES = {
 export const AUTH_REFUSAL_CODES = {
   ACCOUNT_SUSPENDED: 'account_suspended',
   BOOTSTRAP_PASSKEY_ONLY: 'bootstrap_passkey_only',
+  EMAIL_RESERVED: 'email_reserved',
   USER_NOT_FOUND: 'user_not_found',
   ENROLL_LINK_RECOVERY: 'enroll_link_recovery',
   SESSION_COOKIE_DUPLICATE: 'session_cookie_duplicate',

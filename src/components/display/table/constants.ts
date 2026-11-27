@@ -8,6 +8,7 @@ export const TABLE_DEFAULTS = {
   SORT_ACTIVE: DEFAULT_COLORS.SUCCESS_TEXT,
   SORT_INACTIVE: DEFAULT_COLORS.ICON_SECONDARY,
   HEADER_ALIGN_DEFAULT: 'center' as const,
+  ARIA_SORT: { asc: 'ascending', desc: 'descending' },
 } as const;
 
 // Global so the accent applies wherever a list mounts its pagination.

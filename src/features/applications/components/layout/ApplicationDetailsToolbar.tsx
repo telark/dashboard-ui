@@ -12,6 +12,7 @@ import Toolbar from '../../../../components/display/toolbar/Toolbar';
 import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 import { Icons, MENU_LABELS } from '../../../../constants';
 import { APPLICATIONS_UI } from '../../constants';
+import { syncBlockedTooltip } from '../../utils/syncTooltip';
 import {
   usePermission,
   ACTION_PERMISSIONS,
@@ -101,11 +102,11 @@ const ApplicationDetailsToolbar: React.FC<ApplicationDetailsToolbarProps> = ({
         variant: 'default',
         onClick: onForceSync,
         disabled: !canForceSync || syncDisabled,
-        tooltip: !canForceSync
-          ? APPLICATIONS_UI.CARD.ACTIONS.FORCE_SYNC_PERMISSION_DENIED_TOOLTIP
-          : syncDisabled
-            ? APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP
-            : undefined,
+        tooltip: syncBlockedTooltip(
+          canForceSync,
+          APPLICATIONS_UI.CARD.ACTIONS.FORCE_SYNC_PERMISSION_DENIED_TOOLTIP,
+          syncDisabled,
+        ),
       },
       {
         key: 'edit',
@@ -114,11 +115,11 @@ const ApplicationDetailsToolbar: React.FC<ApplicationDetailsToolbarProps> = ({
         variant: 'ghost',
         onClick: onEdit,
         disabled: !canEdit || syncDisabled,
-        tooltip: !canEdit
-          ? APPLICATIONS_UI.CARD.ACTIONS.EDIT_PERMISSION_DENIED_TOOLTIP
-          : syncDisabled
-            ? APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP
-            : undefined,
+        tooltip: syncBlockedTooltip(
+          canEdit,
+          APPLICATIONS_UI.CARD.ACTIONS.EDIT_PERMISSION_DENIED_TOOLTIP,
+          syncDisabled,
+        ),
       },
       ...(onOpenInsights && canViewInsights
         ? [

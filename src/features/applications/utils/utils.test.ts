@@ -12,6 +12,7 @@ import { APPLICATIONS_UI } from '../constants';
 import type { ApplicationCoverage, ApplicationSnapshotSummary } from '../models';
 import { buildCoverageIndex, getApplicationCoverage, getApplicationProtection } from './coverage';
 import { getManifestErrorCopy } from './manifestError';
+import { syncBlockedTooltip } from './syncTooltip';
 import {
   formatBytes,
   formatBytesPair,
@@ -305,5 +306,16 @@ describe('mergeApplicationSnapshotSources', () => {
   it('keys a snapshot by its path, or by its identity without one', () => {
     expect(applicationSnapshotStableKey(summary({ path: '/a' }))).toBe('/a');
     expect(applicationSnapshotStableKey(summary({ path: '' }))).toBe('payments|2|a');
+  });
+});
+
+describe('syncBlockedTooltip', () => {
+  const DENIED = APPLICATIONS_UI.CARD.ACTIONS.EDIT_PERMISSION_DENIED_TOOLTIP;
+  it.each([
+    { allowed: false, syncing: true, expected: DENIED },
+    { allowed: true, syncing: true, expected: APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP },
+    { allowed: true, syncing: false, expected: undefined },
+  ])('allowed $allowed, syncing $syncing', ({ allowed, syncing, expected }) => {
+    expect(syncBlockedTooltip(allowed, DENIED, syncing)).toBe(expected);
   });
 });

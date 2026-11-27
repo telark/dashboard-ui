@@ -35,6 +35,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from '../../../../../store';
 import { resetApplicationThunk } from '../../../store';
 import { forceSyncApplication } from '../../../utils/management/sync';
+import { syncBlockedTooltip } from '../../../utils/syncTooltip';
 import ApplicationResetModal from '../../reset/ApplicationResetModal';
 import {
   usePermission,
@@ -180,6 +181,7 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
           <div style={CARD_IDENTITY_STYLE}>
             {bulkMode ? (
               <span
+                role="none"
                 style={{ display: 'inline-flex', alignItems: 'center' }}
                 onClick={(e) => e.stopPropagation()}
                 onKeyDown={(e) => e.stopPropagation()}
@@ -251,11 +253,11 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
                     key: 'forceSync',
                     label: labelWithTooltip(
                       APPLICATIONS_UI.CARD.ACTIONS.FORCE_SYNC,
-                      !canForceSync
-                        ? APPLICATIONS_UI.CARD.ACTIONS.FORCE_SYNC_PERMISSION_DENIED_TOOLTIP
-                        : isSyncing
-                          ? APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP
-                          : undefined,
+                      syncBlockedTooltip(
+                        canForceSync,
+                        APPLICATIONS_UI.CARD.ACTIONS.FORCE_SYNC_PERMISSION_DENIED_TOOLTIP,
+                        isSyncing,
+                      ),
                     ),
                     icon: <SyncOutlined />,
                     disabled: !canForceSync || isSyncing,
@@ -264,11 +266,11 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
                     key: 'edit',
                     label: labelWithTooltip(
                       APPLICATIONS_UI.CARD.ACTIONS.EDIT,
-                      !canEdit
-                        ? APPLICATIONS_UI.CARD.ACTIONS.EDIT_PERMISSION_DENIED_TOOLTIP
-                        : isSyncing
-                          ? APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP
-                          : undefined,
+                      syncBlockedTooltip(
+                        canEdit,
+                        APPLICATIONS_UI.CARD.ACTIONS.EDIT_PERMISSION_DENIED_TOOLTIP,
+                        isSyncing,
+                      ),
                     ),
                     icon: <EditOutlined />,
                     disabled: !canEdit || isSyncing,
@@ -278,11 +280,11 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
                     key: 'reset',
                     label: labelWithTooltip(
                       APPLICATIONS_UI.CARD.ACTIONS.RESET,
-                      !canReset
-                        ? APPLICATIONS_UI.CARD.ACTIONS.RESET_PERMISSION_DENIED_TOOLTIP
-                        : isSyncing
-                          ? APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP
-                          : undefined,
+                      syncBlockedTooltip(
+                        canReset,
+                        APPLICATIONS_UI.CARD.ACTIONS.RESET_PERMISSION_DENIED_TOOLTIP,
+                        isSyncing,
+                      ),
                     ),
                     icon: <ClearOutlined />,
                     danger: true,

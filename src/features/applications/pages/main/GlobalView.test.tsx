@@ -22,7 +22,11 @@ import {
   pickMenuItem,
   mockServerError,
 } from '../../../../test';
-import { buildApplication, buildApplicationWith } from '../../../../test/factories/applications';
+import {
+  buildApplication,
+  buildApplicationWith,
+  buildDiscoveryStatus,
+} from '../../../../test/factories/applications';
 import { buildPlan } from '../../../../test/factories/plans';
 import { clickInDialog } from '../../../../test/helpers/dialogs';
 import { mockApplicationsPage, seedGlobalConfig } from '../../../../test/helpers/featureApi';
@@ -38,6 +42,7 @@ const BILLING = buildApplicationWith({
   displayName: 'Billing',
   health: { status: 'down', readyReplicas: 0, totalReplicas: 2 },
   history: { hasDrift: true },
+  namespaces: { total: 1, items: [{ name: 'billing', resourceCount: 2 }] },
 });
 
 const renderList = async (applications: Application[]) => {
@@ -135,6 +140,17 @@ describe('applications list', () => {
     ).toBeInTheDocument();
   });
 
+  it('says how many applications discovery still has to refresh', async () => {
+    mockApplicationsPage([ORDERS]);
+    mockEndpoint('discovery', Endpoints.APPLICATIONS.DISCOVERY_STATUS, {
+      data: buildDiscoveryStatus({ inProgress: true, remaining: 3 }),
+    });
+
+    renderApp(<GlobalView />);
+
+    expect(await screen.findByText(APPLICATIONS_UI.DISCOVERY_IN_PROGRESS(3))).toBeInTheDocument();
+  });
+
   it('collapses the toolbar on a narrow screen', async () => {
     setLayoutWidth(500);
     await renderList([ORDERS, BILLING]);
@@ -155,6 +171,7 @@ describe('applications list filters', () => {
   it.each([
     [APPLICATIONS_UI.FILTER.BY_STATUS, 'down'],
     [APPLICATIONS_UI.FILTER.BY_HAS_DRIFT, APPLICATIONS_UI.FILTER.OPTION_YES],
+    [APPLICATIONS_UI.FILTER.BY_NAMESPACE, 'billing'],
   ])('keeps only the matches of %s, and clears the filter', async (label, option) => {
     const { user } = await renderList([ORDERS, BILLING]);
 

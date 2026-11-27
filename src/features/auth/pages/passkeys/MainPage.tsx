@@ -38,7 +38,6 @@ const MainPage: React.FC = () => {
     openEditPanel,
     closePanel,
     form,
-    formSyncKey,
   } = usePasskeyPanelState();
 
   const { submitting, handleDelete, handleCreate, handleUpdate } = usePasskeyActions(openEditPanel);
@@ -118,7 +117,6 @@ const MainPage: React.FC = () => {
             submitting={submitting}
             onSubmit={handlePanelSubmit}
             form={form}
-            formSyncKey={formSyncKey}
           />
         )}
       </>
@@ -145,7 +143,6 @@ const MainPage: React.FC = () => {
         selectedPasskey={selectedPasskey}
         onClosePanel={closePanel}
         form={form}
-        formSyncKey={formSyncKey}
         submitting={submitting}
         onSubmit={handlePanelSubmit}
       />

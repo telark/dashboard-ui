@@ -172,6 +172,40 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
     if (dataState.phase === 'loading')
       return <FullPageLoader minHeight={HEADER_LAYOUT.MIN_HEIGHT} />;
 
+    let body: React.ReactNode;
+    if (dataState.phase === 'error') {
+      body = (
+        <DataViewError
+          variant="card"
+          message={dataState.errorMessage}
+          onRetry={onRetry}
+          connectivity={dataState.connectivity}
+        />
+      );
+    } else if (!hasApps) {
+      body = (
+        <div style={{ display: 'flex', minHeight: LIST_PAGE.LOADING_MIN_HEIGHT_PX }}>
+          <Empty
+            className={EMPTY_CLASS.PAGE}
+            image={false}
+            description={
+              <>
+                <Typography.Title level={2}>{APPLICATIONS_UI.NO_MATCH_TITLE}</Typography.Title>
+                <Typography.Text>{APPLICATIONS_UI.NO_MATCH_DESCRIPTION}</Typography.Text>
+              </>
+            }
+          >
+            {hasActiveFilters ? (
+              <Button onClick={onClearAllFilters} style={EMPTY_ACTION_STYLE}>
+                {APPLICATIONS_UI.CLEAR_ALL_FILTERS}
+              </Button>
+            ) : null}
+          </Empty>
+        </div>
+      );
+    } else {
+      body = content;
+    }
     return (
       <PageContainer
         title={APPLICATIONS_UI.HEADER_TITLE}
@@ -209,35 +243,7 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
         />
 
         <div ref={gridRef} style={{ marginTop: LIST_PAGE.CONTENT_OFFSET_PX }}>
-          {dataState.phase === 'error' ? (
-            <DataViewError
-              variant="card"
-              message={dataState.errorMessage}
-              onRetry={onRetry}
-              connectivity={dataState.connectivity}
-            />
-          ) : !hasApps ? (
-            <div style={{ display: 'flex', minHeight: LIST_PAGE.LOADING_MIN_HEIGHT_PX }}>
-              <Empty
-                className={EMPTY_CLASS.PAGE}
-                image={false}
-                description={
-                  <>
-                    <Typography.Title level={2}>{APPLICATIONS_UI.NO_MATCH_TITLE}</Typography.Title>
-                    <Typography.Text>{APPLICATIONS_UI.NO_MATCH_DESCRIPTION}</Typography.Text>
-                  </>
-                }
-              >
-                {hasActiveFilters ? (
-                  <Button onClick={onClearAllFilters} style={EMPTY_ACTION_STYLE}>
-                    {APPLICATIONS_UI.CLEAR_ALL_FILTERS}
-                  </Button>
-                ) : null}
-              </Empty>
-            </div>
-          ) : (
-            content
-          )}
+          {body}
         </div>
         {hasApps ? <TablePagination config={pagination} /> : null}
         <ApplicationResetModal

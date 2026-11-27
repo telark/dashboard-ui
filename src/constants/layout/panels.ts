@@ -132,11 +132,19 @@ export const SLIDE_OUT = {
     zIndex: Z_INDEX.PANEL_BACKDROP,
     animation: `fadeIn ${PANEL_ENTER_MS}ms ease-out`,
   },
+  // The frame is a <dialog open>: left, height, margin, padding, border and color undo its
+  // user-agent box (centered, fit to content, padded, bordered, in the canvas text color).
   PANEL: {
     position: 'fixed' as const,
     top: 0,
     right: 0,
     bottom: 0,
+    left: 'auto',
+    height: 'auto',
+    margin: 0,
+    padding: 0,
+    border: 'none',
+    color: 'inherit',
     background: DEFAULT_COLORS.SURFACE_WHITE,
     zIndex: Z_INDEX.PANEL,
     display: 'flex' as const,

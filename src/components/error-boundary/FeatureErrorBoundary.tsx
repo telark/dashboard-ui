@@ -1,5 +1,4 @@
-import React from 'react';
-import { Component, ErrorInfo, ReactNode } from 'react';
+import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { Button, ConfigProvider, Typography } from 'antd';
 import { ReloadOutlined, BugOutlined, HomeOutlined } from '@ant-design/icons';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -16,8 +15,9 @@ import {
   FONT_WEIGHT,
   RADIUS,
   SPACING,
+  APP_ROUTES,
+  Z_INDEX,
 } from '../../constants';
-import { APP_ROUTES, Z_INDEX } from '../../constants';
 import { isDevelopment } from '../../utils/helpers/env';
 import logger from '../../logging';
 

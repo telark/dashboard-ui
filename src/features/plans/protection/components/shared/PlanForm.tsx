@@ -110,7 +110,7 @@ const PlanForm: React.FC<PlanFormProps> = ({
 
   const watchedValues = Form.useWatch([], form);
   const showActiveScopeWarning = useMemo(() => {
-    if (!isEditMode || !plan || plan.phase !== 'active') return false;
+    if (!isEditMode || plan?.phase !== 'active') return false;
     const current = (watchedValues ?? form.getFieldsValue(true)) as FormValues;
     return scopeItemsChanged(plan, current);
   }, [isEditMode, plan, watchedValues, form]);

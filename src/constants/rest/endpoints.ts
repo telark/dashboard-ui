@@ -174,8 +174,8 @@ export const Endpoints = {
       path: AUTH_PATHS.SELF_REGISTRATION,
       method: 'PATCH',
     },
-    BREAK_GLASS_ALERTS: {
-      path: AUTH_PATHS.BREAK_GLASS_ALERTS,
+    AUTH_ALERTS: {
+      path: AUTH_PATHS.AUTH_ALERTS,
       method: 'PATCH',
     },
     PERMISSIONS: {

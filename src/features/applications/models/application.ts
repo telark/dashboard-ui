@@ -134,7 +134,7 @@ export interface SnapshotStorageInfos {
 export interface SnapshotManifestState {
   loading: boolean;
   error: string | null;
-  data: unknown | null;
+  data: unknown;
 }
 
 export interface ApplicationMetricsDerived {

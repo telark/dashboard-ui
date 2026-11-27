@@ -2,13 +2,12 @@ import { useCallback } from 'react';
 import { App as AntdApp } from 'antd';
 import type { FormInstance } from 'antd';
 import { useDispatch } from 'react-redux';
-import { useDeassignModal } from '../../../../shared';
+import { useDeassignModal, applySelectionChange } from '../../../../shared';
 import { updateGroupThunk } from '../../../store';
 import { fetchAllUsersSilentThunk } from '../../../../users/store';
 import type { AppDispatch } from '../../../../../../store';
 import { GROUPS_CONSTANTS as GC } from '../../../constants';
 import { fetchFreshGroupIds } from '../../../utils';
-import { applySelectionChange } from '../../../../shared';
 import { rejectionMessage } from '../../../../../../utils/helpers/format';
 import type { Group } from '../../../models';
 import type { User } from '../../../../users/models';
@@ -51,9 +50,9 @@ export const useDeassignGroupMember = ({
         form.setFieldsValue({ userRefs: current.filter((id) => id !== user.id) });
         dispatch(fetchAllUsersSilentThunk());
         message.success(GC.LABELS.MESSAGES.MEMBER_DEASSIGNED(user.username));
-      } catch (rejection) {
-        message.error(rejectionMessage(rejection, GC.LABELS.MESSAGES.MEMBER_DEASSIGN_FAILED));
-        throw new Error(GC.LABELS.MESSAGES.MEMBER_DEASSIGN_FAILED, { cause: rejection });
+      } catch (error) {
+        message.error(rejectionMessage(error, GC.LABELS.MESSAGES.MEMBER_DEASSIGN_FAILED));
+        throw new Error(GC.LABELS.MESSAGES.MEMBER_DEASSIGN_FAILED, { cause: error });
       }
     },
     [group, form, dispatch, message],

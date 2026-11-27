@@ -8,7 +8,7 @@ export const handleCreatePasskeyPending = (state: PasskeysState) => {
 
 export const handleCreatePasskeyFulfilled = (
   state: PasskeysState,
-  action: PayloadAction<Passkey | unknown>,
+  action: PayloadAction<unknown>,
 ) => {
   state.loading = false;
   if (action.payload && typeof action.payload === 'object' && 'credentialId' in action.payload) {

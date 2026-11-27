@@ -101,13 +101,11 @@ h3 {
 }
 
 /* Hide asterisks from required form fields but keep validation */
-.no-asterisk
-  .ant-form-item-label
-  > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before,
-.form-item-compact.no-asterisk
+#root
+  .no-asterisk
   .ant-form-item-label
   > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
-  display: none !important;
+  display: none;
 }
 
 /* Scrollable lists that must not show a scrollbar (change-log entries). */

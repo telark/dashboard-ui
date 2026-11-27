@@ -10,12 +10,12 @@ export const CANCELLABLE_PHASES: PlanPhase[] = [
   'pending_approval',
 ];
 export const REACTIVATABLE_PHASES: PlanPhase[] = ['canceled', 'terminated', 'failed'];
-const WINDOW_PHASES: PlanPhase[] = ['scheduled', 'active', 'pending_approval'];
+const WINDOW_PHASES: ReadonlySet<PlanPhase> = new Set(['scheduled', 'active', 'pending_approval']);
 
 // The server keeps a repeating plan's window only while its series runs: after a cancel, a failure
 // or a switch to another schedule, the stored one is stale.
 export const liveWindow = (plan: ProtectionPlan): PlanTimeRange | undefined =>
-  plan.timeMode === 'repeating' && WINDOW_PHASES.includes(plan.phase) ? plan.window : undefined;
+  plan.timeMode === 'repeating' && WINDOW_PHASES.has(plan.phase) ? plan.window : undefined;
 
 export const isReactivateExpired = (plan: ProtectionPlan): boolean => {
   if (plan.timeMode !== 'time_range' || !plan.timeRange?.endAt) return false;

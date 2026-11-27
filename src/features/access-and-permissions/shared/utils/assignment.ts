@@ -5,7 +5,7 @@ export const applySelectionChange = (
   initial: string[],
   selected: string[],
 ): string[] => {
-  const removed = initial.filter((id) => !selected.includes(id));
+  const removed = new Set(initial.filter((id) => !selected.includes(id)));
   const added = selected.filter((id) => !initial.includes(id));
-  return [...new Set([...fresh.filter((id) => !removed.includes(id)), ...added])];
+  return [...new Set([...fresh.filter((id) => !removed.has(id)), ...added])];
 };

@@ -151,7 +151,7 @@ const rgbChannels = (color: string): string => {
   if (!color.startsWith('#')) return (color.match(/\d+/g) ?? []).slice(0, 3).join(', ');
   const hex =
     color.length === HEX_SHORT_LENGTH
-      ? [...color.slice(1)].map((c) => c + c).join('')
+      ? Array.from(color.slice(1), (c) => c + c).join('')
       : color.slice(1, 7);
   return [0, 2, 4].map((i) => Number.parseInt(hex.slice(i, i + 2), 16)).join(', ');
 };

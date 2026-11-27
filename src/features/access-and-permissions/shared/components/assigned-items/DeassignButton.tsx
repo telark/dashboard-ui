@@ -9,6 +9,11 @@ export interface DeassignButtonProps {
   disabledReason?: string;
 }
 
+const iconColor = (disabled: boolean, hovered: boolean): string => {
+  if (disabled) return DEFAULT_COLORS.TEXT_ON_SURFACE_DISABLED;
+  return hovered ? DEFAULT_COLORS.DANGER : DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED;
+};
+
 const DeassignButton: React.FC<DeassignButtonProps> = ({
   onClick,
   tooltip = 'Remove',
@@ -47,11 +52,7 @@ const DeassignButton: React.FC<DeassignButtonProps> = ({
             padding: SPACING.XXS,
             borderRadius: RADIUS.XS,
             transition: `color ${MOTION.BASE_MS}ms`,
-            color: disabled
-              ? DEFAULT_COLORS.TEXT_ON_SURFACE_DISABLED
-              : hovered
-                ? DEFAULT_COLORS.DANGER
-                : DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+            color: iconColor(disabled, hovered),
           }}
         >
           <MinusCircleOutlined style={{ fontSize: FONT_SIZE.LG }} />

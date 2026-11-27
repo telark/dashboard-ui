@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { buildApplication } from '../../../../test/factories/applications';
-import { SNAPSHOT_MANIFEST_CACHE_LIMIT } from '../../constants';
+import { FORCE_SYNC_PHASE, SNAPSHOT_MANIFEST_CACHE_LIMIT } from '../../constants';
 import type { ApplicationsState, SyncStatusValue } from '../../models';
 import reducer, {
   clearAllFilters,
@@ -134,6 +134,29 @@ describe('applications thunk results in the slice', () => {
 
     expect(next.applications).toEqual([application]);
     expect(next.error).toBe('unreachable');
+  });
+
+  it.each([
+    ['a failed force sync, with its error', FORCE_SYNC_PHASE.FAILED, 'failed', 'quota exceeded'],
+    [
+      'a completed force sync, clearing the old error',
+      FORCE_SYNC_PHASE.COMPLETED,
+      'success',
+      undefined,
+    ],
+  ])('reads %s from the list', (_, phase, status, error) => {
+    const synced = buildApplication({
+      name: 'orders',
+      lastForceSync: { phase, error: 'quota exceeded' },
+    });
+
+    const next = reducer(
+      initial({ syncLastError: { orders: 'old' } }),
+      fetchAllApplicationsThunk.fulfilled([synced], 'id'),
+    );
+
+    expect(next.syncStatus.orders).toBe(status);
+    expect(next.syncLastError.orders).toBe(error);
   });
 
   it('a silent poll updates the list without an error flash', () => {

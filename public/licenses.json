@@ -431,7 +431,7 @@
   },
   {
     "name": "@reduxjs/toolkit",
-    "version": "2.13.0",
+    "version": "2.15.0",
     "license": "MIT"
   },
   {
@@ -896,7 +896,7 @@
   },
   {
     "name": "immer",
-    "version": "11.1.18",
+    "version": "11.2.10",
     "license": "MIT"
   },
   {

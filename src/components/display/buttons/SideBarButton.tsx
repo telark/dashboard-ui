@@ -1,5 +1,5 @@
 import React, { useState, useCallback, memo } from 'react';
-import { Badge, Tooltip } from 'antd';
+import { Badge, Tag, Tooltip } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import {
   DEFAULT_COLORS,
@@ -8,6 +8,8 @@ import {
   SIDEBAR_LAYOUT,
   FONT_SIZE,
   MOTION,
+  NEW_TAG_TEXT,
+  getPillColor,
   getSidebarLabelFade,
 } from '../../../constants';
 import { ButtonInterface } from '../../../interfaces/shared';
@@ -28,6 +30,66 @@ const ICON_SIZE_PX = 16;
 // antd rings the count in the page color: the sidebar's count has no ring (user, 2026-10-20).
 const BADGE_STYLES = { indicator: { boxShadow: 'none' } };
 
+// The button box: on the labeled phone rail the icon stacks over its short name, otherwise one row.
+const navButtonStyle = (
+  isCollapsed: boolean,
+  labeled: boolean,
+  highlighted: boolean,
+  textColor: string,
+): React.CSSProperties => {
+  const SB = BUTTON_CONFIGS.SIDEBAR_BUTTON;
+  const collapsedMarginX = labeled ? SB.RAIL.MARGIN_X : SB.COLLAPSED_MARGIN_X;
+  // Left-aligned in both states with the icon centered in the rail, so a toggle never moves it.
+  const collapsedPadding = labeled
+    ? SB.RAIL.PADDING
+    : `0 0 0 ${(SIDEBAR_LAYOUT.WIDTH_COLLAPSED - 2 * SB.COLLAPSED_MARGIN_X - ICON_SIZE_PX) / 2}px`;
+  return {
+    display: 'flex',
+    flexDirection: labeled ? 'column' : 'row',
+    alignItems: 'center',
+    justifyContent: labeled ? 'center' : 'flex-start',
+    textAlign: 'left',
+    gap: labeled ? SB.RAIL.GAP : SB.GAP,
+    height: labeled ? 'auto' : SB.HEIGHT,
+    padding: isCollapsed ? collapsedPadding : SB.PADDING,
+    marginLeft: isCollapsed ? collapsedMarginX : SB.MARGIN_LEFT,
+    marginRight: isCollapsed ? collapsedMarginX : SB.MARGIN_RIGHT,
+    border: 'none',
+    borderRadius: SB.BORDER_RADIUS,
+    backgroundColor: highlighted ? DEFAULT_COLORS.HOVER_BG : 'transparent',
+    color: textColor,
+    fontWeight: SB.FONT_WEIGHT,
+    fontSize: SB.FONT_SIZE,
+    cursor: 'pointer',
+    transition: `${SB.TRANSITION}, ${SIDEBAR_LAYOUT.PADDING_TRANSITION}`,
+    boxSizing: 'border-box',
+  };
+};
+
+// Collapsed, the label is hidden, so the button carries it; a count joins it when it has a name.
+// The "New" tag joins it only expanded, the one state that shows it.
+const accessibleNameOf = (
+  text: string,
+  isCollapsed: boolean,
+  badgeLabel: string | undefined,
+  isNew: boolean | undefined,
+): string | undefined => {
+  if (badgeLabel) return `${text}, ${badgeLabel}`;
+  if (isCollapsed) return text;
+  return isNew ? `${text}, ${NEW_TAG_TEXT}` : undefined;
+};
+
+// The "New" tag fades with the label, like the count, so the collapsed rail never shows it.
+const newTagOf = (isNew: boolean | undefined, labeled: boolean, isCollapsed: boolean) =>
+  isNew && !labeled ? (
+    <Tag
+      color={getPillColor(DEFAULT_COLORS.SUCCESS)}
+      style={{ flexShrink: 0, ...getSidebarLabelFade(isCollapsed) }}
+    >
+      {NEW_TAG_TEXT}
+    </Tag>
+  ) : null;
+
 interface SidebarButtonProps extends ButtonInterface {
   isCollapsed?: boolean;
   // A count shown after the label (over the icon when collapsed); badgeLabel names it for screen readers.
@@ -35,19 +97,16 @@ interface SidebarButtonProps extends ButtonInterface {
   badgeLabel?: string;
   // Shown under the icon on the forced phone rail, where touch can't reveal the tooltip.
   railLabel?: string;
+  // The "New" tag after the label (MENU_NEW_ITEMS), hidden on the collapsed rail.
+  isNew?: boolean;
 }
 
 const SidebarButton: React.FC<SidebarButtonProps> = memo(
-  ({ text, icon, active, route, isCollapsed = false, badge = 0, badgeLabel, railLabel }) => {
+  ({ text, icon, active, route, isCollapsed = false, badge = 0, badgeLabel, railLabel, isNew }) => {
     const [isHovered, setIsHovered] = useState(false);
     const SB = BUTTON_CONFIGS.SIDEBAR_BUTTON;
     const forcedRail = useMediaQuery(SIDEBAR_LAYOUT.FORCE_COLLAPSE_QUERY);
     const labeled = isCollapsed && forcedRail && Boolean(railLabel);
-    const collapsedMarginX = labeled ? SB.RAIL.MARGIN_X : SB.COLLAPSED_MARGIN_X;
-    // Left-aligned in both states with the icon centered in the rail, so a toggle never moves it.
-    const collapsedPadding = labeled
-      ? SB.RAIL.PADDING
-      : `0 0 0 ${(SIDEBAR_LAYOUT.WIDTH_COLLAPSED - 2 * SB.COLLAPSED_MARGIN_X - ICON_SIZE_PX) / 2}px`;
 
     const isActive = Boolean(active);
     const isActiveOrHovered = isActive || isHovered;
@@ -71,8 +130,12 @@ const SidebarButton: React.FC<SidebarButtonProps> = memo(
     const handleMouseEnter = useCallback(() => setIsHovered(true), []);
     const handleMouseLeave = useCallback(() => setIsHovered(false), []);
     const badged = badge > 0;
-    let accessibleName = isCollapsed ? String(text) : undefined;
-    if (badged && badgeLabel) accessibleName = `${text}, ${badgeLabel}`;
+    const accessibleName = accessibleNameOf(
+      text,
+      isCollapsed,
+      badged ? badgeLabel : undefined,
+      isNew,
+    );
 
     const button = (
       <NavButton
@@ -81,27 +144,7 @@ const SidebarButton: React.FC<SidebarButtonProps> = memo(
         onMouseLeave={handleMouseLeave}
         aria-current={isActive ? 'page' : undefined}
         aria-label={accessibleName}
-        style={{
-          display: 'flex',
-          flexDirection: labeled ? 'column' : 'row',
-          alignItems: 'center',
-          justifyContent: labeled ? 'center' : 'flex-start',
-          textAlign: 'left',
-          gap: labeled ? SB.RAIL.GAP : SB.GAP,
-          height: labeled ? 'auto' : SB.HEIGHT,
-          padding: isCollapsed ? collapsedPadding : SB.PADDING,
-          marginLeft: isCollapsed ? collapsedMarginX : SB.MARGIN_LEFT,
-          marginRight: isCollapsed ? collapsedMarginX : SB.MARGIN_RIGHT,
-          border: 'none',
-          borderRadius: SB.BORDER_RADIUS,
-          backgroundColor: isActiveOrHovered ? DEFAULT_COLORS.HOVER_BG : 'transparent',
-          color: textColor,
-          fontWeight: SB.FONT_WEIGHT,
-          fontSize: SB.FONT_SIZE,
-          cursor: 'pointer',
-          transition: `${SB.TRANSITION}, ${SIDEBAR_LAYOUT.PADDING_TRANSITION}`,
-          boxSizing: 'border-box',
-        }}
+        style={navButtonStyle(isCollapsed, labeled, isActiveOrHovered, textColor)}
       >
         {/* Kept mounted: the count zooms onto the icon as the label's count fades out. */}
         {badged ? (
@@ -141,6 +184,7 @@ const SidebarButton: React.FC<SidebarButtonProps> = memo(
             <Badge count={badge} overflowCount={99} styles={BADGE_STYLES} />
           </span>
         ) : null}
+        {newTagOf(isNew, labeled, isCollapsed)}
         {labeled ? (
           <span
             style={{

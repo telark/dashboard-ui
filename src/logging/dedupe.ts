@@ -22,7 +22,7 @@ export const logErrorOnce = (
   const signature = buildSignature(error);
   const now = Date.now();
   const bucket = buckets.get(scope);
-  if (bucket && bucket.signature === signature && now - bucket.loggedAt < windowMs) {
+  if (bucket?.signature === signature && now - bucket.loggedAt < windowMs) {
     return;
   }
   buckets.set(scope, { signature, loggedAt: now });

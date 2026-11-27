@@ -95,6 +95,21 @@ export const mockPendingEndpoint = <TBody = unknown>(
 ): EndpointMock<TBody> =>
   handle<TBody>(service, endpoint, () => new Promise<Response>(() => undefined));
 
+/** Answers one endpoint only once `release` is called, to land an older answer after a newer one. */
+export const mockHeldEndpoint = <TBody = unknown>(
+  service: ServiceName,
+  endpoint: EndpointRef,
+  response: JsonBodyType,
+  options: MockResponseOptions = {},
+): EndpointMock<TBody> & { release: () => void } => {
+  const { promise, resolve } = Promise.withResolvers<void>();
+  const mock = handle<TBody>(service, endpoint, async () => {
+    await promise;
+    return HttpResponse.json(response, options);
+  });
+  return { ...mock, release: () => resolve() };
+};
+
 /** The empty answer of a list endpoint. */
 export const EMPTY_LIST_BODY = { data: { items: [] } };
 

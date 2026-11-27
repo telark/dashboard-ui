@@ -11,9 +11,9 @@ export const LOGIN_CONSTANTS = {
     USER_NOT_FOUND_NO_SELF_REGISTRATION:
       'No account for this email. Check the address, or ask your administrator for an enrollment link.',
     NO_PASSKEYS:
-      'This account has no passkey yet. Open the enrollment link your administrator sent you. Installed Telark yourself? Run the break-glass enroll command from the install notes.',
+      'This account has no passkey yet. Open the enrollment link your administrator sent you. Installed Telark yourself? Run the telark auth enroll command from the install notes.',
     LOST_PASSKEY:
-      'Ask your administrator for a new enrollment link. If you are the only administrator, run the break-glass enroll command from the install notes.',
+      'Ask your administrator for a new enrollment link. If you are the only administrator, run the telark auth enroll command from the install notes.',
     ACCOUNT_SUSPENDED: 'Your Telark account is suspended. Contact your administrator.',
     BOOTSTRAP_PASSKEY_ONLY:
       "Google sign-in isn't available for the bootstrap administrator. Sign in with its passkey.",

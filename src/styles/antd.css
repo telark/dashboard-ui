@@ -1,11 +1,14 @@
+/* antd's CSS-in-JS loads before this file, so an equal selector already wins. An override that
+   must beat a deeper antd selector starts from #root (in the app) or :root (portals), never !important. */
+
 /* Generic app table overrides */
-.app-table .ant-table-thead > tr > th.ant-table-selection-column {
-  background: var(--color-page-bg) !important;
+#root .app-table .ant-table-thead > tr > th.ant-table-selection-column {
+  background: var(--color-page-bg);
 }
-.app-table .ant-table-thead > tr > th,
-.app-table .ant-table-tbody > tr > td {
-  border-inline-end: 0 !important;
-  border-right: 0 !important;
+#root .app-table .ant-table-thead > tr > th,
+#root .app-table .ant-table-tbody > tr > td {
+  border-inline-end: 0;
+  border-right: 0;
 }
 /* The pinned row-actions cell lays the selection tint over the page color: a see-through
    tint would show the columns scrolling under it. */
@@ -54,113 +57,106 @@
 
 /* Reduce spacing between selection column and first data column (its width is
    components.Table.selectionColumnWidth in App.tsx) */
-.app-table .ant-table-tbody > tr > td.ant-table-selection-column,
-.app-table .ant-table-thead > tr > th.ant-table-selection-column {
-  padding-right: 0 !important;
-  padding-left: 0 !important;
-  padding-top: 4px !important;
-  padding-bottom: 4px !important;
-  height: 32px !important;
-  box-sizing: border-box !important;
+#root .app-table .ant-table-tbody > tr > td.ant-table-selection-column,
+#root .app-table .ant-table-thead > tr > th.ant-table-selection-column {
+  padding-right: 0;
+  padding-left: 0;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  height: 32px;
+  box-sizing: border-box;
 }
 
-.app-table .ant-table-selection {
-  width: 100% !important;
-  display: flex !important;
-  justify-content: flex-start !important;
-  align-items: center !important;
-  margin-left: 0 !important;
-  padding-left: 0 !important;
+#root .app-table .ant-table-selection {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-left: 0;
+  padding-left: 0;
 }
 
-.app-table .ant-table-selection .ant-checkbox-wrapper {
-  margin: 0 !important;
-  margin-left: 0 !important;
-  padding: 0 !important;
+#root .app-table .ant-table-selection .ant-checkbox-wrapper {
+  margin: 0;
+  margin-left: 0;
+  padding: 0;
 }
 
-.role-list-container .ant-checkbox-wrapper {
-  width: 100% !important;
-  display: flex !important;
-  align-items: flex-start !important;
+#root .role-list-container .ant-checkbox-wrapper {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
 }
 
-.role-list-container .ant-checkbox {
-  flex-shrink: 0 !important;
+#root .role-list-container .ant-checkbox {
+  flex-shrink: 0;
 }
 
 /* First data column - move it closer to checkbox column */
-.app-table .ant-table-thead > tr > th:nth-child(2),
-.app-table .ant-table-tbody > tr > td:nth-child(2) {
-  padding-left: 0 !important;
+#root .app-table .ant-table-thead > tr > th:nth-child(2),
+#root .app-table .ant-table-tbody > tr > td:nth-child(2) {
+  padding-left: 0;
 }
 
-.app-table .ant-table-thead > tr > th:not(.ant-table-selection-column):first-of-type,
-.app-table .ant-table-tbody > tr > td:not(.ant-table-selection-column):first-of-type {
-  padding-left: 0 !important;
+#root .app-table .ant-table-thead > tr > th:not(.ant-table-selection-column):first-of-type,
+#root .app-table .ant-table-tbody > tr > td:not(.ant-table-selection-column):first-of-type {
+  padding-left: 0;
 }
 
 /* Reduce row height by decreasing cell padding and forcing height */
-.app-table .ant-table-thead > tr > th {
-  padding-top: 4px !important;
-  padding-bottom: 4px !important;
+#root .app-table .ant-table-thead > tr > th {
+  padding-top: 4px;
+  padding-bottom: 4px;
 }
 
 /* The measure row antd adds for horizontal scroll must keep its zero height. */
-.app-table .ant-table-tbody > tr:not(.ant-table-measure-row) {
-  height: 32px !important;
-  min-height: 32px !important;
-  max-height: 32px !important;
+#root .app-table .ant-table-tbody > tr:not(.ant-table-measure-row) {
+  height: 32px;
+  min-height: 32px;
+  max-height: 32px;
 }
 
-.app-table .ant-table-tbody > tr:not(.ant-table-measure-row) > td {
-  padding-top: 4px !important;
-  padding-bottom: 4px !important;
-  height: 32px !important;
-  line-height: 1.3 !important;
+#root .app-table .ant-table-tbody > tr:not(.ant-table-measure-row) > td {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  height: 32px;
+  line-height: 1.3;
 }
 
 /* Form labels take their size, color and gap from components.Form in App.tsx; antd has no
    token for their line height. */
-.ant-form-item-label,
-.ant-form-item-label > label {
-  line-height: 1.5 !important;
+:root .ant-form-item-label,
+:root .ant-form-item-label > label {
+  line-height: 1.5;
 }
 
-.app-section .ant-form-vertical .ant-form-item .ant-form-item-label {
-  margin-bottom: var(--form-label-gap) !important;
-  padding-bottom: 0 !important;
+#root .app-section .ant-form-vertical .ant-form-item .ant-form-item-label {
+  margin-bottom: var(--form-label-gap);
+  padding-bottom: 0;
 }
-.app-section .ant-form-vertical .ant-form-item .ant-form-item-control {
-  margin-top: 0 !important;
+#root .app-section .ant-form-vertical .ant-form-item .ant-form-item-control {
+  margin-top: 0;
 }
 
 /* Extra compact spacing for shared labeled inputs/selects */
-.form-item-compact .ant-form-item-label {
-  margin-bottom: var(--form-label-gap) !important;
-  padding-bottom: 0 !important;
+#root .form-item-compact .ant-form-item-label {
+  margin-bottom: var(--form-label-gap);
+  padding-bottom: 0;
 }
-.form-item-compact .ant-form-item-control {
-  margin-top: 0 !important;
+#root .form-item-compact .ant-form-item-control {
+  margin-top: 0;
 }
 
 /* Generic app section spacing (title, subtitle, content) */
-.app-section .ant-collapse-header {
-  padding-top: 2px !important; /* Title spacing */
-  padding-bottom: 0 !important;
-  margin-bottom: 0 !important;
+#root .app-section .ant-collapse-header {
+  padding-top: 2px; /* Title spacing */
+  padding-bottom: 0;
+  margin-bottom: 0;
 }
-.app-section .ant-collapse-content,
-.app-section .ant-collapse-content > .ant-collapse-content-box {
-  padding-top: 0 !important;
-  margin-top: 0 !important;
-}
-.app-section .app-section-subtitle {
-  margin-top: -2px !important; /* Tighten gap between title and subtitle */
-  margin-bottom: 4px !important; /* Small gap before content */
-}
-.app-section .app-section-content {
-  margin-top: 8px !important; /* Distance from subtitle to content */
+#root .app-section .ant-collapse-content,
+#root .app-section .ant-collapse-content > .ant-collapse-content-box {
+  padding-top: 0;
+  margin-top: 0;
 }
 
 /* Every solid primary or danger CTA is semibold, like BUTTON_CONFIGS.PRIMARY_BUTTON.FONT_WEIGHT;
@@ -202,23 +198,23 @@ body .ant-input-textarea-show-count + [role='alert'] {
 }
 
 /* Button icon vertical alignment */
-.ant-btn {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+:root .ant-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
-.ant-btn .anticon,
-.ant-btn-icon {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  vertical-align: middle !important;
-  line-height: 1 !important;
+:root .ant-btn .anticon,
+:root .ant-btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  line-height: 1;
 }
-.ant-btn > span {
-  display: inline-flex !important;
-  align-items: center !important;
-  vertical-align: middle !important;
+:root .ant-btn > span {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
 }
 
 .plan-date-range {
@@ -271,89 +267,93 @@ html[data-theme='light'] {
    the dropdown alike, and those sit on opposite surfaces. The control inherits
    its surface, and the dropdown is always a white panel rendered in a portal
    (so outside .app-panel-surface), which is what this pins. */
-.ant-select-dropdown .ant-select-item-option-content,
-.ant-select-dropdown .ant-select-item-option,
-.ant-select-dropdown .ant-select-item-empty,
-.ant-select-dropdown .ant-empty-description {
-  color: var(--color-text-on-surface) !important;
+:root .ant-select-dropdown .ant-select-item-option-content,
+:root .ant-select-dropdown .ant-select-item-option,
+:root .ant-select-dropdown .ant-select-item-empty,
+:root .ant-select-dropdown .ant-empty-description {
+  color: var(--color-text-on-surface);
 }
 
 /* Multi-select tags are white pills (multipleItemBg), so their label and remove
    icon need the dark ink: antd has no token for an enabled tag's text, and it
    would otherwise inherit the page's white and vanish against the pill. */
-.ant-select-multiple .ant-select-selection-item-content,
-.ant-select-multiple .ant-select-selection-item-remove {
-  color: var(--color-text-on-surface) !important;
+:root .ant-select.ant-select-multiple .ant-select-selection-item-content,
+:root .ant-select.ant-select-multiple .ant-select-selection-item-remove {
+  color: var(--color-text-on-surface);
 }
 
-.app-panel-surface .ant-form-item-label > label,
-.app-panel-surface .ant-input,
-.app-panel-surface .ant-input-number-input,
-.app-panel-surface textarea.ant-input,
-.app-panel-surface .ant-select-selection-item,
-.app-panel-surface .ant-select-selection-item-content,
-.app-panel-surface .ant-select-selection-search-input,
-.app-panel-surface .ant-select-item-option-content,
-.app-panel-surface .ant-picker-input > input,
-.app-panel-surface .ant-checkbox-wrapper,
-.app-panel-surface .ant-radio-wrapper,
-.app-panel-surface .ant-select-selection-item-remove,
-.app-panel-surface .ant-select-arrow,
-.app-panel-surface .ant-picker-suffix,
-.app-panel-surface .ant-input-suffix .anticon,
-.app-panel-surface .ant-input-prefix .anticon {
-  color: var(--color-text-on-surface) !important;
+#root .app-panel-surface .ant-form-item-label > label,
+#root .app-panel-surface .ant-input,
+#root .app-panel-surface .ant-input-number-input,
+#root .app-panel-surface textarea.ant-input,
+#root .app-panel-surface .ant-select-selection-item,
+#root .app-panel-surface .ant-select-selection-item-content,
+#root .app-panel-surface .ant-select-selection-search-input,
+#root .app-panel-surface .ant-select-item-option-content,
+#root .app-panel-surface .ant-picker-input > input,
+#root .app-panel-surface .ant-checkbox-wrapper,
+#root .app-panel-surface .ant-radio-wrapper,
+#root .app-panel-surface .ant-select-selection-item-remove,
+#root .app-panel-surface .ant-select-arrow,
+#root .app-panel-surface .ant-picker-suffix,
+#root .app-panel-surface .ant-input-suffix .anticon,
+#root .app-panel-surface .ant-input-prefix .anticon {
+  color: var(--color-text-on-surface);
 }
 
 /* PANEL_THEME_TOKENS set these colors too, but antd would tint a disabled field gray. */
-.app-panel-surface .ant-select-selector,
-.app-panel-surface .ant-input,
-.app-panel-surface .ant-input-affix-wrapper,
-.app-panel-surface .ant-picker,
-.app-panel-surface .ant-input-number {
-  background-color: var(--color-surface-white) !important;
-  border-color: var(--color-surface-border) !important;
+#root .app-panel-surface .ant-select-selector,
+#root .app-panel-surface .ant-input,
+#root .app-panel-surface .ant-input-affix-wrapper,
+#root .app-panel-surface .ant-picker,
+#root .app-panel-surface .ant-input-number {
+  background-color: var(--color-surface-white);
+  border-color: var(--color-surface-border);
 }
 
 /* With a counter, the box is the wrapper: a filled square textarea would paint over its corners. */
-.app-panel-surface .ant-input-textarea-affix-wrapper > textarea.ant-input {
-  background-color: transparent !important;
+#root .app-panel-surface .ant-input-textarea-affix-wrapper > textarea.ant-input {
+  background-color: transparent;
 }
 
 /* That pin also hid antd's hover, focus and error borders. A hovered or focused field takes the
    muted ink, like App.tsx's hoverBorderColor and activeBorderColor (selects already do), and an
    invalid field keeps the error red. A disabled field doesn't react. */
-.app-panel-surface .ant-input:focus,
-.app-panel-surface .ant-input:hover:where(:not(.ant-input-disabled)),
-.app-panel-surface .ant-input-affix-wrapper-focused,
-.app-panel-surface .ant-input-affix-wrapper:hover:where(:not(.ant-input-affix-wrapper-disabled)),
-.app-panel-surface .ant-input-number-focused,
-.app-panel-surface .ant-input-number:hover:where(:not(.ant-input-number-disabled)) {
-  border-color: var(--color-text-on-surface-muted) !important;
+#root .app-panel-surface .ant-input:focus,
+#root .app-panel-surface .ant-input:hover:where(:not(.ant-input-disabled)),
+#root .app-panel-surface .ant-input-affix-wrapper-focused,
+#root
+  .app-panel-surface
+  .ant-input-affix-wrapper:hover:where(:not(.ant-input-affix-wrapper-disabled)),
+#root .app-panel-surface .ant-input-number-focused,
+#root .app-panel-surface .ant-input-number:hover:where(:not(.ant-input-number-disabled)) {
+  border-color: var(--color-text-on-surface-muted);
 }
 
-.app-panel-surface .ant-picker.ant-picker-outlined.ant-picker-focused,
-.app-panel-surface .ant-picker.ant-picker-outlined:hover {
-  border-color: var(--color-text-on-surface-muted) !important;
-  box-shadow: none !important;
+#root .app-panel-surface .ant-picker.ant-picker-outlined.ant-picker-focused,
+#root .app-panel-surface .ant-picker.ant-picker-outlined:hover {
+  border-color: var(--color-text-on-surface-muted);
+  box-shadow: none;
 }
 
-.app-panel-surface .ant-picker.ant-picker-outlined.ant-picker-disabled:hover {
-  border-color: var(--color-surface-border) !important;
+#root .app-panel-surface .ant-picker.ant-picker-outlined.ant-picker-disabled:hover {
+  border-color: var(--color-surface-border);
 }
 
-.app-panel-surface .ant-input.ant-input-status-error,
-.app-panel-surface .ant-input-affix-wrapper.ant-input-status-error,
-.app-panel-surface .ant-input-number.ant-input-number-status-error,
-.app-panel-surface .ant-select.ant-select-status-error,
-.app-panel-surface .ant-picker.ant-picker-outlined.ant-picker-status-error {
-  border-color: var(--color-danger) !important;
+#root .app-panel-surface .ant-input.ant-input-status-error,
+#root .app-panel-surface .ant-input-affix-wrapper.ant-input-status-error,
+#root .app-panel-surface .ant-input-number.ant-input-number-status-error,
+#root .app-panel-surface .ant-select.ant-select-status-error,
+#root .app-panel-surface .ant-picker.ant-picker-outlined.ant-picker-status-error {
+  border-color: var(--color-danger);
 }
 
 /* Pills are antd Tags (TAG_THEME and TAG_CLASS in src/constants/layout/tags.ts). Font,
    line height and wrapping follow the parent, as the span pills before them did. */
 .ant-tag.tk-pill {
-  padding: 2px 10px;
+  /* From the pill's edge to its line, border included. */
+  --tk-pill-padding-block: 2px;
+  padding: var(--tk-pill-padding-block) 10px;
   /* Not `all`: any table re-layout (each frame of a sidebar slide) restarted one on every pill. */
   transition-property: color, background-color, border-color;
   font-family: inherit;
@@ -406,14 +406,47 @@ html[data-theme='light'] {
 
 /* OUTLINE: a quiet status pill. The 1px border takes 1px of padding, so it is as tall as a filled one. */
 .ant-tag.tk-pill.tk-pill-outline {
+  --tk-pill-border: 1px;
   padding: 1px 9px;
   background: transparent;
-  border: 1px solid currentColor;
+  border: var(--tk-pill-border) solid currentColor;
 }
 
 /* antd spaces an icon from the label with a margin; ICON pills use their gap. */
 .ant-tag.tk-pill-icon > .anticon + span {
   margin-inline-start: 0;
+}
+
+/* The inherited line height gave pills a fractional height, so box and baseline snapped apart by
+   viewport width and caps sat high. Trimmed to cap height on a whole-pixel baseline, caps center. */
+@supports (text-box-trim: trim-both) and (text-box-edge: cap alphabetic) {
+  /* META and ICON are flex containers, which text-box-trim doesn't reach. */
+  .ant-tag.tk-pill:not(.tk-pill-meta, .tk-pill-icon) {
+    /* The height nearest the old one that centers the rounded cap on a whole-pixel baseline (22px
+       at 11px, 23px at 12px, 19px at 10px). Rounding 1cap keeps ties on whole-pixel line heights. */
+    --tk-pill-baseline: calc(
+      round(1lh + 2 * var(--tk-pill-padding-block) + round(1cap, 1px), 2px) / 2
+    );
+    --tk-pill-height: calc(2 * var(--tk-pill-baseline) - round(1cap, 1px));
+    /* With align-content, holds the baseline on its pixel where Chrome trims 1/64px short of 1cap. */
+    min-height: var(--tk-pill-height);
+    padding-block: calc(var(--tk-pill-baseline) - 1cap - var(--tk-pill-border, 0px))
+      calc(var(--tk-pill-height) - var(--tk-pill-baseline) - var(--tk-pill-border, 0px));
+    align-content: end;
+    text-box-trim: trim-both;
+    text-box-edge: cap alphabetic;
+  }
+
+  /* Flex pills hold 11px text: an 18px line makes them 22px (META 20px) and centers the caps. */
+  .ant-tag.tk-pill-meta,
+  .ant-tag.tk-pill-icon {
+    line-height: 18px;
+  }
+
+  /* Firefox 155 doesn't trim a box with overflow: hidden, so the pill grew. clip keeps the ellipsis. */
+  .ant-tag.tk-pill-truncate {
+    overflow: clip;
+  }
 }
 
 /* Empty states are antd Empty with one EMPTY_CLASS per surface

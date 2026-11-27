@@ -63,8 +63,7 @@ const Columns = (ctx: ColumnsContext): TableColumnType<Group>[] => {
         label: GC.LABELS.COLUMNS.DESCRIPTION,
         icon: <AiOutlineFileText />,
         width: GC.SIZES.COLUMNS.DESCRIPTION,
-        render: (value: string) => {
-          const text = value || '';
+        render: (text = '') => {
           const truncated =
             text.length > DESCRIPTION_PREVIEW_MAX
               ? `${text.slice(0, DESCRIPTION_PREVIEW_MAX)}...`

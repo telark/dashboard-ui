@@ -18,9 +18,7 @@ import {
 import {
   handleFetchApplicationsPending,
   handleFetchApplicationsFulfilled,
-  handleFetchApplicationsSilentFulfilled,
   handleFetchApplicationsRejected,
-  handleFetchApplicationsSilentPending,
   handleFetchApplicationsSilentRejected,
   handleFetchApplicationDetailsPending,
   handleFetchApplicationDetailsFulfilled,
@@ -179,8 +177,7 @@ const applicationsSlice = createSlice({
       .addCase(fetchAllApplicationsThunk.pending, handleFetchApplicationsPending)
       .addCase(fetchAllApplicationsThunk.fulfilled, handleFetchApplicationsFulfilled)
       .addCase(fetchAllApplicationsThunk.rejected, handleFetchApplicationsRejected)
-      .addCase(fetchAllApplicationsSilentThunk.pending, handleFetchApplicationsSilentPending)
-      .addCase(fetchAllApplicationsSilentThunk.fulfilled, handleFetchApplicationsSilentFulfilled)
+      .addCase(fetchAllApplicationsSilentThunk.fulfilled, handleFetchApplicationsFulfilled)
       .addCase(fetchAllApplicationsSilentThunk.rejected, handleFetchApplicationsSilentRejected)
       .addCase(fetchApplicationDetailsThunk.pending, handleFetchApplicationDetailsPending)
       .addCase(fetchApplicationDetailsThunk.fulfilled, handleFetchApplicationDetailsFulfilled)

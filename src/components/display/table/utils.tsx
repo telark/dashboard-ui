@@ -30,7 +30,7 @@ export const generateColumn = <V = unknown, T = unknown>(
     inactiveColor,
     sortable = true,
   } = cfg;
-  const { activeSortKey, onSort } = ctx;
+  const { activeSortKey, sortOrder, onSort } = ctx;
   const HEADER_BG = headerBg ?? TABLE_DEFAULTS.HEADER_BG;
   const isActive = key ? activeSortKey === key : false;
   const handleSort = key ? () => onSort(key) : undefined;
@@ -50,7 +50,13 @@ export const generateColumn = <V = unknown, T = unknown>(
     key,
     dataIndex: key,
     align,
-    onHeaderCell: () => ({ style: { background: HEADER_BG } }),
+    onHeaderCell: () => ({
+      style: { background: HEADER_BG },
+      ...(sortable &&
+        handleSort && {
+          'aria-sort': isActive ? TABLE_DEFAULTS.ARIA_SORT[sortOrder] : ('none' as const),
+        }),
+    }),
     ...(render ? { render } : {}),
     ...(width ? { width } : {}),
   };

@@ -61,9 +61,6 @@ export const LoginForm: React.FC<LoginFormProps> = ({ form, loading, onFinish, e
           background: DEFAULT_COLORS.SUCCESS,
           borderColor: DEFAULT_COLORS.SUCCESS,
           color: BUTTON_CONFIGS.PRIMARY_BUTTON.TEXT_COLOR,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
           gap: SPACING.SM,
         }}
         icon={!loading ? <KeyOutlined /> : undefined}

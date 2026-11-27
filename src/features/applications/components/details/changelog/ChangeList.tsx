@@ -41,11 +41,9 @@ const ChangeList: React.FC<{ changes: ApplicationChange[]; keyPrefix: string }> 
   }, [changes, expanded]);
 
   const shown = expanded ? changes : changes.slice(0, VISIBLE);
-  const label = expanded
-    ? CL.SHOW_LESS
-    : hiddenCount > 0
-      ? `${hiddenCount} ${CL.MORE_CHANGES}`
-      : CL.SHOW_FULL_VALUES;
+  const collapsedLabel =
+    hiddenCount > 0 ? `${hiddenCount} ${CL.MORE_CHANGES}` : CL.SHOW_FULL_VALUES;
+  const label = expanded ? CL.SHOW_LESS : collapsedLabel;
 
   return (
     <div>

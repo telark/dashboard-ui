@@ -26,6 +26,12 @@ const formatDevice = (device: string): string => {
   return device;
 };
 
+// Without device details a session is just this one or another one.
+const deviceLabel = (device: string | undefined, isCurrent: boolean): string => {
+  if (device) return formatDevice(device);
+  return isCurrent ? LABELS.SESSIONS_THIS_DEVICE : LABELS.SESSIONS_OTHER_SESSION;
+};
+
 const formatOS = (os: string): string => {
   if (os.toLowerCase().startsWith('macos')) return 'macOS';
   const stripped = os.replace(/\s\d+(?:\.\d+)+$/, '').trim();
@@ -139,11 +145,7 @@ const SessionsTable: React.FC<SessionsTableProps> = memo(
                       ...truncateCellStyle,
                     }}
                   >
-                    {session.deviceMetadata?.device
-                      ? formatDevice(session.deviceMetadata.device)
-                      : isCurrent
-                        ? LABELS.SESSIONS_THIS_DEVICE
-                        : LABELS.SESSIONS_OTHER_SESSION}
+                    {deviceLabel(session.deviceMetadata?.device, isCurrent)}
                   </div>
                   {session.deviceMetadata?.os && (
                     <div

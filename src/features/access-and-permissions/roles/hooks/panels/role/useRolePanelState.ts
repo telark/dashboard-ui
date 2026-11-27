@@ -1,7 +1,6 @@
 import { useState, useCallback } from 'react';
 import { Form } from 'antd';
-import type { Role } from '../../../models';
-import type { RoleFormValues } from '../../../models';
+import type { Role, RoleFormValues } from '../../../models';
 
 export interface UseRolePanelStateReturn {
   createPanelOpen: boolean;

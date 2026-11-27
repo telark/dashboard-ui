@@ -82,9 +82,9 @@ export const useAssignmentPanelBase = ({
       message.success(successMessage(user.fullname || user.username));
       form.resetFields();
       onClose();
-    } catch (rejection) {
-      message.error(rejectionMessage(rejection, failMessage));
-      throw rejection;
+    } catch (error) {
+      message.error(rejectionMessage(error, failMessage));
+      throw error;
     } finally {
       setSubmitting(false);
     }
