@@ -36,8 +36,7 @@ export default defineConfig(async ({ mode }) => {
       }),
       performancePlugin(),
       isAnalyze &&
-        visualizer &&
-        visualizer({
+        visualizer?.({
           open: true,
           filename: 'dist/stats.html',
           gzipSize: true,

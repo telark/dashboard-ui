@@ -30,7 +30,7 @@ const handleOrphanedPasskeyCleanup = async (
   params: CreatePasskeyParams,
   existingPasskey: Passkey,
   rejectWithValue: (value: string) => unknown,
-): Promise<Passkey | unknown> => {
+): Promise<unknown> => {
   try {
     await deletePasskey(existingPasskey.credentialId, {});
     const retryResponse: CreatePasskeyResponse = await createPasskey(
@@ -49,7 +49,7 @@ const handleOrphanedPasskeyCleanup = async (
 const handleConflictCase = async (
   params: CreatePasskeyParams,
   rejectWithValue: (value: string) => unknown,
-): Promise<Passkey | unknown | null> => {
+): Promise<unknown> => {
   try {
     const allPasskeys = await getAllPasskeys();
     const existingPasskey = allPasskeys.find((p) => p.deviceName === params.deviceName);

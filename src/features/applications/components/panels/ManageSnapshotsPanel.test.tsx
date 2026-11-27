@@ -118,6 +118,18 @@ describe('manage snapshots panel', () => {
       expect(await screen.findByText(title)).toBeInTheDocument();
     });
 
+    it('shows a changed list as its JSON on both sides', async () => {
+      const withPorts = (ports: number[]) => ({ ...deployment(2), spec: { replicas: 2, ports } });
+      mockEndpoint('exporter', Endpoints.SNAPSHOTS.GET_MANIFEST(OLDER.id), withPorts([80]));
+      mockEndpoint('exporter', Endpoints.SNAPSHOTS.GET_MANIFEST(NEWER.id), withPorts([80, 443]));
+      const { user } = renderPanel();
+
+      await selectBoth(user);
+
+      expect(await screen.findByText('[80,443]')).toBeInTheDocument();
+      expect(screen.getByText('[80]')).toBeInTheDocument();
+    });
+
     it('does not offer compare with a single snapshot', async () => {
       renderPanel([NEWER]);
 

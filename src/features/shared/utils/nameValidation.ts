@@ -55,7 +55,7 @@ export const nameValidationError = <T>({
   // Check uniqueness (case-insensitive)
   const exists = existingItems.some((item) => {
     const itemName = getName(item);
-    if (isEditMode && currentName && itemName.toLowerCase() === currentName.toLowerCase()) {
+    if (isEditMode && itemName?.toLowerCase() === currentName?.toLowerCase()) {
       return false;
     }
     return itemName?.toLowerCase() === trimmed.toLowerCase();

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Form } from 'antd';
 import { AiOutlineDown, AiOutlineRight } from 'react-icons/ai';
-import type { ScopeFormValue, PermissionLevel } from '../../../../models';
+import type { ScopeFormValue, PermissionLevel, ScopeRowProps } from '../../../../models';
 import { ROLES_CONSTANTS as RPC } from '../../../../constants';
 import { getScopeRules, formatRuleKey } from '../../../../constants/scopeRules';
 import {
@@ -14,7 +14,6 @@ import {
 } from '../../../../../../../constants';
 import LevelSelector from './LevelSelector';
 import RulesList from './RulesList';
-import type { ScopeRowProps } from '../../../../models';
 
 const SCOPE_LEVEL_PATHS = RPC.SCOPE.DEFAULT_AREAS.map((area) => ['scopes', area.key, 'level']);
 const hasAnyScopeLevel = (scopes?: Record<string, ScopeFormValue | undefined>) =>
@@ -57,8 +56,8 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
           const selectedLevel = scopeValue?.level;
           const availableRules = selectedLevel ? getScopeRules(scopeKey, selectedLevel) : [];
           const denyRules = scopeValue?.rules || [];
-          const formattedKeys = availableRules.map((r) => formatRuleKey(scopeKey, r.key));
-          const validDenyRules = denyRules.filter((rule) => formattedKeys.includes(rule));
+          const formattedKeys = new Set(availableRules.map((r) => formatRuleKey(scopeKey, r.key)));
+          const validDenyRules = denyRules.filter((rule) => formattedKeys.has(rule));
 
           const handleLevelChange = (value?: PermissionLevel) => {
             const newLevel = value;
@@ -81,10 +80,10 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
             const currentRules = currentScope?.rules || [];
             const normalizeRule = (rule: string) => rule.toLowerCase().trim();
             const normalizedKey = normalizeRule(formattedKey);
-            const normalizedRules = currentRules.map(normalizeRule);
+            const normalizedRules = new Set(currentRules.map(normalizeRule));
 
-            const wouldAdd = checked && !normalizedRules.includes(normalizedKey);
-            const wouldRemove = !checked && normalizedRules.includes(normalizedKey);
+            const wouldAdd = checked && !normalizedRules.has(normalizedKey);
+            const wouldRemove = !checked && normalizedRules.has(normalizedKey);
 
             if (!selectedLevel || (!wouldAdd && !wouldRemove)) return;
 

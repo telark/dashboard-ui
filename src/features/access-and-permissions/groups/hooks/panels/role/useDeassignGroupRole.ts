@@ -1,14 +1,13 @@
 import { useCallback } from 'react';
 import { App as AntdApp } from 'antd';
 import type { FormInstance } from 'antd';
-import { useDeassignModal } from '../../../../shared';
+import { useDeassignModal, applySelectionChange } from '../../../../shared';
 import { useGroupMutations } from '../../data/useGroupMutations';
 import { GROUPS_CONSTANTS as GC } from '../../../constants';
 import store from '../../../../../../store';
 import { fetchMyPermissionsThunk } from '../../../../../auth/store/thunks/fetchThunks';
 import type { Group } from '../../../models';
 import { fetchFreshGroupIds } from '../../../utils';
-import { applySelectionChange } from '../../../../shared';
 import type { Role } from '../../../../roles/models';
 
 interface UseDeassignGroupRoleOptions {

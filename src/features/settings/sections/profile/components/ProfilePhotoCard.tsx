@@ -70,45 +70,47 @@ const ProfilePhotoCard: React.FC<ProfilePhotoCardProps> = memo(({ user, onAvatar
     </div>
   );
 
+  const renderTrigger = (openModal: () => void) => (
+    <button
+      type="button"
+      onClick={openModal}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      aria-label="Change profile photo"
+      style={{
+        ...UNSTYLED_BUTTON,
+        position: 'relative',
+        borderRadius: '50%',
+        outline: 'none',
+      }}
+    >
+      {avatarContent}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          borderRadius: '50%',
+          background: OVERLAY_BG_HOVER,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          pointerEvents: 'none',
+          opacity: isHovered ? 1 : 0,
+          transition: `opacity ${MOTION.BASE_MS}ms ${MOTION.EASE}`,
+        }}
+      >
+        <CameraOutlined style={{ fontSize: FONT_SIZE.XXL, color: CAMERA_ICON_COLOR }} />
+      </div>
+    </button>
+  );
+
   const avatarNode =
     onAvatarChange != null ? (
       <AvatarPicker
         value={user?.avatar}
         onChange={handleAvatarChange}
         okText="Update"
-        trigger={(openModal) => (
-          <button
-            type="button"
-            onClick={openModal}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-            aria-label="Change profile photo"
-            style={{
-              ...UNSTYLED_BUTTON,
-              position: 'relative',
-              borderRadius: '50%',
-              outline: 'none',
-            }}
-          >
-            {avatarContent}
-            <div
-              style={{
-                position: 'absolute',
-                inset: 0,
-                borderRadius: '50%',
-                background: OVERLAY_BG_HOVER,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                pointerEvents: 'none',
-                opacity: isHovered ? 1 : 0,
-                transition: `opacity ${MOTION.BASE_MS}ms ${MOTION.EASE}`,
-              }}
-            >
-              <CameraOutlined style={{ fontSize: FONT_SIZE.XXL, color: CAMERA_ICON_COLOR }} />
-            </div>
-          </button>
-        )}
+        trigger={renderTrigger}
       />
     ) : (
       avatarContent

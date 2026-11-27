@@ -47,11 +47,13 @@ export const buildValidityForForm = (validity: Role['validity']): RoleFormValues
     if (validity.autoRevoke !== undefined) {
       baseValidity.autoRevoke = validity.autoRevoke;
     }
-    baseValidity.expirationModel = validity.expiresAt
-      ? RC.VALIDITY.EXPIRATION_MODEL_OPTIONS.EXPIRES_AT
-      : validity.durationHours
+    if (validity.expiresAt) {
+      baseValidity.expirationModel = RC.VALIDITY.EXPIRATION_MODEL_OPTIONS.EXPIRES_AT;
+    } else {
+      baseValidity.expirationModel = validity.durationHours
         ? RC.VALIDITY.EXPIRATION_MODEL_OPTIONS.DURATION
         : undefined;
+    }
   }
 
   return baseValidity;

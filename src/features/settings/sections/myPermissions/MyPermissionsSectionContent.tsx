@@ -175,10 +175,7 @@ ScopeRow.displayName = 'ScopeRow';
 const MyPermissionsSectionContent: React.FC = memo(() => {
   const { roles, scopeIndex } = useSelector(selectPermissionsState);
 
-  const hasActiveRoles = useMemo(
-    () => roles.length > 0 && roles.some((r) => !r.isExpired),
-    [roles],
-  );
+  const hasActiveRoles = useMemo(() => roles.some((r) => !r.isExpired), [roles]);
 
   const allEntry = useMemo(() => getWinningAllEntry(roles), [roles]);
 

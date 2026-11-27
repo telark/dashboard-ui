@@ -55,9 +55,9 @@ export const useBulkDeleteRoles = ({
       });
 
       setSelectedRoles([]);
-    } catch (rejection) {
+    } catch (error) {
       message.error({
-        content: rejectionMessage(rejection, RC.LABELS.ACTIONS.BULK_DELETE_FAILED),
+        content: rejectionMessage(error, RC.LABELS.ACTIONS.BULK_DELETE_FAILED),
         key: loadingKey,
       });
     } finally {

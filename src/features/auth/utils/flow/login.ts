@@ -47,10 +47,10 @@ export interface OrphanedPasskeysInfo {
   errorName?: string;
 }
 
-const ORPHANED_PASSKEY_ERROR_NAMES: readonly string[] = [
+const ORPHANED_PASSKEY_ERROR_NAMES: ReadonlySet<string> = new Set([
   LOGIN_CONSTANTS.WEBAUTHN.ERROR_NAMES.NOT_ALLOWED,
   LOGIN_CONSTANTS.WEBAUTHN.ERROR_NAMES.NOT_FOUND,
-];
+]);
 
 // Only the browser failing to use one of the account's passkeys (none available, prompt
 // dismissed) points at orphaned passkeys; a server error at login finish must not.
@@ -62,7 +62,7 @@ const getOrphanedPasskeysInfo = (
   if (
     !loginStartResponse ||
     !errorName ||
-    !ORPHANED_PASSKEY_ERROR_NAMES.includes(errorName) ||
+    !ORPHANED_PASSKEY_ERROR_NAMES.has(errorName) ||
     !hasBackendPasskeys(loginStartResponse)
   ) {
     return null;

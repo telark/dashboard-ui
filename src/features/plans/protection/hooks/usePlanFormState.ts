@@ -20,7 +20,8 @@ const stableStringify = (value: unknown): string => {
   if (typeof value === 'object') {
     const obj = value as Record<string, unknown>;
     const keys = Object.keys(obj).sort(compareCodeUnits);
-    return `{${keys.map((k) => `${k}:${stableStringify(obj[k])}`).join(',')}}`;
+    const entry = (k: string) => `${k}:${stableStringify(obj[k])}`;
+    return `{${keys.map(entry).join(',')}}`;
   }
   return JSON.stringify(value);
 };
@@ -78,11 +79,12 @@ export const usePlanFormState = ({
     return stableStringify(normalizeFormSnapshot(current, policies)) !== initialSnapshot;
   }, [enabled, isEditMode, initialValues, watched, form, policies, initialSnapshot]);
 
-  const hasFormErrors = useMemo(() => {
-    void watched;
-    if (!enabled) return false;
-    return form.getFieldsError().some((f) => f.errors.length > 0);
-  }, [enabled, form, watched]);
+  // Read again on every value change: antd reports field errors only through getFieldsError.
+  const hasFormErrors = useMemo(
+    () =>
+      enabled && watched !== undefined && form.getFieldsError().some((f) => f.errors.length > 0),
+    [enabled, form, watched],
+  );
 
   return { hasChanges, hasFormErrors };
 };

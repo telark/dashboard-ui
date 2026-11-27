@@ -145,6 +145,38 @@ const HealthSection: React.FC<HealthSectionProps> = ({ plan, status, loading, er
   const labelOf = (name: string): string => policyLabel(name, plan.id, templates) ?? name;
   const driftUnexpected = status?.drift?.unexpected ?? [];
 
+  let body: React.ReactNode;
+  if (loading && rows.length === 0) {
+    body = (
+      <div style={{ display: 'flex', justifyContent: 'center', padding: SPACING.XXL }}>
+        <FancySpinner showLabel={false} size={24} />
+      </div>
+    );
+  } else if (rows.length === 0) {
+    body = <Empty description={HD.EMPTY} />;
+  } else {
+    body = (
+      <div>
+        <div
+          style={{
+            fontSize: FONT_SIZE.MD,
+            lineHeight: LINE_HEIGHT.BASE,
+            color: DEFAULT_COLORS.TEXT_PRIMARY,
+          }}
+        >
+          {healthSummary(rows, plan.mode, labelOf)}
+        </div>
+        {rows.map((row) => (
+          <PolicyHealthRow
+            key={`${row.namespace}/${row.name}`}
+            row={row}
+            mode={plan.mode}
+            label={policyLabel(row.name, plan.id, templates)}
+          />
+        ))}
+      </div>
+    );
+  }
   return (
     <div>
       {error && (
@@ -158,33 +190,7 @@ const HealthSection: React.FC<HealthSectionProps> = ({ plan, status, loading, er
         </div>
       )}
 
-      {loading && rows.length === 0 ? (
-        <div style={{ display: 'flex', justifyContent: 'center', padding: SPACING.XXL }}>
-          <FancySpinner showLabel={false} size={24} />
-        </div>
-      ) : rows.length === 0 ? (
-        <Empty description={HD.EMPTY} />
-      ) : (
-        <div>
-          <div
-            style={{
-              fontSize: FONT_SIZE.MD,
-              lineHeight: LINE_HEIGHT.BASE,
-              color: DEFAULT_COLORS.TEXT_PRIMARY,
-            }}
-          >
-            {healthSummary(rows, plan.mode, labelOf)}
-          </div>
-          {rows.map((row) => (
-            <PolicyHealthRow
-              key={`${row.namespace}/${row.name}`}
-              row={row}
-              mode={plan.mode}
-              label={policyLabel(row.name, plan.id, templates)}
-            />
-          ))}
-        </div>
-      )}
+      {body}
 
       {driftUnexpected.length > 0 && (
         <div

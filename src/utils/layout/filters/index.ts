@@ -36,7 +36,7 @@ export const buildFilterChips = (
   Object.entries(filters).flatMap(([key, value]) => {
     if (Array.isArray(value)) {
       return value
-        .map((item) => String(item))
+        .map(String)
         .filter((raw) => raw.trim())
         .map((raw) => ({ key, value: raw, label: raw }));
     }

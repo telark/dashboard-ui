@@ -79,6 +79,22 @@ describeSettingsSave({
   readOnlySeed: READ_ONLY,
 });
 
+describe('discovery namespaces', () => {
+  it('folds the excluded namespaces past five into a count', async () => {
+    const excluded = ['payments', 'orders', 'billing', 'checkout', 'search', 'ops', 'monitoring'];
+    mockEndpoint('exporter', Endpoints.GLOBALCONFIG.GET, {
+      data: { excludedNamespaces: excluded },
+    });
+    mockEndpoint('discovery', Endpoints.NAMESPACES.GET, { data: excluded });
+
+    renderApp(<DiscoveryBehaviorSection />, {
+      seed: seedGlobalConfig({ excludedNamespaces: excluded }),
+    });
+
+    expect(await screen.findByText('+2')).toBeInTheDocument();
+  });
+});
+
 const mockStorageReads = () => {
   CONFIG_GET();
   mockEndpoint('exporter', Endpoints.SNAPSHOTS.GET_INFOS, { data: buildSnapshotStorage() });

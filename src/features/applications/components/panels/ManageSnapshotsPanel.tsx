@@ -20,16 +20,21 @@ import { APPLICATIONS_UI } from '../../constants/texts';
 import { MIN_SNAPSHOTS_FOR_COMPARE } from '../../constants/sectionLayout';
 import { ROLLBACK_UNDO_WINDOW_SECONDS } from '../../constants/applications';
 import type { Application, ApplicationSnapshotSummary } from '../../models';
-import { applicationSnapshotStableKey } from '../../utils/mergeApplicationSnapshotSources';
-import { mergeApplicationSnapshotSources } from '../../utils/mergeApplicationSnapshotSources';
+import {
+  applicationSnapshotStableKey,
+  mergeApplicationSnapshotSources,
+} from '../../utils/mergeApplicationSnapshotSources';
 import { ActionConfirmModal } from '../../../../components/display/modal';
 import ApplicationSnapshotRow from '../snapshots/ApplicationSnapshotRow';
 import type { RollbackDisabledReason } from '../snapshots/ApplicationSnapshotRow';
 import SnapshotManifestView from '../snapshots/SnapshotManifestView';
 import SnapshotCompareView from '../snapshots/SnapshotCompareView';
-import { fetchSnapshotManifestThunk, fetchApplicationSnapshotsThunk } from '../../store';
+import {
+  fetchSnapshotManifestThunk,
+  fetchApplicationSnapshotsThunk,
+  triggerApplicationRollbackThunk,
+} from '../../store';
 import { selectPermissionsState } from '../../../auth/store/selectors/permissionsSelectors';
-import { triggerApplicationRollbackThunk } from '../../store';
 import { ACTION_PERMISSIONS, usePermission } from '../../../auth/hooks';
 
 const PANEL_WIDTH = 650;
@@ -326,6 +331,80 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
     snapUi,
   ]);
 
+  let body: React.ReactNode;
+  if (manifestViewOpen) {
+    body = <SnapshotManifestView title={activeRowTitle} manifestState={manifestState} />;
+  } else if (compareViewOpen && comparePair) {
+    body = (
+      <SnapshotCompareView
+        left={comparePair[0]}
+        right={comparePair[1]}
+        leftState={snapshotManifests[applicationSnapshotStableKey(comparePair[0])]}
+        rightState={snapshotManifests[applicationSnapshotStableKey(comparePair[1])]}
+        onBack={handleBackFromCompare}
+        onRetry={fetchComparePair}
+      />
+    );
+  } else if (snapshotsLoading) {
+    body = (
+      <div
+        // 10: matches the snapshot list's row gap, between SM and MD.
+        style={{ display: 'grid', rowGap: 10 }}
+      >
+        {[0, 1, 2].map((i) => (
+          <div
+            key={i}
+            style={{
+              height: 44,
+              borderRadius: RADIUS.MD,
+              border: HAIRLINE.SURFACE_BORDER,
+              background: DEFAULT_COLORS.SURFACE_HOVER,
+            }}
+          />
+        ))}
+      </div>
+    );
+  } else if (mergedSnapshots.length === 0) {
+    body = snapshotsError ? (
+      <div style={{ fontSize: FONT_SIZE.MD, color: DEFAULT_COLORS.DANGER }}>{snapshotsError}</div>
+    ) : (
+      <Empty
+        className={EMPTY_CLASS.PANEL}
+        image={false}
+        description={
+          <>
+            <Typography.Title level={5}>{snapUi.EMPTY_TITLE}</Typography.Title>
+            <Typography.Text>{snapUi.EMPTY_DESCRIPTION}</Typography.Text>
+          </>
+        }
+      />
+    );
+  } else {
+    body = (
+      <div className={compareMode ? LIST_TOOLBAR.BULK_SELECT_CLASS : undefined}>
+        {mergedSnapshots.map((s, idx) => (
+          <ApplicationSnapshotRow
+            key={applicationSnapshotStableKey(s)}
+            snapshot={s}
+            showMarginBottom={idx < mergedSnapshots.length - 1}
+            onViewManifest={openManifest}
+            onRollback={handleRollbackRequest}
+            rollbackLoading={rollbackBusyId === applicationSnapshotStableKey(s)}
+            rollbackDisabled={rollbackDisabled}
+            rollbackDisabledReason={rollbackDisabledReason}
+            compareMode={compareMode}
+            compareChecked={compareKeys.includes(applicationSnapshotStableKey(s))}
+            compareDisabled={
+              compareMode &&
+              compareKeys.length >= 2 &&
+              !compareKeys.includes(applicationSnapshotStableKey(s))
+            }
+            onToggleCompare={handleToggleCompareRow}
+          />
+        ))}
+      </div>
+    );
+  }
   return (
     <SlideOutPanel
       open={open}
@@ -354,75 +433,7 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
               {snapUi.GENERATION_MEANING}
             </p>
           )}
-          {manifestViewOpen ? (
-            <SnapshotManifestView title={activeRowTitle} manifestState={manifestState} />
-          ) : compareViewOpen && comparePair ? (
-            <SnapshotCompareView
-              left={comparePair[0]}
-              right={comparePair[1]}
-              leftState={snapshotManifests[applicationSnapshotStableKey(comparePair[0])]}
-              rightState={snapshotManifests[applicationSnapshotStableKey(comparePair[1])]}
-              onBack={handleBackFromCompare}
-              onRetry={fetchComparePair}
-            />
-          ) : snapshotsLoading ? (
-            <div
-              // 10: matches the snapshot list's row gap, between SM and MD.
-              style={{ display: 'grid', rowGap: 10 }}
-            >
-              {[0, 1, 2].map((i) => (
-                <div
-                  key={i}
-                  style={{
-                    height: 44,
-                    borderRadius: RADIUS.MD,
-                    border: HAIRLINE.SURFACE_BORDER,
-                    background: DEFAULT_COLORS.SURFACE_HOVER,
-                  }}
-                />
-              ))}
-            </div>
-          ) : mergedSnapshots.length === 0 ? (
-            snapshotsError ? (
-              <div style={{ fontSize: FONT_SIZE.MD, color: DEFAULT_COLORS.DANGER }}>
-                {snapshotsError}
-              </div>
-            ) : (
-              <Empty
-                className={EMPTY_CLASS.PANEL}
-                image={false}
-                description={
-                  <>
-                    <Typography.Title level={5}>{snapUi.EMPTY_TITLE}</Typography.Title>
-                    <Typography.Text>{snapUi.EMPTY_DESCRIPTION}</Typography.Text>
-                  </>
-                }
-              />
-            )
-          ) : (
-            <div className={compareMode ? LIST_TOOLBAR.BULK_SELECT_CLASS : undefined}>
-              {mergedSnapshots.map((s, idx) => (
-                <ApplicationSnapshotRow
-                  key={applicationSnapshotStableKey(s)}
-                  snapshot={s}
-                  showMarginBottom={idx < mergedSnapshots.length - 1}
-                  onViewManifest={openManifest}
-                  onRollback={handleRollbackRequest}
-                  rollbackLoading={rollbackBusyId === applicationSnapshotStableKey(s)}
-                  rollbackDisabled={rollbackDisabled}
-                  rollbackDisabledReason={rollbackDisabledReason}
-                  compareMode={compareMode}
-                  compareChecked={compareKeys.includes(applicationSnapshotStableKey(s))}
-                  compareDisabled={
-                    compareMode &&
-                    compareKeys.length >= 2 &&
-                    !compareKeys.includes(applicationSnapshotStableKey(s))
-                  }
-                  onToggleCompare={handleToggleCompareRow}
-                />
-              ))}
-            </div>
-          )}
+          {body}
 
           {/* Same modal, two phases: confirm, then a countdown whose primary
               button is Undo. The confirm handler closes via the onClose it

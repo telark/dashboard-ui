@@ -1,12 +1,6 @@
 import { HTTP_HEADERS } from './headers';
 
 export const API_RESPONSES = {
-  SILENT_404: {
-    data: null,
-    status: 404,
-    statusText: 'Not Found',
-    headers: {},
-  },
   NETWORK_ERROR: {
     _network: true,
   },

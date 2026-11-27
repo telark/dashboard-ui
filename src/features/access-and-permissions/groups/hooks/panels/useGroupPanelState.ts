@@ -1,7 +1,6 @@
 import { useState, useCallback } from 'react';
 import { Form } from 'antd';
-import type { Group } from '../../models';
-import type { GroupFormData } from '../../models';
+import type { Group, GroupFormData } from '../../models';
 
 interface UseGroupPanelStateReturn {
   createPanelOpen: boolean;

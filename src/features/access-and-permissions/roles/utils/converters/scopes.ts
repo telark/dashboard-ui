@@ -5,7 +5,7 @@ export const convertScopesToAPI = (
   scopes: Record<string, ScopeFormValue>,
 ): ScopeAndPermissions[] => {
   return Object.entries(scopes)
-    .filter(([, scopeValue]) => scopeValue && scopeValue.level)
+    .filter(([, scopeValue]) => scopeValue?.level)
     .map(([scope, scopeValue]) => {
       const result: ScopeAndPermissions = {
         scope,

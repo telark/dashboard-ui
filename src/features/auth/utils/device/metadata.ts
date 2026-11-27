@@ -14,15 +14,15 @@ export const getClientMetadata = (): ClientMetadata => {
 
   let browser = 'Unknown';
   if (/Edg\//.test(ua)) {
-    browser = `Edge ${ua.match(/Edg\/([\d]+)/)?.[1] ?? ''}`.trim();
+    browser = `Edge ${/Edg\/(\d+)/.exec(ua)?.[1] ?? ''}`.trim();
   } else if (/OPR\//.test(ua)) {
-    browser = `Opera ${ua.match(/OPR\/([\d]+)/)?.[1] ?? ''}`.trim();
+    browser = `Opera ${/OPR\/(\d+)/.exec(ua)?.[1] ?? ''}`.trim();
   } else if (/Chrome\//.test(ua) && !/Chromium\//.test(ua)) {
-    browser = `Chrome ${ua.match(/Chrome\/([\d]+)/)?.[1] ?? ''}`.trim();
+    browser = `Chrome ${/Chrome\/(\d+)/.exec(ua)?.[1] ?? ''}`.trim();
   } else if (/Firefox\//.test(ua)) {
-    browser = `Firefox ${ua.match(/Firefox\/([\d]+)/)?.[1] ?? ''}`.trim();
+    browser = `Firefox ${/Firefox\/(\d+)/.exec(ua)?.[1] ?? ''}`.trim();
   } else if (/Safari\//.test(ua) && !/Chrome\//.test(ua)) {
-    browser = `Safari ${ua.match(/Version\/([\d]+)/)?.[1] ?? ''}`.trim();
+    browser = `Safari ${/Version\/(\d+)/.exec(ua)?.[1] ?? ''}`.trim();
   }
 
   let os = 'Unknown';

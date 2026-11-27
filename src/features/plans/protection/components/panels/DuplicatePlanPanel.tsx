@@ -69,6 +69,11 @@ const buildDuplicatePayload = (
   return payload;
 };
 
+const duplicateErrorText = (err: unknown): string => {
+  if (typeof err === 'string') return err;
+  return err instanceof Error ? err.message : PPC.LABELS.ACTIONS.DUPLICATE_ERROR;
+};
+
 const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, plan }) => {
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
@@ -130,13 +135,7 @@ const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, 
         APP_ROUTES.PROTECTION_PLAN_DETAILS.replace(':name', encodeURIComponent(created.name)),
       );
     } catch (err: unknown) {
-      const text =
-        typeof err === 'string'
-          ? err
-          : err instanceof Error
-            ? err.message
-            : PPC.LABELS.ACTIONS.DUPLICATE_ERROR;
-      setError(text);
+      setError(duplicateErrorText(err));
       throw err;
     } finally {
       setSubmitting(false);

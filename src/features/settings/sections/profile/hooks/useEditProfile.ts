@@ -56,7 +56,7 @@ export interface UseEditProfileResult {
 
 // Unchanged fields stay out of the PATCH, so the server re-checks only what the user edited.
 const changedValue = (value: unknown, current?: string): string | undefined => {
-  const next = String(value ?? '').trim();
+  const next = typeof value === 'string' ? value.trim() : '';
   return next === (current ?? '') ? undefined : next;
 };
 

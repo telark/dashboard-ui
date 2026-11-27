@@ -10,7 +10,7 @@ const rootDir = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const lock = JSON.parse(readFileSync(path.join(rootDir, 'package-lock.json'), 'utf8'));
 
 const LICENSE_FILE = /^(licen[cs]e|copying|notice)/i;
-const CODE_FILE = /\.(c|m)?(js|ts)$|\.json$|\.map$/i;
+const CODE_FILE = /\.[cm]?(js|ts)$|\.json$|\.map$/i;
 
 // react-icons bundles icons from other projects without their notices: one entry per set src imports.
 const ICON_SETS = {

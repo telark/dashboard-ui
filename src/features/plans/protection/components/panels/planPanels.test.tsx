@@ -1,6 +1,7 @@
 import { screen, waitFor } from '@testing-library/react';
 import type { UserEvent } from '@testing-library/user-event';
 import { Form } from 'antd';
+import dayjs from 'dayjs';
 import { useEffect, type ReactElement } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { Endpoints, BUTTON_TEXTS } from '../../../../../constants';
@@ -8,11 +9,13 @@ import {
   clickButton,
   fillFields,
   mockEndpoint,
+  pickSelectOption,
   renderApp,
   selectOption,
 } from '../../../../../test';
 import { buildApplication } from '../../../../../test/factories/applications';
 import { buildPlan } from '../../../../../test/factories/plans';
+import { buildUser } from '../../../../../test/factories/users';
 import { clickInDialog } from '../../../../../test/helpers/dialogs';
 import { mockPlanForm } from '../../../../../test/helpers/featureApi';
 import { pickPolicy } from '../../../../../test/helpers/planForm';
@@ -34,13 +37,14 @@ const DELETES = POLICY_CHIP_LABEL['block-delete'];
 
 // A form-level prefill for the tests whose subject is not the typing, which is slow under load.
 const FILLED = { name: 'freeze', severity: 'medium', namespaces: ['payments'] };
+type Prefill = typeof FILLED & Record<string, unknown>;
 
 const CreateHost = ({
   onClose,
   values,
 }: {
   onClose: () => void;
-  values?: typeof FILLED;
+  values?: Prefill;
 }): ReactElement => {
   const [form] = Form.useForm();
   useEffect(() => {
@@ -68,7 +72,7 @@ const openForm = async (
   return { user, onClose };
 };
 
-const openCreate = (setup: PlanFormSetup = {}, values?: typeof FILLED) =>
+const openCreate = (setup: PlanFormSetup = {}, values?: Prefill) =>
   openForm(
     setup,
     (onClose) => <CreateHost onClose={onClose} values={values} />,
@@ -174,6 +178,43 @@ describe('create plan panel', () => {
     expect(
       await screen.findByRole('button', { name: new RegExp(T.SUBMIT.approval) }),
     ).toBeInTheDocument();
+  });
+
+  it('adds a participant found by name', async () => {
+    const reviewer = buildUser({ username: 'release_reviewer' });
+    const prepare = mockPrepare();
+    const { user } = await openCreate(
+      { users: [reviewer, buildUser({ username: 'qa_lead' })] },
+      FILLED,
+    );
+
+    await pickSelectOption(
+      user,
+      screen.getByRole('combobox', { name: FORM.PARTICIPANTS_LABEL }),
+      new RegExp(reviewer.username),
+      'review',
+    );
+    await submitAudit(user);
+
+    await waitFor(() => expect(prepare.calls).toHaveLength(1));
+    expect(prepare.calls[0].body).toMatchObject({ participantRefs: [reviewer.id] });
+  });
+
+  it('ends a time range a minute after the start it is given', async () => {
+    const startAt = dayjs().add(2, 'day').startOf('minute');
+    const prepare = mockPrepare();
+    const { user } = await openCreate({}, { ...FILLED, timeMode: 'time_range', startAt });
+
+    await pickPolicy(user, DELETES);
+    await clickButton(user, T.SUBMIT.schedule);
+
+    await waitFor(() => expect(prepare.calls).toHaveLength(1));
+    expect(prepare.calls[0].body).toMatchObject({
+      timeRange: {
+        startAt: startAt.toISOString(),
+        endAt: startAt.add(1, 'minute').toISOString(),
+      },
+    });
   });
 
   it('targets applications when the scope type changes', async () => {

@@ -60,9 +60,9 @@ export const useCreateUserPanel = ({ form, onClose }: UseCreateUserPanelOptions)
         message.success(UC.LABELS.MESSAGES.CREATED(userData.username));
         form.resetFields();
         onClose();
-      } catch (rejection) {
-        message.error(rejectionMessage(rejection, UC.LABELS.MESSAGES.CREATE_FAILED));
-        throw rejection;
+      } catch (error) {
+        message.error(rejectionMessage(error, UC.LABELS.MESSAGES.CREATE_FAILED));
+        throw error;
       } finally {
         setSubmitting(false);
       }

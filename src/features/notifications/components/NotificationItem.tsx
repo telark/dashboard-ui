@@ -186,6 +186,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
       >
         {/* Keeps the row's own click and Enter (open the target) from firing with an action. */}
         <div
+          role="none"
           style={{ display: 'flex', gap: SPACING.XXS, flexShrink: 0 }}
           onClick={(e) => e.stopPropagation()}
           onKeyDown={(e) => e.stopPropagation()}

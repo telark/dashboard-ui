@@ -52,11 +52,8 @@ function stringifyValue(v: unknown): string {
   if (v == null) return EMPTY_VALUE;
   if (typeof v === 'string') return v;
   if (typeof v === 'number' || typeof v === 'boolean') return String(v);
-  try {
-    return JSON.stringify(v);
-  } catch {
-    return String(v);
-  }
+  // A manifest value comes from the API's JSON, so it always has a JSON form.
+  return JSON.stringify(v);
 }
 
 function isEqualValue(a: unknown, b: unknown): boolean {
@@ -288,11 +285,11 @@ const StatTile: React.FC<{ value: number; label: string; accent?: string }> = ({
 );
 
 const SECRET_KIND = 'Secret';
-const SECRET_VALUE_ROOTS = ['data', 'stringData'];
+const SECRET_VALUE_ROOTS = new Set(['data', 'stringData']);
 
 const DiffRowView: React.FC<{ row: DiffRow; kind: string }> = ({ row, kind }) => {
   const ui = APPLICATIONS_UI.SECTIONS.SNAPSHOTS;
-  const redacted = kind === SECRET_KIND && SECRET_VALUE_ROOTS.includes(row.path[0] ?? '');
+  const redacted = kind === SECRET_KIND && SECRET_VALUE_ROOTS.has(row.path[0] ?? '');
   const show = (v: unknown) => (redacted ? ui.COMPARE_REDACTED : stringifyValue(v));
   if (row.path.length === 0 && row.type !== 'change') {
     return (

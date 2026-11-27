@@ -25,12 +25,10 @@ const Section: React.FC<SectionProps> = ({ title, subtitle, content, className, 
       </div>
       {subtitle ? (
         <Typography.Paragraph
-          className="app-section-subtitle"
           type="secondary"
           style={{
-            // Off scale, kept exact: marginBottom 1 (NONE to XXS).
-            margin: SPACING.NONE,
-            marginBottom: 1,
+            // Off scale, kept exact: -2 pulls the subtitle up to the title.
+            margin: `-2px ${SPACING.NONE}px ${SPACING.XS}px`,
             fontSize: FONT_SIZE.MD,
             color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
           }}
@@ -38,9 +36,7 @@ const Section: React.FC<SectionProps> = ({ title, subtitle, content, className, 
           {subtitle}
         </Typography.Paragraph>
       ) : null}
-      <div className="app-section-content" style={{ marginTop: SPACING.NONE }}>
-        {content}
-      </div>
+      <div style={{ marginTop: SPACING.SM }}>{content}</div>
     </div>
   );
 };

@@ -35,9 +35,8 @@ const ChangeDiff: React.FC<{ change: ApplicationChange; palette: ChangeLinePalet
         <span className={p.valueClass} style={{ fontWeight: FONT_WEIGHT.BOLD }}>
           {String(c.newValue)}
         </span>
-      ) : !hasOldValue ? (
-        <span style={{ color: p.text }}>{c.description}</span>
       ) : null}
+      {hasOldValue || hasNewValue ? null : <span style={{ color: p.text }}>{c.description}</span>}
     </>
   );
 };

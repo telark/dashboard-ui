@@ -175,14 +175,16 @@ ManageRollbacksPanel.displayName = 'ManageRollbacksPanel';
 
 export default ManageRollbacksPanel;
 
-function RollbackRow(props: {
-  entry: ApplicationRollbackEntry;
-  /** Empty while the name is being looked up. */
-  triggeredByName: string;
-  canAbort: boolean;
-  abortLoading: boolean;
-  onAbort: (entry: ApplicationRollbackEntry) => void;
-}): React.ReactElement {
+function RollbackRow(
+  props: Readonly<{
+    entry: ApplicationRollbackEntry;
+    /** Empty while the name is being looked up. */
+    triggeredByName: string;
+    canAbort: boolean;
+    abortLoading: boolean;
+    onAbort: (entry: ApplicationRollbackEntry) => void;
+  }>,
+): React.ReactElement {
   const { entry, triggeredByName, canAbort, abortLoading, onAbort } = props;
   const [hovered, setHovered] = useState(false);
   const statusKey = String(entry.status || '').trim();
@@ -290,10 +292,9 @@ function RollbackRow(props: {
   );
 }
 
-function RollbackMeta(props: {
-  entry: ApplicationRollbackEntry;
-  triggeredByName: string;
-}): React.ReactElement {
+function RollbackMeta(
+  props: Readonly<{ entry: ApplicationRollbackEntry; triggeredByName: string }>,
+): React.ReactElement {
   const { entry, triggeredByName } = props;
   const ui = APPLICATIONS_UI.SECTIONS.SNAPSHOTS;
   const fullText = [
@@ -349,7 +350,7 @@ function RollbackMeta(props: {
 }
 
 // A refusal by an admission policy reads as a plain sentence; the raw error stays one click away.
-function RollbackError(props: { error: string }): React.ReactElement {
+function RollbackError(props: Readonly<{ error: string }>): React.ReactElement {
   const { error } = props;
   const ui = APPLICATIONS_UI.SECTIONS.SNAPSHOTS;
 

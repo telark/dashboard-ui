@@ -39,7 +39,7 @@ export const formatValidity = (validity: Role['validity'], record: Role): Validi
   if (validity.type === 'permanent') return { label: 'Permanent' };
   if (validity.type === 'sessionBased') return { label: 'Session Based' };
   if (validity.type === 'temporary') {
-    const now = new Date().getTime();
+    const now = Date.now();
 
     if (validity.expiresAt) {
       const expiresAt = toTimestamp(validity.expiresAt);

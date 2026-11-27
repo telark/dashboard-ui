@@ -12,11 +12,11 @@ import {
   AiOutlineHourglass,
   AiOutlineFolder,
   AiOutlineCode,
+  AiOutlineUser,
 } from 'react-icons/ai';
 import TimeAgo from '../../../../../../components/display/time/TimeAgo';
 import { getCategoryName } from '../../../../categories/utils/helpers';
 import { ActorDisplay } from '../../../../../../components/display/users';
-import { AiOutlineUser } from 'react-icons/ai';
 import { ValidityDisplay } from '../../../../../../components/display/validity';
 
 export const Columns = ({

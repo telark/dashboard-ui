@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Select, Typography } from 'antd';
+import { Form, Select, Typography, type SelectProps } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import {
   DEFAULT_COLORS,
@@ -65,6 +65,14 @@ const PoliciesSection: React.FC<PoliciesSectionProps> = ({
   // with no policy (its button is disabled), so touching is the only way to reach the error.
   const [touched, setTouched] = useState(false);
   const showRequired = touched && policies.length === 0;
+  const renderOption: SelectProps['optionRender'] = (option) => (
+    <div>
+      <div>{option.label}</div>
+      <Typography.Text type="secondary" style={{ fontSize: FONT_SIZE.SM }}>
+        {templates.find((t) => t.id === option.value)?.description}
+      </Typography.Text>
+    </div>
+  );
   return (
     <Section
       title={SECTIONS.POLICIES_TITLE}
@@ -121,14 +129,7 @@ const PoliciesSection: React.FC<PoliciesSectionProps> = ({
                 value={policies.map((p) => p.templateID)}
                 disabled={disabled}
                 options={availableTemplates.map((t) => ({ value: t.id, label: templateLabel(t) }))}
-                optionRender={(option) => (
-                  <div>
-                    <div>{option.label}</div>
-                    <Typography.Text type="secondary" style={{ fontSize: FONT_SIZE.SM }}>
-                      {templates.find((t) => t.id === option.value)?.description}
-                    </Typography.Text>
-                  </div>
-                )}
+                optionRender={renderOption}
                 onBlur={() => setTouched(true)}
                 onChange={(selectedIds: string[]) => {
                   setTouched(true);

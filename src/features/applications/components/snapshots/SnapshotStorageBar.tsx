@@ -19,19 +19,19 @@ export interface SnapshotStorageBarProps {
   metricsLine?: string;
 }
 
+const fillColor = (widthPct: number): string => {
+  if (widthPct >= 90) return DEFAULT_COLORS.DANGER;
+  return widthPct >= 75 ? CONNECTIVITY_CONSTANTS.COLORS.WARNING : DEFAULT_COLORS.SUCCESS;
+};
+
 const SnapshotStorageBar: React.FC<SnapshotStorageBarProps> = memo(
   ({ percentUsed, consumedLabel, metricsLine }) => {
     const parsed = consumedLabel != null ? parseConsumedPercent(consumedLabel) : null;
-    const pct = percentUsed != null ? percentUsed : parsed;
+    const pct = percentUsed ?? parsed;
     const widthPct = pct != null ? Math.min(100, Math.max(0, pct)) : 0;
     const barH = Math.max(12, SHARED_PAGE_CONSTANTS.UI.PROGRESS_BAR_HEIGHT);
     const barR = SHARED_PAGE_CONSTANTS.UI.PROGRESS_BAR_BORDER_RADIUS;
-    const fill =
-      widthPct >= 90
-        ? DEFAULT_COLORS.DANGER
-        : widthPct >= 75
-          ? CONNECTIVITY_CONSTANTS.COLORS.WARNING
-          : DEFAULT_COLORS.SUCCESS;
+    const fill = fillColor(widthPct);
 
     return (
       <div style={{ width: '100%', minWidth: 120 }}>

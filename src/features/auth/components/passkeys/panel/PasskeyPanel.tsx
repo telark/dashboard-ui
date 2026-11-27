@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState, useCallback } from 'react';
+import React, { useMemo, useRef, useReducer, useCallback, useEffect } from 'react';
 import { Form, Input } from 'antd';
 import { SlideOutPanel } from '../../../../../components/display/panels/slide-out';
 import { BUTTON_TEXTS, INPUT_LIMITS, SPACING } from '../../../../../constants';
@@ -22,7 +22,6 @@ interface PasskeyPanelProps {
   submitting: boolean;
   onSubmit: (values: Record<string, unknown>) => Promise<void>;
   form: FormInstance;
-  formSyncKey?: number;
 }
 
 const PasskeyPanel: React.FC<PasskeyPanelProps> = ({
@@ -34,18 +33,24 @@ const PasskeyPanel: React.FC<PasskeyPanelProps> = ({
   submitting,
   onSubmit,
   form,
-  formSyncKey,
 }) => {
   const inputRef = useRef<{ input?: HTMLInputElement | null } | null>(null);
-  const [, setFormChanged] = useState(0);
+  const [, rerender] = useReducer((n: number) => n + 1, 0);
 
   const onValuesChange = useCallback(() => {
-    setFormChanged((n) => n + 1);
+    rerender();
   }, []);
 
   const onFieldsChange = useCallback(() => {
-    setFormChanged((n) => n + 1);
+    rerender();
   }, []);
+
+  // The page fills the form in its own effect, which runs after this one: re-render once it has.
+  useEffect(() => {
+    if (!open) return;
+    const id = setTimeout(rerender, 0);
+    return () => clearTimeout(id);
+  }, [open, isEditMode, selectedPasskey]);
 
   const initialValues = useMemo(
     () =>
@@ -116,8 +121,6 @@ const PasskeyPanel: React.FC<PasskeyPanelProps> = ({
       )}
     </div>
   );
-
-  void formSyncKey;
 
   return (
     <SlideOutPanel

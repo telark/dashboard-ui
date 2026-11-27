@@ -273,27 +273,27 @@ const ProtectionPlanDetailsToolbar: React.FC<ProtectionPlanDetailsToolbarProps> 
           !getCurrentUser()?.id,
         tooltip: getGenerateReportTooltip(plan, canGenerateReport),
       },
-    );
-    // Duplicate sits in the overflow above cancel and delete, like Applications' panels above
-    // reset.
-    buttons.push({
-      key: 'more',
-      label: PPC.LABELS.DETAIL_PAGE.ACTIONS.MORE_LABEL,
-      icon: <EllipsisOutlined />,
-      variant: 'ghost',
-      dropdown: {
-        items: overflowItems({
-          plan,
-          canDuplicate,
-          canCancel,
-          canDelete,
-          duplicating,
-          canceling,
-          deleting,
-        }),
-        onItemClick: handleMenuClick,
+      // Duplicate sits in the overflow above cancel and delete, like Applications' panels above
+      // reset.
+      {
+        key: 'more',
+        label: PPC.LABELS.DETAIL_PAGE.ACTIONS.MORE_LABEL,
+        icon: <EllipsisOutlined />,
+        variant: 'ghost',
+        dropdown: {
+          items: overflowItems({
+            plan,
+            canDuplicate,
+            canCancel,
+            canDelete,
+            duplicating,
+            canceling,
+            deleting,
+          }),
+          onItemClick: handleMenuClick,
+        },
       },
-    });
+    );
     return { buttons };
   }, [
     plan,

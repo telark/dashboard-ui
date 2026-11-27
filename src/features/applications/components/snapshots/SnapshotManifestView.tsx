@@ -29,7 +29,7 @@ const MANIFEST_LANGUAGE = {
 
 type ManifestLanguage = (typeof MANIFEST_LANGUAGE)[keyof typeof MANIFEST_LANGUAGE];
 
-function useManifestTexts(data: unknown | null | undefined): {
+function useManifestTexts(data: unknown): {
   jsonText: string;
   yamlText: string;
 } {
@@ -39,12 +39,8 @@ function useManifestTexts(data: unknown | null | undefined): {
       return { jsonText: '', yamlText: '' };
     }
 
-    let jsonText: string;
-    try {
-      jsonText = JSON.stringify(viewPayload, null, 2);
-    } catch {
-      jsonText = String(viewPayload);
-    }
+    // The manifest comes from the API's JSON, so it always has a JSON form.
+    const jsonText = JSON.stringify(viewPayload, null, 2);
 
     let yamlText: string;
     try {

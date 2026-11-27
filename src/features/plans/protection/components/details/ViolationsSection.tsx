@@ -50,15 +50,15 @@ const groupByDay = (
   const groups: { dayKey: string; entries: PlanViolation[] }[] = [];
   for (const v of violations) {
     if (!v.timestamp) {
-      const last = groups[groups.length - 1];
+      const last = groups.at(-1);
       const key = 'unknown';
-      if (!last || last.dayKey !== key) groups.push({ dayKey: key, entries: [v] });
+      if (last?.dayKey !== key) groups.push({ dayKey: key, entries: [v] });
       else last.entries.push(v);
       continue;
     }
     const dayKey = toDateKey(v.timestamp);
-    const last = groups[groups.length - 1];
-    if (!last || last.dayKey !== dayKey) {
+    const last = groups.at(-1);
+    if (last?.dayKey !== dayKey) {
       groups.push({ dayKey, entries: [v] });
     } else {
       last.entries.push(v);

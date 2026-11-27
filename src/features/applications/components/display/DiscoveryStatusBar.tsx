@@ -24,19 +24,20 @@ const DiscoveryStatusBar: React.FC<DiscoveryStatusBarProps> = ({ onCycleComplete
     );
   }
 
-  const text = status.inProgress ? (
-    APPLICATIONS_UI.DISCOVERY_IN_PROGRESS(status.remaining)
-  ) : status.finishedAt ? (
-    <>
-      {APPLICATIONS_UI.DISCOVERY_IDLE}{' '}
-      {/* The age ticks every minute: kept out of the announcements. */}
-      <span aria-live="off">
-        <TimeAgo date={status.finishedAt} short />
-      </span>
-    </>
-  ) : (
-    APPLICATIONS_UI.DISCOVERY_NEVER_FINISHED
-  );
+  let text: React.ReactNode = APPLICATIONS_UI.DISCOVERY_NEVER_FINISHED;
+  if (status.inProgress) {
+    text = APPLICATIONS_UI.DISCOVERY_IN_PROGRESS(status.remaining);
+  } else if (status.finishedAt) {
+    text = (
+      <>
+        {APPLICATIONS_UI.DISCOVERY_IDLE}{' '}
+        {/* The age ticks every minute: kept out of the announcements. */}
+        <span aria-live="off">
+          <TimeAgo date={status.finishedAt} short />
+        </span>
+      </>
+    );
+  }
 
   return (
     <div

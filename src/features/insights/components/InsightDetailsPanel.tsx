@@ -271,62 +271,60 @@ const Summary: React.FC<{
   const where = insight.params?.namespace || namespace;
   const accent = STATUS_COLORS.INSIGHT_SEVERITY[insight.severity];
   return (
-    <>
-      <InsightCard
-        title={insight.title}
-        summary={insight.summary}
-        actions={actions}
-        chips={
-          <>
-            {chip(
-              INSIGHT_SEVERITY_LABELS[insight.severity],
-              STATUS_COLORS.INSIGHT_SEVERITY_PILL[insight.severity],
-            )}
-            {chip(INSIGHT_KIND_LABELS[insight.kind] ?? insight.kind)}
-            {chip(INSIGHT_ROW_STATE_LABELS[state])}
-            {triaged ? chip(triageLabel, STATUS_COLORS.INSIGHT_TRIAGE[triaged.state]) : null}
-          </>
-        }
-        facts={
-          <>
-            <Fact label={P.APPLICATION} hint={app}>
-              <Link
-                to={APP_ROUTES.APPLICATION_DETAILS.replace(':name', encodeURIComponent(app))}
-                style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE, fontWeight: FONT_WEIGHT.BOLD }}
-              >
-                {app}
-              </Link>
-            </Fact>
-            <Fact label={P.NAMESPACE} hint={where}>
-              {where}
-            </Fact>
-            <Fact label={P.WORKLOAD} hint={insight.subject}>
-              {insight.subject}
-            </Fact>
-          </>
-        }
-        milestones={[
-          {
-            label: T.FIRST_SEEN,
-            value: <TimeAgo date={insight.firstSeenAt} />,
-            reached: true,
-            color: accent,
-          },
-          {
-            label: T.LAST_SEEN,
-            value: <TimeAgo date={insight.lastSeenAt} />,
-            reached: true,
-            color: accent,
-          },
-          {
-            label: P.RESOLVED,
-            value: insight.resolvedAt ? <TimeAgo date={insight.resolvedAt} /> : EMPTY_VALUE,
-            reached: Boolean(insight.resolvedAt),
-            color: DEFAULT_COLORS.SUCCESS,
-          },
-        ]}
-      />
-    </>
+    <InsightCard
+      title={insight.title}
+      summary={insight.summary}
+      actions={actions}
+      chips={
+        <>
+          {chip(
+            INSIGHT_SEVERITY_LABELS[insight.severity],
+            STATUS_COLORS.INSIGHT_SEVERITY_PILL[insight.severity],
+          )}
+          {chip(INSIGHT_KIND_LABELS[insight.kind] ?? insight.kind)}
+          {chip(INSIGHT_ROW_STATE_LABELS[state])}
+          {triaged ? chip(triageLabel, STATUS_COLORS.INSIGHT_TRIAGE[triaged.state]) : null}
+        </>
+      }
+      facts={
+        <>
+          <Fact label={P.APPLICATION} hint={app}>
+            <Link
+              to={APP_ROUTES.APPLICATION_DETAILS.replace(':name', encodeURIComponent(app))}
+              style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE, fontWeight: FONT_WEIGHT.BOLD }}
+            >
+              {app}
+            </Link>
+          </Fact>
+          <Fact label={P.NAMESPACE} hint={where}>
+            {where}
+          </Fact>
+          <Fact label={P.WORKLOAD} hint={insight.subject}>
+            {insight.subject}
+          </Fact>
+        </>
+      }
+      milestones={[
+        {
+          label: T.FIRST_SEEN,
+          value: <TimeAgo date={insight.firstSeenAt} />,
+          reached: true,
+          color: accent,
+        },
+        {
+          label: T.LAST_SEEN,
+          value: <TimeAgo date={insight.lastSeenAt} />,
+          reached: true,
+          color: accent,
+        },
+        {
+          label: P.RESOLVED,
+          value: insight.resolvedAt ? <TimeAgo date={insight.resolvedAt} /> : EMPTY_VALUE,
+          reached: Boolean(insight.resolvedAt),
+          color: DEFAULT_COLORS.SUCCESS,
+        },
+      ]}
+    />
   );
 };
 
@@ -344,6 +342,141 @@ interface BodyProps {
   onSelect: (id: string, namespace: string, app: string, category: InsightCategory) => void;
   onChanged: (triaged?: PanelTriage) => void;
 }
+
+interface AnalysisCardProps {
+  run: ReturnType<typeof useEffectiveRun>;
+  reviewedAt?: string;
+  // A failed read without a document is unknown, not "never reviewed".
+  showReview: boolean;
+  analyzeAllowed: boolean;
+  submitting: boolean;
+  canAnalyze: boolean;
+  onAnalyze: () => Promise<void>;
+  runtime: ReturnType<typeof useApplicationInsights>['runtime'];
+  fastMode: boolean;
+}
+
+const AnalysisCard: React.FC<AnalysisCardProps> = ({
+  run,
+  reviewedAt,
+  showReview,
+  analyzeAllowed,
+  submitting,
+  canAnalyze,
+  onAnalyze,
+  runtime,
+  fastMode,
+}) => (
+  <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.SM }}>
+    <div
+      style={{
+        // Off scale, kept exact: padding 14 (MD to LG).
+        ...cardStyle,
+        padding: `${SPACING.MD}px 14px`,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: SPACING.MD,
+      }}
+    >
+      <div
+        style={{
+          minHeight: CLUSTER_INSIGHTS.LINE_MIN_HEIGHT_PX,
+          minWidth: 0,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: SPACING.XS,
+        }}
+      >
+        <RunLine run={run} light />
+        {showReview ? <SetupReviewLine at={reviewedAt} style={mutedStyle} /> : null}
+      </div>
+      {analyzeAllowed ? (
+        <Button
+          type="primary"
+          loading={submitting}
+          disabled={!canAnalyze}
+          onClick={() => void onAnalyze()}
+        >
+          {T.ANALYZE_BUTTON}
+        </Button>
+      ) : null}
+    </div>
+    {runtime && runtime.state !== 'ready' ? (
+      <Alert
+        type="warning"
+        showIcon
+        title={fastMode ? T.RUNTIME_BANNER_RULES_ONLY : RUNTIME_BANNER_TEXT[runtime.state]}
+      />
+    ) : null}
+  </div>
+);
+
+const OtherFindings: React.FC<{ others: Insight[]; onPick: (other: Insight) => void }> = ({
+  others,
+  onPick,
+}) => (
+  <div
+    style={{
+      ...cardStyle,
+      padding: SPACING.XS,
+      display: 'flex',
+      flexDirection: 'column',
+    }}
+  >
+    {others.map((other) => (
+      <FindingRow
+        key={other.id}
+        severity={other.severity}
+        title={other.title}
+        trailing={other.status === 'resolved' ? INSIGHT_ROW_STATE_LABELS.resolved : undefined}
+        onClick={() => onPick(other)}
+      />
+    ))}
+  </div>
+);
+
+interface FindingBodyProps {
+  insight?: Insight;
+  // The document failed to load, so the insight is unknown rather than gone.
+  failed: boolean;
+  row?: InsightRow;
+  namespace: string;
+  app: string;
+  canTriage: boolean;
+  onTriage: (id: string, action: TriageAction) => Promise<void>;
+}
+
+const FindingBody: React.FC<FindingBodyProps> = ({
+  insight,
+  failed,
+  row,
+  namespace,
+  app,
+  canTriage,
+  onTriage,
+}) => {
+  if (insight) {
+    return (
+      <>
+        <Summary
+          insight={insight}
+          namespace={namespace}
+          app={app}
+          rowStale={row?.stale}
+          actions={
+            canTriage && triageActions(insight).length ? (
+              <TriageButtons insight={insight} onTriage={onTriage} />
+            ) : null
+          }
+        />
+        <Guidance insight={insight} />
+      </>
+    );
+  }
+  if (failed) return <Alert type="error" showIcon title={P.LOAD_FAILED} />;
+  return <Alert type="info" showIcon title={row ? `${row.title}: ${P.NOT_FOUND}` : P.NOT_FOUND} />;
+};
 
 // Keyed by application: switching apps starts from an empty document, never the previous one.
 const PanelBody: React.FC<BodyProps> = ({ namespace, app, id, row, onSelect, onChanged }) => {
@@ -420,52 +553,17 @@ const PanelBody: React.FC<BodyProps> = ({ namespace, app, id, row, onSelect, onC
       key: 'analysis',
       label: <span style={labelStyle}>{P.ANALYSIS}</span>,
       children: (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.SM }}>
-          <div
-            style={{
-              // Off scale, kept exact: padding 14 (MD to LG).
-              ...cardStyle,
-              padding: `${SPACING.MD}px 14px`,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              gap: SPACING.MD,
-            }}
-          >
-            <div
-              style={{
-                minHeight: CLUSTER_INSIGHTS.LINE_MIN_HEIGHT_PX,
-                minWidth: 0,
-                display: 'flex',
-                flexDirection: 'column',
-                gap: SPACING.XS,
-              }}
-            >
-              <RunLine run={run} light />
-              {/* A failed read without a document is unknown, not "never reviewed". */}
-              {doc || !loadFailed ? (
-                <SetupReviewLine at={doc?.lastReviewAt} style={mutedStyle} />
-              ) : null}
-            </div>
-            {analyzeAllowed ? (
-              <Button
-                type="primary"
-                loading={submitting}
-                disabled={!canAnalyze}
-                onClick={() => void onAnalyze()}
-              >
-                {T.ANALYZE_BUTTON}
-              </Button>
-            ) : null}
-          </div>
-          {runtime && runtime.state !== 'ready' ? (
-            <Alert
-              type="warning"
-              showIcon
-              title={fastMode ? T.RUNTIME_BANNER_RULES_ONLY : RUNTIME_BANNER_TEXT[runtime.state]}
-            />
-          ) : null}
-        </div>
+        <AnalysisCard
+          run={run}
+          reviewedAt={doc?.lastReviewAt}
+          showReview={Boolean(doc) || !loadFailed}
+          analyzeAllowed={analyzeAllowed}
+          submitting={submitting}
+          canAnalyze={canAnalyze}
+          onAnalyze={onAnalyze}
+          runtime={runtime}
+          fastMode={fastMode}
+        />
       ),
     },
     ...(others.length
@@ -478,26 +576,10 @@ const PanelBody: React.FC<BodyProps> = ({ namespace, app, id, row, onSelect, onC
               </span>
             ),
             children: (
-              <div
-                style={{
-                  ...cardStyle,
-                  padding: SPACING.XS,
-                  display: 'flex',
-                  flexDirection: 'column',
-                }}
-              >
-                {others.map((other) => (
-                  <FindingRow
-                    key={other.id}
-                    severity={other.severity}
-                    title={other.title}
-                    trailing={
-                      other.status === 'resolved' ? INSIGHT_ROW_STATE_LABELS.resolved : undefined
-                    }
-                    onClick={() => onSelect(other.id, namespace, app, other.category ?? 'incident')}
-                  />
-                ))}
-              </div>
+              <OtherFindings
+                others={others}
+                onPick={(other) => onSelect(other.id, namespace, app, other.category ?? 'incident')}
+              />
             ),
           },
         ]
@@ -506,26 +588,15 @@ const PanelBody: React.FC<BodyProps> = ({ namespace, app, id, row, onSelect, onC
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.XL }}>
-      {insight ? (
-        <>
-          <Summary
-            insight={insight}
-            namespace={namespace}
-            app={app}
-            rowStale={row?.stale}
-            actions={
-              canTriage && triageActions(insight).length ? (
-                <TriageButtons insight={insight} onTriage={onTriage} />
-              ) : null
-            }
-          />
-          <Guidance insight={insight} />
-        </>
-      ) : !doc && loadFailed ? (
-        <Alert type="error" showIcon title={P.LOAD_FAILED} />
-      ) : (
-        <Alert type="info" showIcon title={row ? `${row.title}: ${P.NOT_FOUND}` : P.NOT_FOUND} />
-      )}
+      <FindingBody
+        insight={insight}
+        failed={!doc && loadFailed}
+        row={row}
+        namespace={namespace}
+        app={app}
+        canTriage={canTriage}
+        onTriage={onTriage}
+      />
       {/* Outside the disclosures: a failed triage must show even while they are folded. */}
       {error && error !== runError ? <Alert type="error" showIcon title={error} /> : null}
       <Collapse ghost styles={collapseStyles} items={disclosures} />

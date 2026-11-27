@@ -54,7 +54,7 @@ export const encodeResourceKey = (r: PlanExcludedResource): string =>
 
 export const decodeResourceKey = (key: string): PlanExcludedResource | null => {
   const parts = key.split(RESOURCE_KEY_SEPARATOR);
-  if (parts.length !== 3 || parts.some((p) => p === '')) return null;
+  if (parts.length !== 3 || parts.includes('')) return null;
   const [kind, namespace, name] = parts;
   return { kind, name, namespace };
 };
@@ -91,7 +91,11 @@ export const applicationPlanValues = (
   ).trim();
   const taken = new Set(takenNames.map((n) => n.trim().toLowerCase()));
   let name = base;
-  for (let n = 2; taken.has(name.toLowerCase()); n += 1) name = `${base} ${n}`;
+  let n = 2;
+  while (taken.has(name.toLowerCase())) {
+    name = `${base} ${n}`;
+    n += 1;
+  }
   return {
     scopeType: 'applications',
     applicationRefs: [application.name],
@@ -123,7 +127,7 @@ export const planToFormValues = (plan: ProtectionPlan): FormValues => ({
 });
 
 export const planToPolicies = (plan: ProtectionPlan): PolicyEntry[] =>
-  (plan.policies ?? []).map((p) => ({ templateID: p.templateID, params: { ...(p.params ?? {}) } }));
+  (plan.policies ?? []).map((p) => ({ templateID: p.templateID, params: { ...p.params } }));
 
 const matchesPattern = (pattern: string, value: string): boolean => {
   try {

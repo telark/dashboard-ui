@@ -20,6 +20,11 @@ interface SettingsCardProps {
   children: React.ReactNode;
 }
 
+const descriptionMargin = (hasTitle: boolean, hasBadge: boolean): number | string => {
+  if (!hasTitle) return SPACING.NONE;
+  return hasBadge ? '1px 0 0' : `${CONTENT.CARD_TITLE_TO_DESCRIPTION_GAP_PX}px 0 0`;
+};
+
 const SettingsCard: React.FC<SettingsCardProps> = memo(
   ({ title, description, headerStart, headerAction, titleBadge, children }) => {
     const hasDescription = description != null && description.length > 0;
@@ -81,12 +86,7 @@ const SettingsCard: React.FC<SettingsCardProps> = memo(
                   // titleBadge sits in the row as a real box with no such
                   // leading, so it needs a normal positive gap instead or the
                   // pull drags this text up under the badge.
-                  margin:
-                    title.length === 0
-                      ? SPACING.NONE
-                      : titleBadge != null
-                        ? '1px 0 0'
-                        : `${CONTENT.CARD_TITLE_TO_DESCRIPTION_GAP_PX}px 0 0`,
+                  margin: descriptionMargin(title.length > 0, titleBadge != null),
                   fontSize: CONTENT.CARD_DESCRIPTION_FONT_SIZE,
                   color: DEFAULT_COLORS.TEXT_MUTED,
                   lineHeight: LINE_HEIGHT.BASE,

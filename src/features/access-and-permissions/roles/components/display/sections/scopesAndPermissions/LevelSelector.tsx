@@ -1,5 +1,5 @@
 import React from 'react';
-import { Select } from 'antd';
+import { Select, type SelectProps } from 'antd';
 import { DEFAULT_COLORS, FONT_SIZE } from '../../../../../../../constants';
 import type { LevelSelectorProps } from '../../../../models';
 import type { PermissionLevel } from '../../../../models/types';
@@ -19,25 +19,28 @@ const LevelSelector: React.FC<LevelSelectorProps> = ({
   placeholder = 'Select permission level',
   style,
   disabled = false,
-}) => (
-  <>
-    <Select
-      placeholder={placeholder}
-      style={style}
-      value={value}
-      options={options.map((level) => ({ value: level.value, label: level.label }))}
-      optionRender={(option) => (
-        <>
-          <div>{option.label}</div>
-          <div style={DESCRIPTION_STYLE}>{descriptionMap[option.value as PermissionLevel]}</div>
-        </>
-      )}
-      onChange={onChange}
-      allowClear
-      disabled={disabled}
-    />
-    {value ? <div style={DESCRIPTION_STYLE}>{descriptionMap[value]}</div> : null}
-  </>
-);
+}) => {
+  const renderOption: SelectProps['optionRender'] = (option) => (
+    <>
+      <div>{option.label}</div>
+      <div style={DESCRIPTION_STYLE}>{descriptionMap[option.value as PermissionLevel]}</div>
+    </>
+  );
+  return (
+    <>
+      <Select
+        placeholder={placeholder}
+        style={style}
+        value={value}
+        options={options.map((level) => ({ value: level.value, label: level.label }))}
+        optionRender={renderOption}
+        onChange={onChange}
+        allowClear
+        disabled={disabled}
+      />
+      {value ? <div style={DESCRIPTION_STYLE}>{descriptionMap[value]}</div> : null}
+    </>
+  );
+};
 
 export default LevelSelector;

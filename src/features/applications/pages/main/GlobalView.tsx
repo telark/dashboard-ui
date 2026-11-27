@@ -344,6 +344,11 @@ function uniqNamespaceOptions(apps: Application[]): { value: string; label: stri
   return [...set].sort((a, b) => a.localeCompare(b)).map((v) => ({ value: v, label: v }));
 }
 
+function inAnyNamespace(app: Application, wanted: string[]): boolean {
+  const ns = new Set((app.namespaces?.items ?? []).map((n) => n.name));
+  return wanted.some((want) => ns.has(want));
+}
+
 function applyApplicationFilters(
   apps: Application[],
   filters: Record<string, unknown>,
@@ -374,17 +379,7 @@ function applyApplicationFilters(
     if (has(managedChart) && !managedChart.includes(a.managed?.chart ?? '')) return false;
 
     if (has(hasDrift) && !hasDrift.includes(String(Boolean(a.history?.hasDrift)))) return false;
-    if (has(namespaces)) {
-      const ns = new Set((a.namespaces?.items ?? []).map((n) => n.name));
-      let ok = false;
-      for (const want of namespaces) {
-        if (ns.has(want)) {
-          ok = true;
-          break;
-        }
-      }
-      if (!ok) return false;
-    }
+    if (has(namespaces) && !inAnyNamespace(a, namespaces)) return false;
     return true;
   });
 }

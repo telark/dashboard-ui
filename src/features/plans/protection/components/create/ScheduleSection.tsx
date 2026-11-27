@@ -34,7 +34,7 @@ const ScheduleSection: React.FC<ScheduleSectionProps> = ({
   useEffect(() => {
     if (!startAt) return;
     const curEnd = form.getFieldValue('endAt') as dayjs.Dayjs | undefined;
-    if (!curEnd || !curEnd.isAfter(startAt)) {
+    if (!curEnd?.isAfter(startAt)) {
       form.setFieldValue('endAt', startAt.add(1, 'minute'));
     }
   }, [startAt, form]);

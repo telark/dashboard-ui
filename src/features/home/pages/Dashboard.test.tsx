@@ -101,6 +101,19 @@ describe('home dashboard', () => {
     );
   });
 
+  it.each(['{Enter}', ' '])('opens a plan row from the keyboard with %j', async (key) => {
+    const failed = buildPlan({ name: 'freeze-failed', phase: 'failed' });
+    const { user } = openDashboard([APP], [failed]);
+    const box = within(await findBox(T.PLANS_ATTENTION.TITLE));
+
+    (await box.findByRole('button', { name: new RegExp(failed.name) })).focus();
+    await user.keyboard(key);
+
+    expect(currentLocation()).toBe(
+      APP_ROUTES.PROTECTION_PLAN_DETAILS.replace(':name', failed.name),
+    );
+  });
+
   it('shows the recent changes of the applications', async () => {
     const changed = buildApplicationWith({
       name: 'billing',

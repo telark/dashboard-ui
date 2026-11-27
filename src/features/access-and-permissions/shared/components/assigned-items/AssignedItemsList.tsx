@@ -36,7 +36,7 @@ function AssignedItemsList<T>({
   onViewClick,
   viewLabel,
   canView,
-}: AssignedItemsListProps<T>) {
+}: Readonly<AssignedItemsListProps<T>>) {
   if (loading) {
     return <div style={ASSIGNED_EMPTY_STATE_STYLE}>{loadingMessage}</div>;
   }

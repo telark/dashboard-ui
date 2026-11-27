@@ -168,6 +168,31 @@ interface PendingTriage {
   until: number;
 }
 
+// A row with a triage still settling shows it as applied, or leaves the list when the filter hides it.
+const withPendingTriage = (
+  r: InsightRow,
+  pending: PendingTriage | undefined,
+  receivedAt: number,
+  filter: string | undefined,
+): InsightRow[] => {
+  if (!pending || receivedAt >= pending.until) return [r];
+  const { state } = pending;
+  if ((r.triage?.state ?? null) === state) return [r];
+  if (!triageShown(filter, state)) return [];
+  const triage = state ? { state, by: r.triage?.by ?? '', at: r.triage?.at ?? '' } : undefined;
+  return [{ ...r, triage }];
+};
+
+// Counts are unknown until a page arrives.
+const severityCountsOf = (
+  facet: Partial<Record<(typeof SEVERITIES)[number], number>> | undefined,
+): Record<SeverityPill, number | undefined> => ({
+  all: facet ? SEVERITIES.reduce((sum, s) => sum + (facet[s] ?? 0), 0) : undefined,
+  critical: facet ? (facet.critical ?? 0) : undefined,
+  warning: facet ? (facet.warning ?? 0) : undefined,
+  info: facet ? (facet.info ?? 0) : undefined,
+});
+
 // The triage filter as the server applies it; no filter hides dismissed.
 const triageShown = (filter: string | undefined, state: TriageState | null): boolean => {
   if (filter === 'all') return true;
@@ -304,7 +329,7 @@ const ClusterInsightsView: React.FC<Props> = memo(({ tab, active, tabs, appNote,
   const [pageSize, setPageSize] = useState<number>(CLUSTER_INSIGHTS.PAGE_SIZE);
   const [groupBy, setGroupBy] = useState<InsightGroupBy>(loadGroupBy);
   const [collapsed, setCollapsed] = useState<ReadonlySet<string>>(() => new Set());
-  const [bulkRequested, setBulkMode] = useState(false);
+  const [bulkRequested, setBulkRequested] = useState(false);
   // Permissions are polled: a demotion mid-selection hides the bulk UI too.
   const bulkMode = bulkRequested && canBulk;
   const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
@@ -353,15 +378,9 @@ const ClusterInsightsView: React.FC<Props> = memo(({ tab, active, tabs, appNote,
   const items = useMemo(() => {
     const rows = page?.items ?? [];
     if (triaged.size === 0) return rows;
-    return rows.flatMap((r) => {
-      const pending = triaged.get(insightRowKey(r));
-      if (!pending || receivedAt >= pending.until) return [r];
-      const { state } = pending;
-      if ((r.triage?.state ?? null) === state) return [r];
-      if (!triageShown(query.triage, state)) return [];
-      const triage = state ? { state, by: r.triage?.by ?? '', at: r.triage?.at ?? '' } : undefined;
-      return [{ ...r, triage }];
-    });
+    return rows.flatMap((r) =>
+      withPendingTriage(r, triaged.get(insightRowKey(r)), receivedAt, query.triage),
+    );
   }, [page, receivedAt, triaged, query.triage]);
   const markTriaged = useCallback((keys: string[], action: TriageAction) => {
     const now = Date.now();
@@ -610,7 +629,8 @@ const ClusterInsightsView: React.FC<Props> = memo(({ tab, active, tabs, appNote,
       const skipped = selectedRows.length - eligible.length;
       if (skipped) parts.push(P.BULK_SKIPPED.replace('{skipped}', String(skipped)));
       if (failed) parts.push(P.BULK_FAILED.replace('{failed}', String(failed)));
-      void (failed ? message.warning(parts.join(' · ')) : message.success(parts.join(' · ')));
+      if (failed) message.warning(parts.join(' · '));
+      else message.success(parts.join(' · '));
       setSelectedKeys([]);
       changed();
     },
@@ -667,13 +687,15 @@ const ClusterInsightsView: React.FC<Props> = memo(({ tab, active, tabs, appNote,
   }, [category, namespaces, environments]);
 
   const activeSeverity = activePill(list(filters[K.SEVERITY]) ?? []);
-  const facet = page?.counts.severityFacet ?? page?.counts.bySeverity;
-  const severityCounts: Record<SeverityPill, number | undefined> = {
-    all: facet ? SEVERITIES.reduce((sum, s) => sum + (facet[s] ?? 0), 0) : undefined,
-    critical: facet ? (facet.critical ?? 0) : undefined,
-    warning: facet ? (facet.warning ?? 0) : undefined,
-    info: facet ? (facet.info ?? 0) : undefined,
-  };
+  const severityCounts = severityCountsOf(page?.counts.severityFacet ?? page?.counts.bySeverity);
+  const renderQuickFilter = (compact: boolean) => (
+    <SeverityPills
+      active={activeSeverity}
+      counts={severityCounts}
+      compact={compact}
+      onChange={(pill) => applyFilters({ ...filters, [K.SEVERITY]: pill === 'all' ? [] : [pill] })}
+    />
+  );
 
   const total = items.length;
   const filtered = hasFilters(filters, q) || validApp(appFilter);
@@ -791,16 +813,7 @@ const ClusterInsightsView: React.FC<Props> = memo(({ tab, active, tabs, appNote,
           },
         ],
       },
-      quickFilter: (compact) => (
-        <SeverityPills
-          active={activeSeverity}
-          counts={severityCounts}
-          compact={compact}
-          onChange={(pill) =>
-            applyFilters({ ...filters, [K.SEVERITY]: pill === 'all' ? [] : [pill] })
-          }
-        />
-      ),
+      quickFilter: renderQuickFilter,
       toolbars: [
         {
           search: {
@@ -843,7 +856,7 @@ const ClusterInsightsView: React.FC<Props> = memo(({ tab, active, tabs, appNote,
               disabled: !canBulk,
               tooltip: canBulk ? undefined : P.BULK_NOT_ALLOWED,
               onClick: () => {
-                setBulkMode((on) => !on);
+                setBulkRequested((on) => !on);
                 setSelectedKeys([]);
               },
             },

@@ -15,6 +15,25 @@ interface DashboardRowProps extends Omit<DashboardRowItem, 'key'> {
   inline?: boolean;
 }
 
+// The meta text and the time, joined, or nothing when the row has neither.
+const rowDetails = (meta: DashboardRowProps['meta'], time: DashboardRowProps['time']) => {
+  if (!meta && !time) return null;
+  return (
+    <>
+      {meta}
+      {meta && time ? T.META_SEPARATOR : null}
+      {time ? <TimeAgo date={time} formatString={TIME_FORMATS.DATE_TIME} /> : null}
+    </>
+  );
+};
+
+const onActivateKey = (e: React.KeyboardEvent, activate: () => void) => {
+  if (e.key === 'Enter' || e.key === ' ') {
+    e.preventDefault();
+    activate();
+  }
+};
+
 const DashboardRow: React.FC<DashboardRowProps> = memo(
   ({ dotColor, title, meta, time, to, inline = false }) => {
     const navigate = useNavigate();
@@ -23,26 +42,14 @@ const DashboardRow: React.FC<DashboardRowProps> = memo(
     const open = () => {
       if (to) navigate(to);
     };
-    const details =
-      meta || time ? (
-        <>
-          {meta}
-          {meta && time ? T.META_SEPARATOR : null}
-          {time ? <TimeAgo date={time} formatString={TIME_FORMATS.DATE_TIME} /> : null}
-        </>
-      ) : null;
+    const details = rowDetails(meta, time);
 
     return (
       <div
         role={interactive ? 'button' : undefined}
         tabIndex={interactive ? 0 : undefined}
         onClick={open}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            open();
-          }
-        }}
+        onKeyDown={(e) => onActivateKey(e, open)}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
         // 120ms: the row's hover fade sits below FAST_MS.

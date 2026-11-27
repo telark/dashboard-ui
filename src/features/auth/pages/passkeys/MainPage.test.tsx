@@ -138,6 +138,24 @@ describe('passkeys page', () => {
     expect(update.calls[0].body).toEqual({ deviceName: 'renamed' });
   });
 
+  it('keeps Save changes off for the name the next passkey opens with', async () => {
+    const { user } = await setUp([
+      buildPasskey({ deviceName: 'work_laptop' }),
+      buildPasskey({ deviceName: 'work_phone' }),
+    ]);
+    const [firstEdit, secondEdit] = screen.getAllByRole('button', { name: /edit/i });
+
+    await user.click(firstEdit);
+    await clickButton(user, BUTTON_TEXTS.CANCEL);
+    await waitForPanelClose();
+    await user.click(secondEdit);
+
+    const save = await within(await findPanel()).findByRole('button', {
+      name: BUTTON_TEXTS.SAVE_CHANGES,
+    });
+    await waitFor(() => expect(save).toBeDisabled());
+  });
+
   it('asks before deleting, and deletes on confirmation', async () => {
     const first = buildPasskey({ creationTimestamp: '2026-01-10T10:00:00Z' });
     const second = buildPasskey({ creationTimestamp: '2026-01-11T10:00:00Z' });

@@ -12,7 +12,7 @@ import { SPACING } from '../../../../../../constants';
 interface MemberListProps {
   users: User[] | undefined;
   loading: boolean;
-  allUsers?: User[] | undefined;
+  allUsers?: User[];
   blockedReason?: (userId: string) => string | undefined;
   fieldName?: string;
 }

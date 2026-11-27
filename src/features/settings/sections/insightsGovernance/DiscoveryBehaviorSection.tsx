@@ -147,7 +147,9 @@ const DiscoveryBehaviorSection: React.FC = memo(() => {
   }, [applications, excludedNamespaces, globalConfig?.data?.excludedNamespaces]);
 
   const maxNamespaceTagPlaceholder = useCallback((omitted: Array<{ value?: unknown }>) => {
-    const hidden = omitted.map((v) => String(v.value ?? '')).filter(Boolean);
+    const hidden = omitted
+      .map((v) => v.value)
+      .filter((v): v is string => typeof v === 'string' && v !== '');
     if (hidden.length === 0) return null;
     return (
       <Tooltip title={hidden.join(', ')}>

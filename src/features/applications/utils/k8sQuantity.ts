@@ -31,7 +31,7 @@ const matchQuantity = (raw: string | undefined | null): RegExpMatchArray | null 
   if (raw == null) return null;
   const trimmed = raw.trim();
   if (trimmed.length === 0) return null;
-  return trimmed.match(QUANTITY_PATTERN);
+  return QUANTITY_PATTERN.exec(trimmed);
 };
 
 /** CPU quantity to millicores: "250m" -> 250, "1.5" -> 1500. */

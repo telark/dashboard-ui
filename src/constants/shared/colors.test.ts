@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { DEFAULT_COLORS, getPillColor, getPillTextColor } from './colors';
+import { DEFAULT_COLORS, getPillColor, getPillTextColor, withAlpha } from './colors';
 
 describe('getPillTextColor', () => {
   it.each([
@@ -9,5 +9,13 @@ describe('getPillTextColor', () => {
     ['amber', DEFAULT_COLORS.WARNING, DEFAULT_COLORS.TEXT_ON_SURFACE],
   ])('gives the %s pill its text color', (_, accent, expected) => {
     expect(getPillTextColor(getPillColor(accent))).toBe(expected);
+  });
+});
+
+describe('withAlpha', () => {
+  it('reads a three-digit hex as its six-digit form', () => {
+    const white = DEFAULT_COLORS.SURFACE_WHITE;
+
+    expect(withAlpha(white.slice(0, 4), 0.5)).toBe(withAlpha(white, 0.5));
   });
 });

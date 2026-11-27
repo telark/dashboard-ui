@@ -1,8 +1,7 @@
 import { useMemo, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import type { FormInstance } from 'antd';
-import { RootState } from '../../../../../../store';
-import store from '../../../../../../store';
+import store, { RootState } from '../../../../../../store';
 import { fetchMyPermissionsThunk } from '../../../../../auth/store/thunks/fetchThunks';
 import { useGroupMutations } from '../../';
 import { useRoles } from '../../../../roles/hooks';

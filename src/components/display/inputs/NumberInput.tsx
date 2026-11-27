@@ -60,7 +60,7 @@ const NumberInput: React.FC<NumberInputProps> = ({
     if (e.ctrlKey && ['a', 'c', 'v', 'x'].includes(e.key.toLowerCase())) {
       return;
     }
-    if (/^[0-9]$/.test(e.key)) {
+    if (/^\d$/.test(e.key)) {
       return;
     }
     if (e.key === '.') {
