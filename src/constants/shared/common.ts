@@ -4,6 +4,9 @@ export const EMPTY_VALUE = '—';
 // An empty list or setting, said in words.
 export const NONE_TEXT = 'None';
 
+// The green tag on a newly added feature (the Theme card, a sidebar item).
+export const NEW_TAG_TEXT = 'New';
+
 // A dropdown with nothing to list names its items; any other takes the default (renderEmpty in App.tsx).
 export const DROPDOWN_EMPTY = {
   DEFAULT: 'No results',

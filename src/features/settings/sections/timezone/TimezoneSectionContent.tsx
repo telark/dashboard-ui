@@ -63,7 +63,9 @@ const TimezoneSectionContent: React.FC = memo(() => {
     if (!user) return;
     setSaving(true);
     try {
-      const response = await updateUser(user.id, { settings: { ...user.settings, ...draft } });
+      // The stored copy, since the header's theme switch can change settings after this page loaded.
+      const settings = { ...getCurrentUser()?.settings, ...draft };
+      const response = await updateUser(user.id, { settings });
       const saved = response?.data;
       if (!saved) {
         message.error(LABELS.SAVE_ERROR);

@@ -18,6 +18,7 @@ import { SECURITY_SECTION_CONSTANTS as SECURITY } from '../sections/security/con
 import { ABOUT_SECTION_CONSTANTS as ABOUT } from '../sections/about/constants';
 import { APPEARANCE_SECTION_CONSTANTS as APPEARANCE } from '../sections/appearance/constants';
 import { PASSKEYS_CONSTANTS } from '../../auth/constants/passkeys';
+import { THEME_TEXTS } from '../../theme';
 import { SettingsPage } from '..';
 
 const renderSettings = (route: string, seed = permissionsSeed()) =>
@@ -99,7 +100,7 @@ describe('settings page', () => {
 
       await user.click(await screen.findByText(APPEARANCE.LABELS.THEME_OPTIONS.light));
 
-      expect(await screen.findByText(APPEARANCE.LABELS.SAVE_ERROR)).toBeInTheDocument();
+      expect(await screen.findByText(THEME_TEXTS.SAVE_ERROR)).toBeInTheDocument();
       expect(
         screen.getByRole('radio', { name: APPEARANCE.LABELS.THEME_OPTIONS.dark }),
       ).toBeChecked();

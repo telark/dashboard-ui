@@ -16,6 +16,8 @@ export const HEADER_LAYOUT = {
     TOGGLE_GAP: 16,
   },
   DOCS_LABEL: 'Documentation',
+  // Keyed by the theme a click switches to.
+  THEME_TOGGLE_LABELS: { light: 'Switch to light theme', dark: 'Switch to dark theme' },
 } as const;
 
 export const HEADER_CONSTANTS = {
